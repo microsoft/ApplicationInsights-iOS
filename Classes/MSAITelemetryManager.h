@@ -7,11 +7,6 @@
 @class MSAIBaseManager;
 @class MSAICrashManager;
 @class MSAIMetricsManager;
-@class MSAIUpdateManager;
-@class MSMSAItoreUpdateManager;
-@class MSAIFeedbackManager;
-@class MSAIAuthenticator;
-
 /** 
  The AppInsightsSDK manager. Responsible for setup and management of all components
  
