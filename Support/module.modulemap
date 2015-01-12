@@ -1,0 +1,6 @@
+framework module ApplicationInsights {
+  umbrella header "ApplicationInsights.h"
+  
+  export *
+  module * { export * }
+}

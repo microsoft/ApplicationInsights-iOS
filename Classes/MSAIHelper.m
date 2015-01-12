@@ -1,0 +1,197 @@
+#import "MSAIHelper.h"
+#import "MSAIKeychainUtils.h"
+#import "AppInsights.h"
+#import "AppInsightsPrivate.h"
+#import <QuartzCore/QuartzCore.h>
+
+
+#if __IPHONE_OS_VERSION_MAX_ALLOWED < 70000
+@interface NSData (MSAIiOS7)
+- (NSString *)base64Encoding;
+@end
+#endif
+
+
+#pragma mark NSString helpers
+
+NSString *msai_URLEncodedString(NSString *inputString) {
+  return CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault,
+                                                                    (__bridge CFStringRef)inputString,
+                                                                    NULL,
+                                                                    CFSTR("!*'();:@&=+$,/?%#[]"),
+                                                                    kCFStringEncodingUTF8)
+                           );
+}
+
+NSString *msai_URLDecodedString(NSString *inputString) {
+  return CFBridgingRelease(CFURLCreateStringByReplacingPercentEscapesUsingEncoding(kCFAllocatorDefault,
+                                                                                   (__bridge CFStringRef)inputString,
+                                                                                   CFSTR(""),
+                                                                                   kCFStringEncodingUTF8)
+                           );
+}
+
+NSString *msai_base64String(NSData * data, unsigned long length) {
+#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_6_1
+  SEL base64EncodingSelector = NSSelectorFromString(@"base64EncodedStringWithOptions:");
+  if ([data respondsToSelector:base64EncodingSelector]) {
+    return [data base64EncodedStringWithOptions:0];
+  } else {
+#endif
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+    return [data base64Encoding];
+#pragma clang diagnostic pop
+#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_6_1
+  }
+#endif
+}
+
+NSString *msai_settingsDir(void) {
+  static NSString *settingsDir = nil;
+  static dispatch_once_t predSettingsDir;
+  
+  dispatch_once(&predSettingsDir, ^{
+    NSFileManager *fileManager = [[NSFileManager alloc] init];
+    
+    // temporary directory for crashes grabbed from PLCrashReporter
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+    settingsDir = [[paths objectAtIndex:0] stringByAppendingPathComponent:MSAI_IDENTIFIER];
+    
+    if (![fileManager fileExistsAtPath:settingsDir]) {
+      NSDictionary *attributes = [NSDictionary dictionaryWithObject: [NSNumber numberWithUnsignedLong: 0755] forKey: NSFilePosixPermissions];
+      NSError *theError = NULL;
+      
+      [fileManager createDirectoryAtPath:settingsDir withIntermediateDirectories: YES attributes: attributes error: &theError];
+    }
+  });
+  
+  return settingsDir;
+}
+
+
+NSString *msai_keychainMSAIServiceName(void) {
+  static NSString *serviceName = nil;
+  static dispatch_once_t predServiceName;
+  
+  dispatch_once(&predServiceName, ^{
+    serviceName = [NSString stringWithFormat:@"%@.MSAI", msai_mainBundleIdentifier()];
+  });
+  
+  return serviceName;
+}
+
+NSString *msai_mainBundleIdentifier(void) {
+  return [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleIdentifier"];
+}
+
+NSString *msai_encodeAppIdentifier(NSString *inputString) {
+  return (inputString ? msai_URLEncodedString(inputString) : msai_URLEncodedString(msai_mainBundleIdentifier()));
+}
+
+NSString *msai_UUIDPreiOS6(void) {
+  // Create a new UUID
+  CFUUIDRef uuidObj = CFUUIDCreate(nil);
+  
+  // Get the string representation of the UUID
+  NSString *resultUUID = (NSString*)CFBridgingRelease(CFUUIDCreateString(nil, uuidObj));
+  CFRelease(uuidObj);
+  
+  return resultUUID;
+}
+
+NSString *msai_UUID(void) {
+  NSString *resultUUID = nil;
+  
+  id uuidClass = NSClassFromString(@"NSUUID");
+  if (uuidClass) {
+    resultUUID = [[NSUUID UUID] UUIDString];
+  } else {
+    resultUUID = msai_UUIDPreiOS6();
+  }
+  
+  return resultUUID;
+}
+
+NSString *msai_appAnonID(void) {
+  static NSString *appAnonID = nil;
+  static dispatch_once_t predAppAnonID;
+  
+  dispatch_once(&predAppAnonID, ^{
+    // first check if we already have an install string in the keychain
+    NSString *appAnonIDKey = @"appAnonID";
+    
+    __block NSError *error = nil;
+    appAnonID = [MSAIKeychainUtils getPasswordForUsername:appAnonIDKey andServiceName:msai_keychainMSAIServiceName() error:&error];
+    
+    if (!appAnonID) {
+      appAnonID = msai_UUID();
+      // store this UUID in the keychain (on this device only) so we can be sure to always have the same ID upon app startups
+      if (appAnonID) {
+        // add to keychain in a background thread, since we got reports that storing to the keychain may take several seconds sometimes and cause the app to be killed
+        // and we don't care about the result anyway
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+          [MSAIKeychainUtils storeUsername:appAnonIDKey
+                               andPassword:appAnonID
+                            forServiceName:msai_keychainMSAIServiceName()
+                            updateExisting:YES
+                             accessibility:kSecAttrAccessibleWhenUnlockedThisDeviceOnly
+                                     error:&error];
+        });
+      }
+    }
+  });
+  
+  return appAnonID;
+}
+
+BOOL msai_isPreiOS7Environment(void) {
+  static BOOL isPreiOS7Environment = YES;
+  static dispatch_once_t checkOS;
+  
+  dispatch_once(&checkOS, ^{
+    // NSFoundationVersionNumber_iOS_6_1 = 993.00
+    // We hardcode this, so compiling with iOS 6 is possible while still being able to detect the correct environment
+    
+    // runtime check according to
+    // https://developer.apple.com/library/prerelease/ios/documentation/UserExperience/Conceptual/TransitionGuide/SupportingEarlieriOS.html
+    if (floor(NSFoundationVersionNumber) <= 993.00) {
+      isPreiOS7Environment = YES;
+    } else {
+      isPreiOS7Environment = NO;
+    }
+  });
+  
+  return isPreiOS7Environment;
+}
+
+BOOL msai_isPreiOS8Environment(void) {
+  static BOOL isPreiOS8Environment = YES;
+  static dispatch_once_t checkOS8;
+  
+  dispatch_once(&checkOS8, ^{
+    // NSFoundationVersionNumber_iOS_7_1 = 1047.25
+    // We hardcode this, so compiling with iOS 7 is possible while still being able to detect the correct environment
+
+    // runtime check according to
+    // https://developer.apple.com/library/prerelease/ios/documentation/UserExperience/Conceptual/TransitionGuide/SupportingEarlieriOS.html
+    if (floor(NSFoundationVersionNumber) <= 1047.25) {
+      isPreiOS8Environment = YES;
+    } else {
+      isPreiOS8Environment = NO;
+    }
+  });
+  
+  return isPreiOS8Environment;
+}
+
+BOOL msai_isRunningInAppExtension(void) {
+  static BOOL isRunningInAppExtension = NO;
+  static dispatch_once_t checkAppExtension;
+  
+  dispatch_once(&checkAppExtension, ^{
+    isRunningInAppExtension = ([[[NSBundle mainBundle] executablePath] rangeOfString:@".appex/"].location != NSNotFound);
+  });
+  
+  return isRunningInAppExtension;
+}
