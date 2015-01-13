@@ -59,7 +59,7 @@
         [dict setObject:self.tags forKey:@"tags"];
     }
     NSString *strdata;
-    if ([NSJSONSerialization isValidJSONObject:selfdata]) {
+    if ([NSJSONSerialization isValidJSONObject:self.data]) {
         strdata = [NSString stringWithFormat:@"%@", [self.data serialize]];
     }
     [dict setObject:strdata forKey:@"data"];

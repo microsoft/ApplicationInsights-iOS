@@ -1,4 +1,4 @@
-@import Foundation;
+#import <Foundation/Foundation.h>
 #import "MSAIBase.h"
 #import "MSAIDataPointType.h"
 #import "MSAIDependencyKind.h"

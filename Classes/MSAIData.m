@@ -15,7 +15,7 @@
 ///
 - (void)addToDictionary:(NSMutableDictionary *) dict {
     NSString *strbaseData;
-    if ([NSJSONSerialization isValidJSONObject:selfbaseData]) {
+    if ([NSJSONSerialization isValidJSONObject:self.baseData]) {
         strbaseData = [NSString stringWithFormat:@"%@", [self.baseData serialize]];
     }
     [dict setObject:strbaseData forKey:@"baseData"];
