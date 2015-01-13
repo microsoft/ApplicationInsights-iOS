@@ -1,8 +1,8 @@
 #import <Foundation/Foundation.h>
 #import "MSAITelemetryData.h"
 
-@class MSAISender;
-@class MSAIClientConfig;
+@class MSAIAppClient;
+@class MSAIClientContext;
 
 @interface MSAIChannel : NSObject
 
@@ -11,7 +11,7 @@
  
  @param telemetrySender The sender object which sends out data items to the telemetry server
  */
-- (instancetype)initWithClientConfig:(MSAIClientConfig *)clientConfig;
+- (instancetype)initWithAppClient:(MSAIAppClient *) appClient clientContext:(MSAIClientContext *)clientContext;
 
 - (void)sendDataItem:(MSAITelemetryData *)dataItem;
 

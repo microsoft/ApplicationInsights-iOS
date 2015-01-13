@@ -9,17 +9,14 @@
 #import "MSAIBaseManagerPrivate.h"
 #import "MSAIMetricsManagerPrivate.h"
 #import "MSAIMetricsSession.h"
-#import "MSAISender.h"
 #import "MSAIChannel.h"
-#import "MSAIClientConfig.h"
+#import "MSAIClientContext.h"
 
 #import "MSAIEventData.h"
 #import "MSAIMessageData.h"
-#import "MSAIDataPoint.h"
+#import "MSAIMetricData.h"
 
 #if MSAI_FEATURE_CRASH_REPORTER
-#import "MSAICrashManager.h"
-#import "MSAICrashDetails.h"
 #endif
 
 NSString *const kMSAIMetricsCachesSessions = @"MSAIMetricsCachesSessions";
@@ -67,8 +64,8 @@ NSString *const kMSAIMetricsLastAppVersion = @"MSAIMetricsLastAppVersion";
 //    _metricsDataFile = [msai_settingsDir() stringByAppendingPathComponent:MSAI_METRICS_DATA];
 //    _metricsTempDataFile = [msai_settingsDir() stringByAppendingPathComponent:MSAI_METRICS_TEMP_DATA];
     
-    MSAIClientConfig *clientConfig = [[MSAIClientConfig alloc]initWithInstrumentationKey:self.appIdentifier];
-    _telemetryChannel = [[MSAIChannel alloc] initWithClientConfig:clientConfig];
+    MSAIClientContext *clientContext = [[MSAIClientContext alloc]initWithInstrumentationKey:self.appIdentifier endpointPath:MSAI_TELEMETRY_PATH];
+    _telemetryChannel = [[MSAIChannel alloc] initWithAppClient:self.appClient clientContext:clientContext];
   }
   return self;
 }
@@ -274,7 +271,7 @@ NSString *const kMSAIMetricsLastAppVersion = @"MSAIMetricsLastAppVersion";
 }
 
 -(void)trackEventWithName:(NSString *)eventName properties:(NSDictionary *)properties mesurements:(NSDictionary *)measurements{
-  MSAIEventData eventData = [MSAIEventData new];
+  MSAIEventData *eventData = [MSAIEventData new];
   [eventData setName:eventName];
   [eventData setProperties:properties];
   [eventData setMeasurements:measurements];
@@ -287,7 +284,7 @@ NSString *const kMSAIMetricsLastAppVersion = @"MSAIMetricsLastAppVersion";
 }
 
 -(void)trackTraceWithMessage:(NSString *)message properties:(NSDictionary *)properties{
-  MSAIMessageData messageData = [MSAIMessageData new];
+  MSAIMessageData *messageData = [MSAIMessageData new];
   [messageData setMessage:message];
   [messageData setProperties:properties];
   
@@ -295,17 +292,14 @@ NSString *const kMSAIMetricsLastAppVersion = @"MSAIMetricsLastAppVersion";
 }
 
 -(void)trackMetricWithName:(NSString *)metricName value:(double)value{
-  [self trackMetricWithName:metricName value:value properties:properties];
+  [self trackMetricWithName:metricName value:value properties:nil];
 }
 
 -(void)trackMetricWithName:(NSString *)metricName value:(double)value properties:(NSDictionary *)properties{
-  MSAIDataPoint *metricData = [MSAIMetricsData new];
-  [metricData setCount:@(1)];
-  [metricData setKind:]
-  [metricData setMax:@(value)];
-  [metricData setName:metricName];
-  [metricData setValue:@(value)];
-  //[metricData setProperties:properties];
+  MSAIMetricData *metricData = [MSAIMetricData new];
+  NSMutableArray *metrics = [NSMutableArray arrayWithObject:@(value)];
+  [metricData setMetrics:metrics];
+  [metricData setProperties:properties];
   
   [self trackDataItem:metricData];
 }

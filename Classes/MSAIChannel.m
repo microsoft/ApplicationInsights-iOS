@@ -1,26 +1,64 @@
 #import "MSAIChannel.h"
-#import "MSAISender.h"
-#import "MSAIClientConfig.h"
+#import "MSAIClientContext.h"
 #import "MSAIEnvelope.h"
-#import "MSAIData.h"
+#import "MSAIHTTPOperation.h"
+#import "MSAIAppClient.h"
 
 @implementation MSAIChannel{
-  MSAIClientConfig *_clientConfig;
-  MSAISender *_sender;
+  MSAIClientContext *_clientContext;
+  MSAIAppClient *_appClient;
 }
 
-- (instancetype)initWithClientConfig:(MSAIClientConfig *)clientConfig{
+- (instancetype)initWithAppClient:(MSAIAppClient *) appClient clientContext:(MSAIClientContext *)clientContext{
   
   if ((self = [self init])) {
-    _clientConfig = clientConfig;
-    _sender = [MSAISender sharedSender];
+    _clientContext = clientContext;
+    _appClient = appClient;
   }
   return self;
 }
 
 - (void)sendDataItem:(MSAITelemetryData *)dataItem{
+  
+  MSAIEnvelope *envelope = [MSAIEnvelope new];
+  NSURLRequest *request = [self requestDataItem:envelope];
+  [self enqueueRequest:request];
+  
+}
 
-  //TODO: enqueue dataItem
+- (NSURLRequest *)requestDataItem:(MSAIEnvelope *)dataItem {
+  
+  NSMutableURLRequest *request = [_appClient requestWithMethod:@"POST"
+                                                          path:[_clientContext endpointPath]
+                                                    parameters:nil];
+  
+  [request setCachePolicy: NSURLRequestReloadIgnoringLocalCacheData];
+  NSString *contentType = @"application/json";
+  [request setValue:contentType forHTTPHeaderField:@"Content-type"];
+  
+  return request;
+}
+
+- (void)enqueueRequest:(NSURLRequest *)request{
+  
+  MSAIHTTPOperation *operation = [_appClient
+                                  operationWithURLRequest:request
+                                  completion:^(MSAIHTTPOperation *operation, NSData* responseData, NSError *error) {
+                                    
+                                    NSInteger statusCode = [operation.response statusCode];
+                                    
+                                    if (nil == error) {
+                                      if (nil == responseData || [responseData length] == 0) {
+                                        NSLog(@"Sending failed with an empty response!");
+                                      } else{
+                                        NSLog(@"Sent data with status code: %ld", (long)statusCode);
+                                      }
+                                    }else{
+                                      NSLog(@"Sending failed");
+                                    }
+                                  }];
+  
+  [_appClient enqeueHTTPOperation:operation];
 }
 
 @end

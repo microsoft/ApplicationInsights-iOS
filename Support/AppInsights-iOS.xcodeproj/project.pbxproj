@@ -85,15 +85,10 @@
 		1BBBCF231A65934800253031 /* MSAITelemetryData.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BBBCF1C1A65934800253031 /* MSAITelemetryData.m */; };
 		1BBBCF261A65935400253031 /* MSAIUser.h in Headers */ = {isa = PBXBuildFile; fileRef = 1BBBCF241A65935400253031 /* MSAIUser.h */; };
 		1BBBCF271A65935400253031 /* MSAIUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BBBCF251A65935400253031 /* MSAIUser.m */; };
-		1BBBCF2B1A65945200253031 /* MSAISender.h in Headers */ = {isa = PBXBuildFile; fileRef = 1BBBCF281A65945200253031 /* MSAISender.h */; };
-		1BBBCF2C1A65945200253031 /* MSAISender.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BBBCF291A65945200253031 /* MSAISender.m */; };
-		1BBBCF2D1A65945200253031 /* MSAISenderConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = 1BBBCF2A1A65945200253031 /* MSAISenderConfig.h */; };
 		1BBBCF341A6594AE00253031 /* MSAIChannel.h in Headers */ = {isa = PBXBuildFile; fileRef = 1BBBCF2E1A6594AE00253031 /* MSAIChannel.h */; };
 		1BBBCF351A6594AE00253031 /* MSAIChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BBBCF2F1A6594AE00253031 /* MSAIChannel.m */; };
-		1BBBCF361A6594AE00253031 /* MSAIClientConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = 1BBBCF301A6594AE00253031 /* MSAIClientConfig.h */; };
-		1BBBCF371A6594AE00253031 /* MSAIClientConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BBBCF311A6594AE00253031 /* MSAIClientConfig.m */; };
-		1BBBCF381A6594AE00253031 /* MSAITelemetrySenderConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = 1BBBCF321A6594AE00253031 /* MSAITelemetrySenderConfig.h */; };
-		1BBBCF391A6594AE00253031 /* MSAITelemetrySenderConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BBBCF331A6594AE00253031 /* MSAITelemetrySenderConfig.m */; };
+		1BBBCF361A6594AE00253031 /* MSAIClientContext.h in Headers */ = {isa = PBXBuildFile; fileRef = 1BBBCF301A6594AE00253031 /* MSAIClientContext.h */; };
+		1BBBCF371A6594AE00253031 /* MSAIClientContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BBBCF311A6594AE00253031 /* MSAIClientContext.m */; };
 		1E0FEE28173BDB260061331F /* MSAIKeychainUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E0FEE26173BDB260061331F /* MSAIKeychainUtils.h */; };
 		1E0FEE29173BDB260061331F /* MSAIKeychainUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E0FEE27173BDB260061331F /* MSAIKeychainUtils.m */; };
 		1E49A4AF161222B900463151 /* MSAIBaseManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E49A4A0161222B900463151 /* MSAIBaseManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -214,15 +209,10 @@
 		1BBBCF1C1A65934800253031 /* MSAITelemetryData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAITelemetryData.m; sourceTree = "<group>"; };
 		1BBBCF241A65935400253031 /* MSAIUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAIUser.h; sourceTree = "<group>"; };
 		1BBBCF251A65935400253031 /* MSAIUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAIUser.m; sourceTree = "<group>"; };
-		1BBBCF281A65945200253031 /* MSAISender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAISender.h; sourceTree = "<group>"; };
-		1BBBCF291A65945200253031 /* MSAISender.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAISender.m; sourceTree = "<group>"; };
-		1BBBCF2A1A65945200253031 /* MSAISenderConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAISenderConfig.h; sourceTree = "<group>"; };
 		1BBBCF2E1A6594AE00253031 /* MSAIChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAIChannel.h; sourceTree = "<group>"; };
 		1BBBCF2F1A6594AE00253031 /* MSAIChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAIChannel.m; sourceTree = "<group>"; };
-		1BBBCF301A6594AE00253031 /* MSAIClientConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAIClientConfig.h; sourceTree = "<group>"; };
-		1BBBCF311A6594AE00253031 /* MSAIClientConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAIClientConfig.m; sourceTree = "<group>"; };
-		1BBBCF321A6594AE00253031 /* MSAITelemetrySenderConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAITelemetrySenderConfig.h; sourceTree = "<group>"; };
-		1BBBCF331A6594AE00253031 /* MSAITelemetrySenderConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAITelemetrySenderConfig.m; sourceTree = "<group>"; };
+		1BBBCF301A6594AE00253031 /* MSAIClientContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAIClientContext.h; sourceTree = "<group>"; };
+		1BBBCF311A6594AE00253031 /* MSAIClientContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAIClientContext.m; sourceTree = "<group>"; };
 		1E0FEE26173BDB260061331F /* MSAIKeychainUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAIKeychainUtils.h; sourceTree = "<group>"; };
 		1E0FEE27173BDB260061331F /* MSAIKeychainUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAIKeychainUtils.m; sourceTree = "<group>"; };
 		1E3A2B4C19645DC800D5BD66 /* AppInsights-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AppInsights-Prefix.pch"; sourceTree = "<group>"; };
@@ -313,21 +303,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		1BBBCEC21A65927400253031 /* Sender */ = {
+		1BBBCEC21A65927400253031 /* Channel */ = {
 			isa = PBXGroup;
 			children = (
 				1BBBCF2E1A6594AE00253031 /* MSAIChannel.h */,
 				1BBBCF2F1A6594AE00253031 /* MSAIChannel.m */,
-				1BBBCF301A6594AE00253031 /* MSAIClientConfig.h */,
-				1BBBCF311A6594AE00253031 /* MSAIClientConfig.m */,
-				1BBBCF321A6594AE00253031 /* MSAITelemetrySenderConfig.h */,
-				1BBBCF331A6594AE00253031 /* MSAITelemetrySenderConfig.m */,
-				1BBBCF281A65945200253031 /* MSAISender.h */,
-				1BBBCF291A65945200253031 /* MSAISender.m */,
-				1BBBCF2A1A65945200253031 /* MSAISenderConfig.h */,
+				1BBBCF301A6594AE00253031 /* MSAIClientContext.h */,
+				1BBBCF311A6594AE00253031 /* MSAIClientContext.m */,
 				1BBBCEC31A65927900253031 /* Contract */,
 			);
-			name = Sender;
+			name = Channel;
 			sourceTree = "<group>";
 		};
 		1BBBCEC31A65927900253031 /* Contract */ = {
@@ -472,7 +457,7 @@
 		1EB2E4C318FD4CBC008BB1CF /* Metrics */ = {
 			isa = PBXGroup;
 			children = (
-				1BBBCEC21A65927400253031 /* Sender */,
+				1BBBCEC21A65927400253031 /* Channel */,
 				1EC29CCF1A5EE7DD0031071D /* MSAIMetricsSession.h */,
 				1EC29CD01A5EE7DD0031071D /* MSAIMetricsSession.m */,
 				1EB2E4C418FD4CEA008BB1CF /* MSAIMetricsManager.h */,
@@ -594,7 +579,6 @@
 				1BBBCF341A6594AE00253031 /* MSAIChannel.h in Headers */,
 				1EC29CD11A5EE7DD0031071D /* MSAIMetricsSession.h in Headers */,
 				1E754E5C1621FBB70070AB92 /* MSAICrashManager.h in Headers */,
-				1BBBCF2B1A65945200253031 /* MSAISender.h in Headers */,
 				1BBBCF221A65934800253031 /* MSAITelemetryData.h in Headers */,
 				1EC29CCE1A5EAA910031071D /* MSAIBaseManagerPrivate.h in Headers */,
 				1E754E5E1621FBB70070AB92 /* MSAICrashManagerDelegate.h in Headers */,
@@ -603,7 +587,7 @@
 				1BBBCEEC1A6592CC00253031 /* MSAIEventData.h in Headers */,
 				1BBBCF261A65935400253031 /* MSAIUser.h in Headers */,
 				1BBBCF0C1A65931F00253031 /* MSAIPageViewPerfData.h in Headers */,
-				1BBBCF361A6594AE00253031 /* MSAIClientConfig.h in Headers */,
+				1BBBCF361A6594AE00253031 /* MSAIClientContext.h in Headers */,
 				1BBBCEEA1A6592CC00253031 /* MSAIEnvelope.h in Headers */,
 				1BBBCEDB1A6592BF00253031 /* MSAIDependencySourceType.h in Headers */,
 				1ECA8F51192B6954006B9416 /* MSAICrashMetaData.h in Headers */,
@@ -611,7 +595,6 @@
 				1E90FD7318EDB86400CF0417 /* MSAICrashDetails.h in Headers */,
 				1BBBCEDA1A6592BF00253031 /* MSAIDependencyKind.h in Headers */,
 				1EB2E4C618FD4CEA008BB1CF /* MSAIMetricsManager.h in Headers */,
-				1BBBCF381A6594AE00253031 /* MSAITelemetrySenderConfig.h in Headers */,
 				1ECA8F4D192B5BD8006B9416 /* MSAICrashDetailsPrivate.h in Headers */,
 				E40E0B0C17DA1AFF005E38C1 /* MSAIAppClient.h in Headers */,
 				1BBBCEF81A6592F500253031 /* MSAIInternal.h in Headers */,
@@ -624,7 +607,6 @@
 				1BBBCED71A6592BF00253031 /* MSAIDataPoint.h in Headers */,
 				1BBBCF141A65933100253031 /* MSAIRequestData.h in Headers */,
 				1BBBCEFC1A6592F500253031 /* MSAIMessageData.h in Headers */,
-				1BBBCF2D1A65945200253031 /* MSAISenderConfig.h in Headers */,
 				1E754E601621FBB70070AB92 /* MSAICrashReportTextFormatter.h in Headers */,
 				1BBBCF1F1A65934800253031 /* MSAISeverityLevel.h in Headers */,
 				1BBBCEDC1A6592BF00253031 /* MSAIDevice.h in Headers */,
@@ -768,7 +750,7 @@
 				1E5954D315B6F24A00A03429 /* MSAITelemetryManager.m in Sources */,
 				1BBBCEEF1A6592CC00253031 /* MSAIExceptionData.m in Sources */,
 				1BBBCECB1A65929D00253031 /* MSAIBase.m in Sources */,
-				1BBBCF371A6594AE00253031 /* MSAIClientConfig.m in Sources */,
+				1BBBCF371A6594AE00253031 /* MSAIClientContext.m in Sources */,
 				E40E0B0D17DA1AFF005E38C1 /* MSAIAppClient.m in Sources */,
 				1ECA8F52192B6954006B9416 /* MSAICrashMetaData.m in Sources */,
 				E4933E8117B66CDA00B11ACC /* MSAIHTTPOperation.m in Sources */,
@@ -789,7 +771,6 @@
 				1E90FD7418EDB86400CF0417 /* MSAICrashDetails.m in Sources */,
 				1BBBCEF11A6592CC00253031 /* MSAIExceptionDetails.m in Sources */,
 				1BBBCF011A65930000253031 /* MSAIMetricData.m in Sources */,
-				1BBBCF2C1A65945200253031 /* MSAISender.m in Sources */,
 				1BBBCF1E1A65934800253031 /* MSAISession.m in Sources */,
 				1E49A4DB161222D400463151 /* AppInsightsPrivate.m in Sources */,
 				1BBBCF271A65935400253031 /* MSAIUser.m in Sources */,
@@ -798,7 +779,6 @@
 				1E754E5D1621FBB70070AB92 /* MSAICrashManager.m in Sources */,
 				1E754E611621FBB70070AB92 /* MSAICrashReportTextFormatter.m in Sources */,
 				1BBBCF0D1A65931F00253031 /* MSAIPageViewPerfData.m in Sources */,
-				1BBBCF391A6594AE00253031 /* MSAITelemetrySenderConfig.m in Sources */,
 				1BBBCF351A6594AE00253031 /* MSAIChannel.m in Sources */,
 				1E0FEE29173BDB260061331F /* MSAIKeychainUtils.m in Sources */,
 				1BBBCEFB1A6592F500253031 /* MSAILocation.m in Sources */,
