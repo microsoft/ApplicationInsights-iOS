@@ -3,6 +3,8 @@
 #if MSAI_FEATURE_METRICS
 
 @class MSAIAppClient;
+@class MSAIChannel;
+@class MSAITelemetryData;
 
 @interface MSAIMetricsManager () {
 }
@@ -20,7 +22,6 @@
  */
 @property (nonatomic, assign) UIBackgroundTaskIdentifier backgroundTaskIdentifier;
 
-
 /**
  * Removes the stored first_time setup, so the next session will be reported as first_session again
  *
@@ -28,6 +29,22 @@
  */
 - (void) cleanupInternalStorage;
 
+
+///-----------------------------------------------------------------------------
+/// @name Send data to channel
+///-----------------------------------------------------------------------------
+
+/**
+ Telemetry channel for enqueueing metric data
+ */
+@property (nonatomic, strong, readonly) MSAIChannel *telemetryChannel;
+
+/**
+ * Sends message to the channel.
+ *
+ * @param telemetry    telemetry object
+ */
+- (void)trackDataItem:(MSAITelemetryData *)dataItem;
 
 @end
 

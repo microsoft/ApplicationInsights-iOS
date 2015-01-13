@@ -9,6 +9,13 @@
 #import "MSAIBaseManagerPrivate.h"
 #import "MSAIMetricsManagerPrivate.h"
 #import "MSAIMetricsSession.h"
+#import "MSAISender.h"
+#import "MSAIChannel.h"
+#import "MSAIClientConfig.h"
+
+#import "MSAIEventData.h"
+#import "MSAIMessageData.h"
+#import "MSAIDataPoint.h"
 
 #if MSAI_FEATURE_CRASH_REPORTER
 #import "MSAICrashManager.h"
@@ -45,25 +52,29 @@ NSString *const kMSAIMetricsLastAppVersion = @"MSAIMetricsLastAppVersion";
 
 - (id)init {
   if ((self = [super init])) {
-    _disableMetricsManager = NO;
-
-    _isSending = NO;
+//    _disableMetricsManager = NO;
+//
+//    _isSending = NO;
+//    
+//    
+//    _currentSession = nil;
+//    _cachedSessions = [[NSMutableArray alloc] init];
+//    _previousTempSession = nil;
+//    
+//    // set defaults
+//    _fileManager = [[NSFileManager alloc] init];
+//    
+//    _metricsDataFile = [msai_settingsDir() stringByAppendingPathComponent:MSAI_METRICS_DATA];
+//    _metricsTempDataFile = [msai_settingsDir() stringByAppendingPathComponent:MSAI_METRICS_TEMP_DATA];
     
-    _currentSession = nil;
-    _cachedSessions = [[NSMutableArray alloc] init];
-    _previousTempSession = nil;
-    
-    // set defaults
-    _fileManager = [[NSFileManager alloc] init];
-    
-    _metricsDataFile = [msai_settingsDir() stringByAppendingPathComponent:MSAI_METRICS_DATA];
-    _metricsTempDataFile = [msai_settingsDir() stringByAppendingPathComponent:MSAI_METRICS_TEMP_DATA];
+    MSAIClientConfig *clientConfig = [[MSAIClientConfig alloc]initWithInstrumentationKey:self.appIdentifier];
+    _telemetryChannel = [[MSAIChannel alloc] initWithClientConfig:clientConfig];
   }
   return self;
 }
 
 - (void)dealloc {
-  [self unregisterObservers];
+//  [self unregisterObservers];
 }
 
 
@@ -238,6 +249,10 @@ NSString *const kMSAIMetricsLastAppVersion = @"MSAIMetricsLastAppVersion";
 
 #pragma mark - Private
 
+- (void)trackDataItem:(MSAITelemetryData *)dataItem{
+  [_telemetryChannel sendDataItem:dataItem];
+}
+
 /**
  Reset the first session value
  
@@ -249,6 +264,51 @@ NSString *const kMSAIMetricsLastAppVersion = @"MSAIMetricsLastAppVersion";
 
 
 #pragma mark - Usage
+
+-(void)trackEventWithName:(NSString *)eventName{
+  [self trackEventWithName:eventName properties:nil mesurements:nil];
+}
+
+-(void)trackEventWithName:(NSString *)eventName properties:(NSDictionary *)properties{
+  [self trackEventWithName:eventName properties:properties mesurements:nil];
+}
+
+-(void)trackEventWithName:(NSString *)eventName properties:(NSDictionary *)properties mesurements:(NSDictionary *)measurements{
+  MSAIEventData eventData = [MSAIEventData new];
+  [eventData setName:eventName];
+  [eventData setProperties:properties];
+  [eventData setMeasurements:measurements];
+  
+  [self trackDataItem:eventData];
+}
+
+-(void)trackTraceWithMessage:(NSString *)message{
+  [self trackTraceWithMessage:message properties:nil];
+}
+
+-(void)trackTraceWithMessage:(NSString *)message properties:(NSDictionary *)properties{
+  MSAIMessageData messageData = [MSAIMessageData new];
+  [messageData setMessage:message];
+  [messageData setProperties:properties];
+  
+  [self trackDataItem:messageData];
+}
+
+-(void)trackMetricWithName:(NSString *)metricName value:(double)value{
+  [self trackMetricWithName:metricName value:value properties:properties];
+}
+
+-(void)trackMetricWithName:(NSString *)metricName value:(double)value properties:(NSDictionary *)properties{
+  MSAIDataPoint *metricData = [MSAIMetricsData new];
+  [metricData setCount:@(1)];
+  [metricData setKind:]
+  [metricData setMax:@(value)];
+  [metricData setName:metricName];
+  [metricData setValue:@(value)];
+  //[metricData setProperties:properties];
+  
+  [self trackDataItem:metricData];
+}
 
 /**
  A new session started
@@ -522,17 +582,17 @@ NSString *const kMSAIMetricsLastAppVersion = @"MSAIMetricsLastAppVersion";
   
   MSAILog(@"INFO: Start MetricsManager");
 
-  [self registerObservers];
-  
-  [self loadMetricsTempData];
-  
-  [self startUsage];
-  
-  [self loadMetricsData];
-  
-  [self processLastSessionIfCrashed];
-
-  [self sendDataInBackground];
+//  [self registerObservers];
+//  
+//  [self loadMetricsTempData];
+//  
+//  [self startUsage];
+//  
+//  [self loadMetricsData];
+//  
+//  [self processLastSessionIfCrashed];
+//
+//  [self sendDataInBackground];
 }
 
 @end
