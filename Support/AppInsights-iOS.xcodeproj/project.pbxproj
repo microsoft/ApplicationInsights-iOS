@@ -158,6 +158,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1B4D17E41A666EE30079D948 /* MSAIChannelPrivate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MSAIChannelPrivate.h; sourceTree = "<group>"; };
 		1B53FEBE1A6425240082F2E9 /* CrashReporter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CrashReporter.framework; path = ../Vendor/CrashReporter.framework; sourceTree = "<group>"; };
 		1BBBCEC41A65928F00253031 /* MSAIApplication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAIApplication.h; sourceTree = "<group>"; };
 		1BBBCEC51A65928F00253031 /* MSAIApplication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAIApplication.m; sourceTree = "<group>"; };
@@ -308,6 +309,7 @@
 			children = (
 				1BBBCF2E1A6594AE00253031 /* MSAIChannel.h */,
 				1BBBCF2F1A6594AE00253031 /* MSAIChannel.m */,
+				1B4D17E41A666EE30079D948 /* MSAIChannelPrivate.h */,
 				1BBBCF301A6594AE00253031 /* MSAIClientContext.h */,
 				1BBBCF311A6594AE00253031 /* MSAIClientContext.m */,
 				1BBBCEC31A65927900253031 /* Contract */,

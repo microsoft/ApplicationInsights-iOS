@@ -3,6 +3,7 @@
 #import "MSAIEnvelope.h"
 #import "MSAIHTTPOperation.h"
 #import "MSAIAppClient.h"
+#import "AppInsightsPrivate.h"
 
 @implementation MSAIChannel{
   MSAIClientContext *_clientContext;
