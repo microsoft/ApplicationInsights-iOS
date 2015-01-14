@@ -22,9 +22,9 @@
 - (void)sendDataItem:(MSAITelemetryData *)dataItem{
   
   MSAIEnvelope *envelope = [MSAIEnvelope new];
+  
   NSURLRequest *request = [self requestForDataItem:envelope];
   [self enqueueRequest:request];
-  
 }
 
 - (NSURLRequest *)requestForDataItem:(MSAIEnvelope *)dataItem {
@@ -32,6 +32,10 @@
   NSMutableURLRequest *request = [_appClient requestWithMethod:@"POST"
                                                           path:[_clientContext endpointPath]
                                                     parameters:nil];
+  
+  NSString *dataString = [dataItem serialize];
+  NSData *requestData = [dataString dataUsingEncoding:NSUTF8StringEncoding];
+  [request setHTTPBody:requestData];
   
   [request setCachePolicy: NSURLRequestReloadIgnoringLocalCacheData];
   NSString *contentType = @"application/json";
