@@ -10,15 +10,17 @@
 }
 
 /**
- * must be set
+ *  must be set
  */
 @property (nonatomic, strong) MSAIAppClient *appClient;
 
-// used by MSAIMetricsManager if disable status is changed
+/**
+ *  used by MSAIMetricsManager if disable status is changed
+ */
 @property (nonatomic, getter = isMetricsManagerDisabled) BOOL disableMetricsManager;
 
 /**
- To send data in background
+ *  To send data in background
  */
 @property (nonatomic, assign) UIBackgroundTaskIdentifier backgroundTaskIdentifier;
 
@@ -35,7 +37,7 @@
 ///-----------------------------------------------------------------------------
 
 /**
- Telemetry channel for enqueueing metric data
+ *  Telemetry channel for enqueueing metric data
  */
 @property (nonatomic, strong, readonly) MSAIChannel *telemetryChannel;
 

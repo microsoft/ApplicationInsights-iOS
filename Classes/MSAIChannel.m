@@ -21,12 +21,12 @@
 - (void)sendDataItem:(MSAITelemetryData *)dataItem{
   
   MSAIEnvelope *envelope = [MSAIEnvelope new];
-  NSURLRequest *request = [self requestDataItem:envelope];
+  NSURLRequest *request = [self requestForDataItem:envelope];
   [self enqueueRequest:request];
   
 }
 
-- (NSURLRequest *)requestDataItem:(MSAIEnvelope *)dataItem {
+- (NSURLRequest *)requestForDataItem:(MSAIEnvelope *)dataItem {
   
   NSMutableURLRequest *request = [_appClient requestWithMethod:@"POST"
                                                           path:[_clientContext endpointPath]
