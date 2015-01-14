@@ -275,7 +275,10 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
     
     /* If we were unable to determine the code type, fall back on the legacy architecture value. */
     if (codeType == nil) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated"
       switch (report.systemInfo.architecture) {
+#pragma clang diagnostic pop
         case PLCrashReportArchitectureARMv6:
         case PLCrashReportArchitectureARMv7:
           codeType = @"ARM";
@@ -294,7 +297,10 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
           lp64 = false;
           break;
         default:
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated"
           codeType = [NSString stringWithFormat: @"Unknown (%d)", report.systemInfo.architecture];
+#pragma clang diagnostic pop
           lp64 = true;
           break;
       }
