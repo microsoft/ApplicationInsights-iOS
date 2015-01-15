@@ -68,6 +68,7 @@
                                         NSLog(@"Sending failed with an empty response!");
                                       } else{
                                         NSLog(@"Sent data with status code: %ld", (long)statusCode);
+                                        NSLog(@"Response data:\n%@", [NSJSONSerialization JSONObjectWithData:responseData options:0 error:nil]);
                                       }
                                     }else{
                                       NSLog(@"Sending failed");
