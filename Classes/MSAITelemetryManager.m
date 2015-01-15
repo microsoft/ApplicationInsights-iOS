@@ -51,9 +51,9 @@ msai_info_t applicationinsights_library_info __attribute__((section("__TEXT,__ms
   BOOL result = NO;
   
   if (identifier) {
-    NSCharacterSet *hexSet = [NSCharacterSet characterSetWithCharactersInString:@"0123456789abcdef"];
+    NSCharacterSet *hexSet = [NSCharacterSet characterSetWithCharactersInString:@"0123456789abcdef-"];
     NSCharacterSet *inStringSet = [NSCharacterSet characterSetWithCharactersInString:identifier];
-    result = ([identifier length] == 32) && ([hexSet isSupersetOfSet:inStringSet]);
+    result = ([identifier length] == 36) && ([hexSet isSupersetOfSet:inStringSet]);
   }
   
   return result;
