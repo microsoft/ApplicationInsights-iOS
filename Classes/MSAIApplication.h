@@ -1,16 +1,10 @@
-#import <Foundation/Foundation.h>
-#import "MSAIDataPointType.h"
-#import "MSAIDependencyKind.h"
-#import "MSAIDependencySourceType.h"
-#import "MSAISeverityLevel.h"
+#import "MSAIObject.h"
 #import "MSAITelemetryData.h"
 
 ///Data contract class for type Application.
-@interface MSAIApplication : NSObject
+@interface MSAIApplication : MSAIObject
 
 @property (nonatomic, strong) NSString *version;
 
-/// Serializes the object to a string in json format.
-- (NSString *)serialize;
 
 @end

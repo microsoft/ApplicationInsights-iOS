@@ -1,6 +1,8 @@
 #import "MSAIRequestData.h"
 /// Data contract class for type RequestData.
 @implementation MSAIRequestData
+@synthesize envelopeTypeName = _envelopeTypeName;
+@synthesize dataTypeName = _dataTypeName;
 
 /// Initializes a new instance of the class.
 - (instancetype)init {
@@ -16,15 +18,10 @@
 /// Adds all members of this class to a dictionary
 /// @param dictionary to which the members of this class will be added.
 ///
-- (void)addToDictionary:(NSMutableDictionary *) dict {
-    if (self.version != nil) {
-        [dict setObject:self.version forKey:@"ver"];
-    }
+- (NSMutableDictionary *)serializeToDictionary {
+    NSMutableDictionary * dict = [super serializeToDictionary];
     if (self.requestDataId != nil) {
         [dict setObject:self.requestDataId forKey:@"id"];
-    }
-    if (self.name != nil) {
-        [dict setObject:self.name forKey:@"name"];
     }
     if (self.startTime != nil) {
         [dict setObject:self.startTime forKey:@"startTime"];
@@ -43,25 +40,22 @@
     if (self.url != nil) {
         [dict setObject:self.url forKey:@"url"];
     }
-    if (self.properties != nil) {
-        [dict setObject:self.properties forKey:@"properties"];
-    }
     if (self.measurements != nil) {
         [dict setObject:self.measurements forKey:@"measurements"];
     }
+    return dict;
 }
 
 ///
 /// Serializes the object to a string in json format.
 /// @param writer The writer to serialize this object to.
 ///
-- (NSString *)serialize {
-    NSMutableDictionary *dict = [NSMutableDictionary new];
-    [self addToDictionary: dict];
+- (NSString *)serializeToString {
+    NSMutableDictionary *dict = [self serializeToDictionary];
     NSMutableString  *jsonString;
     NSError *error = nil;
     NSData *json;
-    json = [NSJSONSerialization dataWithJSONObject:self options:NSJSONWritingPrettyPrinted error:&error];
+    json = [NSJSONSerialization dataWithJSONObject:dict options:NSJSONWritingPrettyPrinted error:&error];
     jsonString = [[NSMutableString alloc] initWithData:json encoding:NSUTF8StringEncoding];
     return jsonString;
 }

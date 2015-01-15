@@ -1,12 +1,8 @@
-#import <Foundation/Foundation.h>
-#import "MSAIDataPointType.h"
-#import "MSAIDependencyKind.h"
-#import "MSAIDependencySourceType.h"
-#import "MSAISeverityLevel.h"
+#import "MSAIObject.h"
 #import "MSAITelemetryData.h"
 
 ///Data contract class for type Device.
-@interface MSAIDevice : NSObject
+@interface MSAIDevice : MSAIObject
 
 @property (nonatomic, strong) NSString *deviceId;
 @property (nonatomic, strong) NSString *ip;
@@ -23,7 +19,5 @@
 @property (nonatomic, strong) NSString *type;
 @property (nonatomic, strong) NSString *vmName;
 
-/// Serializes the object to a string in json format.
-- (NSString *)serialize;
 
 @end

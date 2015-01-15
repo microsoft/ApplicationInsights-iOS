@@ -33,7 +33,7 @@
                                                           path:[_clientContext endpointPath]
                                                     parameters:nil];
   
-  NSString *dataString = [dataItem serialize];
+  NSString *dataString = [dataItem serializeToString];
   NSData *requestData = [dataString dataUsingEncoding:NSUTF8StringEncoding];
   [request setHTTPBody:requestData];
   

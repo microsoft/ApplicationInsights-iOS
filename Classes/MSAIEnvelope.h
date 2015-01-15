@@ -1,13 +1,9 @@
-#import <Foundation/Foundation.h>
 #import "MSAIBase.h"
-#import "MSAIDataPointType.h"
-#import "MSAIDependencyKind.h"
-#import "MSAIDependencySourceType.h"
-#import "MSAISeverityLevel.h"
+#import "MSAIObject.h"
 #import "MSAITelemetryData.h"
 
 ///Data contract class for type Envelope.
-@interface MSAIEnvelope : NSObject
+@interface MSAIEnvelope : MSAIObject
 
 @property (nonatomic, strong) NSNumber *version;
 @property (nonatomic, strong) NSString *name;
@@ -25,7 +21,5 @@
 @property (nonatomic, strong) NSMutableDictionary *tags;
 @property (nonatomic, strong) MSAIBase *data;
 
-/// Serializes the object to a string in json format.
-- (NSString *)serialize;
 
 @end
