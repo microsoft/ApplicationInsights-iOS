@@ -4,6 +4,7 @@
 #import "MSAIHTTPOperation.h"
 #import "MSAIAppClient.h"
 #import "AppInsightsPrivate.h"
+#import "MSAIData.h"
 
 @implementation MSAIChannel{
   MSAIClientContext *_clientContext;
@@ -21,7 +22,17 @@
 
 - (void)sendDataItem:(MSAITelemetryData *)dataItem{
   
+  [dataItem setVersion:@(2)];
+  
+  MSAIData *data = [MSAIData new];
+  [data setBaseData:dataItem];
+  [data setBaseType:[dataItem dataTypeName]];
+  
   MSAIEnvelope *envelope = [MSAIEnvelope new];
+  [envelope setIKey:[_clientContext instrumentationKey]];
+  [envelope setData:data];
+  [envelope setName:[dataItem envelopeTypeName]];
+  // set date & tags
   
   NSURLRequest *request = [self requestForDataItem:envelope];
   [self enqueueRequest:request];
