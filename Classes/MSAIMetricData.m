@@ -1,4 +1,5 @@
 #import "MSAIMetricData.h"
+#import "MSAIDataPoint.h"
 /// Data contract class for type MetricData.
 @implementation MSAIMetricData
 @synthesize envelopeTypeName = _envelopeTypeName;
@@ -21,7 +22,11 @@
 - (NSMutableDictionary *)serializeToDictionary {
     NSMutableDictionary * dict = [super serializeToDictionary];
     if (self.metrics != nil) {
-        [dict setObject:self.metrics forKey:@"metrics"];
+      NSMutableArray *metricsArray = [NSMutableArray array];
+      for (MSAIDataPoint *dataPoint in self.metrics) {
+        [metricsArray addObject:[dataPoint serializeToDictionary]];
+      }
+      [dict setObject:metricsArray forKey:@"metrics"];
     }
     return dict;
 }

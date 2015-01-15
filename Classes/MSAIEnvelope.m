@@ -59,7 +59,7 @@
     if (self.tags != nil) {
         [dict setObject:self.tags forKey:@"tags"];
     }
-    if ([NSJSONSerialization isValidJSONObject:self.data]) {
+    if ([NSJSONSerialization isValidJSONObject:[self.data serializeToDictionary]]) {
         [dict setObject:[self.data serializeToDictionary] forKey:@"data"];
     }
     return dict;

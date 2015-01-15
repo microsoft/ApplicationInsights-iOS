@@ -15,7 +15,7 @@
 ///
 - (NSMutableDictionary *)serializeToDictionary {
     NSMutableDictionary * dict = [super serializeToDictionary];
-    if ([NSJSONSerialization isValidJSONObject:self.baseData]) {
+    if ([NSJSONSerialization isValidJSONObject:[self.baseData serializeToDictionary]]) {
         [dict setObject:[self.baseData serializeToDictionary] forKey:@"baseData"];
     }
     return dict;

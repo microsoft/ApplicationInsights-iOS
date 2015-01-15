@@ -14,7 +14,7 @@
 /// @param dictionary to which the members of this class will be added.
 ///
 - (NSMutableDictionary *)serializeToDictionary {
-    NSMutableDictionary * dict = [super serializeToDictionary];
+    NSMutableDictionary *dict = [super serializeToDictionary];
     if (self.sessionId != nil) {
         [dict setObject:self.sessionId forKey:@"id"];
     }
