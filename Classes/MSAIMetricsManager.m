@@ -15,6 +15,8 @@
 #import "MSAIEventData.h"
 #import "MSAIMessageData.h"
 #import "MSAIMetricData.h"
+#import "MSAIDataPoint.h"
+#import "MSAIEnums.h"
 
 #if MSAI_FEATURE_CRASH_REPORTER
 #endif
@@ -259,7 +261,6 @@ NSString *const kMSAIMetricsLastAppVersion = @"MSAIMetricsLastAppVersion";
   [self removeKeyFromKeychain:kMSAIMetricsLastAppVersion];
 }
 
-
 #pragma mark - Usage
 
 -(void)trackEventWithName:(NSString *)eventName{
@@ -297,7 +298,14 @@ NSString *const kMSAIMetricsLastAppVersion = @"MSAIMetricsLastAppVersion";
 
 -(void)trackMetricWithName:(NSString *)metricName value:(double)value properties:(NSDictionary *)properties{
   MSAIMetricData *metricData = [MSAIMetricData new];
-  NSMutableArray *metrics = [NSMutableArray arrayWithObject:@(value)];
+  
+  MSAIDataPoint *data = [MSAIDataPoint new];
+  [data setCount:@(1)];
+  [data setKind:MSAIDataPointType_measurement];
+  [data setMax:@(value)];
+  [data setName:metricName];
+  [data setValue:@(value)];
+  NSMutableArray *metrics = [NSMutableArray arrayWithObject:data];
   [metricData setMetrics:metrics];
   [metricData setProperties:properties];
   

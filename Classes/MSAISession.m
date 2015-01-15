@@ -32,7 +32,7 @@
 /// @param writer The writer to serialize this object to.
 ///
 - (NSString *)serializeToString {
-    NSMutableDictionary *dict = [self serializeToDictionary];
+    NSDictionary *dict = [self serializeToDictionary];
     NSMutableString  *jsonString;
     NSError *error = nil;
     NSData *json;

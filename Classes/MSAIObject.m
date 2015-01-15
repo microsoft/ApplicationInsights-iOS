@@ -11,7 +11,7 @@
 }
 
 // empty implementation for the base class
-- (void)serializeToDictionary:(NSMutableDictionary *) dict {
+- (NSMutableDictionary *)serializeToDictionary  {
 	NSMutableDictionary *dict = [NSMutableDictionary new];
 	return dict;
 }
@@ -21,7 +21,7 @@
   NSMutableString  *jsonString;
   NSError *error = nil;
   NSData *json;
-  json = [NSJSONSerialization dataWithJSONObject:dict options:NSJONWritingPrettyPrinting error:&error];
+  json = [NSJSONSerialization dataWithJSONObject:dict options:NSJSONWritingPrettyPrinted error:&error];
   jsonString = [[NSMutableString alloc] initWithData:json encoding:NSUTF8StringEncoding];
   return jsonString;
 }

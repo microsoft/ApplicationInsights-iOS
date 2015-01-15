@@ -1,6 +1,7 @@
 #import "MSAIDomain.h"
 /// Data contract class for type Domain.
 @implementation MSAIDomain
+
 @synthesize envelopeTypeName = _envelopeTypeName;
 @synthesize dataTypeName = _dataTypeName;
 
@@ -27,7 +28,7 @@
 /// @param writer The writer to serialize this object to.
 ///
 - (NSString *)serializeToString {
-    NSMutableDictionary *dict = [self serializeToDictionary];
+    NSDictionary *dict = [self serializeToDictionary];
     NSMutableString  *jsonString;
     NSError *error = nil;
     NSData *json;
