@@ -29,6 +29,9 @@
   [data setBaseType:[dataItem dataTypeName]];
   
   MSAIEnvelope *envelope = [MSAIEnvelope new];
+  NSDateFormatter *dateFormatter = [NSDateFormatter new];
+  dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+  [envelope setTime:[dateFormatter stringFromDate:[NSDate date]]];
   [envelope setIKey:[_clientContext instrumentationKey]];
   [envelope setData:data];
   [envelope setName:[dataItem envelopeTypeName]];
