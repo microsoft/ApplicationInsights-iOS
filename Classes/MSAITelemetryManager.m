@@ -392,8 +392,7 @@ msai_info_t applicationinsights_library_info __attribute__((section("__TEXT,__ms
     
 #if MSAI_FEATURE_METRICS
     MSAILog(@"INFO: Setup MetricsManager");
-    _metricsManager = [[MSAIMetricsManager alloc] initWithAppIdentifier:_appIdentifier isAppStoreEnvironment:_appStoreEnvironment];
-    _metricsManager.appClient = [self appClient];
+    _metricsManager = [[MSAIMetricsManager alloc] initWithAppIdentifier:_appIdentifier appClient:_appClient isAppStoreEnvironment:_appStoreEnvironment];
 #endif /* MSAI_FEATURE_METRICS */
 
     if (![self isAppStoreEnvironment]) {

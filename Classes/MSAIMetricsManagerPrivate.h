@@ -9,6 +9,8 @@
 @interface MSAIMetricsManager () {
 }
 
+- (instancetype)initWithAppIdentifier:(NSString *)appIdentifier appClient:(MSAIAppClient *)appClient isAppStoreEnvironment:(BOOL)appStoreEnvironment;
+
 /**
  *  must be set
  */

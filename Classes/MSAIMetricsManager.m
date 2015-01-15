@@ -66,6 +66,14 @@ NSString *const kMSAIMetricsLastAppVersion = @"MSAIMetricsLastAppVersion";
 //    _metricsDataFile = [msai_settingsDir() stringByAppendingPathComponent:MSAI_METRICS_DATA];
 //    _metricsTempDataFile = [msai_settingsDir() stringByAppendingPathComponent:MSAI_METRICS_TEMP_DATA];
     
+
+  }
+  return self;
+}
+
+- (instancetype)initWithAppIdentifier:(NSString *)appIdentifier appClient:(MSAIAppClient *)appClient isAppStoreEnvironment:(BOOL)appStoreEnvironment {
+  if (self = [super initWithAppIdentifier:appIdentifier isAppStoreEnvironment:appStoreEnvironment]) {
+    _appClient = appClient;
     MSAIClientContext *clientContext = [[MSAIClientContext alloc]initWithInstrumentationKey:self.appIdentifier endpointPath:MSAI_TELEMETRY_PATH];
     _telemetryChannel = [[MSAIChannel alloc] initWithAppClient:self.appClient clientContext:clientContext];
   }
