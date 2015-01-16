@@ -488,7 +488,7 @@
 		E400560F148D79B500EB22B9 = {
 			isa = PBXGroup;
 			children = (
-				E41EB489148D7BF90015DEDC /* AppInsightsSDK */,
+				E41EB489148D7BF90015DEDC /* AppInsights-iOS */,
 				1E5A459616F0DFC200B55C04 /* AppInsights-iOSTests */,
 				E400561C148D79B500EB22B9 /* Frameworks */,
 				E4005648148D7A3000EB22B9 /* Resources */,
@@ -549,12 +549,12 @@
 			path = ../Classes;
 			sourceTree = "<group>";
 		};
-		E41EB489148D7BF90015DEDC /* AppInsightsSDK */ = {
+		E41EB489148D7BF90015DEDC /* AppInsights-iOS */ = {
 			isa = PBXGroup;
 			children = (
 				E41EB458148D7BF50015DEDC /* Classes */,
 			);
-			name = AppInsightsSDK;
+			name = "AppInsights-iOS";
 			sourceTree = "<group>";
 		};
 		E48A3DE917B3ECF900924C3D /* Network */ = {
