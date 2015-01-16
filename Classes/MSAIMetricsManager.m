@@ -11,6 +11,8 @@
 #import "MSAIMetricsSession.h"
 #import "MSAIChannel.h"
 #import "MSAITelemetryContext.h"
+#import "MSAIContext.h"
+#import "MSAIContextPrivate.h"
 
 #import "MSAIEventData.h"
 #import "MSAIMessageData.h"
@@ -71,11 +73,10 @@ NSString *const kMSAIMetricsLastAppVersion = @"MSAIMetricsLastAppVersion";
   return self;
 }
 
-- (instancetype)initWithAppIdentifier:(NSString *)appIdentifier appClient:(MSAIAppClient *)appClient isAppStoreEnvironment:(BOOL)appStoreEnvironment {
-  if (self = [super initWithAppIdentifier:appIdentifier isAppStoreEnvironment:appStoreEnvironment]) {
+- (instancetype)initWithAppContext:(MSAIContext *)appContext appClient:(MSAIAppClient *)appClient {
+  if (self = [super initWithAppContext:appContext]) {
     _appClient = appClient;
-    MSAIClientContext *clientContext = [[MSAIClientContext alloc]initWithInstrumentationKey:self.appIdentifier endpointPath:MSAI_TELEMETRY_PATH];
-    _telemetryChannel = [[MSAIChannel alloc] initWithAppClient:self.appClient clientContext:clientContext];
+    _telemetryChannel = [[MSAIChannel alloc] initWithAppClient:_appClient telemetryContext:[self telemetryContext]];
   }
   return self;
 }
@@ -260,6 +261,35 @@ NSString *const kMSAIMetricsLastAppVersion = @"MSAIMetricsLastAppVersion";
   [_telemetryChannel sendDataItem:dataItem];
 }
 
+-(MSAITelemetryContext *)telemetryContext{
+  
+  MSAIDevice *deviceContext = [MSAIDevice new];
+  
+  [deviceContext setModel: [self.appContext deviceModel]];
+  [deviceContext setType:[self.appContext deviceType]];
+  [deviceContext setOsVersion:[self.appContext osVersion]];
+  [deviceContext setOs:[self.appContext osName]];
+  NSUUID *installationUUID = [[NSUUID alloc] initWithUUIDString:msai_appAnonID()];
+  [deviceContext setDeviceId:[installationUUID description]];
+  
+  MSAIInternal *internalContext = [MSAIInternal new];
+  [internalContext setSdkVersion: msai_sdkVersion()];
+  
+  MSAIApplication *applicationContext = [MSAIApplication new];
+  [applicationContext setVersion:[self.appContext appVersion]];
+
+  MSAITelemetryContext *context = [[MSAITelemetryContext alloc]initWithInstrumentationKey:[self.appContext instrumentationKey]
+                                                                             endpointPath:MSAI_TELEMETRY_PATH
+                                                                       applicationContext:applicationContext
+                                                                            deviceContext:deviceContext
+                                                                          locationContext:nil
+                                                                           sessionContext:nil
+                                                                              userContext:nil
+                                                                          internalContext:internalContext
+                                                                         operationContext:nil];
+  return context;
+}
+
 /**
  Reset the first session value
  
@@ -324,104 +354,104 @@ NSString *const kMSAIMetricsLastAppVersion = @"MSAIMetricsLastAppVersion";
  A new session started
  */
 - (void)startUsage {
-  if ([self isMetricsManagerDisabled]) return;
-  
-  if (_currentSession) return;
-  
-  UIApplicationState appState = [[UIApplication sharedApplication] applicationState];
-  if (appState == UIApplicationStateBackground) return;
-  
-  NSUUID *installationUUID = [[NSUUID alloc] initWithUUIDString:msai_appAnonID()];
-
-  if (!installationUUID) return;
-  
-  NSBundle *appBundle = [NSBundle mainBundle];
-  
-  if (!appBundle) return;
-  
-  NSDate *sessionStartDate = [NSDate date];
-  uint64_t sessionStartTime = (uint64_t)[sessionStartDate timeIntervalSince1970] * 1000; // CFAbsoluteTimeGetCurrent();
-  
-  // these values can only change via app starts
-  NSString *sessionAppLang = @"unknown";
-  NSArray *appLocalizations = [appBundle preferredLocalizations];
-  if (appLocalizations && [appLocalizations count] > 0) {
-    sessionAppLang = [appLocalizations objectAtIndex:0];
-  }
-  
-  NSString *sessionAppBuild = [appBundle objectForInfoDictionaryKey:@"CFBundleVersion"] ?: @"";
-  NSString *sessionAppVersion = [appBundle objectForInfoDictionaryKey:@"CFBundleShortVersionString"] ?: @"";
-  
-  NSString *sessionDeviceLocale = [[NSLocale currentLocale] localeIdentifier];
-  NSString *sessionDeviceModel = [self getDevicePlatform];
-  NSString *sessionDeviceOS = [[UIDevice currentDevice] systemVersion];
-  
-  BOOL firstSessionForAppVersion = NO;
-  
-  NSString *previousSessionAppVersion = [self stringValueFromKeychainForKey:kMSAIMetricsLastAppVersion];
-  if (!previousSessionAppVersion || ![sessionAppBuild isEqualToString:previousSessionAppVersion]) {
-    firstSessionForAppVersion = YES;
-  }
-  
-  _currentSession = [[MSAIMetricsSession alloc] initWithInstallationUUID:installationUUID
-                                                                     deviceModel:sessionDeviceModel
-                                                                 deviceOSVersion:sessionDeviceOS
-                                                                    deviceLocale:sessionDeviceLocale
-                                                                     appLanguage:sessionAppLang
-                                                                        appBuild:sessionAppBuild
-                                                                      appVersion:sessionAppVersion
-                                                                sessionStartTime:sessionStartTime
-                                                                  sessionEndTime:0
-                                                                    firstSession:firstSessionForAppVersion
-                     ];
-  
-  [self storeMetricsTempData];
+//  if ([self isMetricsManagerDisabled]) return;
+//  
+//  if (_currentSession) return;
+//  
+//  UIApplicationState appState = [[UIApplication sharedApplication] applicationState];
+//  if (appState == UIApplicationStateBackground) return;
+//  
+//  NSUUID *installationUUID = [[NSUUID alloc] initWithUUIDString:msai_appAnonID()];
+//
+//  if (!installationUUID) return;
+//  
+//  NSBundle *appBundle = [NSBundle mainBundle];
+//  
+//  if (!appBundle) return;
+//  
+//  NSDate *sessionStartDate = [NSDate date];
+//  uint64_t sessionStartTime = (uint64_t)[sessionStartDate timeIntervalSince1970] * 1000; // CFAbsoluteTimeGetCurrent();
+//  
+//  // these values can only change via app starts
+//  NSString *sessionAppLang = @"unknown";
+//  NSArray *appLocalizations = [appBundle preferredLocalizations];
+//  if (appLocalizations && [appLocalizations count] > 0) {
+//    sessionAppLang = [appLocalizations objectAtIndex:0];
+//  }
+//  
+//  NSString *sessionAppBuild = [appBundle objectForInfoDictionaryKey:@"CFBundleVersion"] ?: @"";
+//  NSString *sessionAppVersion = [appBundle objectForInfoDictionaryKey:@"CFBundleShortVersionString"] ?: @"";
+//  
+//  NSString *sessionDeviceLocale = [[NSLocale currentLocale] localeIdentifier];
+//  NSString *sessionDeviceModel = [self getDevicePlatform];
+//  NSString *sessionDeviceOS = [[UIDevice currentDevice] systemVersion];
+//  
+//  BOOL firstSessionForAppVersion = NO;
+//  
+//  NSString *previousSessionAppVersion = [self stringValueFromKeychainForKey:kMSAIMetricsLastAppVersion];
+//  if (!previousSessionAppVersion || ![sessionAppBuild isEqualToString:previousSessionAppVersion]) {
+//    firstSessionForAppVersion = YES;
+//  }
+//  
+//  _currentSession = [[MSAIMetricsSession alloc] initWithInstallationUUID:installationUUID
+//                                                                     deviceModel:sessionDeviceModel
+//                                                                 deviceOSVersion:sessionDeviceOS
+//                                                                    deviceLocale:sessionDeviceLocale
+//                                                                     appLanguage:sessionAppLang
+//                                                                        appBuild:sessionAppBuild
+//                                                                      appVersion:sessionAppVersion
+//                                                                sessionStartTime:sessionStartTime
+//                                                                  sessionEndTime:0
+//                                                                    firstSession:firstSessionForAppVersion
+//                     ];
+//  
+//  [self storeMetricsTempData];
 }
 
 /**
  A session has ended
  */
 - (void)stopUsage {
-  if ([self isMetricsManagerDisabled]) return;
-  
-  UIApplicationState appState = [[UIApplication sharedApplication] applicationState];
-  if (appState != UIApplicationStateBackground) return;
-
-  if (!_currentSession) return;
-  
-  if (_currentSession.sessionStartTime == 0) return;
-  
-  uint64_t sessionEndTime = (uint64_t)[[NSDate date] timeIntervalSince1970] * 1000;
-  
-  MSAIMetricsSession *finishedSession = [[MSAIMetricsSession alloc] initWithInstallationUUID:_currentSession.installationUUID
-                                                                                                 deviceModel:_currentSession.deviceModel
-                                                                                             deviceOSVersion:_currentSession.deviceOSVersion
-                                                                                                deviceLocale:_currentSession.deviceLocale
-                                                                                                 appLanguage:_currentSession.appLanguage
-                                                                                                    appBuild:_currentSession.appBuild
-                                                                                                  appVersion:_currentSession.appVersion
-                                                                                            sessionStartTime:_currentSession.sessionStartTime
-                                                                                              sessionEndTime:sessionEndTime
-                                                                                                firstSession:_currentSession.firstSession
-                                                 ];
-  _currentSession = nil;
-
-  BOOL result = NO;
-  
-  @synchronized(@"MSAIMetricsSessionCache") {
-    [_cachedSessions addObject:finishedSession];
-  
-    result = [self storeMetricsData];
-  }
-  
-  if (result) {
-    
-    if (finishedSession.firstSession) {
-      [self addStringValueToKeychainForThisDeviceOnly:finishedSession.appBuild forKey:kMSAIMetricsLastAppVersion];
-    }
-    
-    [self sendDataInBackground];
-  }
+//  if ([self isMetricsManagerDisabled]) return;
+//  
+//  UIApplicationState appState = [[UIApplication sharedApplication] applicationState];
+//  if (appState != UIApplicationStateBackground) return;
+//
+//  if (!_currentSession) return;
+//  
+//  if (_currentSession.sessionStartTime == 0) return;
+//  
+//  uint64_t sessionEndTime = (uint64_t)[[NSDate date] timeIntervalSince1970] * 1000;
+//  
+//  MSAIMetricsSession *finishedSession = [[MSAIMetricsSession alloc] initWithInstallationUUID:_currentSession.installationUUID
+//                                                                                                 deviceModel:_currentSession.deviceModel
+//                                                                                             deviceOSVersion:_currentSession.deviceOSVersion
+//                                                                                                deviceLocale:_currentSession.deviceLocale
+//                                                                                                 appLanguage:_currentSession.appLanguage
+//                                                                                                    appBuild:_currentSession.appBuild
+//                                                                                                  appVersion:_currentSession.appVersion
+//                                                                                            sessionStartTime:_currentSession.sessionStartTime
+//                                                                                              sessionEndTime:sessionEndTime
+//                                                                                                firstSession:_currentSession.firstSession
+//                                                 ];
+//  _currentSession = nil;
+//
+//  BOOL result = NO;
+//  
+//  @synchronized(@"MSAIMetricsSessionCache") {
+//    [_cachedSessions addObject:finishedSession];
+//  
+//    result = [self storeMetricsData];
+//  }
+//  
+//  if (result) {
+//    
+//    if (finishedSession.firstSession) {
+//      [self addStringValueToKeychainForThisDeviceOnly:finishedSession.appBuild forKey:kMSAIMetricsLastAppVersion];
+//    }
+//    
+//    [self sendDataInBackground];
+//  }
 }
 
 
