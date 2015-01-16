@@ -29,13 +29,11 @@
   [data setBaseType:[dataItem dataTypeName]];
   
   MSAIEnvelope *envelope = [MSAIEnvelope new];
-  NSDateFormatter *dateFormatter = [NSDateFormatter new];
-  dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
-  [envelope setTime:[dateFormatter stringFromDate:[NSDate date]]];
+  [envelope setTime:[self dateString]];
   [envelope setIKey:[_clientContext instrumentationKey]];
   [envelope setData:data];
   [envelope setName:[dataItem envelopeTypeName]];
-  // set date & tags
+  [envelope setTags:[_clientContext contextDictionary]];
   
   NSURLRequest *request = [self requestForDataItem:envelope];
   [self enqueueRequest:request];
@@ -79,6 +77,13 @@
                                   }];
   
   [_appClient enqeueHTTPOperation:operation];
+}
+
+- (NSString *)dateString{
+  NSDateFormatter *dateFormatter = [NSDateFormatter new];
+  dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+  NSString *dateString = [dateFormatter stringFromDate:[NSDate date]];
+  return dateString;
 }
 
 @end

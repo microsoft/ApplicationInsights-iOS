@@ -19,4 +19,11 @@
  */
 - (void)enqueueRequest:(NSURLRequest *)request;
 
+/**
+ *  Returns the current date as string.
+ *
+ *  @return a string with the current date
+ */
+- (NSString *)dateString;
+
 @end

@@ -1,4 +1,5 @@
 #import "MSAIClientContext.h"
+#import "MSAIHelper.h"
 
 @implementation MSAIClientContext
 
@@ -8,6 +9,11 @@
     self.endpointPath = endpointPath;
   }
   return self;
+}
+
+- (NSDictionary *)contextDictionary{
+  
+  return [NSDictionary new];
 }
 
 @end

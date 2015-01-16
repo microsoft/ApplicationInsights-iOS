@@ -18,7 +18,7 @@
 @property (nonatomic, strong) NSString *appId;
 @property (nonatomic, strong) NSString *appVer;
 @property (nonatomic, strong) NSString *userId;
-@property (nonatomic, strong) NSMutableDictionary *tags;
+@property (nonatomic, strong) NSDictionary *tags;
 @property (nonatomic, strong) MSAIBase *data;
 
 
