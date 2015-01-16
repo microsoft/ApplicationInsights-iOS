@@ -277,7 +277,8 @@ NSString *const kMSAIMetricsLastAppVersion = @"MSAIMetricsLastAppVersion";
   MSAIApplication *applicationContext = [MSAIApplication new];
   [applicationContext setVersion:[self.appContext appVersion]];
 
-  MSAITelemetryContext *context = [[MSAITelemetryContext alloc]initWithInstrumentationKey:[self.appContext instrumentationKey]
+  //TODO: Add additional context data
+  MSAITelemetryContext *telemetryContext = [[MSAITelemetryContext alloc]initWithInstrumentationKey:[self.appContext instrumentationKey]
                                                                              endpointPath:MSAI_TELEMETRY_PATH
                                                                        applicationContext:applicationContext
                                                                             deviceContext:deviceContext
@@ -286,7 +287,7 @@ NSString *const kMSAIMetricsLastAppVersion = @"MSAIMetricsLastAppVersion";
                                                                               userContext:nil
                                                                           internalContext:internalContext
                                                                          operationContext:nil];
-  return context;
+  return telemetryContext;
 }
 
 /**
