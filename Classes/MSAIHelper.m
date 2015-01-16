@@ -4,6 +4,7 @@
 #import "AppInsightsPrivate.h"
 #import <QuartzCore/QuartzCore.h>
 
+#import <sys/sysctl.h>
 
 #if __IPHONE_OS_VERSION_MAX_ALLOWED < 70000
 @interface NSData (MSAIiOS7)
@@ -11,6 +12,17 @@
 @end
 #endif
 
+typedef struct {
+  uint8_t       info_version;
+  const char    msai_version[16];
+  const char    msai_build[16];
+} msai_info_t;
+
+msai_info_t applicationinsights_library_info __attribute__((section("__TEXT,__msai_ios,regular,no_dead_strip"))) = {
+  .info_version = 1,
+  .msai_version = MSAI_C_VERSION,
+  .msai_build = MSAI_C_BUILD
+};
 
 #pragma mark NSString helpers
 
@@ -87,6 +99,53 @@ NSString *msai_mainBundleIdentifier(void) {
 
 NSString *msai_encodeAppIdentifier(NSString *inputString) {
   return (inputString ? msai_URLEncodedString(inputString) : msai_URLEncodedString(msai_mainBundleIdentifier()));
+}
+
+NSString *msai_osVersion(void){
+  return [[UIDevice currentDevice] systemVersion];
+}
+
+NSString *msai_osName(void){
+  return [[UIDevice currentDevice] systemName];
+}
+
+NSString *msai_appVersion(void){
+  return [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];
+}
+
+NSString *msai_deviceType(void){
+  
+  UIUserInterfaceIdiom idiom = [UIDevice currentDevice].userInterfaceIdiom;
+  
+  switch (idiom) {
+    case UIUserInterfaceIdiomPad:
+      return @"Tablet";
+    case UIUserInterfaceIdiomPhone:
+      return @"Phone";
+    default:
+      return @"Unknown";
+  }
+}
+
+NSString *msai_sdkVersion(void){
+  return [NSString stringWithUTF8String:applicationinsights_library_info.msai_version];
+}
+
+NSString *msai_sdkBuild(void) {
+  return [NSString stringWithUTF8String:applicationinsights_library_info.msai_build];
+}
+
+NSString *msai_devicePlatform(void) {
+  
+  size_t size;
+  sysctlbyname("hw.machine", NULL, &size, NULL, 0);
+  char *answer = (char*)malloc(size);
+  if (answer == NULL)
+    return @"";
+  sysctlbyname("hw.machine", answer, &size, NULL, 0);
+  NSString *platform = [NSString stringWithCString:answer encoding: NSUTF8StringEncoding];
+  free(answer);
+  return platform;
 }
 
 NSString *msai_UUIDPreiOS6(void) {
