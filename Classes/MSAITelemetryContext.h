@@ -7,7 +7,7 @@
 #import "MSAISession.h"
 #import "MSAILocation.h"
 
-@interface MSAIClientContext : NSObject
+@interface MSAITelemetryContext : NSObject
 
 /**
  *  The path to the telemetry endpoint.
@@ -63,7 +63,31 @@
  *
  *  @return an instance of the client context.
  */
-- (instancetype)initWithInstrumentationKey:(NSString *)instrumentationKey endpointPath:(NSString *)endpointPath;
+
+/**
+ *  Initializes a telemetry context.
+ *
+ *  @param instrumentationKey the instrumentation key of the app
+ *  @param endpointPath       the path to the telemetry endpoint
+ *  @param applicationContext the application context object
+ *  @param deviceContext      the device context object
+ *  @param locationContext    the location context object
+ *  @param sessionContext     the session context object
+ *  @param userContext        the user context object
+ *  @param internalContext    the internal context object
+ *  @param operationContext   the operation context object
+ *
+ *  @return the telemetry context
+ */
+- (instancetype)initWithInstrumentationKey:(NSString *)instrumentationKey
+                              endpointPath:(NSString *)endpointPath
+                        applicationContext:(MSAIApplication *)applicationContext
+                             deviceContext:(MSAIDevice *)deviceContext
+                           locationContext:(MSAILocation *)locationContext
+                            sessionContext:(MSAISession *)sessionContext
+                               userContext:(MSAIUser *)userContext
+                           internalContext:(MSAIInternal *)internalContext
+                          operationContext:(MSAIOperation *)operationContext;
 
 /**
  *  Returns context objects as dictionary.

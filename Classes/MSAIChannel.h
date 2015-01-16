@@ -2,7 +2,7 @@
 #import "MSAITelemetryData.h"
 
 @class MSAIAppClient;
-@class MSAIClientContext;
+@class MSAITelemetryContext;
 
 @interface MSAIChannel : NSObject
 
@@ -14,7 +14,7 @@
  *
  *  @return a channel instance.
  */
-- (instancetype)initWithAppClient:(MSAIAppClient *) appClient clientContext:(MSAIClientContext *)clientContext;
+- (instancetype)initWithAppClient:(MSAIAppClient *) appClient telemetryContext:(MSAITelemetryContext *)telemetryContext;
 
 /**
  *  Sends out telemetry data to the server.

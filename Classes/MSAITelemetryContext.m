@@ -1,7 +1,7 @@
-#import "MSAIClientContext.h"
+#import "MSAITelemetryContext.h"
 #import "MSAIHelper.h"
 
-@implementation MSAIClientContext
+@implementation MSAITelemetryContext
 
 - (instancetype)initWithInstrumentationKey:(NSString *)instrumentationKey endpointPath:(NSString *)endpointPath{
   if ((self = [self init])) {

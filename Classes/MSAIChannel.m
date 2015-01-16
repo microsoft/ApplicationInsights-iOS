@@ -1,5 +1,5 @@
 #import "MSAIChannel.h"
-#import "MSAIClientContext.h"
+#import "MSAITelemetryContext.h"
 #import "MSAIEnvelope.h"
 #import "MSAIHTTPOperation.h"
 #import "MSAIAppClient.h"
@@ -7,11 +7,11 @@
 #import "MSAIData.h"
 
 @implementation MSAIChannel{
-  MSAIClientContext *_clientContext;
+  MSAITelemetryContext *_clientContext;
   MSAIAppClient *_appClient;
 }
 
-- (instancetype)initWithAppClient:(MSAIAppClient *) appClient clientContext:(MSAIClientContext *)clientContext{
+- (instancetype)initWithAppClient:(MSAIAppClient *) appClient clientContext:(MSAITelemetryContext *)clientContext{
   
   if ((self = [self init])) {
     _clientContext = clientContext;

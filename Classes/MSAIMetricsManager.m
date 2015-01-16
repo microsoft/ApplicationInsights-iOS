@@ -10,7 +10,7 @@
 #import "MSAIMetricsManagerPrivate.h"
 #import "MSAIMetricsSession.h"
 #import "MSAIChannel.h"
-#import "MSAIClientContext.h"
+#import "MSAITelemetryContext.h"
 
 #import "MSAIEventData.h"
 #import "MSAIMessageData.h"
