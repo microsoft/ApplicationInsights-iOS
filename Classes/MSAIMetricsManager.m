@@ -261,7 +261,7 @@ NSString *const kMSAIMetricsLastAppVersion = @"MSAIMetricsLastAppVersion";
   [_telemetryChannel sendDataItem:dataItem];
 }
 
--(MSAITelemetryContext *)telemetryContext{
+- (MSAITelemetryContext *)telemetryContext{
   
   MSAIDevice *deviceContext = [MSAIDevice new];
   
@@ -269,8 +269,7 @@ NSString *const kMSAIMetricsLastAppVersion = @"MSAIMetricsLastAppVersion";
   [deviceContext setType:[self.appContext deviceType]];
   [deviceContext setOsVersion:[self.appContext osVersion]];
   [deviceContext setOs:[self.appContext osName]];
-  NSUUID *installationUUID = [[NSUUID alloc] initWithUUIDString:msai_appAnonID()];
-  [deviceContext setDeviceId:[installationUUID description]];
+  [deviceContext setDeviceId:msai_appAnonID()];
   
   MSAIInternal *internalContext = [MSAIInternal new];
   [internalContext setSdkVersion: msai_sdkVersion()];
