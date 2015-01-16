@@ -7,14 +7,14 @@
 #import "MSAIData.h"
 
 @implementation MSAIChannel{
-  MSAITelemetryContext *_clientContext;
+  MSAITelemetryContext *_telemetryContext;
   MSAIAppClient *_appClient;
 }
 
-- (instancetype)initWithAppClient:(MSAIAppClient *) appClient clientContext:(MSAITelemetryContext *)clientContext{
+- (instancetype)initWithAppClient:(MSAIAppClient *) appClient telemetryContext:(MSAITelemetryContext *)telemetryContext {
   
   if ((self = [self init])) {
-    _clientContext = clientContext;
+    _telemetryContext = telemetryContext;
     _appClient = appClient;
   }
   return self;
@@ -29,11 +29,11 @@
   [data setBaseType:[dataItem dataTypeName]];
   
   MSAIEnvelope *envelope = [MSAIEnvelope new];
-  [envelope setTime:[self dateString]];
-  [envelope setIKey:[_clientContext instrumentationKey]];
+  [envelope setTime:self.dateString];
+  [envelope setIKey:[_telemetryContext instrumentationKey]];
   [envelope setData:data];
   [envelope setName:[dataItem envelopeTypeName]];
-  [envelope setTags:[_clientContext contextDictionary]];
+  [envelope setTags:[_telemetryContext contextDictionary]];
   
   NSURLRequest *request = [self requestForDataItem:envelope];
   [self enqueueRequest:request];
@@ -42,7 +42,7 @@
 - (NSURLRequest *)requestForDataItem:(MSAIEnvelope *)dataItem {
   
   NSMutableURLRequest *request = [_appClient requestWithMethod:@"POST"
-                                                          path:[_clientContext endpointPath]
+                                                          path:[_telemetryContext endpointPath]
                                                     parameters:nil];
   
   NSString *dataString = [dataItem serializeToString];
