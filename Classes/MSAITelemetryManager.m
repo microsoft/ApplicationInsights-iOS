@@ -6,20 +6,10 @@
 #import "MSAIHelper.h"
 #import "MSAIAppClient.h"
 #import "MSAIKeychainUtils.h"
+#import "MSAIContext.h"
+#import "MSAIContextPrivate.h"
 
 #include <stdint.h>
-
-typedef struct {
-  uint8_t       info_version;
-  const char    msai_version[16];
-  const char    msai_build[16];
-} msai_info_t;
-
-msai_info_t applicationinsights_library_info __attribute__((section("__TEXT,__msai_ios,regular,no_dead_strip"))) = {
-  .info_version = 1,
-  .msai_version = MSAI_C_VERSION,
-  .msai_build = MSAI_C_BUILD
-};
 
 
 #if MSAI_FEATURE_CRASH_REPORTER
@@ -32,7 +22,6 @@ msai_info_t applicationinsights_library_info __attribute__((section("__TEXT,__ms
 
 
 @implementation MSAITelemetryManager {
-  NSString *_appIdentifier;
   
   BOOL _validAppIdentifier;
   
@@ -43,6 +32,8 @@ msai_info_t applicationinsights_library_info __attribute__((section("__TEXT,__ms
   BOOL _managersInitialized;
   
   MSAIAppClient *_appClient;
+  
+  MSAIContext *_appContext;
 }
 
 #pragma mark - Private Class Methods
@@ -113,14 +104,15 @@ msai_info_t applicationinsights_library_info __attribute__((section("__TEXT,__ms
 #pragma mark - Public Instance Methods (Configuration)
 
 - (void)configureWithIdentifier:(NSString *)appIdentifier {
-  _appIdentifier = [appIdentifier copy];
+  
+  _appContext = [[MSAIContext alloc]initWithInstrumentationKey:appIdentifier isAppStoreEnvironment:_appStoreEnvironment];
   
   [self initializeModules];
 }
 
 - (void)configureWithIdentifier:(NSString *)appIdentifier delegate:(id)delegate {
   _delegate = delegate;
-  _appIdentifier = [appIdentifier copy];
+  _appContext = [[MSAIContext alloc]initWithInstrumentationKey:appIdentifier isAppStoreEnvironment:_appStoreEnvironment];
   
   [self initializeModules];
 }
@@ -257,22 +249,22 @@ msai_info_t applicationinsights_library_info __attribute__((section("__TEXT,__ms
 }
 
 - (void)testIdentifier {
-  if (!_appIdentifier || [self isAppStoreEnvironment]) {
+  if (![_appContext instrumentationKey] || [_appContext isAppStoreEnvironment]) {
     return;
   }
   
   NSDate *now = [NSDate date];
   NSString *timeString = [NSString stringWithFormat:@"%.0f", [now timeIntervalSince1970]];
-  [self pingServerForIntegrationStartWorkflowWithTimeString:timeString appIdentifier:_appIdentifier];
+  [self pingServerForIntegrationStartWorkflowWithTimeString:timeString appIdentifier:[_appContext instrumentationKey]];
 }
 
 
 - (NSString *)version {
-  return [NSString stringWithUTF8String:applicationinsights_library_info.msai_version];
+  return msai_sdkVersion();
 }
 
 - (NSString *)build {
-  return [NSString stringWithUTF8String:applicationinsights_library_info.msai_build];
+  return msai_sdkBuild();
 }
 
 
@@ -376,7 +368,7 @@ msai_info_t applicationinsights_library_info __attribute__((section("__TEXT,__ms
     return;
   }
   
-  _validAppIdentifier = [self checkValidityOfAppIdentifier:_appIdentifier];
+  _validAppIdentifier = [self checkValidityOfAppIdentifier:[_appContext instrumentationKey]];
   
   if (![self isSetUpOnMainThread]) return;
   
@@ -385,20 +377,20 @@ msai_info_t applicationinsights_library_info __attribute__((section("__TEXT,__ms
   if (_validAppIdentifier) {
 #if MSAI_FEATURE_CRASH_REPORTER
     MSAILog(@"INFO: Setup CrashManager");
-    _crashManager = [[MSAICrashManager alloc] initWithAppIdentifier:_appIdentifier isAppStoreEnvironment:_appStoreEnvironment];
+    _crashManager = [[MSAICrashManager alloc] initWithAppContext:_appContext];
     _crashManager.appClient = [self appClient];
     _crashManager.delegate = _delegate;
 #endif /* MSAI_FEATURE_CRASH_REPORTER */
     
 #if MSAI_FEATURE_METRICS
     MSAILog(@"INFO: Setup MetricsManager");
-    _metricsManager = [[MSAIMetricsManager alloc] initWithAppIdentifier:_appIdentifier appClient:_appClient isAppStoreEnvironment:_appStoreEnvironment];
+    _metricsManager = [[MSAIMetricsManager alloc] initWithAppContext:_appContext appClient:_appClient];
 #endif /* MSAI_FEATURE_METRICS */
 
     if (![self isAppStoreEnvironment]) {
       NSString *integrationFlowTime = [self integrationFlowTimeString];
       if (integrationFlowTime && [self integrationFlowStartedWithTimeString:integrationFlowTime]) {
-        [self pingServerForIntegrationStartWorkflowWithTimeString:integrationFlowTime appIdentifier:_appIdentifier];
+        [self pingServerForIntegrationStartWorkflowWithTimeString:integrationFlowTime appIdentifier:[_appContext instrumentationKey]];
       }
     }
     _managersInitialized = YES;

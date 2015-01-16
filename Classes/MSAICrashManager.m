@@ -8,6 +8,7 @@
 #import "AppInsightsPrivate.h"
 #import "MSAIHelper.h"
 #import "MSAIAppClient.h"
+#import "MSAIContextPrivate.h"
 
 #import "MSAIBaseManagerPrivate.h"
 #import "MSAICrashManagerPrivate.h"
@@ -556,7 +557,7 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
 
 
 - (void)generateTestCrash {
-  if (![self isAppStoreEnvironment]) {
+  if (![self.appContext isAppStoreEnvironment]) {
     
     if ([self isDebuggerAttached]) {
       NSLog(@"[AppInsightsSDK] WARNING: The debugger is attached. The following crash cannot be detected by the SDK!");
@@ -882,7 +883,7 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
       // We only check for this if we are not in the App Store environment
       
       BOOL debuggerIsAttached = NO;
-      if (![self isAppStoreEnvironment]) {
+      if (![self.appContext isAppStoreEnvironment]) {
         if ([self isDebuggerAttached]) {
           debuggerIsAttached = YES;
           NSLog(@"[AppInsightsSDK] WARNING: Detecting crashes is NOT enabled due to running the app with a debugger attached.");
@@ -984,7 +985,7 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
   }
   
   NSString *fakeReportAppBundleIdentifier = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleIdentifier"];
-  NSString *fakeReportDeviceModel = [self getDevicePlatform] ?: @"Unknown";
+  NSString *fakeReportDeviceModel = [self.appContext deviceModel] ?: @"Unknown";
   NSString *fakeReportAppUUIDs = [[NSUserDefaults standardUserDefaults] objectForKey:kMSAIAppUUIDs] ?: @"";
   
   NSString *fakeSignalName = kMSAICrashKillSignal;
@@ -1136,7 +1137,7 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
       appBundleIdentifier = report.applicationInfo.applicationIdentifier;
       appBundleVersion = report.applicationInfo.applicationVersion;
       osVersion = report.systemInfo.operatingSystemVersion;
-      deviceModel = [self getDevicePlatform];
+      deviceModel = [self.appContext deviceModel];
       appBinaryUUIDs = [self extractAppUUIDs:report];
       if ([report.applicationInfo.applicationVersion compare:[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"]] == NSOrderedSame) {
         _crashIdenticalCurrentVersion = YES;

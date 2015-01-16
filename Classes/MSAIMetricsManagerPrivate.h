@@ -2,6 +2,8 @@
 
 #if MSAI_FEATURE_METRICS
 
+#import "MSAITelemetryContext.h"
+
 @class MSAIAppClient;
 @class MSAIChannel;
 @class MSAITelemetryData;
@@ -9,7 +11,7 @@
 @interface MSAIMetricsManager () {
 }
 
-- (instancetype)initWithAppIdentifier:(NSString *)appIdentifier appClient:(MSAIAppClient *)appClient isAppStoreEnvironment:(BOOL)appStoreEnvironment;
+- (instancetype)initWithAppContext:(MSAIContext *)appContext appClient:(MSAIAppClient *)appClient;
 
 /**
  *  must be set
@@ -33,6 +35,7 @@
  */
 - (void) cleanupInternalStorage;
 
+- (MSAITelemetryContext *)telemetryContext;
 
 ///-----------------------------------------------------------------------------
 /// @name Send data to channel

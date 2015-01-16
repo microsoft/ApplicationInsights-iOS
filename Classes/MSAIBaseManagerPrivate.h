@@ -1,23 +1,18 @@
-#import <Foundation/Foundation.h>
-#import <UIKit/UIKit.h>
+#import "MSAIContext.h"
 
-@class MSAIBaseManager;
+@interface MSAIBaseManager()
 
-@interface MSAIBaseManager ()
+@property(nonatomic, strong) MSAIContext *appContext;
 
-@property (nonatomic, strong) NSString *appIdentifier;
-
-- (instancetype)initWithAppIdentifier:(NSString *)appIdentifier isAppStoreEnvironment:(BOOL)isAppStoreEnvironment;
+- (instancetype)initWithAppContext:(MSAIContext *)appContext;
 
 - (void)startManager;
 
-/** the value this object was initialized with */
-- (BOOL)isAppStoreEnvironment;
+- (NSString *)executableUUID;
 
-/** Check if the device is running an iOS version previous to iOS 7 */
-- (BOOL)isPreiOS7Environment;
+- (NSString *)encodedAppIdentifier;
 
-/** 
+/**
  * by default, just logs the message
  *
  * can be overriden by subclasses to do their own error handling,
@@ -26,17 +21,6 @@
  * @param error NSError
  */
 - (void)reportError:(NSError *)error;
-
-/** url encoded version of the appIdentifier
- 
- where appIdentifier is either the value this object was initialized with,
- or the main bundles CFBundleIdentifier if appIdentifier ist nil
- */
-- (NSString *)encodedAppIdentifier;
-
-// device / application helpers
-- (NSString *)getDevicePlatform;
-- (NSString *)executableUUID;
 
 // Date helpers
 - (NSDate *)parseRFC3339Date:(NSString *)dateString;
