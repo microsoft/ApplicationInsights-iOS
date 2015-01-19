@@ -33,6 +33,42 @@
   [super tearDown];
 }
 
+- (void)testDevicePlattform {
+  NSString *resultString = msai_devicePlatform();
+  assertThat(resultString, notNilValue());
+}
+
+- (void)testOsVersion {
+  NSString *resultString = msai_osVersion();
+  assertThat(resultString, notNilValue());
+  assertThatFloat([resultString floatValue], greaterThan(@(0.0)));
+}
+
+- (void)testOsName {
+  NSString *resultString = msai_osName();
+  assertThat(resultString, notNilValue());
+  assertThatInteger([resultString length], greaterThan(@(0)));
+}
+
+- (void)testDeviceType {
+  NSString *resultString = msai_deviceType();
+  assertThat(resultString, notNilValue());
+  NSArray *typesArray = @[@"Phone", @"Tablet", @"Unknown"];
+  assertThat(typesArray, hasItem(resultString));
+}
+
+- (void)testSdkVersion {
+  NSString *resultString = msai_sdkVersion();
+  assertThat(resultString, notNilValue());
+  assertThatInteger([resultString length], greaterThan(@(0)));
+}
+
+- (void)testSdkBuild {
+  NSString *resultString = msai_sdkBuild();
+  assertThat(resultString, notNilValue());
+  assertThatInteger([resultString intValue], greaterThan(@(0)));
+}
+
 - (void)testUUIDPreiOS6 {
   NSString *resultString = msai_UUIDPreiOS6();
   assertThat(resultString, notNilValue());

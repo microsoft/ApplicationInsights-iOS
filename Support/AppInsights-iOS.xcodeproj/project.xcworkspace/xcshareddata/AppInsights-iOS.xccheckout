@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>FC3298E4-780D-4BB4-A9B2-06FA6AC4B2AA</string>
+	<key>IDESourceControlProjectName</key>
+	<string>AppInsights-iOS</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>282B3C9687893D4207A7AF9F6F5E9CC1D7CCA8C0</key>
+		<string>https://github.com/Microsoft/AppInsights-iOS-DemoApps.git</string>
+		<key>5B023693EFFEF2F44FB6AB33FD2AAF34F28DA39D</key>
+		<string>https://github.com/Microsoft/AppInsights-iOS.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>Support/AppInsights-iOS.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>282B3C9687893D4207A7AF9F6F5E9CC1D7CCA8C0</key>
+		<string>../../../..</string>
+		<key>5B023693EFFEF2F44FB6AB33FD2AAF34F28DA39D</key>
+		<string>../../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/Microsoft/AppInsights-iOS.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>5B023693EFFEF2F44FB6AB33FD2AAF34F28DA39D</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>282B3C9687893D4207A7AF9F6F5E9CC1D7CCA8C0</string>
+			<key>IDESourceControlWCCName</key>
+			<string></string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>5B023693EFFEF2F44FB6AB33FD2AAF34F28DA39D</string>
+			<key>IDESourceControlWCCName</key>
+			<string>AppInsights-iOS</string>
+		</dict>
+	</array>
+</dict>
+</plist>

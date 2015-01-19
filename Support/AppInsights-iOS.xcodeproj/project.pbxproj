@@ -37,6 +37,7 @@
 		1B53FEC01A6425240082F2E9 /* CrashReporter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B53FEBE1A6425240082F2E9 /* CrashReporter.framework */; };
 		1B62F4D81A692A3200EB5AD0 /* MSAIContext.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B62F4D61A692A3200EB5AD0 /* MSAIContext.h */; };
 		1B62F4D91A692A3200EB5AD0 /* MSAIContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B62F4D71A692A3200EB5AD0 /* MSAIContext.m */; };
+		1B8688D51A6D852E0008CEE9 /* AppInsights-iOS-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1EDA60CF15C2C1450032D10B /* AppInsights-iOS-Info.plist */; };
 		1BBBCF341A6594AE00253031 /* MSAIChannel.h in Headers */ = {isa = PBXBuildFile; fileRef = 1BBBCF2E1A6594AE00253031 /* MSAIChannel.h */; };
 		1BBBCF351A6594AE00253031 /* MSAIChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BBBCF2F1A6594AE00253031 /* MSAIChannel.m */; };
 		1BBBCF361A6594AE00253031 /* MSAITelemetryContext.h in Headers */ = {isa = PBXBuildFile; fileRef = 1BBBCF301A6594AE00253031 /* MSAITelemetryContext.h */; };
@@ -710,6 +711,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1E5A459B16F0DFC200B55C04 /* InfoPlist.strings in Resources */,
+				1B8688D51A6D852E0008CEE9 /* AppInsights-iOS-Info.plist in Resources */,
 				1E70A23417F2F982001BB32D /* live_report_signal.plcrash in Resources */,
 				1E70A23317F2F982001BB32D /* live_report_exception.plcrash in Resources */,
 				1E70A23217F2F982001BB32D /* live_report_empty.plcrash in Resources */,
