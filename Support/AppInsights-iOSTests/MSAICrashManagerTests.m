@@ -12,6 +12,7 @@
 #import "MSAICrashManagerPrivate.h"
 #import "MSAIBaseManager.h"
 #import "MSAIBaseManagerPrivate.h"
+#import "MSAIContextPrivate.h"
 
 #import "MSAITestHelper.h"
 
@@ -31,7 +32,9 @@
   [super setUp];
   
   _startManagerInitialized = NO;
-  _sut = [[MSAICrashManager alloc] initWithAppIdentifier:nil isAppStoreEnvironment:NO];
+  
+  MSAIContext *appContext = [[MSAIContext alloc]initWithInstrumentationKey:nil isAppStoreEnvironment:NO];
+  _sut = [[MSAICrashManager alloc] initWithAppContext:appContext];
 }
 
 - (void)tearDown {
