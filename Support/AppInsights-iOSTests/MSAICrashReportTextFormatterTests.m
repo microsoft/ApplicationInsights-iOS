@@ -32,11 +32,6 @@
   [self testOSXNonAppSpecificImagesForProcessPath:processPath];
   [self testAppBinaryWithImagePath:processPath processPath:processPath];
   
-  // Test with OS X LoginItems app helper path
-  processPath = [appBundlePath stringByAppendingString:@"/Contents/Library/LoginItems/net.hockeyapp.helper.app/Contents/MacOS/Helper"];
-  [self testOSXNonAppSpecificImagesForProcessPath:processPath];
-  [self testAppBinaryWithImagePath:processPath processPath:processPath];
-  
   // Test with OS X app in Resources folder
   processPath = @"/Applications/MyTestApp.App/Contents/Resources/Helper";
   [self testOSXNonAppSpecificImagesForProcessPath:processPath];
