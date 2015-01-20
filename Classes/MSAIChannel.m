@@ -27,7 +27,7 @@
   [data setBaseType:[dataItem dataTypeName]];
   
   MSAIEnvelope *envelope = [MSAIEnvelope new];
-  [envelope setTime:self.dateString];
+  [envelope setTime:[self dateStringForDate:[NSDate date]]];
   [envelope setIKey:[_telemetryContext instrumentationKey]];
   [envelope setData:data];
   [envelope setName:[dataItem envelopeTypeName]];
@@ -37,7 +37,7 @@
   [self enqueueRequest:request];
 }
 
-- (NSURLRequest *)requestForDataItem:(MSAIEnvelope *)dataItem {
+- (NSURLRequest *)requestForDataItem:(MSAIEnvelope *)dataItem{
   
   NSMutableURLRequest *request = [_appClient requestWithMethod:@"POST"
                                                           path:[_telemetryContext endpointPath]
@@ -50,7 +50,7 @@
   [request setCachePolicy: NSURLRequestReloadIgnoringLocalCacheData];
   NSString *contentType = @"application/json";
   [request setValue:contentType forHTTPHeaderField:@"Content-type"];
-  
+
   return request;
 }
 
@@ -77,10 +77,10 @@
   [_appClient enqeueHTTPOperation:operation];
 }
 
-- (NSString *)dateString{
+- (NSString *)dateStringForDate:(NSDate *)date{
   NSDateFormatter *dateFormatter = [NSDateFormatter new];
   dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
-  NSString *dateString = [dateFormatter stringFromDate:[NSDate date]];
+  NSString *dateString = [dateFormatter stringFromDate:date];
   return dateString;
 }
 
