@@ -4,6 +4,7 @@
 
 #import "MSAITelemetryContext.h"
 
+@class MSAIContext;
 @class MSAIAppClient;
 @class MSAIChannel;
 @class MSAITelemetryData;

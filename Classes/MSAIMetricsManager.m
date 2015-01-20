@@ -10,6 +10,7 @@
 #import "MSAIMetricsManagerPrivate.h"
 #import "MSAIMetricsSession.h"
 #import "MSAIChannel.h"
+#import "MSAIChannelPrivate.h"
 #import "MSAITelemetryContext.h"
 #import "MSAIContext.h"
 #import "MSAIContextPrivate.h"
@@ -264,7 +265,6 @@ NSString *const kMSAIMetricsLastAppVersion = @"MSAIMetricsLastAppVersion";
 - (MSAITelemetryContext *)telemetryContext{
   
   MSAIDevice *deviceContext = [MSAIDevice new];
-  
   [deviceContext setModel: [self.appContext deviceModel]];
   [deviceContext setType:[self.appContext deviceType]];
   [deviceContext setOsVersion:[self.appContext osVersion]];
@@ -277,16 +277,21 @@ NSString *const kMSAIMetricsLastAppVersion = @"MSAIMetricsLastAppVersion";
   MSAIApplication *applicationContext = [MSAIApplication new];
   [applicationContext setVersion:[self.appContext appVersion]];
 
+  MSAIOperation *operationContext = [MSAIOperation new];
+  MSAIUser *userContext = [MSAIUser new];
+  MSAILocation *locationContext = [MSAILocation new];
+  MSAISession *sessionContext = [MSAISession new];
+  
   //TODO: Add additional context data
   MSAITelemetryContext *telemetryContext = [[MSAITelemetryContext alloc]initWithInstrumentationKey:[self.appContext instrumentationKey]
                                                                              endpointPath:MSAI_TELEMETRY_PATH
                                                                        applicationContext:applicationContext
                                                                             deviceContext:deviceContext
-                                                                          locationContext:nil
-                                                                           sessionContext:nil
-                                                                              userContext:nil
+                                                                          locationContext:locationContext
+                                                                           sessionContext:sessionContext
+                                                                              userContext:userContext
                                                                           internalContext:internalContext
-                                                                         operationContext:nil];
+                                                                         operationContext:operationContext];
   return telemetryContext;
 }
 
@@ -310,6 +315,7 @@ NSString *const kMSAIMetricsLastAppVersion = @"MSAIMetricsLastAppVersion";
 }
 
 -(void)trackEventWithName:(NSString *)eventName properties:(NSDictionary *)properties mesurements:(NSDictionary *)measurements{
+  //TODO: Add custom initializer to MSAIEventData
   MSAIEventData *eventData = [MSAIEventData new];
   [eventData setName:eventName];
   [eventData setProperties:properties];
@@ -323,6 +329,7 @@ NSString *const kMSAIMetricsLastAppVersion = @"MSAIMetricsLastAppVersion";
 }
 
 -(void)trackTraceWithMessage:(NSString *)message properties:(NSDictionary *)properties{
+  //TODO: Add custom initializer to MSAIMessageData
   MSAIMessageData *messageData = [MSAIMessageData new];
   [messageData setMessage:message];
   [messageData setProperties:properties];
@@ -335,6 +342,8 @@ NSString *const kMSAIMetricsLastAppVersion = @"MSAIMetricsLastAppVersion";
 }
 
 -(void)trackMetricWithName:(NSString *)metricName value:(double)value properties:(NSDictionary *)properties{
+  
+  //TODO: Add custom initializer to MSAIMetricData
   MSAIMetricData *metricData = [MSAIMetricData new];
   
   MSAIDataPoint *data = [MSAIDataPoint new];
@@ -349,6 +358,8 @@ NSString *const kMSAIMetricsLastAppVersion = @"MSAIMetricsLastAppVersion";
   
   [self trackDataItem:metricData];
 }
+
+
 
 /**
  A new session started
