@@ -93,16 +93,16 @@
 #pragma mark - Helper
 
 - (void)testUserIDForCrashReport {
-  MSAITelemetryManager *hm = [MSAITelemetryManager sharedMSAIManager];
+  MSAITelemetryManager *tm = [MSAITelemetryManager sharedMSAIManager];
   id delegateMock = mockProtocol(@protocol(MSAITelemetryManagerDelegate));
-  hm.delegate = delegateMock;
+  tm.delegate = delegateMock;
   _sut.delegate = delegateMock;
   
   NSString *result = [_sut userIDForCrashReport];
   
   assertThat(result, notNilValue());
-  
-  [verifyCount(delegateMock, times(1)) userIDForTelemetryManager:hm componentManager:_sut];
+
+  [verifyCount(delegateMock, times(1)) userIDForTelemetryManager:tm componentManager:_sut];
 }
 
 - (void)testUserNameForCrashReport {
