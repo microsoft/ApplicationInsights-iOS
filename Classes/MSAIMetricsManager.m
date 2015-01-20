@@ -278,10 +278,13 @@ NSString *const kMSAIMetricsLastAppVersion = @"MSAIMetricsLastAppVersion";
   MSAIApplication *applicationContext = [MSAIApplication new];
   [applicationContext setVersion:[self.appContext appVersion]];
 
+  MSAISession *sessionContext = [MSAISession new];
+  [sessionContext setSessionId:[self.appContext deviceType]];
+  
   MSAIOperation *operationContext = [MSAIOperation new];
   MSAIUser *userContext = [MSAIUser new];
   MSAILocation *locationContext = [MSAILocation new];
-  MSAISession *sessionContext = [MSAISession new];
+  
   
   //TODO: Add additional context data
   MSAITelemetryContext *telemetryContext = [[MSAITelemetryContext alloc]initWithInstrumentationKey:[self.appContext instrumentationKey]
