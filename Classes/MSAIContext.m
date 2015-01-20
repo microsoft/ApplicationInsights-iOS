@@ -17,8 +17,6 @@
   if ((self = [self init])) {
     _instrumentationKey = instrumentationKey;
     _isAppStoreEnvironment = isAppStoreEnvironment;
-    _osVersion = [[UIDevice currentDevice] systemVersion];
-    _osName = [[UIDevice currentDevice] systemName];
     _deviceModel = msai_devicePlatform();
     _deviceType = msai_deviceType();
     _osName = msai_osName();
