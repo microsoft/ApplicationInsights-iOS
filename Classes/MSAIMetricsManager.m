@@ -270,6 +270,7 @@ NSString *const kMSAIMetricsLastAppVersion = @"MSAIMetricsLastAppVersion";
   [deviceContext setOsVersion:[self.appContext osVersion]];
   [deviceContext setOs:[self.appContext osName]];
   [deviceContext setDeviceId:msai_appAnonID()];
+  [deviceContext setOemName:@"Apple"];
   
   MSAIInternal *internalContext = [MSAIInternal new];
   [internalContext setSdkVersion: msai_sdkVersion()];
