@@ -97,7 +97,7 @@ NSString *msai_mainBundleIdentifier(void) {
   return [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleIdentifier"];
 }
 
-NSString *msai_encodeAppIdentifier(NSString *inputString) {
+NSString *msai_encodeInstrumentationKey(NSString *inputString) {
   return (inputString ? msai_URLEncodedString(inputString) : msai_URLEncodedString(msai_mainBundleIdentifier()));
 }
 

@@ -79,8 +79,8 @@
   return @"";
 }
 
-- (NSString *)encodedAppIdentifier {
-  return msai_encodeAppIdentifier([_appContext instrumentationKey]);
+- (NSString *)encodedInstrumentationKey {
+  return msai_encodeInstrumentationKey([_appContext instrumentationKey]);
 }
 
 

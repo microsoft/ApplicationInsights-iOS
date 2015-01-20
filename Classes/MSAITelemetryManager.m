@@ -23,7 +23,7 @@
 
 @implementation MSAITelemetryManager {
   
-  BOOL _validAppIdentifier;
+  BOOL _validInstrumentationKey;
   
   BOOL _startManagerIsInvoked;
   
@@ -38,13 +38,13 @@
 
 #pragma mark - Private Class Methods
 
-- (BOOL)checkValidityOfAppIdentifier:(NSString *)identifier {
+- (BOOL)checkValidityOfInstrumentationKey:(NSString *)instrumentationKey {
   BOOL result = NO;
   
-  if (identifier) {
+  if (instrumentationKey) {
     NSCharacterSet *hexSet = [NSCharacterSet characterSetWithCharactersInString:@"0123456789abcdef-"];
-    NSCharacterSet *inStringSet = [NSCharacterSet characterSetWithCharactersInString:identifier];
-    result = ([identifier length] == 36) && ([hexSet isSupersetOfSet:inStringSet]);
+    NSCharacterSet *inStringSet = [NSCharacterSet characterSetWithCharactersInString:instrumentationKey];
+    result = ([instrumentationKey length] == 36) && ([hexSet isSupersetOfSet:inStringSet]);
   }
   
   return result;
@@ -103,22 +103,22 @@
 
 #pragma mark - Public Instance Methods (Configuration)
 
-- (void)configureWithIdentifier:(NSString *)appIdentifier {
+- (void)configureWithInstrumentationKey:(NSString *)instrumentationKey {
   
-  _appContext = [[MSAIContext alloc]initWithInstrumentationKey:appIdentifier isAppStoreEnvironment:_appStoreEnvironment];
+  _appContext = [[MSAIContext alloc] initWithInstrumentationKey:instrumentationKey isAppStoreEnvironment:_appStoreEnvironment];
   
   [self initializeModules];
 }
 
-- (void)configureWithIdentifier:(NSString *)appIdentifier delegate:(id)delegate {
+- (void)configureWithInstrumentationKey:(NSString *)instrumentationKey delegate:(id <MSAITelemetryManagerDelegate>)delegate {
   _delegate = delegate;
-  _appContext = [[MSAIContext alloc]initWithInstrumentationKey:appIdentifier isAppStoreEnvironment:_appStoreEnvironment];
+  _appContext = [[MSAIContext alloc] initWithInstrumentationKey:instrumentationKey isAppStoreEnvironment:_appStoreEnvironment];
   
   [self initializeModules];
 }
 
 - (void)startManager {
-  if (!_validAppIdentifier) return;
+  if (!_validInstrumentationKey) return;
   if (_startManagerIsInvoked) {
     NSLog(@"[AppInsightsSDK] Warning: startManager should only be invoked once! This call is ignored.");
     return;
@@ -255,7 +255,7 @@
   
   NSDate *now = [NSDate date];
   NSString *timeString = [NSString stringWithFormat:@"%.0f", [now timeIntervalSince1970]];
-  [self pingServerForIntegrationStartWorkflowWithTimeString:timeString appIdentifier:[_appContext instrumentationKey]];
+  [self pingServerForIntegrationStartWorkflowWithTimeString:timeString instrumentationKey:[_appContext instrumentationKey]];
 }
 
 
@@ -304,12 +304,12 @@
   return NO;
 }
 
-- (void)pingServerForIntegrationStartWorkflowWithTimeString:(NSString *)timeString appIdentifier:(NSString *)appIdentifier {
-  if (!appIdentifier || [self isAppStoreEnvironment]) {
+- (void)pingServerForIntegrationStartWorkflowWithTimeString:(NSString *)timeString instrumentationKey:(NSString *)instrumentationKey {
+  if (!instrumentationKey || [self isAppStoreEnvironment]) {
     return;
   }
   
-  NSString *integrationPath = [NSString stringWithFormat:@"api/3/apps/%@/integration", msai_encodeAppIdentifier(appIdentifier)];
+  NSString *integrationPath = [NSString stringWithFormat:@"api/3/apps/%@/integration", msai_encodeInstrumentationKey(instrumentationKey)];
   
   MSAILog(@"INFO: Sending integration workflow ping to %@", integrationPath);
   
@@ -338,7 +338,7 @@
 }
 
 - (void)validateStartManagerIsInvoked {
-  if (_validAppIdentifier && !_appStoreEnvironment) {
+  if (_validInstrumentationKey && !_appStoreEnvironment) {
     if (!_startManagerIsInvoked) {
       NSLog(@"[AppInsightsSDK] ERROR: You did not call [[MSAITelemetryManager sharedManager] startManager] to startup the AppInsightsSDK! Please do so after setting up all properties. The SDK is NOT running.");
     }
@@ -368,13 +368,13 @@
     return;
   }
   
-  _validAppIdentifier = [self checkValidityOfAppIdentifier:[_appContext instrumentationKey]];
+  _validInstrumentationKey = [self checkValidityOfInstrumentationKey:[_appContext instrumentationKey]];
   
   if (![self isSetUpOnMainThread]) return;
   
   _startManagerIsInvoked = NO;
   
-  if (_validAppIdentifier) {
+  if (_validInstrumentationKey) {
 #if MSAI_FEATURE_CRASH_REPORTER
     MSAILog(@"INFO: Setup CrashManager");
     _crashManager = [[MSAICrashManager alloc] initWithAppContext:_appContext];
@@ -390,7 +390,7 @@
     if (![self isAppStoreEnvironment]) {
       NSString *integrationFlowTime = [self integrationFlowTimeString];
       if (integrationFlowTime && [self integrationFlowStartedWithTimeString:integrationFlowTime]) {
-        [self pingServerForIntegrationStartWorkflowWithTimeString:integrationFlowTime appIdentifier:[_appContext instrumentationKey]];
+        [self pingServerForIntegrationStartWorkflowWithTimeString:integrationFlowTime instrumentationKey:[_appContext instrumentationKey]];
       }
     }
     _managersInitialized = YES;

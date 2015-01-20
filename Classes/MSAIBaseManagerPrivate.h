@@ -10,7 +10,7 @@
 
 - (NSString *)executableUUID;
 
-- (NSString *)encodedAppIdentifier;
+- (NSString *)encodedInstrumentationKey;
 
 /**
  * by default, just logs the message

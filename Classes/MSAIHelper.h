@@ -19,7 +19,7 @@ NSString *msai_sdkVersion(void);
 NSString *msai_sdkBuild(void);
 NSString *msai_dec(void);
 NSString *msai_mainBundleIdentifier(void);
-NSString *msai_encodeAppIdentifier(NSString *inputString);
+NSString *msai_encodeInstrumentationKey(NSString *inputString);
 NSString *msai_UUIDPreiOS6(void);
 NSString *msai_UUID(void);
 NSString *msai_appAnonID(void);
