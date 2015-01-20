@@ -27,7 +27,7 @@
  Example:
  
     [[MSAITelemetryManager sharedManager]
-      configureWithIdentifier:@"<AppIdentifierFromAppInsights>"
+      configureWithInstrumentationKey:@"<InstrumentationKeyFromAppInsights>"
                      delegate:nil];
     [[MSAITelemetryManager sharedManager] startManager];
  
@@ -59,14 +59,14 @@
  Initialize the manager with a AppInsights app identifier.
  
     [[MSAITelemetryManager sharedMSAIManager]
-      configureWithIdentifier:@"<AppIdentifierFromApplicationInsights>"];
+      configureWithInstrumentationKey:@"<instrumentationKeyFromApplicationInsights>"];
  
- @see configureWithIdentifier:delegate:
+ @see configureWithInstrumentationKey:delegate:
  @see configureWithBetaIdentifier:liveIdentifier:delegate:
  @see startManager
- @param appIdentifier The app identifier that should be used.
+ @param instrumentationKey The app identifier that should be used.
  */
-- (void)configureWithIdentifier:(NSString *)appIdentifier;
+- (void)configureWithInstrumentationKey:(NSString *)instrumentationKey;
 
 
 /**
@@ -77,20 +77,20 @@
  `MSAIUpdateManagerDelegate`.
  
     [[MSAITelemetryManager sharedManager]
-      configureWithIdentifier:@"<AppIdentifierFromAppInsights>"
+      configureWithIdentifier:@"<InstrumentationKeyFromAppInsights>"
                      delegate:nil];
 
- @see configureWithIdentifier:
+ @see configureWithInstrumentationKey:
  @see configureWithBetaIdentifier:liveIdentifier:delegate:
  @see startManager
  @see MSAITelemetryManagerDelegate
  @see MSAICrashManagerDelegate
  @see MSAIUpdateManagerDelegate
  @see MSAIFeedbackManagerDelegate
- @param appIdentifier The app identifier that should be used.
+ @param instrumentationKey The app identifier that should be used.
  @param delegate `nil` or the class implementing the option protocols
  */
-- (void)configureWithIdentifier:(NSString *)appIdentifier delegate:(id<MSAITelemetryManagerDelegate>)delegate;
+- (void)configureWithInstrumentationKey:(NSString *)instrumentationKey delegate:(id<MSAITelemetryManagerDelegate>)delegate;
 
 
 /**
@@ -98,7 +98,7 @@
  
  Call this after configuring the manager and setting up all modules.
  
- @see configureWithIdentifier:delegate:
+ @see configureWithInstrumentationKey:delegate:
  @see configureWithBetaIdentifier:liveIdentifier:delegate:
  */
 - (void)startManager;
@@ -145,7 +145,7 @@
 
  Returns the MSAICrashManager instance initialized by MSAITelemetryManager
  
- @see configureWithIdentifier:delegate:
+ @see configureWithInstrumentationKey:delegate:
  @see startManager
  @see disableCrashManager
  */
@@ -174,7 +174,7 @@
  
  Returns the MSAIMetricsManager instance initialized by MSAITelemetryManager
  
- @see configureWithIdentifier:delegate:
+ @see configureWithInstrumentationKey:delegate:
  @see startManager
  @see disableMetricsManager
  */

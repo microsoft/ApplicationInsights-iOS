@@ -551,7 +551,7 @@ NSString *const kMSAIMetricsLastAppVersion = @"MSAIMetricsLastAppVersion";
 //  __weak typeof(self) weakSelf = self;
 //  MSAITelemetryClientConfig *config = [[MSAITelemetryClientConfig alloc] initWithHost:kMSAISDKMetricsHostname port:kMSAISDKMetricsPort];
 //  [MSAITelemetryClient authenticateWithConfig:config
-//                                       appID:self.appIdentifier
+//                                       appID:self.instrumentationKey
 //                                     timeout:5
 //                                handlerQueue:dispatch_get_main_queue()
 //                              successHandler:^(MSAITelemetryClient *client) {

@@ -1231,7 +1231,7 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
 #pragma mark - Networking
 
 - (NSURLRequest *)requestWithXML:(NSString*)xml {
-  NSString *postCrashPath = [NSString stringWithFormat:@"api/2/apps/%@/crashes", self.encodedAppIdentifier];
+  NSString *postCrashPath = [NSString stringWithFormat:@"api/2/apps/%@/crashes", self.encodedInstrumentationKey];
   
   NSMutableURLRequest *request = [self.appClient requestWithMethod:@"POST"
                                                               path:postCrashPath
