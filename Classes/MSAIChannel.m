@@ -1,4 +1,5 @@
 #import "MSAIChannel.h"
+#import "MSAIChannelPrivate.h"
 #import "MSAITelemetryContext.h"
 #import "MSAIEnvelope.h"
 #import "MSAIHTTPOperation.h"
@@ -6,10 +7,7 @@
 #import "AppInsightsPrivate.h"
 #import "MSAIData.h"
 
-@implementation MSAIChannel{
-  MSAITelemetryContext *_telemetryContext;
-  MSAIAppClient *_appClient;
-}
+@implementation MSAIChannel
 
 - (instancetype)initWithAppClient:(MSAIAppClient *) appClient telemetryContext:(MSAITelemetryContext *)telemetryContext {
   
