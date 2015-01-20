@@ -112,7 +112,6 @@
 		1E59559B15B6FDA500A03429 /* AppInsights.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E71509A15B5C76F004E88FF /* AppInsights.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1E5955FD15B7877B00A03429 /* MSAITelemetryManagerDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E5955FA15B7877A00A03429 /* MSAITelemetryManagerDelegate.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1E5A459516F0DFC200B55C04 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E400561D148D79B500EB22B9 /* Foundation.framework */; };
-		1E5A459B16F0DFC200B55C04 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1E5A459916F0DFC200B55C04 /* InfoPlist.strings */; };
 		1E67961719816B9200B6DA20 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E67961619816B9200B6DA20 /* CFNetwork.framework */; };
 		1E67961819816B9A00B6DA20 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E67961619816B9200B6DA20 /* CFNetwork.framework */; };
 		1E70A23217F2F982001BB32D /* live_report_empty.plcrash in Resources */ = {isa = PBXBuildFile; fileRef = 1E70A22F17F2F982001BB32D /* live_report_empty.plcrash */; };
@@ -244,7 +243,6 @@
 		1E5955FA15B7877A00A03429 /* MSAITelemetryManagerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAITelemetryManagerDelegate.h; sourceTree = "<group>"; };
 		1E5A459016F0DFC200B55C04 /* AppInsights-iOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "AppInsights-iOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1E5A459816F0DFC200B55C04 /* AppInsights-iOSTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "AppInsights-iOSTests-Info.plist"; sourceTree = "<group>"; };
-		1E5A459A16F0DFC200B55C04 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		1E5A459F16F0DFC200B55C04 /* AppInsights-iOSTests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AppInsights-iOSTests-Prefix.pch"; sourceTree = "<group>"; };
 		1E66CA9115D4100500F35BED /* buildnumber.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = buildnumber.xcconfig; sourceTree = "<group>"; };
 		1E67961619816B9200B6DA20 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
@@ -414,7 +412,6 @@
 				1E7A45FA16F54FB5005B08F1 /* OCHamcrestIOS.framework */,
 				1E7A45FB16F54FB5005B08F1 /* OCMockitoIOS.framework */,
 				1E5A459816F0DFC200B55C04 /* AppInsights-iOSTests-Info.plist */,
-				1E5A459916F0DFC200B55C04 /* InfoPlist.strings */,
 				1E5A459F16F0DFC200B55C04 /* AppInsights-iOSTests-Prefix.pch */,
 				1EA1170516F53B91001C015C /* MSAITestHelper.h */,
 				1EA1170616F53B91001C015C /* MSAITestHelper.m */,
@@ -716,7 +713,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1E5A459B16F0DFC200B55C04 /* InfoPlist.strings in Resources */,
 				1B8688D51A6D852E0008CEE9 /* AppInsights-iOS-Info.plist in Resources */,
 				1E70A23417F2F982001BB32D /* live_report_signal.plcrash in Resources */,
 				1E70A23317F2F982001BB32D /* live_report_exception.plcrash in Resources */,
@@ -846,17 +842,6 @@
 			targetProxy = 1EA116FE16F4D302001C015C /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
-
-/* Begin PBXVariantGroup section */
-		1E5A459916F0DFC200B55C04 /* InfoPlist.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				1E5A459A16F0DFC200B55C04 /* en */,
-			);
-			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		1E4F61EB1621AD970033EFC5 /* Debug */ = {

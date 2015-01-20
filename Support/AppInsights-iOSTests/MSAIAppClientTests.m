@@ -29,7 +29,7 @@
 - (void)setUp {
   [super setUp];
   
-  _sut = [[MSAIAppClient alloc] initWithBaseURL:[NSURL URLWithString:@"http://bitbaseurl.com"]];
+  _sut = [[MSAIAppClient alloc] initWithBaseURL:[NSURL URLWithString:@"http://msaibaseurl.com"]];
 }
 
 - (void)tearDown {
