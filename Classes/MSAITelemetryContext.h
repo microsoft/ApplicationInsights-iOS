@@ -54,16 +54,6 @@
  */
 @property (nonatomic, strong)MSAIOperation *operation;
 
-
-/**
- *  Initialize the client context object.
- *
- *  @param instrumentationKey  the instrumentation key of the app.
- *  @param endpointPath        the path to the telemetry endpoint.
- *
- *  @return an instance of the client context.
- */
-
 /**
  *  Initializes a telemetry context.
  *
