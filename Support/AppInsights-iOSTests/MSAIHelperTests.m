@@ -38,6 +38,11 @@
   assertThat(resultString, notNilValue());
 }
 
+- (void)testDeviceModel {
+  NSString *resultString = msai_devicePlatform();
+  assertThat(resultString, notNilValue());
+}
+
 - (void)testOsVersion {
   NSString *resultString = msai_osVersion();
   assertThat(resultString, notNilValue());
