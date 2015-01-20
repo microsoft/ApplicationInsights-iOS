@@ -1,40 +1,12 @@
 /*
- * Author: Andreas Linde <mail@andreaslinde.de>
- *
- * Copyright (c) 2013-2014 HockeyApp, Bit Stadium GmbH.
- * All rights reserved.
- *
- * Permission is hereby granted, free of charge, to any person
- * obtaining a copy of this software and associated documentation
- * files (the "Software"), to deal in the Software without
- * restriction, including without limitation the rights to use,
- * copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the
- * Software is furnished to do so, subject to the following
- * conditions:
- *
- * The above copyright notice and this permission notice shall be
- * included in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
- * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
- * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
- * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
- * OTHER DEALINGS IN THE SOFTWARE.
- */
-
-/*
  * This file is only used by the binary framework target when building
  * and creating the crash reporting only framework
  *
  * Attention: Do not include this into your projects yourself!
  */
  
-#ifndef HockeySDK_HockeySDKFeatureConfig_h
-#define HockeySDK_HockeySDKFeatureConfig_h
+#ifndef AppInsights_AppInsightsFeatureConfig_h
+#define APPINSIGHTS_APPINSIGHTSFeatureConfig_h
 
 
 /**
@@ -42,9 +14,9 @@
  *
  * _Default_: Enabled
  */
-#ifndef HOCKEYSDK_FEATURE_CRASH_REPORTER
-#    define HOCKEYSDK_FEATURE_CRASH_REPORTER 1
-#endif /* HOCKEYSDK_FEATURE_CRASH_REPORTER */
+#ifndef APPINSIGHTS_FEATURE_CRASH_REPORTER
+#    define APPINSIGHTS_FEATURE_CRASH_REPORTER 1
+#endif /* APPINSIGHTS_FEATURE_CRASH_REPORTER */
 
 
 /**
@@ -52,9 +24,9 @@
  *
  * _Default_: Enabled
  */
-#ifndef HOCKEYSDK_FEATURE_FEEDBACK
-#    define HOCKEYSDK_FEATURE_FEEDBACK 0
-#endif /* HOCKEYSDK_FEATURE_FEEDBACK */
+#ifndef APPINSIGHTS_FEATURE_FEEDBACK
+#    define APPINSIGHTS_FEATURE_FEEDBACK 0
+#endif /* APPINSIGHTS_FEATURE_FEEDBACK */
 
 
 /**
@@ -62,9 +34,9 @@
  *
  * _Default_: Enabled
  */
-#ifndef HOCKEYSDK_FEATURE_STORE_UPDATES
-#    define HOCKEYSDK_FEATURE_STORE_UPDATES 0
-#endif /* HOCKEYSDK_FEATURE_STORE_UPDATES */
+#ifndef APPINSIGHTS_FEATURE_STORE_UPDATES
+#    define APPINSIGHTS_FEATURE_STORE_UPDATES 0
+#endif /* APPINSIGHTS_FEATURE_STORE_UPDATES */
 
 
 /**
@@ -72,9 +44,9 @@
  *
  * _Default_: Enabled
  */
-#ifndef HOCKEYSDK_FEATURE_AUTHENTICATOR
-#    define HOCKEYSDK_FEATURE_AUTHENTICATOR 0
-#endif /* HOCKEYSDK_FEATURE_AUTHENTICATOR */
+#ifndef APPINSIGHTS_FEATURE_AUTHENTICATOR
+#    define APPINSIGHTS_FEATURE_AUTHENTICATOR 0
+#endif /* APPINSIGHTS_FEATURE_AUTHENTICATOR */
 
 
 /**
@@ -82,9 +54,9 @@
  *
  * _Default_: Enabled
  */
-#ifndef HOCKEYSDK_FEATURE_UPDATES
-#    define HOCKEYSDK_FEATURE_UPDATES 0
-#endif /* HOCKEYSDK_FEATURE_UPDATES */
+#ifndef APPINSIGHTS_FEATURE_UPDATES
+#    define APPINSIGHTS_FEATURE_UPDATES 0
+#endif /* APPINSIGHTS_FEATURE_UPDATES */
 
 
-#endif /* HockeySDK_HockeySDKFeatureConfig_h */
+#endif /* AppInsights_AppInsightsFeatureConfig_h */
