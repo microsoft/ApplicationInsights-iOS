@@ -1,6 +1,11 @@
 @class MSAIEnvelope;
+@class MSAITelemetryContext;
 
 @interface MSAISender ()
+
+@property(nonatomic, strong)NSTimer *timer;
+
+@property(nonatomic, strong)MSAIAppClient *appClient;
 
 /**
  *  An array for collecting data, which should be sent to the telemetry server.
@@ -33,9 +38,9 @@
 - (void)configureWithAppClient:(MSAIAppClient *)appClient endpointPath:(NSString *)endpointPath;
 
 /**
- *  <#Description#>
+ *  Add metrics data to sender queue.
  *
- *  @param dataDict <#dataDict description#>
+ *  @param dataDict data which should be sent
  */
 - (void)enqueueDataDict:(NSDictionary *)dataDict;
 
@@ -43,6 +48,13 @@
  *  Sends all enqueued events.
  */
 - (void)flushSenderQueue;
+
+/**
+ *  Stops the timer if yurrently running and restarts it if needed.
+ *
+ *  @param restart if set to YES the timer will be scheduled again
+ */
+- (void)invalidateTimerAndRestart:(BOOL)restart;
 
 /**
  *  Returnes a request for sending data to the telemetry sender.

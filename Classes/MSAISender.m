@@ -3,12 +3,10 @@
 #import "MSAISenderPrivate.h"
 #import "MSAIEnvelope.h"
 
-#define defaultMaxBatchCount  10
+#define defaultMaxBatchCount  100
+#define defaultBatchInterval  15
 
-@implementation MSAISender{
-  MSAIAppClient *_appClient;
-  NSString *_endpointUrl;
-}
+@implementation MSAISender
 
 + (instancetype)sharedSender{
   
@@ -39,9 +37,31 @@
       [_dataItemQueue addObject:dataDict];
       
       if([_dataItemQueue count] >= defaultMaxBatchCount){
+        dispatch_async(dispatch_get_main_queue(), ^{
+          [self invalidateTimerAndRestart:YES];
+        });
         [self flushSenderQueue];
+      }else if([_dataItemQueue count] == 1){
+        dispatch_async(dispatch_get_main_queue(), ^{
+          [self invalidateTimerAndRestart:YES];
+        });
       }
     });
+  }
+  
+}
+
+- (void)invalidateTimerAndRestart:(BOOL)restart{
+  if(_timer){
+    [_timer invalidate];
+    _timer = nil;
+  }
+  
+  if(restart){
+    _timer = [NSTimer scheduledTimerWithTimeInterval:defaultBatchInterval
+                                              target: self
+                                            selector:@selector(flushSenderQueue)
+                                            userInfo: nil repeats:NO];
   }
 }
 
