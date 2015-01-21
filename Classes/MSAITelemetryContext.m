@@ -2,8 +2,8 @@
 #import "MSAIHelper.h"
 
 
-static NSInteger defaultSessionRenewalMs = 30 * 60 * 1000; // 30 minutes
-static NSInteger defaultSessionExpirationMs = 24 * 60 * 60 * 1000; // 24 hours
+#define defaultSessionRenewalMs     30 * 60 * 1000
+#define defaultSessionExpirationMs  24 * 60 * 60 * 1000
 
 NSString *const kMSAITelemetrySessionId = @"MSAITelemetrySessionId";
 NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
