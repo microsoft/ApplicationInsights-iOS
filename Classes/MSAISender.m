@@ -33,17 +33,20 @@
 - (void)enqueueDataDict:(NSDictionary *)dataDict{
   
   if (dataDict) {
+    __weak typeof(self) weakSelf = self;
     dispatch_async(self.dataItemsOperations, ^{
-      [_dataItemQueue addObject:dataDict];
+      typeof(self) strongSelf = weakSelf;
       
-      if([_dataItemQueue count] >= defaultMaxBatchCount){
+      [strongSelf->_dataItemQueue addObject:dataDict];
+      
+      if([strongSelf->_dataItemQueue count] >= defaultMaxBatchCount){
         dispatch_async(dispatch_get_main_queue(), ^{
-          [self invalidateTimerAndRestart:YES];
+          [strongSelf invalidateTimerAndRestart:YES];
         });
-        [self flushSenderQueue];
-      }else if([_dataItemQueue count] == 1){
+        [strongSelf flushSenderQueue];
+      }else if([strongSelf->_dataItemQueue count] == 1){
         dispatch_async(dispatch_get_main_queue(), ^{
-          [self invalidateTimerAndRestart:YES];
+          [strongSelf invalidateTimerAndRestart:YES];
         });
       }
     });
@@ -67,13 +70,15 @@
 
 - (void)flushSenderQueue{
   
+  __weak typeof(self) weakSelf = self;
   dispatch_async(self.dataItemsOperations, ^{
+    typeof(self) strongSelf = weakSelf;
     
     NSError *error = nil;
-    NSData *json = [NSJSONSerialization dataWithJSONObject:_dataItemQueue options:NSJSONWritingPrettyPrinted error:&error];
-    NSURLRequest *request = [self requestForData:json];
-    [self enqueueRequest:request];
-    [_dataItemQueue removeAllObjects];
+    NSData *json = [NSJSONSerialization dataWithJSONObject:strongSelf->_dataItemQueue options:NSJSONWritingPrettyPrinted error:&error];
+    NSURLRequest *request = [strongSelf requestForData:json];
+    [strongSelf enqueueRequest:request];
+    [strongSelf->_dataItemQueue removeAllObjects];
   });
 }
 
