@@ -1,7 +1,6 @@
 #import <Foundation/Foundation.h>
 
 @class MSAIEnvelope;
-@class MSAIAppClient;
 @class MSAITelemetryContext;
 @class MSAIAppClient;
 @class MSAITelemetryContext;
@@ -9,6 +8,10 @@
 @class MSAISender;
 
 @interface MSAIChannel ()
+
+@property(nonatomic, strong)MSAITelemetryContext *telemetryContext;
+
+@property(nonatomic, strong)MSAISender *sender;
 
 /**
  *  Initializes the telemetry channel.

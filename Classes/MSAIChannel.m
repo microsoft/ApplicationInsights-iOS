@@ -9,10 +9,7 @@
 #import "MSAISender.h"
 #import "MSAISenderPrivate.h"
 
-@implementation MSAIChannel{
-  MSAISender *_sender;
-  MSAITelemetryContext *_telemetryContext;
-}
+@implementation MSAIChannel
 
 - (instancetype)initWithAppClient:(MSAIAppClient *) appClient telemetryContext:(MSAITelemetryContext *)telemetryContext {
   

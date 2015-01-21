@@ -36,7 +36,6 @@
 - (void)testThatItInstantiates {
   assertThat(_sut, notNilValue());
   assertThat([_sut telemetryContext], notNilValue());
-  assertThat([_sut appClient], notNilValue());
 }
 
 #pragma mark - Helper
@@ -49,15 +48,13 @@
   assertThat(resultString, equalTo(expected));
 }
 
-#pragma mark - Helper
-
-- (void)testRequestForDataItem {
-  MSAIEnvelope *testItem = [MSAIEnvelope new];
-  NSData *expectedBodyData = [[testItem serializeToString] dataUsingEncoding:NSUTF8StringEncoding];
-  NSURLRequest *testRequest = [_sut requestForDataItem:testItem];
-
-  assertThat(testRequest, notNilValue());
-  assertThat([testRequest HTTPBody], equalTo(expectedBodyData));
-}
+//- (void)testRequestForDataItem {
+//  MSAIEnvelope *testItem = [MSAIEnvelope new];
+//  NSData *expectedBodyData = [[testItem serializeToString] dataUsingEncoding:NSUTF8StringEncoding];
+//  NSURLRequest *testRequest = [_sut requestForDataItem:testItem];
+//
+//  assertThat(testRequest, notNilValue());
+//  assertThat([testRequest HTTPBody], equalTo(expectedBodyData));
+//}
 
 @end
