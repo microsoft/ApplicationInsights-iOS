@@ -1,4 +1,4 @@
-@import XCTest;
+#import <XCTest/XCTest.h>
 #import "MSAIPageViewPerfData.h"
 
 @interface MSAIPageViewPerfDataTests : XCTestCase

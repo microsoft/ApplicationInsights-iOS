@@ -1,4 +1,4 @@
-@import XCTest;
+#import <XCTest/XCTest.h>
 #import "MSAIBase.h"
 
 @interface MSAIBaseTests : XCTestCase

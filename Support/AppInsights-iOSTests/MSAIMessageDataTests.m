@@ -1,4 +1,4 @@
-@import XCTest;
+#import <XCTest/XCTest.h>
 #import "MSAIMessageData.h"
 
 @interface MSAIMessageDataTests : XCTestCase

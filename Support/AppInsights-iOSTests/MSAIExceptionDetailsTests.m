@@ -1,4 +1,4 @@
-@import XCTest;
+#import <XCTest/XCTest.h>
 #import "MSAIExceptionDetails.h"
 #import "MSAIStackFrame.h"
 
