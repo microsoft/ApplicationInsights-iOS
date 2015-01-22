@@ -59,7 +59,6 @@
 }
 
 - (void)testRequestContainsDataItem {
-  
   [_sut configureWithAppClient:_appClient endpointPath:nil];
   MSAIEnvelope *testItem = [MSAIEnvelope new];
   NSData *expectedBodyData = [[testItem serializeToString] dataUsingEncoding:NSUTF8StringEncoding];
@@ -70,7 +69,6 @@
 }
 
 - (void)testDataGetsEnqueued {
-  
    assertThatInt((int)[[_sut dataItemQueue] count], equalToInt(0));
   
   NSDictionary *testDict = mock([NSDictionary class]);

@@ -110,7 +110,14 @@ NSString *msai_osName(void){
 }
 
 NSString *msai_appVersion(void){
-  return [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];
+  NSString *build = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];
+  NSString *version = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
+  
+  if(version){
+    return [NSString stringWithFormat:@"%@ (%@)", version, build];
+  }else{
+    return build;
+  }
 }
 
 NSString *msai_deviceType(void){
