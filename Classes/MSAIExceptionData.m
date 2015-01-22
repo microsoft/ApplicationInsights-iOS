@@ -10,6 +10,9 @@
         _envelopeTypeName = @"Microsoft.ApplicationInsights.Exception";
         _dataTypeName = @"ExceptionData";
         self.version = [NSNumber numberWithInt:2];
+        self.exceptions = [NSMutableArray new];
+        self.properties = [MSAIOrderedDictionary new];
+        self.measurements = [MSAIOrderedDictionary new];
     }
     return self;
 }
@@ -18,33 +21,22 @@
 /// Adds all members of this class to a dictionary
 /// @param dictionary to which the members of this class will be added.
 ///
-- (NSMutableDictionary *)serializeToDictionary {
-    NSMutableDictionary * dict = [super serializeToDictionary];
+- (MSAIOrderedDictionary *)serializeToDictionary {
+    MSAIOrderedDictionary *dict = [super serializeToDictionary];
     if (self.handledAt != nil) {
         [dict setObject:self.handledAt forKey:@"handledAt"];
     }
     if (self.exceptions != nil) {
-        [dict setObject:self.exceptions forKey:@"exceptions"];
+        NSMutableArray *exceptionsArray = [NSMutableArray array];
+        for (MSAIExceptionDetails *exceptionsElement in self.exceptions) {
+            [exceptionsArray addObject:[exceptionsElement serializeToDictionary]];
+        }
+        [dict setObject:exceptionsArray forKey:@"exceptions"];
     }
     [dict setObject:[NSNumber numberWithInt:(int)self.severityLevel] forKey:@"severityLevel"];
-    if (self.measurements != nil) {
-        [dict setObject:self.measurements forKey:@"measurements"];
-    }
+    [dict setObject:self.properties forKey:@"properties"];
+    [dict setObject:self.measurements forKey:@"measurements"];
     return dict;
-}
-
-///
-/// Serializes the object to a string in json format.
-/// @param writer The writer to serialize this object to.
-///
-- (NSString *)serializeToString {
-    NSMutableDictionary *dict = [self serializeToDictionary];
-    NSMutableString  *jsonString;
-    NSError *error = nil;
-    NSData *json;
-    json = [NSJSONSerialization dataWithJSONObject:dict options:NSJSONWritingPrettyPrinted error:&error];
-    jsonString = [[NSMutableString alloc] initWithData:json encoding:NSUTF8StringEncoding];
-    return jsonString;
 }
 
 @end

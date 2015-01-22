@@ -31,13 +31,14 @@
             ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
             <ActionContent
                title = "Run Script"
-               scriptText = "cd ${SRCROOT}/../Vendor/XcodeCoverage&#10;./getcov">
+               scriptText = "source ${SRCROOT}/../Vendor/XcodeCoverage/run_code_coverage_post.sh"
+               shellToInvoke = "/bin/bash">
                <EnvironmentBuildable>
                   <BuildableReference
                      BuildableIdentifier = "primary"
-                     BlueprintIdentifier = "1E5A458F16F0DFC200B55C04"
-                     BuildableName = "AppInsights-iOSTests.xctest"
-                     BlueprintName = "AppInsights-iOSTests"
+                     BlueprintIdentifier = "1E5954CB15B6F24A00A03429"
+                     BuildableName = "libAppInsights-iOS.a"
+                     BlueprintName = "AppInsights-iOS"
                      ReferencedContainer = "container:AppInsights-iOS.xcodeproj">
                   </BuildableReference>
                </EnvironmentBuildable>

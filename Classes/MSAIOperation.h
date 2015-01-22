@@ -1,7 +1,7 @@
 #import "MSAIObject.h"
 #import "MSAITelemetryData.h"
+#import "MSAIDomain.h"
 
-///Data contract class for type Operation.
 @interface MSAIOperation : MSAIObject
 
 @property (nonatomic, strong) NSString *operationId;

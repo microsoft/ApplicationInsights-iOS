@@ -13,35 +13,21 @@
 /// Adds all members of this class to a dictionary
 /// @param dictionary to which the members of this class will be added.
 ///
-- (NSMutableDictionary *)serializeToDictionary {
-    NSMutableDictionary * dict = [super serializeToDictionary];
+- (MSAIOrderedDictionary *)serializeToDictionary {
+    MSAIOrderedDictionary *dict = [super serializeToDictionary];
     if (self.operationId != nil) {
-        [dict setObject:self.operationId forKey:@"id"];
+        [dict setObject:self.operationId forKey:@"ai.operation.id"];
     }
     if (self.name != nil) {
-        [dict setObject:self.name forKey:@"name"];
+        [dict setObject:self.name forKey:@"ai.operation.name"];
     }
     if (self.parentId != nil) {
-        [dict setObject:self.parentId forKey:@"parentId"];
+        [dict setObject:self.parentId forKey:@"ai.operation.parentId"];
     }
     if (self.rootId != nil) {
-        [dict setObject:self.rootId forKey:@"rootId"];
+        [dict setObject:self.rootId forKey:@"ai.operation.rootId"];
     }
     return dict;
-}
-
-///
-/// Serializes the object to a string in json format.
-/// @param writer The writer to serialize this object to.
-///
-- (NSString *)serializeToString {
-    NSMutableDictionary *dict = [self serializeToDictionary];
-    NSMutableString  *jsonString;
-    NSError *error = nil;
-    NSData *json;
-    json = [NSJSONSerialization dataWithJSONObject:dict options:NSJSONWritingPrettyPrinted error:&error];
-    jsonString = [[NSMutableString alloc] initWithData:json encoding:NSUTF8StringEncoding];
-    return jsonString;
 }
 
 @end

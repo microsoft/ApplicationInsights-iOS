@@ -1,9 +1,8 @@
-#import "MSAIDomain.h"
+#import "MSAIBase.h"
 #import "MSAIObject.h"
 #import "MSAITelemetryData.h"
-#import "MSAIBase.h"
+#import "MSAIDomain.h"
 
-///Data contract class for type Data.
 @interface MSAIData : MSAIBase
 
 @property (nonatomic, strong) MSAITelemetryData *baseData;

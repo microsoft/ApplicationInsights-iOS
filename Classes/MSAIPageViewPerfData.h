@@ -1,9 +1,12 @@
+#import "MSAIPageViewData.h"
 #import "MSAIObject.h"
 #import "MSAITelemetryData.h"
+#import "MSAIDomain.h"
 
-///Data contract class for type PageViewPerfData.
-@interface MSAIPageViewPerfData : MSAITelemetryData
+@interface MSAIPageViewPerfData : MSAIPageViewData
 
+@property(nonatomic, strong, readonly)NSString *envelopeTypeName;
+@property(nonatomic, strong, readonly)NSString *dataTypeName;
 @property (nonatomic, strong) NSString *perfTotal;
 @property (nonatomic, strong) NSString *networkConnect;
 @property (nonatomic, strong) NSString *sentRequest;

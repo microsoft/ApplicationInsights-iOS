@@ -13,65 +13,51 @@
 /// Adds all members of this class to a dictionary
 /// @param dictionary to which the members of this class will be added.
 ///
-- (NSMutableDictionary *)serializeToDictionary {
-    NSMutableDictionary * dict = [super serializeToDictionary];
+- (MSAIOrderedDictionary *)serializeToDictionary {
+    MSAIOrderedDictionary *dict = [super serializeToDictionary];
     if (self.deviceId != nil) {
-        [dict setObject:self.deviceId forKey:@"id"];
+        [dict setObject:self.deviceId forKey:@"ai.device.id"];
     }
     if (self.ip != nil) {
-        [dict setObject:self.ip forKey:@"ip"];
+        [dict setObject:self.ip forKey:@"ai.device.ip"];
     }
     if (self.language != nil) {
-        [dict setObject:self.language forKey:@"language"];
+        [dict setObject:self.language forKey:@"ai.device.language"];
     }
     if (self.locale != nil) {
-        [dict setObject:self.locale forKey:@"locale"];
+        [dict setObject:self.locale forKey:@"ai.device.locale"];
     }
     if (self.model != nil) {
-        [dict setObject:self.model forKey:@"model"];
+        [dict setObject:self.model forKey:@"ai.device.model"];
     }
     if (self.network != nil) {
-        [dict setObject:self.network forKey:@"network"];
+        [dict setObject:self.network forKey:@"ai.device.network"];
     }
     if (self.oemName != nil) {
-        [dict setObject:self.oemName forKey:@"oemName"];
+        [dict setObject:self.oemName forKey:@"ai.device.oemName"];
     }
     if (self.os != nil) {
-        [dict setObject:self.os forKey:@"os"];
+        [dict setObject:self.os forKey:@"ai.device.os"];
     }
     if (self.osVersion != nil) {
-        [dict setObject:self.osVersion forKey:@"osVersion"];
+        [dict setObject:self.osVersion forKey:@"ai.device.osVersion"];
     }
     if (self.roleInstance != nil) {
-        [dict setObject:self.roleInstance forKey:@"roleInstance"];
+        [dict setObject:self.roleInstance forKey:@"ai.device.roleInstance"];
     }
     if (self.roleName != nil) {
-        [dict setObject:self.roleName forKey:@"roleName"];
+        [dict setObject:self.roleName forKey:@"ai.device.roleName"];
     }
     if (self.screenResolution != nil) {
-        [dict setObject:self.screenResolution forKey:@"screenResolution"];
+        [dict setObject:self.screenResolution forKey:@"ai.device.screenResolution"];
     }
     if (self.type != nil) {
-        [dict setObject:self.type forKey:@"type"];
+        [dict setObject:self.type forKey:@"ai.device.type"];
     }
     if (self.vmName != nil) {
-        [dict setObject:self.vmName forKey:@"vmName"];
+        [dict setObject:self.vmName forKey:@"ai.device.vmName"];
     }
     return dict;
-}
-
-///
-/// Serializes the object to a string in json format.
-/// @param writer The writer to serialize this object to.
-///
-- (NSString *)serializeToString {
-    NSMutableDictionary *dict = [self serializeToDictionary];
-    NSMutableString  *jsonString;
-    NSError *error = nil;
-    NSData *json;
-    json = [NSJSONSerialization dataWithJSONObject:dict options:NSJSONWritingPrettyPrinted error:&error];
-    jsonString = [[NSMutableString alloc] initWithData:json encoding:NSUTF8StringEncoding];
-    return jsonString;
 }
 
 @end

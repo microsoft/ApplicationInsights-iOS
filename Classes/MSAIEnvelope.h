@@ -1,8 +1,8 @@
 #import "MSAIBase.h"
 #import "MSAIObject.h"
 #import "MSAITelemetryData.h"
+#import "MSAIDomain.h"
 
-///Data contract class for type Envelope.
 @interface MSAIEnvelope : MSAIObject
 
 @property (nonatomic, strong) NSNumber *version;
@@ -18,7 +18,7 @@
 @property (nonatomic, strong) NSString *appId;
 @property (nonatomic, strong) NSString *appVer;
 @property (nonatomic, strong) NSString *userId;
-@property (nonatomic, strong) NSDictionary *tags;
+@property (nonatomic, strong) MSAIOrderedDictionary *tags;
 @property (nonatomic, strong) MSAIBase *data;
 
 

@@ -1,9 +1,11 @@
 #import "MSAIObject.h"
 #import "MSAITelemetryData.h"
+#import "MSAIDomain.h"
 
-///Data contract class for type RequestData.
-@interface MSAIRequestData : MSAITelemetryData
+@interface MSAIRequestData : MSAIDomain
 
+@property(nonatomic, strong, readonly)NSString *envelopeTypeName;
+@property(nonatomic, strong, readonly)NSString *dataTypeName;
 @property (nonatomic, strong) NSString *requestDataId;
 @property (nonatomic, strong) NSString *startTime;
 @property (nonatomic, strong) NSString *duration;
@@ -11,7 +13,7 @@
 @property (nonatomic, assign) BOOL success;
 @property (nonatomic, strong) NSString *httpMethod;
 @property (nonatomic, strong) NSString *url;
-@property (nonatomic, strong) NSMutableDictionary *measurements;
+@property (nonatomic, strong) MSAIOrderedDictionary *measurements;
 
 
 @end

@@ -1,7 +1,7 @@
 #import "MSAIObject.h"
 #import "MSAITelemetryData.h"
+#import "MSAIDomain.h"
 
-///Data contract class for type ExceptionDetails.
 @interface MSAIExceptionDetails : MSAIObject
 
 @property (nonatomic, strong) NSNumber *exceptionDetailsId;

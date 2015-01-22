@@ -1,7 +1,7 @@
 #import "MSAIObject.h"
 #import "MSAITelemetryData.h"
+#import "MSAIDomain.h"
 
-///Data contract class for type DataPoint.
 @interface MSAIDataPoint : MSAIObject
 
 @property (nonatomic, strong) NSString *name;

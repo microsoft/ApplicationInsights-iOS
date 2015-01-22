@@ -1,8 +1,8 @@
 #import "MSAIObject.h"
 #import "MSAITelemetryData.h"
+#import "MSAIDomain.h"
 
-///Data contract class for type Base.
-@interface MSAIBase : MSAIObject
+@interface MSAIBase : MSAITelemetryData
 
 @property (nonatomic, strong) NSString *baseType;
 

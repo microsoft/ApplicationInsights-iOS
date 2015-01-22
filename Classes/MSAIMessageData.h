@@ -1,9 +1,11 @@
 #import "MSAIObject.h"
 #import "MSAITelemetryData.h"
+#import "MSAIDomain.h"
 
-///Data contract class for type MessageData.
-@interface MSAIMessageData : MSAITelemetryData
+@interface MSAIMessageData : MSAIDomain
 
+@property(nonatomic, strong, readonly)NSString *envelopeTypeName;
+@property(nonatomic, strong, readonly)NSString *dataTypeName;
 @property (nonatomic, strong) NSString *message;
 @property (nonatomic, assign) MSAISeverityLevel severityLevel;
 
