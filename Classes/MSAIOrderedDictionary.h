@@ -1,13 +1,11 @@
 #import <Foundation/Foundation.h>
 
-@interface MSAIOrderedDictionary : NSMutableDictionary
-{
+@interface MSAIOrderedDictionary : NSMutableDictionary {
     NSMutableDictionary *dictionary;
     NSMutableArray *order;
 }
 
 - (instancetype)initWithCapacity:(NSUInteger)numItems;
-
-- (void)setObject:(id)anObject forKey : (id)aKey;
+- (void)setObject:(id)anObject forKey:(id)aKey;
 
 @end
