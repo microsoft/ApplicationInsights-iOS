@@ -1,9 +1,12 @@
+#import "MSAIDataPoint.h"
 #import "MSAIObject.h"
 #import "MSAITelemetryData.h"
+#import "MSAIDomain.h"
 
-///Data contract class for type MetricData.
-@interface MSAIMetricData : MSAITelemetryData
+@interface MSAIMetricData : MSAIDomain
 
+@property(nonatomic, strong, readonly)NSString *envelopeTypeName;
+@property(nonatomic, strong, readonly)NSString *dataTypeName;
 @property (nonatomic, strong) NSMutableArray *metrics;
 
 

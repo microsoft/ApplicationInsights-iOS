@@ -1,10 +1,12 @@
 #import "MSAIObject.h"
 #import "MSAITelemetryData.h"
+#import "MSAIDomain.h"
 
-///Data contract class for type EventData.
-@interface MSAIEventData : MSAITelemetryData
+@interface MSAIEventData : MSAIDomain
 
-@property (nonatomic, strong) NSDictionary *measurements;
+@property (nonatomic, strong, readonly) NSString *envelopeTypeName;
+@property (nonatomic, strong, readonly) NSString *dataTypeName;
+@property (nonatomic, strong) MSAIOrderedDictionary *measurements;
 
 
 @end

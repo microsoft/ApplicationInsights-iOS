@@ -1,0 +1,65 @@
+@import XCTest;
+#import "MSAIEventData.h"
+
+@interface MSAIEventDataTests : XCTestCase
+
+@end
+
+@implementation MSAIEventDataTests
+
+- (void)testverPropertyWorksAsExpected {
+    NSNumber *expected = [NSNumber numberWithInt:42];
+    MSAIEventData *item = [MSAIEventData new];
+    item.version = expected;
+    NSNumber *actual = item.version;
+    XCTAssertTrue([actual isEqual:expected]);
+    
+    expected = [NSNumber numberWithInt:13];
+    item.version = expected;
+    actual = item.version;
+    XCTAssertTrue([actual isEqual:expected]);
+}
+
+- (void)testnamePropertyWorksAsExpected {
+    NSString *expected = @"Test string";
+    MSAIEventData *item = [MSAIEventData new];
+    item.name = expected;
+    NSString *actual = item.name;
+    XCTAssertTrue([actual isEqualToString:expected]);
+    
+    expected = @"Other string";
+    item.name = expected;
+    actual = item.name;
+    XCTAssertTrue([actual isEqualToString:expected]);
+}
+
+- (void)testPropertiesPropertyWorksAsExpected {
+    MSAIEventData *item = [MSAIEventData new];
+    MSAIOrderedDictionary *actual = (MSAIOrderedDictionary *)item.properties;
+    XCTAssertNotNil(actual, @"Pass");
+}
+
+- (void)testMeasurementsPropertyWorksAsExpected {
+    MSAIEventData *item = [MSAIEventData new];
+    MSAIOrderedDictionary *actual = (MSAIOrderedDictionary *)item.measurements;
+    XCTAssertNotNil(actual, @"Pass");
+}
+
+- (void)testSerialize {
+    MSAIEventData *item = [MSAIEventData new];
+    item.version = [NSNumber numberWithInt:42];
+    item.name = @"Test string";
+    MSAIOrderedDictionary *dictproperties = [MSAIOrderedDictionary dictionaryWithObjectsAndKeys: @"test value 1", @"key1", @"test value 2", @"key2", nil];
+    for (id key in dictproperties) {
+        [item.properties setObject:[dictproperties objectForKey:key]  forKey:key];
+    }
+    MSAIOrderedDictionary *dictmeasurements = [MSAIOrderedDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithDouble:3.1415], @"key1", [NSNumber numberWithDouble:42.2], @"key2", nil];
+    for (id key in dictmeasurements) {
+        [item.measurements setObject:[dictmeasurements objectForKey:key]  forKey:key];
+    }
+    NSString *actual = [item serializeToString];
+    NSString *expected = @"{\"ver\":42,\"name\":\"Test string\",\"properties\":{\"key1\":\"test value 1\",\"key2\":\"test value 2\"},\"measurements\":{\"key1\":3.1415,\"key2\":42.2}}";
+    XCTAssertTrue([actual isEqualToString:expected]);
+}
+
+@end

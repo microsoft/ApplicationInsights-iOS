@@ -1,7 +1,7 @@
 #import "MSAIObject.h"
 #import "MSAITelemetryData.h"
+#import "MSAIDomain.h"
 
-///Data contract class for type Internal.
 @interface MSAIInternal : MSAIObject
 
 @property (nonatomic, strong) NSString *sdkVersion;

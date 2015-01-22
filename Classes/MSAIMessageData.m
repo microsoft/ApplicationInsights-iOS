@@ -10,6 +10,7 @@
         _envelopeTypeName = @"Microsoft.ApplicationInsights.Message";
         _dataTypeName = @"MessageData";
         self.version = [NSNumber numberWithInt:2];
+        self.properties = [MSAIOrderedDictionary new];
     }
     return self;
 }
@@ -18,27 +19,14 @@
 /// Adds all members of this class to a dictionary
 /// @param dictionary to which the members of this class will be added.
 ///
-- (NSMutableDictionary *)serializeToDictionary {
-    NSMutableDictionary * dict = [super serializeToDictionary];
+- (MSAIOrderedDictionary *)serializeToDictionary {
+    MSAIOrderedDictionary *dict = [super serializeToDictionary];
     if (self.message != nil) {
         [dict setObject:self.message forKey:@"message"];
     }
     [dict setObject:[NSNumber numberWithInt:(int)self.severityLevel] forKey:@"severityLevel"];
+    [dict setObject:self.properties forKey:@"properties"];
     return dict;
-}
-
-///
-/// Serializes the object to a string in json format.
-/// @param writer The writer to serialize this object to.
-///
-- (NSString *)serializeToString {
-    NSMutableDictionary *dict = [self serializeToDictionary];
-    NSMutableString  *jsonString;
-    NSError *error = nil;
-    NSData *json;
-    json = [NSJSONSerialization dataWithJSONObject:dict options:NSJSONWritingPrettyPrinted error:&error];
-    jsonString = [[NSMutableString alloc] initWithData:json encoding:NSUTF8StringEncoding];
-    return jsonString;
 }
 
 @end

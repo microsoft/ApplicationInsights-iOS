@@ -1,4 +1,5 @@
 #import "MSAIExceptionDetails.h"
+#import "MSAIStackFrame.h"
 /// Data contract class for type ExceptionDetails.
 @implementation MSAIExceptionDetails
 
@@ -6,6 +7,7 @@
 - (instancetype)init {
     if (self = [super init]) {
         self.hasFullStack = true;
+        self.parsedStack = [NSMutableArray new];
     }
     return self;
 }
@@ -14,8 +16,8 @@
 /// Adds all members of this class to a dictionary
 /// @param dictionary to which the members of this class will be added.
 ///
-- (NSMutableDictionary *)serializeToDictionary {
-    NSMutableDictionary * dict = [super serializeToDictionary];
+- (MSAIOrderedDictionary *)serializeToDictionary {
+    MSAIOrderedDictionary *dict = [super serializeToDictionary];
     if (self.exceptionDetailsId != nil) {
         [dict setObject:self.exceptionDetailsId forKey:@"id"];
     }
@@ -34,23 +36,13 @@
         [dict setObject:self.stack forKey:@"stack"];
     }
     if (self.parsedStack != nil) {
-        [dict setObject:self.parsedStack forKey:@"parsedStack"];
+        NSMutableArray *parsedStackArray = [NSMutableArray array];
+        for (MSAIStackFrame *parsedStackElement in self.parsedStack) {
+            [parsedStackArray addObject:[parsedStackElement serializeToDictionary]];
+        }
+        [dict setObject:parsedStackArray forKey:@"parsedStack"];
     }
     return dict;
-}
-
-///
-/// Serializes the object to a string in json format.
-/// @param writer The writer to serialize this object to.
-///
-- (NSString *)serializeToString {
-    NSMutableDictionary *dict = [self serializeToDictionary];
-    NSMutableString  *jsonString;
-    NSError *error = nil;
-    NSData *json;
-    json = [NSJSONSerialization dataWithJSONObject:dict options:NSJSONWritingPrettyPrinted error:&error];
-    jsonString = [[NSMutableString alloc] initWithData:json encoding:NSUTF8StringEncoding];
-    return jsonString;
 }
 
 @end

@@ -13,32 +13,18 @@
 /// Adds all members of this class to a dictionary
 /// @param dictionary to which the members of this class will be added.
 ///
-- (NSMutableDictionary *)serializeToDictionary {
-    NSMutableDictionary *dict = [super serializeToDictionary];
+- (MSAIOrderedDictionary *)serializeToDictionary {
+    MSAIOrderedDictionary *dict = [super serializeToDictionary];
     if (self.sessionId != nil) {
-        [dict setObject:self.sessionId forKey:@"id"];
+        [dict setObject:self.sessionId forKey:@"ai.session.id"];
     }
     if (self.isFirst != nil) {
-        [dict setObject:self.isFirst forKey:@"isFirst"];
+        [dict setObject:self.isFirst forKey:@"ai.session.isFirst"];
     }
     if (self.isNew != nil) {
-        [dict setObject:self.isNew forKey:@"isNew"];
+        [dict setObject:self.isNew forKey:@"ai.session.isNew"];
     }
     return dict;
-}
-
-///
-/// Serializes the object to a string in json format.
-/// @param writer The writer to serialize this object to.
-///
-- (NSString *)serializeToString {
-    NSDictionary *dict = [self serializeToDictionary];
-    NSMutableString  *jsonString;
-    NSError *error = nil;
-    NSData *json;
-    json = [NSJSONSerialization dataWithJSONObject:dict options:NSJSONWritingPrettyPrinted error:&error];
-    jsonString = [[NSMutableString alloc] initWithData:json encoding:NSUTF8StringEncoding];
-    return jsonString;
 }
 
 @end

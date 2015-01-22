@@ -84,6 +84,6 @@
  *
  *  @return a dictionary containing all context fields
  */
-- (NSDictionary *)contextDictionary;
+- (MSAIOrderedDictionary *)contextDictionary;
 
 @end

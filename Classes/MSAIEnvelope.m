@@ -7,6 +7,7 @@
     if (self = [super init]) {
         self.version = [NSNumber numberWithInt:1];
         self.sampleRate = [NSNumber numberWithDouble:100.0];
+        self.tags = [MSAIOrderedDictionary new];
     }
     return self;
 }
@@ -15,8 +16,8 @@
 /// Adds all members of this class to a dictionary
 /// @param dictionary to which the members of this class will be added.
 ///
-- (NSMutableDictionary *)serializeToDictionary {
-    NSMutableDictionary * dict = [super serializeToDictionary];
+- (MSAIOrderedDictionary *)serializeToDictionary {
+    MSAIOrderedDictionary *dict = [super serializeToDictionary];
     if (self.version != nil) {
         [dict setObject:self.version forKey:@"ver"];
     }
@@ -56,27 +57,11 @@
     if (self.userId != nil) {
         [dict setObject:self.userId forKey:@"userId"];
     }
-    if (self.tags != nil) {
-        [dict setObject:self.tags forKey:@"tags"];
-    }
+    [dict setObject:self.tags forKey:@"tags"];
     if ([NSJSONSerialization isValidJSONObject:[self.data serializeToDictionary]]) {
         [dict setObject:[self.data serializeToDictionary] forKey:@"data"];
     }
     return dict;
-}
-
-///
-/// Serializes the object to a string in json format.
-/// @param writer The writer to serialize this object to.
-///
-- (NSString *)serializeToString {
-    NSMutableDictionary *dict = [self serializeToDictionary];
-    NSMutableString  *jsonString;
-    NSError *error = nil;
-    NSData *json;
-    json = [NSJSONSerialization dataWithJSONObject:dict options:NSJSONWritingPrettyPrinted error:&error];
-    jsonString = [[NSMutableString alloc] initWithData:json encoding:NSUTF8StringEncoding];
-    return jsonString;
 }
 
 @end

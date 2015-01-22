@@ -21,7 +21,7 @@
   return self;
 }
 
-- (void)sendDataItem:(MSAITelemetryData *)dataItem{
+- (void)sendDataItem:(MSAITelemetryData *)dataItem {
   
   [dataItem setVersion:@(2)];
   
@@ -39,7 +39,7 @@
   [_sender enqueueDataDict:[envelope serializeToDictionary]];
 }
 
-- (NSString *)dateStringForDate:(NSDate *)date{
+- (NSString *)dateStringForDate:(NSDate *)date {
   NSDateFormatter *dateFormatter = [NSDateFormatter new];
   dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
   NSString *dateString = [dateFormatter stringFromDate:date];

@@ -14,6 +14,7 @@
         self.dependencyKind = MSAIDependencyKind_undefined;
         self.success = true;
         self.dependencySource = MSAIDependencySourceType_undefined;
+        self.properties = [MSAIOrderedDictionary new];
     }
     return self;
 }
@@ -22,8 +23,11 @@
 /// Adds all members of this class to a dictionary
 /// @param dictionary to which the members of this class will be added.
 ///
-- (NSMutableDictionary *)serializeToDictionary {
-    NSMutableDictionary * dict = [super serializeToDictionary];
+- (MSAIOrderedDictionary *)serializeToDictionary {
+    MSAIOrderedDictionary *dict = [super serializeToDictionary];
+    if (self.name != nil) {
+        [dict setObject:self.name forKey:@"name"];
+    }
     [dict setObject:[NSNumber numberWithInt:(int)self.kind] forKey:@"kind"];
     if (self.value != nil) {
         [dict setObject:self.value forKey:@"value"];
@@ -46,21 +50,8 @@
     NSString *strasync = [NSString stringWithFormat:@"%s", (self.async) ? "true" : "false"];
     [dict setObject:strasync forKey:@"async"];
     [dict setObject:[NSNumber numberWithInt:(int)self.dependencySource] forKey:@"dependencySource"];
+    [dict setObject:self.properties forKey:@"properties"];
     return dict;
-}
-
-///
-/// Serializes the object to a string in json format.
-/// @param writer The writer to serialize this object to.
-///
-- (NSString *)serializeToString {
-    NSMutableDictionary *dict = [self serializeToDictionary];
-    NSMutableString  *jsonString;
-    NSError *error = nil;
-    NSData *json;
-    json = [NSJSONSerialization dataWithJSONObject:dict options:NSJSONWritingPrettyPrinted error:&error];
-    jsonString = [[NSMutableString alloc] initWithData:json encoding:NSUTF8StringEncoding];
-    return jsonString;
 }
 
 @end

@@ -1,7 +1,7 @@
 #import "MSAIObject.h"
 #import "MSAITelemetryData.h"
+#import "MSAIDomain.h"
 
-///Data contract class for type StackFrame.
 @interface MSAIStackFrame : MSAIObject
 
 @property (nonatomic, strong) NSNumber *level;

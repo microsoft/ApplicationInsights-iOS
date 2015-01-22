@@ -11,19 +11,20 @@
 }
 
 // empty implementation for the base class
-- (NSMutableDictionary *)serializeToDictionary  {
-	NSMutableDictionary *dict = [NSMutableDictionary new];
+- (MSAIOrderedDictionary *)serializeToDictionary{
+	MSAIOrderedDictionary *dict = [MSAIOrderedDictionary new];
 	return dict;
 }
 
 - (NSString *)serializeToString {
-  NSMutableDictionary *dict = [self serializeToDictionary];
+  MSAIOrderedDictionary *dict = [self serializeToDictionary];
   NSMutableString  *jsonString;
   NSError *error = nil;
   NSData *json;
-  json = [NSJSONSerialization dataWithJSONObject:dict options:NSJSONWritingPrettyPrinted error:&error];
+  json = [NSJSONSerialization dataWithJSONObject:dict options:0 error:&error];
   jsonString = [[NSMutableString alloc] initWithData:json encoding:NSUTF8StringEncoding];
-  return jsonString;
+  NSString *returnString = [[jsonString stringByReplacingOccurrencesOfString:@"\"true\"" withString:@"true"] stringByReplacingOccurrencesOfString:@"\"false\"" withString:@"false"];
+  return returnString;
 }
 
 @end

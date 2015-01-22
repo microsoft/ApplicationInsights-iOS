@@ -1,7 +1,7 @@
 #import "MSAIObject.h"
 #import "MSAITelemetryData.h"
+#import "MSAIDomain.h"
 
-///Data contract class for type User.
 @interface MSAIUser : MSAIObject
 
 @property (nonatomic, strong) NSString *accountAcquisitionDate;

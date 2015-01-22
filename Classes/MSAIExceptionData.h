@@ -1,14 +1,16 @@
 #import "MSAIExceptionDetails.h"
 #import "MSAIObject.h"
 #import "MSAITelemetryData.h"
+#import "MSAIDomain.h"
 
-///Data contract class for type ExceptionData.
-@interface MSAIExceptionData : MSAITelemetryData
+@interface MSAIExceptionData : MSAIDomain
 
+@property (nonatomic, strong, readonly) NSString *envelopeTypeName;
+@property (nonatomic, strong, readonly) NSString *dataTypeName;
 @property (nonatomic, strong) NSString *handledAt;
 @property (nonatomic, strong) NSMutableArray *exceptions;
 @property (nonatomic, assign) MSAISeverityLevel severityLevel;
-@property (nonatomic, strong) NSMutableDictionary *measurements;
+@property (nonatomic, strong) MSAIOrderedDictionary *measurements;
 
 
 @end
