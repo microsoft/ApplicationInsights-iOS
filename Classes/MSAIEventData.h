@@ -6,7 +6,7 @@
 
 @property (nonatomic, strong, readonly) NSString *envelopeTypeName;
 @property (nonatomic, strong, readonly) NSString *dataTypeName;
-@property (nonatomic, strong) MSAIOrderedDictionary *measurements;
+@property (nonatomic, strong) NSDictionary *measurements;
 
 
 @end

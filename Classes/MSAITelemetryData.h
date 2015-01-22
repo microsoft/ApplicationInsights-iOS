@@ -8,6 +8,6 @@
 
 @property (nonatomic, strong) NSNumber *version;
 @property (nonatomic, strong) NSString *name;
-@property (nonatomic, strong) MSAIOrderedDictionary *properties;
+@property (nonatomic, strong) NSDictionary *properties;
 
 @end
