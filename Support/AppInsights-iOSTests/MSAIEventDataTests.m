@@ -49,14 +49,9 @@
     MSAIEventData *item = [MSAIEventData new];
     item.version = [NSNumber numberWithInt:42];
     item.name = @"Test string";
-    MSAIOrderedDictionary *dictproperties = [MSAIOrderedDictionary dictionaryWithObjectsAndKeys: @"test value 1", @"key1", @"test value 2", @"key2", nil];
-    for (id key in dictproperties) {
-        [item.properties setObject:[dictproperties objectForKey:key]  forKey:key];
-    }
-    MSAIOrderedDictionary *dictmeasurements = [MSAIOrderedDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithDouble:3.1415], @"key1", [NSNumber numberWithDouble:42.2], @"key2", nil];
-    for (id key in dictmeasurements) {
-        [item.measurements setObject:[dictmeasurements objectForKey:key]  forKey:key];
-    }
+    item.properties = [MSAIOrderedDictionary dictionaryWithObjectsAndKeys: @"test value 1", @"key1", @"test value 2", @"key2", nil];
+    item.measurements = [MSAIOrderedDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithDouble:3.1415], @"key1", [NSNumber numberWithDouble:42.2], @"key2", nil];
+  
     NSString *actual = [item serializeToString];
     NSString *expected = @"{\"ver\":42,\"name\":\"Test string\",\"properties\":{\"key1\":\"test value 1\",\"key2\":\"test value 2\"},\"measurements\":{\"key1\":3.1415,\"key2\":42.2}}";
     XCTAssertTrue([actual isEqualToString:expected]);

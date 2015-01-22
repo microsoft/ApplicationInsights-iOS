@@ -40,10 +40,8 @@
     for (MSAIDataPoint *arrItem in arrmetrics) {
         [item.metrics addObject:arrItem];
     }
-    MSAIOrderedDictionary *dictproperties = [MSAIOrderedDictionary dictionaryWithObjectsAndKeys: @"test value 1", @"key1", @"test value 2", @"key2", nil];
-    for (id key in dictproperties) {
-        [item.properties setObject:[dictproperties objectForKey:key]  forKey:key];
-    }
+    item.properties = [MSAIOrderedDictionary dictionaryWithObjectsAndKeys: @"test value 1", @"key1", @"test value 2", @"key2", nil];
+
     NSString *actual = [item serializeToString];
     NSString *expected = @"{\"ver\":42,\"metrics\":[{\"kind\":0}],\"properties\":{\"key1\":\"test value 1\",\"key2\":\"test value 2\"}}";
     XCTAssertTrue([actual isEqualToString:expected]);

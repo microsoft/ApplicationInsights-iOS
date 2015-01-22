@@ -57,10 +57,8 @@
     item.version = [NSNumber numberWithInt:42];
     item.message = @"Test string";
     item.severityLevel = 5;
-    MSAIOrderedDictionary *dictproperties = [MSAIOrderedDictionary dictionaryWithObjectsAndKeys: @"test value 1", @"key1", @"test value 2", @"key2", nil];
-    for (id key in dictproperties) {
-        [item.properties setObject:[dictproperties objectForKey:key]  forKey:key];
-    }
+    item.properties = [MSAIOrderedDictionary dictionaryWithObjectsAndKeys: @"test value 1", @"key1", @"test value 2", @"key2", nil];
+
     NSString *actual = [item serializeToString];
     NSString *expected = @"{\"ver\":42,\"message\":\"Test string\",\"severityLevel\":5,\"properties\":{\"key1\":\"test value 1\",\"key2\":\"test value 2\"}}";
     XCTAssertTrue([actual isEqualToString:expected]);

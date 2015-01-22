@@ -29,7 +29,7 @@
   [super setUp];
   
   MSAIAppClient *appClient = mockClass([MSAIAppClient class]);
-  MSAIContext *appContext = [[MSAIContext alloc]initWithInstrumentationKey:@"245251431" isAppStoreEnvironment:nil];
+  MSAIContext *appContext = [[MSAIContext alloc]initWithInstrumentationKey:@"245251431" isAppStoreEnvironment:NO];
   _sut = [[MSAIMetricsManager alloc] initWithAppContext:appContext appClient:appClient];
 }
 

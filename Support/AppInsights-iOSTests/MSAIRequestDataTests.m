@@ -147,10 +147,8 @@
     item.success = YES;
     item.httpMethod = @"Test string";
     item.url = @"Test string";
-    MSAIOrderedDictionary *dictproperties = [MSAIOrderedDictionary dictionaryWithObjectsAndKeys: @"test value 1", @"key1", @"test value 2", @"key2", nil];
-    for (id key in dictproperties) {
-        [item.properties setObject:[dictproperties objectForKey:key]  forKey:key];
-    }
+    item.properties = [MSAIOrderedDictionary dictionaryWithObjectsAndKeys: @"test value 1", @"key1", @"test value 2", @"key2", nil];
+
     MSAIOrderedDictionary *dictmeasurements = [MSAIOrderedDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithDouble:3.1415], @"key1", [NSNumber numberWithDouble:42.2], @"key2", nil];
     for (id key in dictmeasurements) {
         [item.measurements setObject:[dictmeasurements objectForKey:key]  forKey:key];
