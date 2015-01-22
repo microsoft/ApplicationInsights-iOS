@@ -3,8 +3,8 @@
 #import "MSAISenderPrivate.h"
 #import "MSAIEnvelope.h"
 
-#define defaultMaxBatchCount  100
-#define defaultBatchInterval  15
+static NSInteger const defaultMaxBatchCount = 5;
+static NSInteger const defaultBatchInterval = 15;
 
 @implementation MSAISender
 
@@ -27,7 +27,6 @@
 - (void)configureWithAppClient:(MSAIAppClient *)appClient endpointPath:(NSString *)endpointPath{
   _endpointPath = endpointPath;
   _appClient = appClient;
-  
 }
 
 - (void)enqueueDataDict:(NSDictionary *)dataDict{
