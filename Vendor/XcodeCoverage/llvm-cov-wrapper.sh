@@ -2,7 +2,9 @@
 #   XcodeCoverage by Jon Reid, http://qualitycoding/about/
 #   Copyright 2014 Jonathan M. Reid. See LICENSE.txt
 
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-source ${DIR}/envcov.sh
-
-LCOV --zerocounters -d "${OBJ_DIR}"
+if [ "$1" = "-v" ]; then
+    echo "llvm-cov-wrapper 4.2.1"
+    exit 0
+else
+    /usr/bin/gcov "$@"
+fi
