@@ -8,6 +8,10 @@
 
 @interface MSAITelemetryContext()
 
+@property (readonly) long acquisitionMs;
+
+@property (readonly) long renewalMs;
+
 /**
  *  The path to the telemetry endpoint.
  */
@@ -87,4 +91,8 @@
 
 - (void)updateSessionContext;
 
+- (void)writeSessionDefaultsWithSessionId:(NSString *)sessionId acquisitionTime:(long)acquisitionTime;
+
+- (void)updateSessionFromSessionDefaults;
+  
 @end

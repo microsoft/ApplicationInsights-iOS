@@ -10,10 +10,7 @@
 NSString *const kMSAITelemetrySessionId = @"MSAITelemetrySessionId";
 NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
 
-@implementation MSAITelemetryContext{
-  long _acquisitionMs;
-  long _renewalMs;
-}
+@implementation MSAITelemetryContext
 
 - (instancetype)initWithInstrumentationKey:(NSString *)instrumentationKey
                               endpointPath:(NSString *)endpointPath
@@ -77,15 +74,13 @@ NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
 }
 
 - (void)writeSessionDefaultsWithSessionId:(NSString *)sessionId acquisitionTime:(long)acquisitionTime{
-  [[NSUserDefaults standardUserDefaults] setObject:[_session sessionId] forKey:kMSAITelemetrySessionId];
-  [[NSUserDefaults standardUserDefaults] setObject:@(_acquisitionMs) forKey:kMSAISessionAcquisitionTime];
+  [[NSUserDefaults standardUserDefaults] setObject:sessionId forKey:kMSAITelemetrySessionId];
+  [[NSUserDefaults standardUserDefaults] setDouble:acquisitionTime forKey:kMSAISessionAcquisitionTime];
 }
 
 - (void)updateSessionFromSessionDefaults{
-  NSNumber *acquisitionTime = [[NSUserDefaults standardUserDefaults]objectForKey:kMSAISessionAcquisitionTime];
-  _acquisitionMs = [acquisitionTime longValue];
-  NSString *sessionId = [[NSUserDefaults standardUserDefaults]objectForKey:kMSAITelemetrySessionId];
-  _session.sessionId = sessionId;
+  _session.sessionId = [[NSUserDefaults standardUserDefaults]objectForKey:kMSAITelemetrySessionId];
+  _acquisitionMs = [[NSUserDefaults standardUserDefaults]doubleForKey:kMSAISessionAcquisitionTime];
 }
 
 @end
