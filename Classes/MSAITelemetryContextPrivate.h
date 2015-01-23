@@ -6,6 +6,9 @@
 #import "MSAISession.h"
 #import "MSAILocation.h"
 
+#define defaultSessionRenewalMs     30 * 60 * 1000
+#define defaultSessionExpirationMs  24 * 60 * 60 * 1000
+
 @interface MSAITelemetryContext()
 
 @property (readonly) long acquisitionMs;
@@ -93,11 +96,11 @@
 /// @name Session management
 ///-----------------------------------------------------------------------------
 
-- (void)updateSessionContext;
+- (void)updateSessionFromSessionDefaults;
 
 - (void)writeSessionDefaultsWithSessionId:(NSString *)sessionId acquisitionTime:(long)acquisitionTime;
 
-- (void)updateSessionFromSessionDefaults;
+- (void)updateSessionContextWithDateTime:(long)dateTime;
 
 - (BOOL)isFirstSession;
 
