@@ -64,7 +64,7 @@
                                                  }];
   }
   if (nil == _appDidBecomeActiveObserver) {
-    _appDidBecomeActiveObserver = [nc addObserverForName:UIApplicationDidBecomeActiveNotification
+    _appDidBecomeActiveObserver = [nc addObserverForName:UIApplicationWillEnterForegroundNotification
                                                   object:nil
                                                    queue:NSOperationQueue.mainQueue
                                               usingBlock:^(NSNotification *note) {

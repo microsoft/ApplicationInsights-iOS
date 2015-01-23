@@ -37,7 +37,7 @@ NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
   return self;
 }
 
-- (MSAIOrderedDictionary *)contextDictionary{
+- (MSAIOrderedDictionary *)contextDictionary {  
   
   MSAIOrderedDictionary *contextDictionary = [self.application serializeToDictionary];
   
