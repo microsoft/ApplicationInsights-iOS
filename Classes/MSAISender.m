@@ -62,12 +62,13 @@ static NSInteger const defaultBatchInterval = 15;
 }
 
 - (NSMutableArray *)dataItemQueue{
+  
   __block NSMutableArray *queue = nil;
   __weak typeof(self) weakSelf = self;
   dispatch_sync(self.dataItemsOperations, ^{
     typeof(self) strongSelf = weakSelf;
     
-    queue = [strongSelf->_dataItemQueue mutableCopy];
+    queue = [NSMutableArray arrayWithArray:strongSelf->_dataItemQueue];
   });
   return queue;
 }
