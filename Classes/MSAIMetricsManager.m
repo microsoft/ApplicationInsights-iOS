@@ -18,7 +18,6 @@
 #import "MSAIEventData.h"
 #import "MSAIMessageData.h"
 #import "MSAIMetricData.h"
-#import "MSAIPageViewData.h"
 #import "MSAIDataPoint.h"
 #import "MSAIEnums.h"
 
@@ -146,7 +145,6 @@
 }
 
 #pragma mark - Usage
-#pragma mark Event
 
 -(void)trackEventWithName:(NSString *)eventName{
   [self trackEventWithName:eventName properties:nil mesurements:nil];
@@ -166,7 +164,6 @@
   [self trackDataItem:eventData];
 }
 
-#pragma mark Trace
 -(void)trackTraceWithMessage:(NSString *)message{
   [self trackTraceWithMessage:message properties:nil];
 }
@@ -180,7 +177,6 @@
   [self trackDataItem:messageData];
 }
 
-#pragma mark Metric
 -(void)trackMetricWithName:(NSString *)metricName value:(double)value{
   [self trackMetricWithName:metricName value:value properties:nil];
 }
@@ -201,31 +197,6 @@
   [metricData setProperties:properties];
   
   [self trackDataItem:metricData];
-}
-
-#pragma mark PageView
-- (void)trackPageView:(NSString *)pageName {
-  [self trackPageView:pageName duration:nil];
-}
-
-- (void)trackPageView:(NSString *)pageName duration:(long)pageLoadDurationMs {
-  [self trackPageView:pageName duration:pageLoadDurationMs properties:nil];
-}
-
-- (void)trackPageView:(NSString *)pageName duration:(long)pageLoadDurationMs properties:(NSDictionary *)properties {
-  [self trackPageView:pageName url:nil duration:pageLoadDurationMs properties:properties measurements:nil];
-}
-
-- (void)trackPageView:(NSString *)pageName url:(NSString *)url duration:(long)pageLoadDurationMs properties:(NSDictionary *)properties measurements:(NSDictionary *)measurements {
-  MSAIPageViewData *pageViewData = [MSAIPageViewData new];
-  
-  pageViewData.name = pageName;
-  pageViewData.url = url;
-  pageViewData.duration = [NSString stringWithFormat:@"%ld", pageLoadDurationMs];
-  pageViewData.properties = properties;
-  pageViewData.measurements = measurements;
-  
-  [self trackDataItem:pageViewData];
 }
 
 #pragma mark -
