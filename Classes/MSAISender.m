@@ -3,8 +3,15 @@
 #import "MSAISenderPrivate.h"
 #import "MSAIEnvelope.h"
 
+#ifdef DEBUG
+static NSInteger const defaultMaxBatchCount = 1;
+static NSInteger const defaultBatchInterval = 3;
+#else
 static NSInteger const defaultMaxBatchCount = 5;
 static NSInteger const defaultBatchInterval = 15;
+#endif
+
+static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.senderQueue";
 
 @implementation MSAISender
 
@@ -17,7 +24,7 @@ static NSInteger const defaultBatchInterval = 15;
   
   dispatch_once(&onceToken, ^{
     sharedInstance = [[MSAISender alloc] init];
-    dispatch_queue_t serialQueue = dispatch_queue_create("com.microsoft.appInsights.senderQueue", DISPATCH_QUEUE_SERIAL);
+    dispatch_queue_t serialQueue = dispatch_queue_create(MSAIDataItemsOperationsQueue, DISPATCH_QUEUE_SERIAL);
     [sharedInstance setDataItemsOperations:serialQueue];
     
   });
@@ -93,10 +100,10 @@ static NSInteger const defaultBatchInterval = 15;
     typeof(self) strongSelf = weakSelf;
     
     NSError *error = nil;
-    NSData *json = [NSJSONSerialization dataWithJSONObject:strongSelf.dataItemQueue options:NSJSONWritingPrettyPrinted error:&error];
+    NSData *json = [NSJSONSerialization dataWithJSONObject:_dataItemQueue options:NSJSONWritingPrettyPrinted error:&error];
     NSURLRequest *request = [strongSelf requestForData:json];
     [strongSelf enqueueRequest:request];
-    [strongSelf.dataItemQueue removeAllObjects];
+    [_dataItemQueue removeAllObjects];
   });
 }
 

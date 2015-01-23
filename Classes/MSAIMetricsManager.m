@@ -27,14 +27,14 @@
 
 NSString *const kMSAIApplicationWasLaunched = @"MSAIApplicationWasLaunched";
 static NSString *const kMSAIApplicationDidEnterBackgroundTime = @"MSAIApplicationDidEnterBackgroundTime";
-static NSInteger const defaultSessionExpiration = 20 * 1000;
+static NSInteger const defaultSessionExpirationTime = 20;
 
 @implementation MSAIMetricsManager {
   
   id _appDidFinishLaunchingObserver;
   id _appWillEnterForegroundObserver;
   id _appDidEnterBackgroundObserver;
-  id _networkDidBecomeReachableObserver;
+  id _appWillTerminateObserver;
 }
 
 
@@ -65,7 +65,7 @@ static NSInteger const defaultSessionExpiration = 20 * 1000;
                                                       queue:NSOperationQueue.mainQueue
                                                  usingBlock:^(NSNotification *note) {
                                                    typeof(self) strongSelf = weakSelf;
-                                                   [strongSelf renewSessionDate];
+                                                   [strongSelf startSession];
                                                  }];
   }
   if (nil == _appDidEnterBackgroundObserver) {
@@ -83,23 +83,27 @@ static NSInteger const defaultSessionExpiration = 20 * 1000;
                                                        queue:NSOperationQueue.mainQueue
                                                   usingBlock:^(NSNotification *note) {
                                                     typeof(self) strongSelf = weakSelf;
-                                                    [strongSelf renewSessionDate];
+                                                    [strongSelf startSession];
                                                   }];
   }
-  if (nil == _networkDidBecomeReachableObserver) {
-    _networkDidBecomeReachableObserver = [nc addObserverForName:MSAINetworkDidBecomeReachableNotification
-                                                         object:nil
-                                                          queue:NSOperationQueue.mainQueue
-                                                     usingBlock:^(NSNotification *note) {
-                                                       typeof(self) strongSelf = weakSelf;
-                                                       [strongSelf renewSessionDate];
-                                                     }];
+  if (nil == _appWillTerminateObserver) {
+    _appWillTerminateObserver = [nc addObserverForName:UIApplicationWillTerminateNotification
+                                                      object:nil
+                                                       queue:NSOperationQueue.mainQueue
+                                                  usingBlock:^(NSNotification *note) {
+                                                    typeof(self) strongSelf = weakSelf;
+                                                    [strongSelf endSession];
+                                                  }];
   }
 }
 
 - (void) unregisterObservers {
   NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
   
+  if (_appDidFinishLaunchingObserver) {
+    [nc removeObserver:_appDidFinishLaunchingObserver];
+    _appDidFinishLaunchingObserver = nil;
+  }
   if (_appDidEnterBackgroundObserver) {
     [nc removeObserver:_appDidEnterBackgroundObserver];
     _appDidEnterBackgroundObserver = nil;
@@ -108,9 +112,9 @@ static NSInteger const defaultSessionExpiration = 20 * 1000;
     [nc removeObserver:_appWillEnterForegroundObserver];
     _appWillEnterForegroundObserver = nil;
   }
-  if (_networkDidBecomeReachableObserver) {
-    [nc removeObserver:_networkDidBecomeReachableObserver];
-    _networkDidBecomeReachableObserver = nil;
+  if (_appWillTerminateObserver) {
+    [nc removeObserver:_appWillTerminateObserver];
+    _appWillTerminateObserver = nil;
   }
 }
 
@@ -225,7 +229,6 @@ static NSInteger const defaultSessionExpiration = 20 * 1000;
 }
 
 - (void)trackNewSessionEvent {
-  [self trackEventWithName:@"Session Start Event"];
 }
 
 - (void)updateSessionDate {
@@ -233,11 +236,17 @@ static NSInteger const defaultSessionExpiration = 20 * 1000;
   [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
-- (void)renewSessionDate {
+- (void)startSession {
   double appDidEnterBackgroundTime = [[NSUserDefaults standardUserDefaults] doubleForKey:kMSAIApplicationDidEnterBackgroundTime];
-  if (([[NSDate date] timeIntervalSince1970] - appDidEnterBackgroundTime) > defaultSessionExpiration) {
-    [self trackNewSessionEvent];
+  double timeSinceLastBackground = [[NSDate date] timeIntervalSince1970] - appDidEnterBackgroundTime;
+  if (timeSinceLastBackground > defaultSessionExpirationTime) {
+    [self trackEventWithName:@"Session Start Event"];
+    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kMSAIApplicationWasLaunched];
   }
+}
+
+- (void)endSession {
+  [self trackEventWithName:@"Session End Event"];
 }
 
 @end

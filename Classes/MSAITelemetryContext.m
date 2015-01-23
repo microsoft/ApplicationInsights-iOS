@@ -1,6 +1,7 @@
 #import <Foundation/Foundation.h>
 #import "MSAITelemetryContext.h"
 #import "MSAITelemetryContextPrivate.h"
+#import "MSAIMetricsManagerPrivate.h"
 #import "MSAIHelper.h"
 
 NSString *const kMSAITelemetrySessionId = @"MSAITelemetrySessionId";
@@ -27,15 +28,13 @@ NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
     _internal = internalContext;
     _operation = operationContext;
     _session = sessionContext;
-    [self updateSessionFromSessionDefaults];
+    [self createNewSession];
   }
   return self;
 }
 
 - (MSAIOrderedDictionary *)contextDictionary {  
   
-  long currentDateMs = [[NSDate date] timeIntervalSince1970];
-  [self updateSessionContextWithDateTime:currentDateMs];
   MSAIOrderedDictionary *contextDictionary = [self.application serializeToDictionary];
   [contextDictionary addEntriesFromDictionary:[self.session serializeToDictionary]];
   [contextDictionary addEntriesFromDictionary:[self.device serializeToDictionary]];
@@ -43,51 +42,29 @@ NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
   [contextDictionary addEntriesFromDictionary:[self.user serializeToDictionary]];
   [contextDictionary addEntriesFromDictionary:[self.internal serializeToDictionary]];
   [contextDictionary addEntriesFromDictionary:[self.operation serializeToDictionary]];
+  [self updateSessionContext];
   
   return contextDictionary;
 }
 
-- (void)writeSessionDefaultsWithSessionId:(NSString *)sessionId acquisitionTime:(long)acquisitionTime{
-  [[NSUserDefaults standardUserDefaults] setObject:sessionId forKey:kMSAITelemetrySessionId];
-  [[NSUserDefaults standardUserDefaults] setDouble:acquisitionTime forKey:kMSAISessionAcquisitionTime];
-  [[NSUserDefaults standardUserDefaults] synchronize];
-}
-
-- (void)updateSessionFromSessionDefaults{
-  _session.sessionId = [[NSUserDefaults standardUserDefaults]objectForKey:kMSAITelemetrySessionId];
-  _acquisitionMs = [[NSUserDefaults standardUserDefaults]doubleForKey:kMSAISessionAcquisitionTime];
-}
-
 #pragma mark - Helper
 
-- (void)updateSessionContextWithDateTime:(long)dateTime {
-  BOOL acqExpired = (dateTime  - _acquisitionMs) > defaultSessionExpirationMs;
-  BOOL renewalExpired = (dateTime - _renewalMs) > defaultSessionRenewalMs;
-  BOOL firstSession = [self isFirstSession];
-  _session.isFirst = (firstSession ? @"true" : @"false");
-  
-  if (firstSession || acqExpired || renewalExpired) {
-    [self createNewSessionWithCurrentDateTime:dateTime];
-  }else{
-    [self renewSessionWithCurrentDateTime:dateTime];
+- (void)updateSessionContext {
+  if ([_session.isNew isEqualToString:@"true"]) {
+    _session.isNew = @"false";
   }
 }
 
 - (BOOL)isFirstSession{
-  return _acquisitionMs == 0 || _renewalMs == 0;
+  return ![[NSUserDefaults standardUserDefaults] boolForKey:kMSAIApplicationWasLaunched];
 }
 
-- (void)createNewSessionWithCurrentDateTime:(long)dateTime{
+- (void)createNewSession {
+  BOOL firstSession = [self isFirstSession];
+  
   _session.sessionId = msai_UUID();
-  _session.isFirst = @"true";
-  _renewalMs = dateTime;
-  _acquisitionMs = dateTime;
-  [self writeSessionDefaultsWithSessionId:[_session sessionId] acquisitionTime:_acquisitionMs];
-}
-
-- (void)renewSessionWithCurrentDateTime:(long)dateTime{
-  _renewalMs = dateTime;
-  _session.isFirst = @"false";
+  _session.isNew = @"true";
+  _session.isFirst = (firstSession ? @"true" : @"false");
 }
 
 @end
