@@ -9,6 +9,8 @@
 @class MSAIChannel;
 @class MSAITelemetryData;
 
+extern NSString *const kMSAIApplicationWasLaunched;
+
 @interface MSAIMetricsManager () {
 }
 

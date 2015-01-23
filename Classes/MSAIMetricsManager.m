@@ -25,6 +25,7 @@
 #if MSAI_FEATURE_CRASH_REPORTER
 #endif
 
+NSString *const kMSAIApplicationWasLaunched = @"MSAIApplicationWasLaunched";
 static NSString *const kMSAIApplicationDidEnterBackgroundTime = @"MSAIApplicationDidEnterBackgroundTime";
 static NSInteger const defaultSessionExpiration = 20 * 1000;
 
