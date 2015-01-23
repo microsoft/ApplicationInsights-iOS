@@ -56,7 +56,7 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
       
       if([strongSelf->_dataItemQueue count] >= defaultMaxBatchCount){
         dispatch_async(dispatch_get_main_queue(), ^{
-          [strongSelf invalidateTimerAndRestart:YES];
+          [strongSelf invalidateTimerAndRestart:NO];
         });
         [strongSelf flushSenderQueue];
       }else if([strongSelf->_dataItemQueue count] == 1){
@@ -69,12 +69,13 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
 }
 
 - (NSMutableArray *)dataItemQueue{
+  
   __block NSMutableArray *queue = nil;
   __weak typeof(self) weakSelf = self;
   dispatch_sync(self.dataItemsOperations, ^{
     typeof(self) strongSelf = weakSelf;
     
-    queue = [strongSelf->_dataItemQueue mutableCopy];
+    queue = [NSMutableArray arrayWithArray:strongSelf->_dataItemQueue];
   });
   return queue;
 }
@@ -100,10 +101,10 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
     typeof(self) strongSelf = weakSelf;
     
     NSError *error = nil;
-    NSData *json = [NSJSONSerialization dataWithJSONObject:_dataItemQueue options:NSJSONWritingPrettyPrinted error:&error];
+    NSData *json = [NSJSONSerialization dataWithJSONObject:strongSelf->_dataItemQueue options:NSJSONWritingPrettyPrinted error:&error];
     NSURLRequest *request = [strongSelf requestForData:json];
     [strongSelf enqueueRequest:request];
-    [_dataItemQueue removeAllObjects];
+    [strongSelf->_dataItemQueue removeAllObjects];
   });
 }
 
