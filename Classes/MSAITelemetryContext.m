@@ -3,10 +3,6 @@
 #import "MSAITelemetryContextPrivate.h"
 #import "MSAIHelper.h"
 
-
-#define defaultSessionRenewalMs     30 * 60 * 1000
-#define defaultSessionExpirationMs  24 * 60 * 60 * 1000
-
 NSString *const kMSAITelemetrySessionId = @"MSAITelemetrySessionId";
 NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
 
@@ -38,7 +34,8 @@ NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
 
 - (MSAIOrderedDictionary *)contextDictionary{
   
-  [self updateSessionContext];
+  long currentDateMs = [[NSDate date] timeIntervalSince1970];
+  [self updateSessionContextWithDateTime:currentDateMs];
   MSAIOrderedDictionary *contextDictionary = [self.application serializeToDictionary];
   [contextDictionary addEntriesFromDictionary:[self.session serializeToDictionary]];
   [contextDictionary addEntriesFromDictionary:[self.device serializeToDictionary]];
@@ -62,19 +59,16 @@ NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
 
 #pragma mark - Helper
 
-- (void)updateSessionContext {
-  long currentDateMs = [[NSDate date] timeIntervalSince1970];
-  
+- (void)updateSessionContextWithDateTime:(long)dateTime {
+  BOOL acqExpired = (dateTime  - _acquisitionMs) > defaultSessionExpirationMs;
+  BOOL renewalExpired = (dateTime - _renewalMs) > defaultSessionRenewalMs;
   BOOL firstSession = [self isFirstSession];
-  BOOL acqExpired = (currentDateMs  - _acquisitionMs) > defaultSessionExpirationMs;
-  BOOL renewalExpired = (currentDateMs - _renewalMs) > defaultSessionRenewalMs;
-  
   _session.isFirst = (firstSession ? @"true" : @"false");
   
   if (firstSession || acqExpired || renewalExpired) {
-    [self createNewSessionWithCurrentDateTime:currentDateMs];
+    [self createNewSessionWithCurrentDateTime:dateTime];
   }else{
-    [self renewSessionWithCurrentDateTime:currentDateMs];
+    [self renewSessionWithCurrentDateTime:dateTime];
   }
 }
 
