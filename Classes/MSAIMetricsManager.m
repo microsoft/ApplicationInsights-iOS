@@ -240,6 +240,7 @@ static NSInteger const defaultSessionExpirationTime = 20;
   double appDidEnterBackgroundTime = [[NSUserDefaults standardUserDefaults] doubleForKey:kMSAIApplicationDidEnterBackgroundTime];
   double timeSinceLastBackground = [[NSDate date] timeIntervalSince1970] - appDidEnterBackgroundTime;
   if (timeSinceLastBackground > defaultSessionExpirationTime) {
+    [self.telemetryContext createNewSession];
     [self trackEventWithName:@"Session Start Event"];
     [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kMSAIApplicationWasLaunched];
   }
