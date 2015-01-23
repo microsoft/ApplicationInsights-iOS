@@ -10,7 +10,7 @@
 /**
  *  An array for collecting data, which should be sent to the telemetry server.
  */
-@property(nonatomic, strong) NSMutableArray *dataItemQueue;
+@property(nonatomic, strong, readonly) NSMutableArray *dataItemQueue;
 
 /**
  *  A queue which makes array operations thread safe.
@@ -43,6 +43,8 @@
  *  @param dataDict data which should be sent
  */
 - (void)enqueueDataDict:(NSDictionary *)dataDict;
+
+- (NSMutableArray *)dataItemQueue;
 
 /**
  *  Sends all enqueued events.

@@ -8,6 +8,8 @@ static NSInteger const defaultBatchInterval = 15;
 
 @implementation MSAISender
 
+@synthesize dataItemQueue = _dataItemQueue;
+
 + (instancetype)sharedSender{
   
   static MSAISender *sharedInstance = nil;
@@ -15,13 +17,20 @@ static NSInteger const defaultBatchInterval = 15;
   
   dispatch_once(&onceToken, ^{
     sharedInstance = [[MSAISender alloc] init];
-    [sharedInstance setDataItemQueue:[NSMutableArray array]];
-    
     dispatch_queue_t serialQueue = dispatch_queue_create("com.microsoft.appInsights.senderQueue", DISPATCH_QUEUE_SERIAL);
     [sharedInstance setDataItemsOperations:serialQueue];
+    
   });
   
   return sharedInstance;
+}
+
+- (instancetype)init{
+  
+  if(self = [super init]){
+    _dataItemQueue = [NSMutableArray array];
+  }
+  return self;
 }
 
 - (void)configureWithAppClient:(MSAIAppClient *)appClient endpointPath:(NSString *)endpointPath{
@@ -53,6 +62,17 @@ static NSInteger const defaultBatchInterval = 15;
   
 }
 
+- (NSMutableArray *)dataItemQueue{
+  __block NSMutableArray *queue = nil;
+  __weak typeof(self) weakSelf = self;
+  dispatch_sync(self.dataItemsOperations, ^{
+    typeof(self) strongSelf = weakSelf;
+    
+    queue = [strongSelf->_dataItemQueue mutableCopy];
+  });
+  return queue;
+}
+
 - (void)invalidateTimerAndRestart:(BOOL)restart{
   if(_timer){
     [_timer invalidate];
@@ -74,10 +94,10 @@ static NSInteger const defaultBatchInterval = 15;
     typeof(self) strongSelf = weakSelf;
     
     NSError *error = nil;
-    NSData *json = [NSJSONSerialization dataWithJSONObject:strongSelf->_dataItemQueue options:NSJSONWritingPrettyPrinted error:&error];
+    NSData *json = [NSJSONSerialization dataWithJSONObject:strongSelf.dataItemQueue options:NSJSONWritingPrettyPrinted error:&error];
     NSURLRequest *request = [strongSelf requestForData:json];
     [strongSelf enqueueRequest:request];
-    [strongSelf->_dataItemQueue removeAllObjects];
+    [strongSelf.dataItemQueue removeAllObjects];
   });
 }
 
