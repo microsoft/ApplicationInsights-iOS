@@ -89,10 +89,20 @@
  */
 - (MSAIOrderedDictionary *)contextDictionary;
 
+///-----------------------------------------------------------------------------
+/// @name Session management
+///-----------------------------------------------------------------------------
+
 - (void)updateSessionContext;
 
 - (void)writeSessionDefaultsWithSessionId:(NSString *)sessionId acquisitionTime:(long)acquisitionTime;
 
 - (void)updateSessionFromSessionDefaults;
-  
+
+- (BOOL)isFirstSession;
+
+- (void)createNewSessionWithCurrentDateTime:(long)dateTime;
+
+- (void)renewSessionWithCurrentDateTime:(long)dateTime;
+
 @end

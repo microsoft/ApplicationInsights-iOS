@@ -50,29 +50,6 @@ NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
   return contextDictionary;
 }
 
-- (void)updateSessionContext {
-  long currentDateMs = [[NSDate date] timeIntervalSince1970];
-  
-  BOOL firstSession = _acquisitionMs == 0 || _renewalMs == 0;
-  BOOL acqExpired = (currentDateMs  - _acquisitionMs) > defaultSessionExpirationMs;
-  BOOL renewalExpired = (currentDateMs - _renewalMs) > defaultSessionRenewalMs;
-  
-  _session.isFirst = (firstSession ? @"true" : @"false");
-  
-  if (firstSession || acqExpired || renewalExpired) {
-    _session.sessionId =_device.deviceId;
-    _session.isFirst = @"true";
-    
-    _renewalMs = currentDateMs;
-    _acquisitionMs = currentDateMs;
-    
-    [self writeSessionDefaultsWithSessionId:[_session sessionId] acquisitionTime:_acquisitionMs];
-  }else{
-    _renewalMs = currentDateMs;
-    _session.isFirst = @"false";
-  }
-}
-
 - (void)writeSessionDefaultsWithSessionId:(NSString *)sessionId acquisitionTime:(long)acquisitionTime{
   [[NSUserDefaults standardUserDefaults] setObject:sessionId forKey:kMSAITelemetrySessionId];
   [[NSUserDefaults standardUserDefaults] setDouble:acquisitionTime forKey:kMSAISessionAcquisitionTime];
@@ -81,6 +58,41 @@ NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
 - (void)updateSessionFromSessionDefaults{
   _session.sessionId = [[NSUserDefaults standardUserDefaults]objectForKey:kMSAITelemetrySessionId];
   _acquisitionMs = [[NSUserDefaults standardUserDefaults]doubleForKey:kMSAISessionAcquisitionTime];
+}
+
+#pragma mark - Helper
+
+- (void)updateSessionContext {
+  long currentDateMs = [[NSDate date] timeIntervalSince1970];
+  
+  BOOL firstSession = [self isFirstSession];
+  BOOL acqExpired = (currentDateMs  - _acquisitionMs) > defaultSessionExpirationMs;
+  BOOL renewalExpired = (currentDateMs - _renewalMs) > defaultSessionRenewalMs;
+  
+  _session.isFirst = (firstSession ? @"true" : @"false");
+  
+  if (firstSession || acqExpired || renewalExpired) {
+    [self createNewSessionWithCurrentDateTime:currentDateMs];
+  }else{
+    [self renewSessionWithCurrentDateTime:currentDateMs];
+  }
+}
+
+- (BOOL)isFirstSession{
+  return _acquisitionMs == 0 || _renewalMs == 0;
+}
+
+- (void)createNewSessionWithCurrentDateTime:(long)dateTime{
+  _session.sessionId = msai_UUID();
+  _session.isFirst = @"true";
+  _renewalMs = dateTime;
+  _acquisitionMs = dateTime;
+  [self writeSessionDefaultsWithSessionId:[_session sessionId] acquisitionTime:_acquisitionMs];
+}
+
+- (void)renewSessionWithCurrentDateTime:(long)dateTime{
+  _renewalMs = dateTime;
+  _session.isFirst = @"false";
 }
 
 @end

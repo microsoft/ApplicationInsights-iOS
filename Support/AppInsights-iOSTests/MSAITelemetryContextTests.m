@@ -80,6 +80,15 @@
   }
 }
 
+- (void)testReadWriteSessionFromUserDefaults {
+  NSString *testSessionId = @"MySessionId";
+  long testAcquisitionTime = 12345;
+  [_sut writeSessionDefaultsWithSessionId:testSessionId acquisitionTime:testAcquisitionTime];
+  [_sut updateSessionFromSessionDefaults];
+  
+  assertThatLong(_sut.acquisitionMs, equalToLong(testAcquisitionTime));
+  assertThat(_sut.session.sessionId, equalTo(testSessionId));
+}
 
 #pragma mark - Setup helpers
 

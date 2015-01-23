@@ -59,7 +59,6 @@ static NSInteger const defaultBatchInterval = 15;
       }
     });
   }
-  
 }
 
 - (NSMutableArray *)dataItemQueue{
