@@ -43,6 +43,7 @@
 		1BBBCF351A6594AE00253031 /* MSAIChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BBBCF2F1A6594AE00253031 /* MSAIChannel.m */; };
 		1BBBCF361A6594AE00253031 /* MSAITelemetryContext.h in Headers */ = {isa = PBXBuildFile; fileRef = 1BBBCF301A6594AE00253031 /* MSAITelemetryContext.h */; };
 		1BBBCF371A6594AE00253031 /* MSAITelemetryContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BBBCF311A6594AE00253031 /* MSAITelemetryContext.m */; };
+		1BE129911A72574B004D2AEE /* MSAITelemetryContextTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BE129901A72574B004D2AEE /* MSAITelemetryContextTests.m */; };
 		1BE29B371A6E58860014A10F /* MSAIMetricsManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BE29B361A6E58860014A10F /* MSAIMetricsManagerTests.m */; };
 		1BE29B391A6E76490014A10F /* MSAIChannelTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BE29B381A6E76490014A10F /* MSAIChannelTests.m */; };
 		1BE29B481A6FB8C20014A10F /* MSAISender.h in Headers */ = {isa = PBXBuildFile; fileRef = 1BE29B461A6FB8C20014A10F /* MSAISender.h */; };
@@ -202,6 +203,7 @@
 		1BBBCF2F1A6594AE00253031 /* MSAIChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAIChannel.m; sourceTree = "<group>"; };
 		1BBBCF301A6594AE00253031 /* MSAITelemetryContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAITelemetryContext.h; sourceTree = "<group>"; };
 		1BBBCF311A6594AE00253031 /* MSAITelemetryContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAITelemetryContext.m; sourceTree = "<group>"; };
+		1BE129901A72574B004D2AEE /* MSAITelemetryContextTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAITelemetryContextTests.m; sourceTree = "<group>"; };
 		1BE129921A725797004D2AEE /* MSAITelemetryContextPrivate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MSAITelemetryContextPrivate.h; sourceTree = "<group>"; };
 		1BE29B361A6E58860014A10F /* MSAIMetricsManagerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAIMetricsManagerTests.m; sourceTree = "<group>"; };
 		1BE29B381A6E76490014A10F /* MSAIChannelTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAIChannelTests.m; sourceTree = "<group>"; };
@@ -463,6 +465,7 @@
 				1BE29B361A6E58860014A10F /* MSAIMetricsManagerTests.m */,
 				1BE29B381A6E76490014A10F /* MSAIChannelTests.m */,
 				1B081B751A7109F800FB930B /* MSAISenderTests.m */,
+				1BE129901A72574B004D2AEE /* MSAITelemetryContextTests.m */,
 				807CFDD41A713AE6004EA1B6 /* Contract */,
 			);
 			path = "AppInsights-iOSTests";
@@ -933,6 +936,7 @@
 				1B081B761A7109F800FB930B /* MSAISenderTests.m in Sources */,
 				807CFDF51A713AF6004EA1B6 /* MSAIInternalTests.m in Sources */,
 				807CFDF21A713AF6004EA1B6 /* MSAIEventDataTests.m in Sources */,
+				1BE129911A72574B004D2AEE /* MSAITelemetryContextTests.m in Sources */,
 				807CFDF11A713AF6004EA1B6 /* MSAIEnvelopeTests.m in Sources */,
 				807CFDF81A713AF6004EA1B6 /* MSAIMetricDataTests.m in Sources */,
 				1E70A23617F31B82001BB32D /* MSAIHelperTests.m in Sources */,
