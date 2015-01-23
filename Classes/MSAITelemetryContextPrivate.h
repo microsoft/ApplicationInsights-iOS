@@ -89,14 +89,10 @@
 /// @name Session management
 ///-----------------------------------------------------------------------------
 
-- (void)writeSessionDefaultsWithSessionId:(NSString *)sessionId acquisitionTime:(long)acquisitionTime;
-
-- (void)updateSessionContextWithDateTime:(long)dateTime;
+- (void)updateSessionContext;
 
 - (BOOL)isFirstSession;
 
-- (void)createNewSessionWithCurrentDateTime:(long)dateTime;
-
-- (void)renewSessionWithCurrentDateTime:(long)dateTime;
+- (void)createNewSession;
 
 @end
