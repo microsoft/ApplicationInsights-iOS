@@ -71,9 +71,8 @@
 - (void)testDataGetsEnqueued {
    assertThatInt((int)[[_sut dataItemQueue] count], equalToInt(0));
   
-  NSDictionary *testDict = mock([NSDictionary class]);
-  [_sut enqueueDataDict:testDict];
-  [_sut enqueueDataDict:testDict];
+  [_sut enqueueDataDict:[NSDictionary new]];
+  [_sut enqueueDataDict:[NSDictionary new]];
   
   assertThatInt((int)[[_sut dataItemQueue] count], equalToInt(2));
 }

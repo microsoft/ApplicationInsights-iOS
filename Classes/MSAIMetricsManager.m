@@ -12,6 +12,7 @@
 #import "MSAIChannel.h"
 #import "MSAIChannelPrivate.h"
 #import "MSAITelemetryContext.h"
+#import "MSAITelemetryContextPrivate.h"
 #import "MSAIContext.h"
 #import "MSAIContextPrivate.h"
 
