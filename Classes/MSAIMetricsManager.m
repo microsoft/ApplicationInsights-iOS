@@ -24,10 +24,13 @@
 #if MSAI_FEATURE_CRASH_REPORTER
 #endif
 
+static NSString *const kMSAIApplicationDidEnterBackgroundTime = @"MSAIApplicationDidEnterBackgroundTime";
+static NSInteger const defaultSessionExpiration = 20 * 1000;
 
 @implementation MSAIMetricsManager {
-
-  id _appDidBecomeActiveObserver;
+  
+  id _appDidFinishLaunchingObserver;
+  id _appWillEnterForegroundObserver;
   id _appDidEnterBackgroundObserver;
   id _networkDidBecomeReachableObserver;
 }
@@ -54,6 +57,15 @@
   NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
   
   __weak typeof(self) weakSelf = self;
+  if (nil == _appDidFinishLaunchingObserver) {
+    _appDidFinishLaunchingObserver = [nc addObserverForName:UIApplicationDidFinishLaunchingNotification
+                                                     object:nil
+                                                      queue:NSOperationQueue.mainQueue
+                                                 usingBlock:^(NSNotification *note) {
+                                                   typeof(self) strongSelf = weakSelf;
+                                                   [strongSelf renewSessionDate];
+                                                 }];
+  }
   if (nil == _appDidEnterBackgroundObserver) {
     _appDidEnterBackgroundObserver = [nc addObserverForName:UIApplicationDidEnterBackgroundNotification
                                                      object:nil
@@ -63,14 +75,14 @@
                                                    [strongSelf updateSessionDate];
                                                  }];
   }
-  if (nil == _appDidBecomeActiveObserver) {
-    _appDidBecomeActiveObserver = [nc addObserverForName:UIApplicationWillEnterForegroundNotification
-                                                  object:nil
-                                                   queue:NSOperationQueue.mainQueue
-                                              usingBlock:^(NSNotification *note) {
-                                                typeof(self) strongSelf = weakSelf;
-                                                [strongSelf renewSessionDate];
-                                              }];
+  if (nil == _appWillEnterForegroundObserver) {
+    _appWillEnterForegroundObserver = [nc addObserverForName:UIApplicationWillEnterForegroundNotification
+                                                      object:nil
+                                                       queue:NSOperationQueue.mainQueue
+                                                  usingBlock:^(NSNotification *note) {
+                                                    typeof(self) strongSelf = weakSelf;
+                                                    [strongSelf renewSessionDate];
+                                                  }];
   }
   if (nil == _networkDidBecomeReachableObserver) {
     _networkDidBecomeReachableObserver = [nc addObserverForName:MSAINetworkDidBecomeReachableNotification
@@ -90,9 +102,9 @@
     [nc removeObserver:_appDidEnterBackgroundObserver];
     _appDidEnterBackgroundObserver = nil;
   }
-  if (_appDidBecomeActiveObserver) {
-    [nc removeObserver:_appDidBecomeActiveObserver];
-    _appDidBecomeActiveObserver = nil;
+  if (_appWillEnterForegroundObserver) {
+    [nc removeObserver:_appWillEnterForegroundObserver];
+    _appWillEnterForegroundObserver = nil;
   }
   if (_networkDidBecomeReachableObserver) {
     [nc removeObserver:_networkDidBecomeReachableObserver];
@@ -122,7 +134,7 @@
   
   MSAIApplication *applicationContext = [MSAIApplication new];
   [applicationContext setVersion:[self.appContext appVersion]];
-
+  
   MSAISession *sessionContext = [MSAISession new];
   [sessionContext setSessionId:[self.appContext deviceType]];
   
@@ -133,14 +145,14 @@
   
   //TODO: Add additional context data
   MSAITelemetryContext *telemetryContext = [[MSAITelemetryContext alloc]initWithInstrumentationKey:[self.appContext instrumentationKey]
-                                                                             endpointPath:MSAI_TELEMETRY_PATH
-                                                                       applicationContext:applicationContext
-                                                                            deviceContext:deviceContext
-                                                                          locationContext:locationContext
-                                                                           sessionContext:sessionContext
-                                                                              userContext:userContext
-                                                                          internalContext:internalContext
-                                                                         operationContext:operationContext];
+                                                                                      endpointPath:MSAI_TELEMETRY_PATH
+                                                                                applicationContext:applicationContext
+                                                                                     deviceContext:deviceContext
+                                                                                   locationContext:locationContext
+                                                                                    sessionContext:sessionContext
+                                                                                       userContext:userContext
+                                                                                   internalContext:internalContext
+                                                                                  operationContext:operationContext];
   return telemetryContext;
 }
 
@@ -215,11 +227,15 @@
 }
 
 - (void)updateSessionDate {
-  
+  [[NSUserDefaults standardUserDefaults] setDouble:[[NSDate date] timeIntervalSince1970] forKey:kMSAIApplicationDidEnterBackgroundTime];
+  [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 - (void)renewSessionDate {
-  [self trackNewSessionEvent];
+  double appDidEnterBackgroundTime = [[NSUserDefaults standardUserDefaults] doubleForKey:kMSAIApplicationDidEnterBackgroundTime];
+  if (([[NSDate date] timeIntervalSince1970] - appDidEnterBackgroundTime) > defaultSessionExpiration) {
+    [self trackNewSessionEvent];
+  }
 }
 
 @end
