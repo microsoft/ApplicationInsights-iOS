@@ -49,7 +49,7 @@ static NSInteger const defaultBatchInterval = 15;
       
       if([strongSelf->_dataItemQueue count] >= defaultMaxBatchCount){
         dispatch_async(dispatch_get_main_queue(), ^{
-          [strongSelf invalidateTimerAndRestart:YES];
+          [strongSelf invalidateTimerAndRestart:NO];
         });
         [strongSelf flushSenderQueue];
       }else if([strongSelf->_dataItemQueue count] == 1){
