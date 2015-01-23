@@ -53,6 +53,7 @@ NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
 - (void)writeSessionDefaultsWithSessionId:(NSString *)sessionId acquisitionTime:(long)acquisitionTime{
   [[NSUserDefaults standardUserDefaults] setObject:sessionId forKey:kMSAITelemetrySessionId];
   [[NSUserDefaults standardUserDefaults] setDouble:acquisitionTime forKey:kMSAISessionAcquisitionTime];
+  [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 - (void)updateSessionFromSessionDefaults{
