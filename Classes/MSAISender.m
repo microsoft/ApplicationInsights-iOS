@@ -93,10 +93,10 @@ static NSInteger const defaultBatchInterval = 15;
     typeof(self) strongSelf = weakSelf;
     
     NSError *error = nil;
-    NSData *json = [NSJSONSerialization dataWithJSONObject:strongSelf.dataItemQueue options:NSJSONWritingPrettyPrinted error:&error];
+    NSData *json = [NSJSONSerialization dataWithJSONObject:strongSelf->_dataItemQueue options:NSJSONWritingPrettyPrinted error:&error];
     NSURLRequest *request = [strongSelf requestForData:json];
     [strongSelf enqueueRequest:request];
-    [strongSelf.dataItemQueue removeAllObjects];
+    [strongSelf->_dataItemQueue removeAllObjects];
   });
 }
 
