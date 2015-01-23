@@ -19,6 +19,10 @@
 @property(nonatomic, strong) NSString *instrumentationKey;
 
 /**
+ *  A reference to the userDefaults being used to store values
+ */
+@property(nonatomic, weak) NSUserDefaults *userDefaults;
+/**
  *  The application context.
  */
 @property(nonatomic, strong) MSAIApplication *application;
