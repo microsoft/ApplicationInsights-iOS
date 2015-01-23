@@ -25,8 +25,12 @@
     if (self.name != nil) {
         [dict setObject:self.name forKey:@"name"];
     }
-    [dict setObject:self.properties forKey:@"properties"];
-    [dict setObject:self.measurements forKey:@"measurements"];
+    if (self.properties != nil) {
+      [dict setObject:self.properties forKey:@"properties"];
+    }
+    if (self.measurements != nil) {
+      [dict setObject:self.measurements forKey:@"measurements"];
+    }
     return dict;
 }
 
