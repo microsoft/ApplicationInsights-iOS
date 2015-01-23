@@ -1,4 +1,6 @@
+#import <Foundation/Foundation.h>
 #import "MSAITelemetryContext.h"
+#import "MSAITelemetryContextPrivate.h"
 #import "MSAIHelper.h"
 
 
@@ -39,9 +41,8 @@ NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
 
 - (MSAIOrderedDictionary *)contextDictionary{
   
-  MSAIOrderedDictionary *contextDictionary = [self.application serializeToDictionary];
-  
   [self updateSessionContext];
+  MSAIOrderedDictionary *contextDictionary = [self.application serializeToDictionary];
   [contextDictionary addEntriesFromDictionary:[self.session serializeToDictionary]];
   [contextDictionary addEntriesFromDictionary:[self.device serializeToDictionary]];
   [contextDictionary addEntriesFromDictionary:[self.location serializeToDictionary]];
@@ -59,11 +60,11 @@ NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
   BOOL acqExpired = (currentDateMs  - _acquisitionMs) > defaultSessionExpirationMs;
   BOOL renewalExpired = (currentDateMs - _renewalMs) > defaultSessionRenewalMs;
   
-  [_session setIsFirst: (firstSession ? @"true" : @"false")];
+  _session.isFirst = (firstSession ? @"true" : @"false");
   
   if (firstSession || acqExpired || renewalExpired) {
-    [_session setSessionId:[_device deviceId]];
-    [_session setIsFirst:@"true"];
+    _session.sessionId =_device.deviceId;
+    _session.isFirst = @"true";
     
     _renewalMs = currentDateMs;
     _acquisitionMs = currentDateMs;
@@ -71,7 +72,7 @@ NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
     [self writeSessionDefaultsWithSessionId:[_session sessionId] acquisitionTime:_acquisitionMs];
   }else{
     _renewalMs = currentDateMs;
-    [_session setIsFirst:@"false"];
+    _session.isFirst = @"false";
   }
 }
 
@@ -84,7 +85,7 @@ NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
   NSNumber *acquisitionTime = [[NSUserDefaults standardUserDefaults]objectForKey:kMSAISessionAcquisitionTime];
   _acquisitionMs = [acquisitionTime longValue];
   NSString *sessionId = [[NSUserDefaults standardUserDefaults]objectForKey:kMSAITelemetrySessionId];
-  [_session setSessionId:sessionId];
+  _session.sessionId = sessionId;
 }
 
 @end
