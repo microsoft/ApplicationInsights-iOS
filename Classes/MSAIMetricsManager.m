@@ -145,7 +145,6 @@ static NSInteger const defaultSessionExpirationTime = 20;
   [applicationContext setVersion:[self.appContext appVersion]];
   
   MSAISession *sessionContext = [MSAISession new];
-  [sessionContext setSessionId:[self.appContext deviceType]];
   
   MSAIOperation *operationContext = [MSAIOperation new];
   MSAIUser *userContext = [MSAIUser new];
