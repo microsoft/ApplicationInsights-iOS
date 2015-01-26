@@ -29,38 +29,63 @@ NSString *const kMSAIApplicationWasLaunched = @"MSAIApplicationWasLaunched";
 static NSString *const kMSAIApplicationDidEnterBackgroundTime = @"MSAIApplicationDidEnterBackgroundTime";
 static NSInteger const defaultSessionExpirationTime = 20;
 
-@implementation MSAIMetricsManager {
-  
-  id _appDidFinishLaunchingObserver;
-  id _appWillEnterForegroundObserver;
-  id _appDidEnterBackgroundObserver;
-  id _appWillTerminateObserver;
-}
+static dispatch_queue_t metricEventQueue;
+static MSAIChannel *channel;
+static MSAITelemetryContext *context;
+static MSAIContext *appContext;
+static BOOL disableMetricsManager;
+static BOOL managerInitialised = NO;
 
+static id appDidFinishLaunchingObserver;
+static id appWillEnterForegroundObserver;
+static id appDidEnterBackgroundObserver;
+static id appWillTerminateObserver;
+
+@implementation MSAIMetricsManager
 
 #pragma mark - Init
 
-- (instancetype)initWithAppContext:(MSAIContext *)appContext appClient:(MSAIAppClient *)appClient {
-  if (self = [super initWithAppContext:appContext]) {
-    _appClient = appClient;
-    _telemetryChannel = [[MSAIChannel alloc] initWithAppClient:_appClient telemetryContext:[self telemetryContext]];
-  }
-  return self;
++ (void)configureWithContext:(MSAIContext *)context appClient:(MSAIAppClient *)appClient{
+  static dispatch_once_t onceToken;
+  dispatch_once(&onceToken, ^{
+    metricEventQueue = dispatch_queue_create("com.microsoft.appInsights.metricEventQueue",DISPATCH_QUEUE_CONCURRENT);
+  });
+  
+  dispatch_barrier_async(metricEventQueue, ^{
+    managerInitialised = NO;
+    if(disableMetricsManager) return;
+    appContext = context;
+    channel = [[MSAIChannel alloc] initWithAppClient:appClient telemetryContext:[self telemetryContext]];
+  });
+  
 }
-
-- (void)dealloc {
-  [self unregisterObservers];
-}
-
 
 #pragma mark - Observers
 
-- (void) registerObservers {
++ (void) registerObservers {
   NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
   
   __weak typeof(self) weakSelf = self;
-  if (nil == _appDidFinishLaunchingObserver) {
-    _appDidFinishLaunchingObserver = [nc addObserverForName:UIApplicationDidFinishLaunchingNotification
+  if (nil == appDidFinishLaunchingObserver) {
+    appDidFinishLaunchingObserver = [nc addObserverForName:UIApplicationDidFinishLaunchingNotification
+                                                    object:nil
+                                                     queue:NSOperationQueue.mainQueue
+                                                usingBlock:^(NSNotification *note) {
+                                                  typeof(self) strongSelf = weakSelf;
+                                                  [strongSelf startSession];
+                                                }];
+  }
+  if (nil == appDidEnterBackgroundObserver) {
+    appDidEnterBackgroundObserver = [nc addObserverForName:UIApplicationDidEnterBackgroundNotification
+                                                    object:nil
+                                                     queue:NSOperationQueue.mainQueue
+                                                usingBlock:^(NSNotification *note) {
+                                                  typeof(self) strongSelf = weakSelf;
+                                                  [strongSelf updateSessionDate];
+                                                }];
+  }
+  if (nil == appWillEnterForegroundObserver) {
+    appWillEnterForegroundObserver = [nc addObserverForName:UIApplicationWillEnterForegroundNotification
                                                      object:nil
                                                       queue:NSOperationQueue.mainQueue
                                                  usingBlock:^(NSNotification *note) {
@@ -68,70 +93,31 @@ static NSInteger const defaultSessionExpirationTime = 20;
                                                    [strongSelf startSession];
                                                  }];
   }
-  if (nil == _appDidEnterBackgroundObserver) {
-    _appDidEnterBackgroundObserver = [nc addObserverForName:UIApplicationDidEnterBackgroundNotification
-                                                     object:nil
-                                                      queue:NSOperationQueue.mainQueue
-                                                 usingBlock:^(NSNotification *note) {
-                                                   typeof(self) strongSelf = weakSelf;
-                                                   [strongSelf updateSessionDate];
-                                                 }];
-  }
-  if (nil == _appWillEnterForegroundObserver) {
-    _appWillEnterForegroundObserver = [nc addObserverForName:UIApplicationWillEnterForegroundNotification
-                                                      object:nil
-                                                       queue:NSOperationQueue.mainQueue
-                                                  usingBlock:^(NSNotification *note) {
-                                                    typeof(self) strongSelf = weakSelf;
-                                                    [strongSelf startSession];
-                                                  }];
-  }
-  if (nil == _appWillTerminateObserver) {
-    _appWillTerminateObserver = [nc addObserverForName:UIApplicationWillTerminateNotification
-                                                      object:nil
-                                                       queue:NSOperationQueue.mainQueue
-                                                  usingBlock:^(NSNotification *note) {
-                                                    typeof(self) strongSelf = weakSelf;
-                                                    [strongSelf endSession];
-                                                  }];
-  }
-}
-
-- (void) unregisterObservers {
-  NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
-  
-  if (_appDidFinishLaunchingObserver) {
-    [nc removeObserver:_appDidFinishLaunchingObserver];
-    _appDidFinishLaunchingObserver = nil;
-  }
-  if (_appDidEnterBackgroundObserver) {
-    [nc removeObserver:_appDidEnterBackgroundObserver];
-    _appDidEnterBackgroundObserver = nil;
-  }
-  if (_appWillEnterForegroundObserver) {
-    [nc removeObserver:_appWillEnterForegroundObserver];
-    _appWillEnterForegroundObserver = nil;
-  }
-  if (_appWillTerminateObserver) {
-    [nc removeObserver:_appWillTerminateObserver];
-    _appWillTerminateObserver = nil;
+  if (nil == appWillTerminateObserver) {
+    appWillTerminateObserver = [nc addObserverForName:UIApplicationWillTerminateNotification
+                                               object:nil
+                                                queue:NSOperationQueue.mainQueue
+                                           usingBlock:^(NSNotification *note) {
+                                             typeof(self) strongSelf = weakSelf;
+                                             [strongSelf endSession];
+                                           }];
   }
 }
 
 #pragma mark - Private
 
-- (void)trackDataItem:(MSAITelemetryData *)dataItem{
-  if ([self isMetricsManagerDisabled]) return;
-  [_telemetryChannel sendDataItem:dataItem];
++ (void)trackDataItem:(MSAITelemetryData *)dataItem{
+  
+  [channel sendDataItem:dataItem];
 }
 
-- (MSAITelemetryContext *)telemetryContext{
++ (MSAITelemetryContext *)telemetryContext{
   
   MSAIDevice *deviceContext = [MSAIDevice new];
-  [deviceContext setModel: [self.appContext deviceModel]];
-  [deviceContext setType:[self.appContext deviceType]];
-  [deviceContext setOsVersion:[self.appContext osVersion]];
-  [deviceContext setOs:[self.appContext osName]];
+  [deviceContext setModel: [appContext deviceModel]];
+  [deviceContext setType:[appContext deviceType]];
+  [deviceContext setOsVersion:[appContext osVersion]];
+  [deviceContext setOs:[appContext osName]];
   [deviceContext setDeviceId:msai_appAnonID()];
   deviceContext.locale = msai_deviceLocale();
   deviceContext.language = msai_deviceLanguage();
@@ -142,7 +128,7 @@ static NSInteger const defaultSessionExpirationTime = 20;
   [internalContext setSdkVersion: msai_sdkVersion()];
   
   MSAIApplication *applicationContext = [MSAIApplication new];
-  [applicationContext setVersion:[self.appContext appVersion]];
+  [applicationContext setVersion:[appContext appVersion]];
   
   MSAISession *sessionContext = [MSAISession new];
   
@@ -152,7 +138,7 @@ static NSInteger const defaultSessionExpirationTime = 20;
   
   
   //TODO: Add additional context data
-  MSAITelemetryContext *telemetryContext = [[MSAITelemetryContext alloc]initWithInstrumentationKey:[self.appContext instrumentationKey]
+  MSAITelemetryContext *telemetryContext = [[MSAITelemetryContext alloc]initWithInstrumentationKey:[appContext instrumentationKey]
                                                                                       endpointPath:MSAI_TELEMETRY_PATH
                                                                                 applicationContext:applicationContext
                                                                                      deviceContext:deviceContext
@@ -166,57 +152,60 @@ static NSInteger const defaultSessionExpirationTime = 20;
 
 #pragma mark - Usage
 
--(void)trackEventWithName:(NSString *)eventName{
-  [self trackEventWithName:eventName properties:nil mesurements:nil];
++(void)trackEventWithName:(NSString *)eventName{
+    [self trackEventWithName:eventName properties:nil mesurements:nil];
 }
 
--(void)trackEventWithName:(NSString *)eventName properties:(NSDictionary *)properties{
-  [self trackEventWithName:eventName properties:properties mesurements:nil];
++(void)trackEventWithName:(NSString *)eventName properties:(NSDictionary *)properties{
+    [self trackEventWithName:eventName properties:properties mesurements:nil];
 }
 
--(void)trackEventWithName:(NSString *)eventName properties:(NSDictionary *)properties mesurements:(NSDictionary *)measurements{
-  //TODO: Add custom initializer to MSAIEventData
-  MSAIEventData *eventData = [MSAIEventData new];
-  [eventData setName:eventName];
-  [eventData setProperties:properties];
-  [eventData setMeasurements:measurements];
-  
-  [self trackDataItem:eventData];
++(void)trackEventWithName:(NSString *)eventName properties:(NSDictionary *)properties mesurements:(NSDictionary *)measurements{
+  dispatch_async(metricEventQueue, ^{
+    if(!managerInitialised) return;
+    MSAIEventData *eventData = [MSAIEventData new];
+    [eventData setName:eventName];
+    [eventData setProperties:properties];
+    [eventData setMeasurements:measurements];
+    
+    [self trackDataItem:eventData];
+  });
 }
 
--(void)trackTraceWithMessage:(NSString *)message{
-  [self trackTraceWithMessage:message properties:nil];
++(void)trackTraceWithMessage:(NSString *)message{
+    [self trackTraceWithMessage:message properties:nil];
 }
 
--(void)trackTraceWithMessage:(NSString *)message properties:(NSDictionary *)properties{
-  //TODO: Add custom initializer to MSAIMessageData
-  MSAIMessageData *messageData = [MSAIMessageData new];
-  [messageData setMessage:message];
-  [messageData setProperties:properties];
-  
-  [self trackDataItem:messageData];
++(void)trackTraceWithMessage:(NSString *)message properties:(NSDictionary *)properties{
+  dispatch_async(metricEventQueue, ^{
+    if(!managerInitialised) return;
+    MSAIMessageData *messageData = [MSAIMessageData new];
+    [messageData setMessage:message];
+    [messageData setProperties:properties];
+    
+    [self trackDataItem:messageData];
+  });
 }
 
--(void)trackMetricWithName:(NSString *)metricName value:(double)value{
-  [self trackMetricWithName:metricName value:value properties:nil];
++(void)trackMetricWithName:(NSString *)metricName value:(double)value{
+    [self trackMetricWithName:metricName value:value properties:nil];
 }
 
--(void)trackMetricWithName:(NSString *)metricName value:(double)value properties:(NSDictionary *)properties{
-  
-  //TODO: Add custom initializer to MSAIMetricData
-  MSAIMetricData *metricData = [MSAIMetricData new];
-  
-  MSAIDataPoint *data = [MSAIDataPoint new];
-  [data setCount:@(1)];
-  [data setKind:MSAIDataPointType_measurement];
-  [data setMax:@(value)];
-  [data setName:metricName];
-  [data setValue:@(value)];
-  NSMutableArray *metrics = [@[data] mutableCopy];
-  [metricData setMetrics:metrics];
-  [metricData setProperties:properties];
-  
-  [self trackDataItem:metricData];
++(void)trackMetricWithName:(NSString *)metricName value:(double)value properties:(NSDictionary *)properties{
+  dispatch_async(metricEventQueue, ^{
+    if(!managerInitialised) return;
+    MSAIMetricData *metricData = [MSAIMetricData new];
+    MSAIDataPoint *data = [MSAIDataPoint new];
+    [data setCount:@(1)];
+    [data setKind:MSAIDataPointType_measurement];
+    [data setMax:@(value)];
+    [data setName:metricName];
+    [data setValue:@(value)];
+    NSMutableArray *metrics = [@[data] mutableCopy];
+    [metricData setMetrics:metrics];
+    [metricData setProperties:properties];
+    [self trackDataItem:metricData];
+  });
 }
 
 #pragma mark -
@@ -224,31 +213,39 @@ static NSInteger const defaultSessionExpirationTime = 20;
 /**
  Begin the startup process
  */
-- (void)startManager {
-  if ([self isMetricsManagerDisabled]) return;
++ (void)startManager {
+  if(disableMetricsManager) return;
+  dispatch_barrier_sync(metricEventQueue, ^{
   [self registerObservers];
-  
+  managerInitialised = YES;
+  });
 }
 
-- (void)trackNewSessionEvent {
++ (void)setDisableMetricsManager:(BOOL)disable{
+  dispatch_barrier_async(metricEventQueue, ^{
+    disableMetricsManager = disable;
+  });
 }
 
-- (void)updateSessionDate {
++ (void)trackNewSessionEvent {
+}
+
++ (void)updateSessionDate {
   [[NSUserDefaults standardUserDefaults] setDouble:[[NSDate date] timeIntervalSince1970] forKey:kMSAIApplicationDidEnterBackgroundTime];
   [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
-- (void)startSession {
++ (void)startSession {
   double appDidEnterBackgroundTime = [[NSUserDefaults standardUserDefaults] doubleForKey:kMSAIApplicationDidEnterBackgroundTime];
   double timeSinceLastBackground = [[NSDate date] timeIntervalSince1970] - appDidEnterBackgroundTime;
   if (timeSinceLastBackground > defaultSessionExpirationTime) {
-    [self.telemetryContext createNewSession];
+    [context createNewSession];
     [self trackEventWithName:@"Session Start Event"];
     [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kMSAIApplicationWasLaunched];
   }
 }
 
-- (void)endSession {
++ (void)endSession {
   [self trackEventWithName:@"Session End Event"];
 }
 
