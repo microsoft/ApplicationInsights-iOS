@@ -5,10 +5,10 @@
 /**
  * If true, include support for handling crash reports
  *
- * _Default_: Enabled
+ * _Default_: Disabled
  */
 #ifndef MSAI_FEATURE_CRASH_REPORTER
-#    define MSAI_FEATURE_CRASH_REPORTER 1
+#    define MSAI_FEATURE_CRASH_REPORTER 0
 #endif /* MSAI_FEATURE_CRASH_REPORTER */
 
 
