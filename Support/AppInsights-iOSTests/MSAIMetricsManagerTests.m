@@ -15,6 +15,8 @@
 #import "MSAIBaseManagerPrivate.h"
 #import "MSAIContextPrivate.h"
 #import "MSAIContext.h"
+#import "MSAITelemetryContext.h"
+#import "MSAITelemetryContextPrivate.h"
 
 @interface MSAIMetricsManagerTests : XCTestCase
 

@@ -10,6 +10,7 @@
 #import "MSAIChannel.h"
 #import "MSAIChannelPrivate.h"
 #import "MSAITelemetryContext.h"
+#import "MSAITelemetryContextPrivate.h"
 #import "MSAIEnvelope.h"
 
 @interface MSAIChannelTests : XCTestCase

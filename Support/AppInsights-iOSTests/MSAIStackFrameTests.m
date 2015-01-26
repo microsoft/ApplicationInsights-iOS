@@ -8,13 +8,14 @@
 @implementation MSAIStackFrameTests
 
 - (void)testlevelPropertyWorksAsExpected {
-    NSNumber *expected = [NSNumber numberWithInt:42];
+  NSNumber *expected;
+  expected = @42;
     MSAIStackFrame *item = [MSAIStackFrame new];
     item.level = expected;
     NSNumber *actual = item.level;
     XCTAssertTrue([actual isEqual:expected]);
     
-    expected = [NSNumber numberWithInt:13];
+    expected = @13;
     item.level = expected;
     actual = item.level;
     XCTAssertTrue([actual isEqual:expected]);
@@ -60,13 +61,13 @@
 }
 
 - (void)testlinePropertyWorksAsExpected {
-    NSNumber *expected = [NSNumber numberWithInt:42];
+    NSNumber *expected = @42;
     MSAIStackFrame *item = [MSAIStackFrame new];
     item.line = expected;
     NSNumber *actual = item.line;
     XCTAssertTrue([actual isEqual:expected]);
     
-    expected = [NSNumber numberWithInt:13];
+    expected = @13;
     item.line = expected;
     actual = item.line;
     XCTAssertTrue([actual isEqual:expected]);
@@ -74,11 +75,11 @@
 
 - (void)testSerialize {
     MSAIStackFrame *item = [MSAIStackFrame new];
-    item.level = [NSNumber numberWithInt:42];
+    item.level = @42;
     item.method = @"Test string";
     item.assembly = @"Test string";
     item.fileName = @"Test string";
-    item.line = [NSNumber numberWithInt:42];
+    item.line = @42;
     NSString *actual = [item serializeToString];
     NSString *expected = @"{\"level\":42,\"method\":\"Test string\",\"assembly\":\"Test string\",\"fileName\":\"Test string\",\"line\":42}";
     XCTAssertTrue([actual isEqualToString:expected]);

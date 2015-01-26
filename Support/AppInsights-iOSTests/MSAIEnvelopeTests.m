@@ -8,13 +8,13 @@
 @implementation MSAIEnvelopeTests
 
 - (void)testverPropertyWorksAsExpected {
-    NSNumber *expected = [NSNumber numberWithInt:42];
+  NSNumber *expected = @42;
     MSAIEnvelope *item = [MSAIEnvelope new];
     item.version = expected;
     NSNumber *actual = item.version;
     XCTAssertTrue([actual isEqual:expected]);
     
-    expected = [NSNumber numberWithInt:13];
+    expected = @13;
     item.version = expected;
     actual = item.version;
     XCTAssertTrue([actual isEqual:expected]);
@@ -47,13 +47,13 @@
 }
 
 - (void)testsample_ratePropertyWorksAsExpected {
-    NSNumber *expected = [NSNumber numberWithDouble:1.5];
+    NSNumber *expected = @1.5;
     MSAIEnvelope *item = [MSAIEnvelope new];
     item.sampleRate = expected;
     NSNumber *actual = item.sampleRate;
     XCTAssertTrue([actual isEqual:expected]);
     
-    expected = [NSNumber numberWithDouble:4.8];
+    expected = @4.8;
     item.sampleRate = expected;
     actual = item.sampleRate;
     XCTAssertTrue([actual isEqual:expected]);
@@ -86,13 +86,13 @@
 }
 
 - (void)testflagsPropertyWorksAsExpected {
-    NSNumber *expected = [NSNumber numberWithLong:42];
+    NSNumber *expected = @42;
     MSAIEnvelope *item = [MSAIEnvelope new];
     item.flags = expected;
     NSNumber *actual = item.flags;
     XCTAssertTrue([actual isEqual:expected]);
     
-    expected = [NSNumber numberWithLong:13];
+    expected = @13;
     item.flags = expected;
     actual = item.flags;
     XCTAssertTrue([actual isEqual:expected]);
@@ -197,13 +197,13 @@
 
 - (void)testSerialize {
     MSAIEnvelope *item = [MSAIEnvelope new];
-    item.version = [NSNumber numberWithInt:42];
+    item.version = @42;
     item.name = @"Test string";
     item.time = @"Test string";
-    item.sampleRate = [NSNumber numberWithDouble:1.5];
+    item.sampleRate = @1.5;
     item.seq = @"Test string";
     item.iKey = @"Test string";
-    item.flags = [NSNumber numberWithLong:42];
+    item.flags = @42;
     item.deviceId = @"Test string";
     item.os = @"Test string";
     item.osVer = @"Test string";

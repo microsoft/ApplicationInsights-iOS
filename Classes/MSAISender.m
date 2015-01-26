@@ -8,6 +8,8 @@ static NSInteger const defaultBatchInterval = 15;
 
 @implementation MSAISender
 
+@synthesize dataItemQueue = _dataItemQueue;
+
 + (instancetype)sharedSender{
   
   static MSAISender *sharedInstance = nil;
@@ -15,13 +17,20 @@ static NSInteger const defaultBatchInterval = 15;
   
   dispatch_once(&onceToken, ^{
     sharedInstance = [[MSAISender alloc] init];
-    [sharedInstance setDataItemQueue:[NSMutableArray array]];
-    
     dispatch_queue_t serialQueue = dispatch_queue_create("com.microsoft.appInsights.senderQueue", DISPATCH_QUEUE_SERIAL);
     [sharedInstance setDataItemsOperations:serialQueue];
+    
   });
   
   return sharedInstance;
+}
+
+- (instancetype)init{
+  
+  if(self = [super init]){
+    _dataItemQueue = [NSMutableArray array];
+  }
+  return self;
 }
 
 - (void)configureWithAppClient:(MSAIAppClient *)appClient endpointPath:(NSString *)endpointPath{
@@ -40,7 +49,7 @@ static NSInteger const defaultBatchInterval = 15;
       
       if([strongSelf->_dataItemQueue count] >= defaultMaxBatchCount){
         dispatch_async(dispatch_get_main_queue(), ^{
-          [strongSelf invalidateTimerAndRestart:YES];
+          [strongSelf invalidateTimerAndRestart:NO];
         });
         [strongSelf flushSenderQueue];
       }else if([strongSelf->_dataItemQueue count] == 1){
@@ -50,7 +59,18 @@ static NSInteger const defaultBatchInterval = 15;
       }
     });
   }
+}
+
+- (NSMutableArray *)dataItemQueue{
   
+  __block NSMutableArray *queue = nil;
+  __weak typeof(self) weakSelf = self;
+  dispatch_sync(self.dataItemsOperations, ^{
+    typeof(self) strongSelf = weakSelf;
+    
+    queue = [NSMutableArray arrayWithArray:strongSelf->_dataItemQueue];
+  });
+  return queue;
 }
 
 - (void)invalidateTimerAndRestart:(BOOL)restart{

@@ -1,6 +1,7 @@
 #import "MSAIChannel.h"
 #import "MSAIChannelPrivate.h"
 #import "MSAITelemetryContext.h"
+#import "MSAITelemetryContextPrivate.h"
 #import "MSAIEnvelope.h"
 #import "MSAIHTTPOperation.h"
 #import "MSAIAppClient.h"
@@ -34,7 +35,7 @@
   [envelope setIKey:[_telemetryContext instrumentationKey]];
   [envelope setData:data];
   [envelope setName:[dataItem envelopeTypeName]];
-  [envelope setTags:[_telemetryContext contextDictionary]];
+  [envelope setTags:[_telemetryContext  contextDictionary]];
 
   [_sender enqueueDataDict:[envelope serializeToDictionary]];
 }
