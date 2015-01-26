@@ -8,13 +8,13 @@
 @implementation MSAIRequestDataTests
 
 - (void)testverPropertyWorksAsExpected {
-    NSNumber *expected = [NSNumber numberWithInt:42];
+    NSNumber *expected = @42;
     MSAIRequestData *item = [MSAIRequestData new];
     item.version = expected;
     NSNumber *actual = item.version;
     XCTAssertTrue([actual isEqual:expected]);
     
-    expected = [NSNumber numberWithInt:13];
+    expected = @13;
     item.version = expected;
     actual = item.version;
     XCTAssertTrue([actual isEqual:expected]);
@@ -138,7 +138,7 @@
 
 - (void)testSerialize {
     MSAIRequestData *item = [MSAIRequestData new];
-    item.version = [NSNumber numberWithInt:42];
+    item.version = @42;
     item.requestDataId = @"Test string";
     item.name = @"Test string";
     item.startTime = @"Test string";
@@ -149,7 +149,7 @@
     item.url = @"Test string";
     item.properties = [MSAIOrderedDictionary dictionaryWithObjectsAndKeys: @"test value 1", @"key1", @"test value 2", @"key2", nil];
 
-    MSAIOrderedDictionary *dictmeasurements = [MSAIOrderedDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithDouble:3.1415], @"key1", [NSNumber numberWithDouble:42.2], @"key2", nil];
+    MSAIOrderedDictionary *dictmeasurements = [MSAIOrderedDictionary dictionaryWithObjectsAndKeys:@3.1415, @"key1", @42.2, @"key2", nil];
     for (id key in dictmeasurements) {
         [item.measurements setObject:[dictmeasurements objectForKey:key]  forKey:key];
     }

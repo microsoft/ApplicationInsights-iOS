@@ -9,7 +9,7 @@
     if (self = [super init]) {
         _envelopeTypeName = @"Microsoft.ApplicationInsights.Exception";
         _dataTypeName = @"ExceptionData";
-        self.version = [NSNumber numberWithInt:2];
+        self.version = @2;
         self.exceptions = [NSMutableArray new];
         self.properties = [MSAIOrderedDictionary new];
         self.measurements = [MSAIOrderedDictionary new];
@@ -33,7 +33,7 @@
         }
         [dict setObject:exceptionsArray forKey:@"exceptions"];
     }
-    [dict setObject:[NSNumber numberWithInt:(int)self.severityLevel] forKey:@"severityLevel"];
+  [dict setObject:@((int) self.severityLevel) forKey:@"severityLevel"];
     [dict setObject:self.properties forKey:@"properties"];
     [dict setObject:self.measurements forKey:@"measurements"];
     return dict;

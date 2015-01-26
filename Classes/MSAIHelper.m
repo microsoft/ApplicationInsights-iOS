@@ -68,10 +68,10 @@ NSString *msai_settingsDir(void) {
     
     // temporary directory for crashes grabbed from PLCrashReporter
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
-    settingsDir = [[paths objectAtIndex:0] stringByAppendingPathComponent:MSAI_IDENTIFIER];
+    settingsDir = [paths[0] stringByAppendingPathComponent:MSAI_IDENTIFIER];
     
     if (![fileManager fileExistsAtPath:settingsDir]) {
-      NSDictionary *attributes = [NSDictionary dictionaryWithObject: [NSNumber numberWithUnsignedLong: 0755] forKey: NSFilePosixPermissions];
+      NSDictionary *attributes = @{NSFilePosixPermissions : @0755};
       NSError *theError = NULL;
       
       [fileManager createDirectoryAtPath:settingsDir withIntermediateDirectories: YES attributes: attributes error: &theError];
@@ -110,8 +110,8 @@ NSString *msai_osName(void){
 }
 
 NSString *msai_appVersion(void){
-  NSString *build = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"];
-  NSString *version = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
+  NSString *build = [[NSBundle mainBundle] infoDictionary][@"CFBundleVersion"];
+  NSString *version = [[NSBundle mainBundle] infoDictionary][@"CFBundleShortVersionString"];
   
   if(version){
     return [NSString stringWithFormat:@"%@ (%@)", version, build];

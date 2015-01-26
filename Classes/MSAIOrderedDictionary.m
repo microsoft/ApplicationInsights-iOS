@@ -21,10 +21,10 @@
 }
 
 - (void)setObject:(id)anObject forKey:(id)aKey {
-    if(![dictionary objectForKey:aKey]) {
+    if(!dictionary[aKey]) {
         [order addObject:aKey];
     }
-    [dictionary setObject:anObject forKey:aKey];
+    dictionary[aKey] = anObject;
 }
 
 - (NSEnumerator *)keyEnumerator {
@@ -32,7 +32,7 @@
 }
 
 - (id)objectForKey:(id)key {
-    return [dictionary objectForKey:key];
+    return dictionary[key];
 }
 
 - (NSUInteger)count {

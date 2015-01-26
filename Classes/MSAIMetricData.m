@@ -9,7 +9,7 @@
     if (self = [super init]) {
         _envelopeTypeName = @"Microsoft.ApplicationInsights.Metric";
         _dataTypeName = @"MetricData";
-        self.version = [NSNumber numberWithInt:2];
+        self.version = @2;
         self.metrics = [NSMutableArray new];
         self.properties = [MSAIOrderedDictionary new];
     }

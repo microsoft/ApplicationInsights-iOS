@@ -9,26 +9,27 @@
 @implementation MSAIExceptionDetailsTests
 
 - (void)testidPropertyWorksAsExpected {
-    NSNumber *expected = [NSNumber numberWithInt:42];
+  NSNumber *expected;
+  expected = @42;
     MSAIExceptionDetails *item = [MSAIExceptionDetails new];
     item.exceptionDetailsId = expected;
     NSNumber *actual = item.exceptionDetailsId;
     XCTAssertTrue([actual isEqual:expected]);
     
-    expected = [NSNumber numberWithInt:13];
+    expected = @13;
     item.exceptionDetailsId = expected;
     actual = item.exceptionDetailsId;
     XCTAssertTrue([actual isEqual:expected]);
 }
 
 - (void)testouter_idPropertyWorksAsExpected {
-    NSNumber *expected = [NSNumber numberWithInt:42];
+    NSNumber *expected = @42;
     MSAIExceptionDetails *item = [MSAIExceptionDetails new];
     item.outerId = expected;
     NSNumber *actual = item.outerId;
     XCTAssertTrue([actual isEqual:expected]);
     
-    expected = [NSNumber numberWithInt:13];
+    expected = @13;
     item.outerId = expected;
     actual = item.outerId;
     XCTAssertTrue([actual isEqual:expected]);
@@ -94,13 +95,13 @@
 
 - (void)testSerialize {
     MSAIExceptionDetails *item = [MSAIExceptionDetails new];
-    item.exceptionDetailsId = [NSNumber numberWithInt:42];
-    item.outerId = [NSNumber numberWithInt:42];
+    item.exceptionDetailsId = @42;
+    item.outerId = @42;
     item.typeName = @"Test string";
     item.message = @"Test string";
     item.hasFullStack = YES;
     item.stack = @"Test string";
-    NSArray *arrparsedStack = [NSArray arrayWithObjects: [MSAIStackFrame new], nil];
+    NSArray *arrparsedStack = @[[MSAIStackFrame new]];
     for (MSAIStackFrame *arrItem in arrparsedStack) {
         [item.parsedStack addObject:arrItem];
     }

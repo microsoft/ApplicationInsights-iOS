@@ -14,7 +14,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "1E4F61E91621AD970033EFC5"
-               BuildableName = "AppInsights-iOS Framework"
+               BuildableName = "HockeySDK Framework"
                BlueprintName = "AppInsights-iOS Framework"
                ReferencedContainer = "container:AppInsights-iOS.xcodeproj">
             </BuildableReference>

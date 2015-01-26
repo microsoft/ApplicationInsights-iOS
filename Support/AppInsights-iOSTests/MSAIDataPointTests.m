@@ -34,65 +34,66 @@
 }
 
 - (void)testvaluePropertyWorksAsExpected {
-    NSNumber *expected = [NSNumber numberWithDouble:1.5];
+  NSNumber *expected;
+  expected = @1.5;
     MSAIDataPoint *item = [MSAIDataPoint new];
     item.value = expected;
     NSNumber *actual = item.value;
     XCTAssertTrue([actual isEqual:expected]);
     
-    expected = [NSNumber numberWithDouble:4.8];
+    expected = @4.8;
     item.value = expected;
     actual = item.value;
     XCTAssertTrue([actual isEqual:expected]);
 }
 
 - (void)testcountPropertyWorksAsExpected {
-    NSNumber *expected = [NSNumber numberWithInt:42];
+    NSNumber *expected = @42;
     MSAIDataPoint *item = [MSAIDataPoint new];
     item.count = expected;
     NSNumber *actual = item.count;
     XCTAssertTrue([actual isEqual:expected]);
     
-    expected = [NSNumber numberWithInt:13];
+    expected = @13;
     item.count = expected;
     actual = item.count;
     XCTAssertTrue([actual isEqual:expected]);
 }
 
 - (void)testminPropertyWorksAsExpected {
-    NSNumber *expected = [NSNumber numberWithDouble:1.5];
+    NSNumber *expected = @1.5;
     MSAIDataPoint *item = [MSAIDataPoint new];
     item.min = expected;
     NSNumber *actual = item.min;
     XCTAssertTrue([actual isEqual:expected]);
     
-    expected = [NSNumber numberWithDouble:4.8];
+    expected = @4.8;
     item.min = expected;
     actual = item.min;
     XCTAssertTrue([actual isEqual:expected]);
 }
 
 - (void)testmaxPropertyWorksAsExpected {
-    NSNumber *expected = [NSNumber numberWithDouble:1.5];
+    NSNumber *expected = @1.5;
     MSAIDataPoint *item = [MSAIDataPoint new];
     item.max = expected;
     NSNumber *actual = item.max;
     XCTAssertTrue([actual isEqual:expected]);
     
-    expected = [NSNumber numberWithDouble:4.8];
+    expected = @4.8;
     item.max = expected;
     actual = item.max;
     XCTAssertTrue([actual isEqual:expected]);
 }
 
 - (void)teststd_devPropertyWorksAsExpected {
-    NSNumber *expected = [NSNumber numberWithDouble:1.5];
+    NSNumber *expected = @1.5;
     MSAIDataPoint *item = [MSAIDataPoint new];
     item.stdDev = expected;
     NSNumber *actual = item.stdDev;
     XCTAssertTrue([actual isEqual:expected]);
     
-    expected = [NSNumber numberWithDouble:4.8];
+    expected = @4.8;
     item.stdDev = expected;
     actual = item.stdDev;
     XCTAssertTrue([actual isEqual:expected]);
@@ -102,11 +103,11 @@
     MSAIDataPoint *item = [MSAIDataPoint new];
     item.name = @"Test string";
     item.kind = 5;
-    item.value = [NSNumber numberWithDouble:1.5];
-    item.count = [NSNumber numberWithInt:42];
-    item.min = [NSNumber numberWithDouble:1.5];
-    item.max = [NSNumber numberWithDouble:1.5];
-    item.stdDev = [NSNumber numberWithDouble:1.5];
+    item.value = @1.5;
+    item.count = @42;
+    item.min = @1.5;
+    item.max = @1.5;
+    item.stdDev = @1.5;
     NSString *actual = [item serializeToString];
     NSString *expected = @"{\"name\":\"Test string\",\"kind\":5,\"value\":1.5,\"count\":42,\"min\":1.5,\"max\":1.5,\"stdDev\":1.5}";
     XCTAssertTrue([actual isEqualToString:expected]);

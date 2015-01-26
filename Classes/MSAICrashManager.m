@@ -157,7 +157,7 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
   
   NSMutableDictionary *rootObj = [NSMutableDictionary dictionaryWithCapacity:2];
   if (_approvedCrashReports && [_approvedCrashReports count] > 0) {
-    [rootObj setObject:_approvedCrashReports forKey:kMSAICrashApprovedReports];
+    rootObj[kMSAICrashApprovedReports] = _approvedCrashReports;
   }
 
   NSData *plist = [NSPropertyListSerialization dataWithPropertyList:(id)rootObj format:NSPropertyListBinaryFormat_v1_0 options:0 error:&error];
@@ -189,8 +189,8 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
                                              format:&format
                                              error:&error];
     
-    if ([rootObj objectForKey:kMSAICrashApprovedReports])
-      [_approvedCrashReports setDictionary:[rootObj objectForKey:kMSAICrashApprovedReports]];
+    if (rootObj[kMSAICrashApprovedReports])
+      [_approvedCrashReports setDictionary:rootObj[kMSAICrashApprovedReports]];
   } else {
     MSAILog(@"ERROR: Reading crash manager settings.");
   }
@@ -230,7 +230,7 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
  */
 - (void)cleanCrashReports {
   for (NSUInteger i=0; i < [_crashFiles count]; i++) {
-    [self cleanCrashReportWithFilename:[_crashFiles objectAtIndex:i]];
+    [self cleanCrashReportWithFilename:_crashFiles[i]];
   }
 }
 
@@ -273,12 +273,12 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
   NSArray *uuidArray = [MSAICrashReportTextFormatter arrayOfAppUUIDsForCrashReport:report];
   
   for (NSDictionary *element in uuidArray) {
-    if ([element objectForKey:kMSAIBinaryImageKeyUUID] && [element objectForKey:kMSAIBinaryImageKeyArch] && [element objectForKey:kMSAIBinaryImageKeyUUID]) {
+    if (element[kMSAIBinaryImageKeyUUID] && element[kMSAIBinaryImageKeyArch] && element[kMSAIBinaryImageKeyUUID]) {
       [uuidString appendFormat:@"<uuid type=\"%@\" arch=\"%@\">%@</uuid>",
-       [element objectForKey:kMSAIBinaryImageKeyType],
-       [element objectForKey:kMSAIBinaryImageKeyArch],
-       [element objectForKey:kMSAIBinaryImageKeyUUID]
-       ];
+                               element[kMSAIBinaryImageKeyType],
+                               element[kMSAIBinaryImageKeyArch],
+                               element[kMSAIBinaryImageKeyUUID]
+      ];
     }
   }
   
@@ -584,7 +584,7 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
   if (self.delegate != nil && [self.delegate respondsToSelector:@selector(applicationLogForCrashManager:)]) {
     applicationLog = [self.delegate applicationLogForCrashManager:self] ?: @"";
   }
-  [metaDict setObject:applicationLog forKey:kMSAICrashMetaApplicationLog];
+  metaDict[kMSAICrashMetaApplicationLog] = applicationLog;
   
   NSData *plist = [NSPropertyListSerialization dataWithPropertyList:(id)metaDict
                                                              format:NSPropertyListBinaryFormat_v1_0
@@ -724,13 +724,13 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
  */
 - (NSString *)firstNotApprovedCrashReport {
   if ((!_approvedCrashReports || [_approvedCrashReports count] == 0) && [_crashFiles count] > 0) {
-    return [_crashFiles objectAtIndex:0];
+    return _crashFiles[0];
   }
   
   for (NSUInteger i=0; i < [_crashFiles count]; i++) {
-    NSString *filename = [_crashFiles objectAtIndex:i];
+    NSString *filename = _crashFiles[i];
     
-    if (![_approvedCrashReports objectForKey:filename]) return filename;
+    if (!_approvedCrashReports[filename]) return filename;
   }
   
   return nil;
@@ -753,8 +753,8 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
       NSString *filePath = [_crashesDir stringByAppendingPathComponent:file];
 
       NSDictionary *fileAttributes = [self.fileManager attributesOfItemAtPath:filePath error:&error];
-      if ([[fileAttributes objectForKey:NSFileType] isEqualToString:NSFileTypeRegular] &&
-          [[fileAttributes objectForKey:NSFileSize] intValue] > 0 &&
+      if ([fileAttributes[NSFileType] isEqualToString:NSFileTypeRegular] &&
+          [fileAttributes[NSFileSize] intValue] > 0 &&
           ![file hasSuffix:@".DS_Store"] &&
           ![file hasSuffix:@".analyzer"] &&
           ![file hasSuffix:@".plist"] &&
@@ -1027,13 +1027,13 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
   NSError *error = nil;
   
   NSMutableDictionary *rootObj = [NSMutableDictionary dictionaryWithCapacity:2];
-  [rootObj setObject:fakeReportUUID forKey:kMSAIFakeCrashUUID];
-  [rootObj setObject:fakeReportAppVersion forKey:kMSAIFakeCrashAppVersion];
-  [rootObj setObject:fakeReportAppBundleIdentifier forKey:kMSAIFakeCrashAppBundleIdentifier];
-  [rootObj setObject:fakeReportOSVersion forKey:kMSAIFakeCrashOSVersion];
-  [rootObj setObject:fakeReportDeviceModel forKey:kMSAIFakeCrashDeviceModel];
-  [rootObj setObject:fakeReportAppUUIDs forKey:kMSAIFakeCrashAppBinaryUUID];
-  [rootObj setObject:fakeReportString forKey:kMSAIFakeCrashReport];
+  rootObj[kMSAIFakeCrashUUID] = fakeReportUUID;
+  rootObj[kMSAIFakeCrashAppVersion] = fakeReportAppVersion;
+  rootObj[kMSAIFakeCrashAppBundleIdentifier] = fakeReportAppBundleIdentifier;
+  rootObj[kMSAIFakeCrashOSVersion] = fakeReportOSVersion;
+  rootObj[kMSAIFakeCrashDeviceModel] = fakeReportDeviceModel;
+  rootObj[kMSAIFakeCrashAppBinaryUUID] = fakeReportAppUUIDs;
+  rootObj[kMSAIFakeCrashReport] = fakeReportString;
   
   _lastSessionCrashDetails = [[MSAICrashDetails alloc] initWithIncidentIdentifier:fakeReportUUID
                                                                      reporterKey:fakeReporterKey
@@ -1075,7 +1075,7 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
   
   NSString *crashXML = nil;
   
-  NSString *filename = [_crashFiles objectAtIndex:0];
+  NSString *filename = _crashFiles[0];
   NSString *cacheFilename = [filename lastPathComponent];
   NSData *crashData = [NSData dataWithContentsOfFile:filename];
   
@@ -1100,13 +1100,13 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
                                                       format:&format
                                                       error:&error];
       
-      crashLogString = [fakeReportDict objectForKey:kMSAIFakeCrashReport];
-      crashUUID = [fakeReportDict objectForKey:kMSAIFakeCrashUUID];
-      appBundleIdentifier = [fakeReportDict objectForKey:kMSAIFakeCrashAppBundleIdentifier];
-      appBundleVersion = [fakeReportDict objectForKey:kMSAIFakeCrashAppVersion];
-      appBinaryUUIDs = [fakeReportDict objectForKey:kMSAIFakeCrashAppBinaryUUID];
-      deviceModel = [fakeReportDict objectForKey:kMSAIFakeCrashDeviceModel];
-      osVersion = [fakeReportDict objectForKey:kMSAIFakeCrashOSVersion];
+      crashLogString = fakeReportDict[kMSAIFakeCrashReport];
+      crashUUID = fakeReportDict[kMSAIFakeCrashUUID];
+      appBundleIdentifier = fakeReportDict[kMSAIFakeCrashAppBundleIdentifier];
+      appBundleVersion = fakeReportDict[kMSAIFakeCrashAppVersion];
+      appBinaryUUIDs = fakeReportDict[kMSAIFakeCrashAppBinaryUUID];
+      deviceModel = fakeReportDict[kMSAIFakeCrashDeviceModel];
+      osVersion = fakeReportDict[kMSAIFakeCrashOSVersion];
       
       metaFilename = [cacheFilename stringByReplacingOccurrencesOfString:@".fake" withString:@".meta"];
       if ([appBundleVersion compare:[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"]] == NSOrderedSame) {
@@ -1165,7 +1165,7 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
       username = [self stringValueFromKeychainForKey:[NSString stringWithFormat:@"%@.%@", cacheFilename, kMSAICrashMetaUserName]] ?: @"";
       useremail = [self stringValueFromKeychainForKey:[NSString stringWithFormat:@"%@.%@", cacheFilename, kMSAICrashMetaUserEmail]] ?: @"";
       userid = [self stringValueFromKeychainForKey:[NSString stringWithFormat:@"%@.%@", cacheFilename, kMSAICrashMetaUserID]] ?: @"";
-      applicationLog = [metaDict objectForKey:kMSAICrashMetaApplicationLog] ?: @"";
+      applicationLog = metaDict[kMSAICrashMetaApplicationLog] ?: @"";
       description = [NSString stringWithContentsOfFile:[NSString stringWithFormat:@"%@.desc", [_crashesDir stringByAppendingPathComponent: cacheFilename]] encoding:NSUTF8StringEncoding error:&error];
     } else {
       MSAILog(@"ERROR: Reading crash meta data. %@", error);
@@ -1196,7 +1196,7 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
                 [description stringByReplacingOccurrencesOfString:@"]]>" withString:@"]]" @"]]><![CDATA[" @">" options:NSLiteralSearch range:NSMakeRange(0,description.length)]];
     
     // store this crash report as user approved, so if it fails it will retry automatically
-    [_approvedCrashReports setObject:[NSNumber numberWithBool:YES] forKey:filename];
+    _approvedCrashReports[filename] = @YES;
 
     [self saveSettings];
     

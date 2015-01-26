@@ -193,7 +193,7 @@
   [data setMax:@(value)];
   [data setName:metricName];
   [data setValue:@(value)];
-  NSMutableArray *metrics = [NSMutableArray arrayWithObject:data];
+  NSMutableArray *metrics = [@[data] mutableCopy];
   [metricData setMetrics:metrics];
   [metricData setProperties:properties];
   

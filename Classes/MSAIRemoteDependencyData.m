@@ -9,7 +9,7 @@
     if (self = [super init]) {
         _envelopeTypeName = @"Microsoft.ApplicationInsights.RemoteDependency";
         _dataTypeName = @"RemoteDependencyData";
-        self.version = [NSNumber numberWithInt:2];
+        self.version = @2;
         self.kind = MSAIDataPointType_measurement;
         self.dependencyKind = MSAIDependencyKind_undefined;
         self.success = true;
@@ -28,7 +28,7 @@
     if (self.name != nil) {
         [dict setObject:self.name forKey:@"name"];
     }
-    [dict setObject:[NSNumber numberWithInt:(int)self.kind] forKey:@"kind"];
+  [dict setObject:@((int) self.kind) forKey:@"kind"];
     if (self.value != nil) {
         [dict setObject:self.value forKey:@"value"];
     }
@@ -44,12 +44,12 @@
     if (self.stdDev != nil) {
         [dict setObject:self.stdDev forKey:@"stdDev"];
     }
-    [dict setObject:[NSNumber numberWithInt:(int)self.dependencyKind] forKey:@"dependencyKind"];
+  [dict setObject:@((int) self.dependencyKind) forKey:@"dependencyKind"];
     NSString *strsuccess = [NSString stringWithFormat:@"%s", (self.success) ? "true" : "false"];
     [dict setObject:strsuccess forKey:@"success"];
     NSString *strasync = [NSString stringWithFormat:@"%s", (self.async) ? "true" : "false"];
     [dict setObject:strasync forKey:@"async"];
-    [dict setObject:[NSNumber numberWithInt:(int)self.dependencySource] forKey:@"dependencySource"];
+  [dict setObject:@((int) self.dependencySource) forKey:@"dependencySource"];
     [dict setObject:self.properties forKey:@"properties"];
     return dict;
 }

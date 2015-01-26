@@ -9,13 +9,14 @@
 @implementation MSAIMetricDataTests
 
 - (void)testverPropertyWorksAsExpected {
-    NSNumber *expected = [NSNumber numberWithInt:42];
+  NSNumber *expected;
+  expected = @42;
     MSAIMetricData *item = [MSAIMetricData new];
     item.version = expected;
     NSNumber *actual = item.version;
     XCTAssertTrue([actual isEqual:expected]);
     
-    expected = [NSNumber numberWithInt:13];
+    expected = @13;
     item.version = expected;
     actual = item.version;
     XCTAssertTrue([actual isEqual:expected]);
@@ -35,8 +36,8 @@
 
 - (void)testSerialize {
     MSAIMetricData *item = [MSAIMetricData new];
-    item.version = [NSNumber numberWithInt:42];
-    NSArray *arrmetrics = [NSArray arrayWithObjects: [MSAIDataPoint new], nil];
+    item.version = @42;
+    NSArray *arrmetrics = @[[MSAIDataPoint new]];
     for (MSAIDataPoint *arrItem in arrmetrics) {
         [item.metrics addObject:arrItem];
     }

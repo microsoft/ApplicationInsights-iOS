@@ -9,7 +9,7 @@
     if (self = [super init]) {
         _envelopeTypeName = @"Microsoft.ApplicationInsights.Request";
         _dataTypeName = @"RequestData";
-        self.version = [NSNumber numberWithInt:2];
+        self.version = @2;
         self.properties = [MSAIOrderedDictionary new];
         self.measurements = [MSAIOrderedDictionary new];
     }

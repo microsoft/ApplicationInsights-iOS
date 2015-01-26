@@ -5,8 +5,8 @@
 /// Initializes a new instance of the class.
 - (instancetype)init {
     if (self = [super init]) {
-        self.version = [NSNumber numberWithInt:1];
-        self.sampleRate = [NSNumber numberWithDouble:100.0];
+        self.version = @1;
+        self.sampleRate = @100.0;
         self.tags = [MSAIOrderedDictionary new];
     }
     return self;

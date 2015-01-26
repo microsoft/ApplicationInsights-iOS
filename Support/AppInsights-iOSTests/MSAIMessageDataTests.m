@@ -8,13 +8,14 @@
 @implementation MSAIMessageDataTests
 
 - (void)testverPropertyWorksAsExpected {
-    NSNumber *expected = [NSNumber numberWithInt:42];
+  NSNumber *expected;
+  expected = @42;
     MSAIMessageData *item = [MSAIMessageData new];
     item.version = expected;
     NSNumber *actual = item.version;
     XCTAssertTrue([actual isEqual:expected]);
     
-    expected = [NSNumber numberWithInt:13];
+    expected = @13;
     item.version = expected;
     actual = item.version;
     XCTAssertTrue([actual isEqual:expected]);
@@ -54,7 +55,7 @@
 
 - (void)testSerialize {
     MSAIMessageData *item = [MSAIMessageData new];
-    item.version = [NSNumber numberWithInt:42];
+    item.version = @42;
     item.message = @"Test string";
     item.severityLevel = 5;
     item.properties = [MSAIOrderedDictionary dictionaryWithObjectsAndKeys: @"test value 1", @"key1", @"test value 2", @"key2", nil];

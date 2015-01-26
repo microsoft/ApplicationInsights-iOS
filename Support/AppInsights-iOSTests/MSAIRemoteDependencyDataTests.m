@@ -8,13 +8,14 @@
 @implementation MSAIRemoteDependencyDataTests
 
 - (void)testverPropertyWorksAsExpected {
-    NSNumber *expected = [NSNumber numberWithInt:42];
+  NSNumber *expected;
+  expected = @42;
     MSAIRemoteDependencyData *item = [MSAIRemoteDependencyData new];
     item.version = expected;
     NSNumber *actual = item.version;
     XCTAssertTrue([actual isEqual:expected]);
     
-    expected = [NSNumber numberWithInt:13];
+    expected = @13;
     item.version = expected;
     actual = item.version;
     XCTAssertTrue([actual isEqual:expected]);
@@ -47,65 +48,65 @@
 }
 
 - (void)testvaluePropertyWorksAsExpected {
-    NSNumber *expected = [NSNumber numberWithDouble:1.5];
+    NSNumber *expected = @1.5;
     MSAIRemoteDependencyData *item = [MSAIRemoteDependencyData new];
     item.value = expected;
     NSNumber *actual = item.value;
     XCTAssertTrue([actual isEqual:expected]);
     
-    expected = [NSNumber numberWithDouble:4.8];
+    expected = @4.8;
     item.value = expected;
     actual = item.value;
     XCTAssertTrue([actual isEqual:expected]);
 }
 
 - (void)testcountPropertyWorksAsExpected {
-    NSNumber *expected = [NSNumber numberWithInt:42];
+    NSNumber *expected = @42;
     MSAIRemoteDependencyData *item = [MSAIRemoteDependencyData new];
     item.count = expected;
     NSNumber *actual = item.count;
     XCTAssertTrue([actual isEqual:expected]);
     
-    expected = [NSNumber numberWithInt:13];
+    expected = @13;
     item.count = expected;
     actual = item.count;
     XCTAssertTrue([actual isEqual:expected]);
 }
 
 - (void)testminPropertyWorksAsExpected {
-    NSNumber *expected = [NSNumber numberWithDouble:1.5];
+    NSNumber *expected = @1.5;
     MSAIRemoteDependencyData *item = [MSAIRemoteDependencyData new];
     item.min = expected;
     NSNumber *actual = item.min;
     XCTAssertTrue([actual isEqual:expected]);
     
-    expected = [NSNumber numberWithDouble:4.8];
+    expected = @4.8;
     item.min = expected;
     actual = item.min;
     XCTAssertTrue([actual isEqual:expected]);
 }
 
 - (void)testmaxPropertyWorksAsExpected {
-    NSNumber *expected = [NSNumber numberWithDouble:1.5];
+    NSNumber *expected = @1.5;
     MSAIRemoteDependencyData *item = [MSAIRemoteDependencyData new];
     item.max = expected;
     NSNumber *actual = item.max;
     XCTAssertTrue([actual isEqual:expected]);
     
-    expected = [NSNumber numberWithDouble:4.8];
+    expected = @4.8;
     item.max = expected;
     actual = item.max;
     XCTAssertTrue([actual isEqual:expected]);
 }
 
 - (void)teststd_devPropertyWorksAsExpected {
-    NSNumber *expected = [NSNumber numberWithDouble:1.5];
+    NSNumber *expected = @1.5;
     MSAIRemoteDependencyData *item = [MSAIRemoteDependencyData new];
     item.stdDev = expected;
     NSNumber *actual = item.stdDev;
     XCTAssertTrue([actual isEqual:expected]);
     
-    expected = [NSNumber numberWithDouble:4.8];
+    expected = @4.8;
     item.stdDev = expected;
     actual = item.stdDev;
     XCTAssertTrue([actual isEqual:expected]);
@@ -171,14 +172,14 @@
 
 - (void)testSerialize {
     MSAIRemoteDependencyData *item = [MSAIRemoteDependencyData new];
-    item.version = [NSNumber numberWithInt:42];
+    item.version = @42;
     item.name = @"Test string";
     item.kind = 5;
-    item.value = [NSNumber numberWithDouble:1.5];
-    item.count = [NSNumber numberWithInt:42];
-    item.min = [NSNumber numberWithDouble:1.5];
-    item.max = [NSNumber numberWithDouble:1.5];
-    item.stdDev = [NSNumber numberWithDouble:1.5];
+    item.value = @1.5;
+    item.count = @42;
+    item.min = @1.5;
+    item.max = @1.5;
+    item.stdDev = @1.5;
     item.dependencyKind = 5;
     item.success = YES;
     item.async = YES;
