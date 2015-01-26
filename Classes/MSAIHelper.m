@@ -160,6 +160,15 @@ NSString *msai_devicePlatform(void) {
   return platform;
 }
 
+NSString *msai_deviceLanguage(void) {
+  return [[[NSBundle mainBundle] preferredLocalizations] objectAtIndex:0];;
+}
+
+NSString *msai_deviceLocale(void) {
+  NSLocale *locale = [NSLocale currentLocale];
+  return [locale objectForKey:NSLocaleIdentifier];
+}
+
 NSString *msai_UUIDPreiOS6(void) {
   // Create a new UUID
   CFUUIDRef uuidObj = CFUUIDCreate(nil);

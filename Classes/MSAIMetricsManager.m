@@ -133,7 +133,10 @@ static NSInteger const defaultSessionExpirationTime = 20;
   [deviceContext setOsVersion:[self.appContext osVersion]];
   [deviceContext setOs:[self.appContext osName]];
   [deviceContext setDeviceId:msai_appAnonID()];
+  deviceContext.locale = msai_deviceLocale();
+  deviceContext.language = msai_deviceLanguage();
   [deviceContext setOemName:@"Apple"];
+  deviceContext.screenResolution = msai_screenSize();
   
   MSAIInternal *internalContext = [MSAIInternal new];
   [internalContext setSdkVersion: msai_sdkVersion()];
