@@ -104,12 +104,17 @@ static id appWillTerminateObserver;
   }
 }
 
-#pragma mark - Private
+#pragma mark - Getters
 
-+ (void)trackDataItem:(MSAITelemetryData *)dataItem{
-  
-  [channel sendDataItem:dataItem];
++ (MSAIChannel *)channel{
+  return channel;
 }
+
++ (MSAIContext *)context{
+  return appContext;
+}
+
+#pragma mark - Private
 
 + (MSAITelemetryContext *)telemetryContext{
   

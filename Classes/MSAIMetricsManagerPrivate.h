@@ -20,6 +20,12 @@ extern NSString *const kMSAIApplicationWasLaunched;
 
 + (void)startManager;
 
++ (MSAITelemetryContext *)telemetryContext;
+
++ (MSAIChannel *)channel;
+
++ (MSAIContext *)context;
+
 ///-----------------------------------------------------------------------------
 /// @name Send data to channel
 ///-----------------------------------------------------------------------------

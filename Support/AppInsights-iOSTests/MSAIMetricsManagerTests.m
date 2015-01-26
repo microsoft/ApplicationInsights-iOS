@@ -23,31 +23,29 @@
 @end
 
 
-@implementation MSAIMetricsManagerTests {
-  MSAIMetricsManager *_sut;
-}
+@implementation MSAIMetricsManagerTests
 
 - (void)setUp {
   [super setUp];
   
   MSAIAppClient *appClient = mockClass([MSAIAppClient class]);
   MSAIContext *appContext = [[MSAIContext alloc]initWithInstrumentationKey:@"245251431" isAppStoreEnvironment:NO];
-  _sut = [[MSAIMetricsManager alloc] initWithAppContext:appContext appClient:appClient];
+  [MSAIMetricsManager configureWithContext:appContext appClient:appClient];
+  [MSAIMetricsManager startManager];
 }
 
 #pragma mark - Setup Tests
 
 - (void)testThatItInstantiates {
-  assertThat(_sut, notNilValue());
-  assertThat([_sut appContext], notNilValue());
-  assertThat([_sut appClient], notNilValue());
-  assertThat([_sut telemetryChannel], notNilValue());
+  assertThat([MSAIMetricsManager context], notNilValue());
+  assertThat([MSAIMetricsManager channel], notNilValue());
+  assertThat([MSAIMetricsManager telemetryContext], notNilValue());
 }
 
 #pragma mark - Helper
 
 - (void)testTelemetryChannel {
-  MSAITelemetryContext *testContext = [_sut telemetryContext];
+  MSAITelemetryContext *testContext = [MSAIMetricsManager telemetryContext];
   
   assertThat([testContext instrumentationKey], notNilValue());
   assertThat([testContext endpointPath], equalTo(MSAI_TELEMETRY_PATH));
