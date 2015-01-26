@@ -14,7 +14,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "1E8E66AD15BC3D7700632A2E"
-               BuildableName = "Documentation"
+               BuildableName = "AppInsights-iOS Documentation"
                BlueprintName = "AppInsights-iOS Documentation"
                ReferencedContainer = "container:AppInsights-iOS.xcodeproj">
             </BuildableReference>
