@@ -25,10 +25,10 @@
   if (self.name != nil) {
     [dict setObject:self.name forKey:@"name"];
   }
-  if(self.properties !=nil){
+  if (self.properties !=nil) {
     [dict setObject:self.properties forKey:@"properties"];
   }
-  if(self.measurements){
+  if (self.measurements) {
     [dict setObject:self.measurements forKey:@"measurements"];
   }
   

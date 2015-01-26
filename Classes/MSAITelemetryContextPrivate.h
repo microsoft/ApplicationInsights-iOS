@@ -6,14 +6,7 @@
 #import "MSAISession.h"
 #import "MSAILocation.h"
 
-#define defaultSessionRenewalMs     30 * 60 * 1000
-#define defaultSessionExpirationMs  24 * 60 * 60 * 1000
-
 @interface MSAITelemetryContext()
-
-@property (readonly) long acquisitionMs;
-
-@property (readonly) long renewalMs;
 
 /**
  *  The path to the telemetry endpoint.
@@ -25,6 +18,10 @@
  */
 @property(nonatomic, strong) NSString *instrumentationKey;
 
+/**
+ *  A reference to the userDefaults being used to store values
+ */
+@property(nonatomic, weak) NSUserDefaults *userDefaults;
 /**
  *  The application context.
  */
@@ -96,16 +93,10 @@
 /// @name Session management
 ///-----------------------------------------------------------------------------
 
-- (void)updateSessionFromSessionDefaults;
-
-- (void)writeSessionDefaultsWithSessionId:(NSString *)sessionId acquisitionTime:(long)acquisitionTime;
-
-- (void)updateSessionContextWithDateTime:(long)dateTime;
+- (void)updateSessionContext;
 
 - (BOOL)isFirstSession;
 
-- (void)createNewSessionWithCurrentDateTime:(long)dateTime;
-
-- (void)renewSessionWithCurrentDateTime:(long)dateTime;
+- (void)createNewSession;
 
 @end

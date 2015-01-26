@@ -134,6 +134,11 @@ NSString *msai_deviceType(void){
   }
 }
 
+NSString *msai_screenSize(void){
+  CGSize screenSize = [UIScreen mainScreen].bounds.size;
+ return [NSString stringWithFormat:@"%dx%d",(int)screenSize.height, (int)screenSize.width];
+}
+
 NSString *msai_sdkVersion(void){
   return [NSString stringWithUTF8String:applicationinsights_library_info.msai_version];
 }
@@ -153,6 +158,15 @@ NSString *msai_devicePlatform(void) {
   NSString *platform = [NSString stringWithCString:answer encoding: NSUTF8StringEncoding];
   free(answer);
   return platform;
+}
+
+NSString *msai_deviceLanguage(void) {
+  return [[[NSBundle mainBundle] preferredLocalizations] objectAtIndex:0];;
+}
+
+NSString *msai_deviceLocale(void) {
+  NSLocale *locale = [NSLocale currentLocale];
+  return [locale objectForKey:NSLocaleIdentifier];
 }
 
 NSString *msai_UUIDPreiOS6(void) {

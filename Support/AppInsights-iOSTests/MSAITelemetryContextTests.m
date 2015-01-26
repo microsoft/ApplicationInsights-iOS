@@ -9,6 +9,7 @@
 #import "MSAITelemetryContext.h"
 #import "MSAITelemetryContextPrivate.h"
 
+#import "MSAIMetricsManagerPrivate.h"
 #import "MSAIApplication.h"
 #import "MSAIDevice.h"
 #import "MSAIOperation.h"
@@ -33,8 +34,6 @@
 }
 
 - (void)tearDown {
-  [_sut writeSessionDefaultsWithSessionId:nil acquisitionTime:0];
-  
   [super tearDown];
 }
 
@@ -86,71 +85,48 @@
   }
 }
 
-- (void)testReadWriteSessionFromUserDefaults {
-  
-  NSString *testSessionId = @"MySessionId";
-  long testAcquisitionTime = 12345;
-  [_sut writeSessionDefaultsWithSessionId:testSessionId acquisitionTime:testAcquisitionTime];
-  [_sut updateSessionFromSessionDefaults];
-  
-  assertThatLong(_sut.acquisitionMs, equalToLong(testAcquisitionTime));
-  assertThat(_sut.session.sessionId, equalTo(testSessionId));
+- (void)testContextDictionaryUpdateSessionContext {
+  [_sut createNewSession];
+  MSAISession *session = _sut.session;
+  XCTAssertTrue([session.isNew isEqualToString:@"true"]);
+  #pragma clang diagnostic push
+  #pragma clang diagnostic ignored "-Wunused"
+  MSAIOrderedDictionary *contextDict = _sut.contextDictionary;
+  #pragma clang diagnostic pop
+  XCTAssertTrue([session.isNew isEqualToString:@"false"]);
 }
 
-- (void)testIsFirstSessionAfterInitialization{
+- (void)testUpdateSessionContext {
+  _sut.session.isNew = @"true";
+  [_sut updateSessionContext];
   
-  long currentDateMs = [[NSDate date] timeIntervalSince1970];
+  XCTAssertTrue([_sut.session.isNew isEqualToString:@"false"]);
+}
+
+- (void)testIsFirstSession {
+  NSUserDefaults *mockUserDefaults = mock(NSUserDefaults.class);
+  _sut.userDefaults = mockUserDefaults;
+  
+  [given([mockUserDefaults boolForKey:kMSAIApplicationWasLaunched]) willReturn:@NO];
   assertThatBool([_sut isFirstSession], equalToBool(YES));
   
-  [_sut updateSessionContextWithDateTime:currentDateMs];
+  [given([mockUserDefaults boolForKey:kMSAIApplicationWasLaunched]) willReturn:@YES];
   assertThatBool([_sut isFirstSession], equalToBool(NO));
 }
 
-- (void)testRenewSession{
+- (void)testCreateNewSession {
+  NSUserDefaults *mockUserDefaults = mock(NSUserDefaults.class);
+  MSAISession *session = _sut.session;
+  _sut.userDefaults = mockUserDefaults;
+  [given([mockUserDefaults boolForKey:kMSAIApplicationWasLaunched]) willReturn:@YES];
   
-  long currentDateMs = [[NSDate date] timeIntervalSince1970];
+  [_sut createNewSession];
+  XCTAssertTrue([session.isNew isEqualToString:@"true"]);
+  NSString *firstGUID = session.sessionId;
+  XCTAssertTrue([session.isFirst isEqualToString:@"false"]);
   
-  [_sut renewSessionWithCurrentDateTime:currentDateMs];
-  assertThat(_sut.session.isFirst, equalTo(@"false"));
-  assertThatLong(_sut.renewalMs, equalToLong(currentDateMs));
-}
-
-- (void)testCreateSession{
-  long currentDateMs = [[NSDate date] timeIntervalSince1970];
-  NSString *currentSessionId = _sut.session.sessionId;
-  [_sut createNewSessionWithCurrentDateTime:currentDateMs];
-  
-  assertThat(_sut.session.sessionId, isNot(equalTo(currentSessionId)));
-  assertThatLong(_sut.acquisitionMs, equalToLong(currentDateMs));
-  assertThatLong(_sut.renewalMs, equalToLong(currentDateMs));
-}
-
-- (void)testUpdateValidSession{
-  long currentDateMs = [[NSDate date] timeIntervalSince1970];
-  long futureDateMs = currentDateMs + (1000 * 60);
-  [_sut updateSessionContextWithDateTime:futureDateMs];
-  NSString *currentSessionId = _sut.session.sessionId;
-  
-  assertThat(_sut.session.sessionId, equalTo(currentSessionId));
-  assertThatLong(_sut.renewalMs, equalToLong(futureDateMs));
-  assertThatLong(_sut.acquisitionMs, isNot(equalToLong(currentDateMs)));
-}
-
-- (void)testUpdateExpiredSession{
-  // Start app
-  long currentDateMs = [[NSDate date] timeIntervalSince1970];
-  long futureDateMs = currentDateMs + (defaultSessionExpirationMs);
-  
-  // e.g. send first event
-  [_sut updateSessionContextWithDateTime:currentDateMs];
-  NSString *currentSessionId = [_sut.session.sessionId copy];
-  
-  // e.g. send second event after session is expired
-  [_sut updateSessionContextWithDateTime:futureDateMs];
-  
-  assertThat(_sut.session.sessionId, isNot(equalTo(currentSessionId)));
-  assertThatLong(_sut.renewalMs, equalToLong(futureDateMs));
-  assertThatLong(_sut.acquisitionMs, equalToLong(futureDateMs));
+  [_sut createNewSession];
+  XCTAssertFalse([firstGUID isEqualToString:session.sessionId]);
 }
 
 #pragma mark - Setup helpers

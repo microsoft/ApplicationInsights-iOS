@@ -77,5 +77,11 @@
   assertThatInt((int)[[_sut dataItemQueue] count], equalToInt(2));
 }
 
+- (void)testEnqueueRequest {
+  MSAIAppClient *mockClient = mock(MSAIAppClient.class);
+  _sut.appClient = mockClient;
+  [_sut enqueueRequest:[NSURLRequest new]];
+  [verify(mockClient) enqeueHTTPOperation:anything()];
+}
 
 @end

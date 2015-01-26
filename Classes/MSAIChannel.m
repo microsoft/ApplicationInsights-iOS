@@ -35,6 +35,18 @@
   [envelope setIKey:[_telemetryContext instrumentationKey]];
   [envelope setData:data];
   [envelope setName:[dataItem envelopeTypeName]];
+  
+  MSAIDevice *deviceContext = _telemetryContext.device;
+  if (deviceContext.deviceId) {
+    envelope.deviceId = deviceContext.deviceId;
+  }
+  if (deviceContext.os) {
+    envelope.os = deviceContext.os;
+  }
+  if (deviceContext.osVersion) {
+    envelope.osVer = deviceContext.osVersion;
+  }
+  
   [envelope setTags:[_telemetryContext  contextDictionary]];
 
   [_sender enqueueDataDict:[envelope serializeToDictionary]];
