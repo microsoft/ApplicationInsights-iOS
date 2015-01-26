@@ -168,19 +168,6 @@
  */
 @property (nonatomic, getter = isCrashManagerDisabled) BOOL disableCrashManager;
 
-
-/**
- Reference to the initialized MSAIMetricsManager module
- 
- Returns the MSAIMetricsManager instance initialized by MSAITelemetryManager
- 
- @see configureWithInstrumentationKey:delegate:
- @see startManager
- @see disableMetricsManager
- */
-@property (nonatomic, strong, readonly) MSAIMetricsManager *metricsManager;
-
-
 /**
  Flag the determines whether the Metrics Manager should be disabled
  

@@ -94,7 +94,7 @@
       _appStoreEnvironment = YES;
     }
 #endif
-
+    
     [self performSelector:@selector(validateStartManagerIsInvoked) withObject:nil afterDelay:0.0f];
   }
   return self;
@@ -145,10 +145,10 @@
   if (msai_isRunningInAppExtension()) {
     return;
   }
-
+  
 #if MSAI_FEATURE_METRICS
-  if (_metricsManager && ![self isMetricsManagerDisabled]) {
-    [_metricsManager startManager];
+  if (![self isMetricsManagerDisabled]) {
+    [MSAIMetricsManager startManager];
   }
 #endif /* MSAI_FEATURE_METRICS */
 }
@@ -156,9 +156,7 @@
 
 #if MSAI_FEATURE_METRICS
 - (void)setDisableMetricsManager:(BOOL)disableMetricsManager {
-  if (_metricsManager) {
-    [_metricsManager setDisableMetricsManager:disableMetricsManager];
-  }
+  [MSAIMetricsManager setDisableMetricsManager:disableMetricsManager];
   _disableMetricsManager = disableMetricsManager;
 }
 #endif /* MSAI_FEATURE_METRICS */
@@ -314,27 +312,27 @@
   MSAILog(@"INFO: Sending integration workflow ping to %@", integrationPath);
   
   [[self appClient] postPath:integrationPath
-                        parameters:@{@"timestamp": timeString,
-                                     @"sdk": MSAI_NAME,
-                                     @"sdk_version": MSAI_VERSION,
-                                     @"bundle_version": [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"]
-                                     }
-                        completion:^(MSAIHTTPOperation *operation, NSData* responseData, NSError *error) {
-                          switch (operation.response.statusCode) {
-                            case 400:
-                              MSAILog(@"ERROR: App ID not found");
-                              break;
-                            case 201:
-                              MSAILog(@"INFO: Ping accepted.");
-                              break;
-                            case 200:
-                              MSAILog(@"INFO: Ping accepted. Server already knows.");
-                              break;
-                            default:
-                              MSAILog(@"ERROR: Unknown error");
-                              break;
-                          }
-                        }];
+                  parameters:@{@"timestamp": timeString,
+                               @"sdk": MSAI_NAME,
+                               @"sdk_version": MSAI_VERSION,
+                               @"bundle_version": [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"]
+                               }
+                  completion:^(MSAIHTTPOperation *operation, NSData* responseData, NSError *error) {
+                    switch (operation.response.statusCode) {
+                      case 400:
+                        MSAILog(@"ERROR: App ID not found");
+                        break;
+                      case 201:
+                        MSAILog(@"INFO: Ping accepted.");
+                        break;
+                      case 200:
+                        MSAILog(@"INFO: Ping accepted. Server already knows.");
+                        break;
+                      default:
+                        MSAILog(@"ERROR: Unknown error");
+                        break;
+                    }
+                  }];
 }
 
 - (void)validateStartManagerIsInvoked {
@@ -384,9 +382,9 @@
     
 #if MSAI_FEATURE_METRICS
     MSAILog(@"INFO: Setup MetricsManager");
-    _metricsManager = [[MSAIMetricsManager alloc] initWithAppContext:_appContext appClient:_appClient];
+    [MSAIMetricsManager configureWithContext:_appContext appClient:_appClient];
 #endif /* MSAI_FEATURE_METRICS */
-
+    
     if (![self isAppStoreEnvironment]) {
       NSString *integrationFlowTime = [self integrationFlowTimeString];
       if (integrationFlowTime && [self integrationFlowStartedWithTimeString:integrationFlowTime]) {
