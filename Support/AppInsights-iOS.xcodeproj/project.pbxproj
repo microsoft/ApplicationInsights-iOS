@@ -83,8 +83,6 @@
 		1EA1170716F53B91001C015C /* MSAITestHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EA1170616F53B91001C015C /* MSAITestHelper.m */; };
 		1EB2E4C618FD4CEA008BB1CF /* MSAIMetricsManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 1EB2E4C418FD4CEA008BB1CF /* MSAIMetricsManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1EB2E4C718FD4CEA008BB1CF /* MSAIMetricsManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EB2E4C518FD4CEA008BB1CF /* MSAIMetricsManager.m */; };
-		1EC29CD11A5EE7DD0031071D /* MSAIMetricsSession.h in Headers */ = {isa = PBXBuildFile; fileRef = 1EC29CCF1A5EE7DD0031071D /* MSAIMetricsSession.h */; };
-		1EC29CD21A5EE7DD0031071D /* MSAIMetricsSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EC29CD01A5EE7DD0031071D /* MSAIMetricsSession.m */; };
 		1ECA8F4D192B5BD8006B9416 /* MSAICrashDetailsPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 1ECA8F4B192B5BD8006B9416 /* MSAICrashDetailsPrivate.h */; };
 		1ECA8F51192B6954006B9416 /* MSAICrashMetaData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1ECA8F4F192B6954006B9416 /* MSAICrashMetaData.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1ECA8F52192B6954006B9416 /* MSAICrashMetaData.m in Sources */ = {isa = PBXBuildFile; fileRef = 1ECA8F50192B6954006B9416 /* MSAICrashMetaData.m */; };
@@ -249,8 +247,6 @@
 		1EB2E4C418FD4CEA008BB1CF /* MSAIMetricsManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAIMetricsManager.h; sourceTree = "<group>"; };
 		1EB2E4C518FD4CEA008BB1CF /* MSAIMetricsManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAIMetricsManager.m; sourceTree = "<group>"; };
 		1EB2E4C818FD4E90008BB1CF /* MSAIMetricsManagerPrivate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MSAIMetricsManagerPrivate.h; sourceTree = "<group>"; };
-		1EC29CCF1A5EE7DD0031071D /* MSAIMetricsSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAIMetricsSession.h; sourceTree = "<group>"; };
-		1EC29CD01A5EE7DD0031071D /* MSAIMetricsSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAIMetricsSession.m; sourceTree = "<group>"; };
 		1ECA8F4B192B5BD8006B9416 /* MSAICrashDetailsPrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAICrashDetailsPrivate.h; sourceTree = "<group>"; };
 		1ECA8F4F192B6954006B9416 /* MSAICrashMetaData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAICrashMetaData.h; sourceTree = "<group>"; };
 		1ECA8F50192B6954006B9416 /* MSAICrashMetaData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAICrashMetaData.m; sourceTree = "<group>"; };
@@ -550,8 +546,6 @@
 				1EB2E4C418FD4CEA008BB1CF /* MSAIMetricsManager.h */,
 				1EB2E4C518FD4CEA008BB1CF /* MSAIMetricsManager.m */,
 				1EB2E4C818FD4E90008BB1CF /* MSAIMetricsManagerPrivate.h */,
-				1EC29CCF1A5EE7DD0031071D /* MSAIMetricsSession.h */,
-				1EC29CD01A5EE7DD0031071D /* MSAIMetricsSession.m */,
 			);
 			name = Metrics;
 			sourceTree = "<group>";
@@ -690,7 +684,6 @@
 				807CFDA31A712974004EA1B6 /* MSAIApplication.h in Headers */,
 				807CFDA71A712974004EA1B6 /* MSAIData.h in Headers */,
 				1BBBCF341A6594AE00253031 /* MSAIChannel.h in Headers */,
-				1EC29CD11A5EE7DD0031071D /* MSAIMetricsSession.h in Headers */,
 				1E754E5C1621FBB70070AB92 /* MSAICrashManager.h in Headers */,
 				1B62F4D81A692A3200EB5AD0 /* MSAIContext.h in Headers */,
 				1E754E5E1621FBB70070AB92 /* MSAICrashManagerDelegate.h in Headers */,
@@ -901,7 +894,6 @@
 				807CFD711A712969004EA1B6 /* MSAITelemetryData.m in Sources */,
 				807CFDB11A712974004EA1B6 /* MSAIDomain.m in Sources */,
 				807CFDD31A712974004EA1B6 /* MSAIUser.m in Sources */,
-				1EC29CD21A5EE7DD0031071D /* MSAIMetricsSession.m in Sources */,
 				807CFDB61A712974004EA1B6 /* MSAIEventData.m in Sources */,
 				807CFDA81A712974004EA1B6 /* MSAIData.m in Sources */,
 				1B62F4D91A692A3200EB5AD0 /* MSAIContext.m in Sources */,
