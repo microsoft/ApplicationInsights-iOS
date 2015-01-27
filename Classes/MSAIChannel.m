@@ -12,6 +12,8 @@
 
 @implementation MSAIChannel
 
+#pragma mark - Initialisation
+
 - (instancetype)initWithAppClient:(MSAIAppClient *) appClient telemetryContext:(MSAITelemetryContext *)telemetryContext {
   
   if ((self = [self init])) {
@@ -22,7 +24,16 @@
   return self;
 }
 
+#pragma mark - Enqueue data
+
 - (void)sendDataItem:(MSAITelemetryData *)dataItem {
+  NSDictionary *dataDict = [self dictionaryFromDataItem:dataItem];
+  [_sender enqueueDataDict:dataDict];
+}
+
+#pragma mark - Helper
+
+- (NSDictionary *)dictionaryFromDataItem:(MSAITelemetryData *)dataItem{
   [dataItem setVersion:@(2)];
   
   MSAIData *data = [MSAIData new];
@@ -47,7 +58,7 @@
   }
   
   [envelope setTags:[_telemetryContext  contextDictionary]];
-  [_sender enqueueDataDict:[envelope serializeToDictionary]];
+  return [envelope serializeToDictionary];
 }
 
 - (NSString *)dateStringForDate:(NSDate *)date {
