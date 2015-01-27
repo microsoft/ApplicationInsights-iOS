@@ -80,7 +80,7 @@
 - (void)testEnqueueRequest {
   MSAIAppClient *mockClient = mock(MSAIAppClient.class);
   _sut.appClient = mockClient;
-  [_sut enqueueRequest:[NSURLRequest new]];
+  [_sut sendRequest:[NSURLRequest new]];
   [verify(mockClient) enqeueHTTPOperation:anything()];
 }
 

@@ -27,8 +27,15 @@
   [super setUp];
   
   _appClient = [[MSAIAppClient alloc]initWithBaseURL:[NSURL URLWithString:@"http://test.com/"]];
-  MSAITelemetryContext *telemetryContext = [MSAITelemetryContext new];
-  telemetryContext.endpointPath = @"test/path/";
+  MSAITelemetryContext *telemetryContext = [[MSAITelemetryContext alloc]initWithInstrumentationKey:nil
+                                                                                      endpointPath:@"test/path/"
+                                                                                applicationContext:nil
+                                                                                     deviceContext:nil
+                                                                                   locationContext:nil
+                                                                                    sessionContext:nil
+                                                                                       userContext:nil
+                                                                                   internalContext:nil
+                                                                                  operationContext:nil];
   _sut = [[MSAIChannel alloc]initWithAppClient:_appClient telemetryContext:telemetryContext];
 }
 
@@ -48,14 +55,5 @@
   NSString *resultString = [_sut dateStringForDate:testDate];
   assertThat(resultString, equalTo(expected));
 }
-
-//- (void)testRequestForDataItem {
-//  MSAIEnvelope *testItem = [MSAIEnvelope new];
-//  NSData *expectedBodyData = [[testItem serializeToString] dataUsingEncoding:NSUTF8StringEncoding];
-//  NSURLRequest *testRequest = [_sut requestForDataItem:testItem];
-//
-//  assertThat(testRequest, notNilValue());
-//  assertThat([testRequest HTTPBody], equalTo(expectedBodyData));
-//}
 
 @end
