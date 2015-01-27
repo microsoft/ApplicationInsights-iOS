@@ -126,16 +126,19 @@ static id appWillTerminateObserver;
 +(void)trackEventWithName:(NSString *)eventName properties:(NSDictionary *)properties{
   [self trackEventWithName:eventName properties:properties mesurements:nil];
 }
-
+  
 +(void)trackEventWithName:(NSString *)eventName properties:(NSDictionary *)properties mesurements:(NSDictionary *)measurements{
+  if(!managerInitialised) return;
+  
+  __weak typeof(self) weakSelf = self;
   dispatch_async(metricEventQueue, ^{
-    if(!managerInitialised) return;
+    typeof(self) strongSelf = weakSelf;
     MSAIEventData *eventData = [MSAIEventData new];
     [eventData setName:eventName];
     [eventData setProperties:properties];
     [eventData setMeasurements:measurements];
     
-    [self trackDataItem:eventData];
+    [strongSelf trackDataItem:eventData];
   });
 }
 
@@ -144,13 +147,16 @@ static id appWillTerminateObserver;
 }
 
 +(void)trackTraceWithMessage:(NSString *)message properties:(NSDictionary *)properties{
+  if(!managerInitialised) return;
+  
+  __weak typeof(self) weakSelf = self;
   dispatch_async(metricEventQueue, ^{
-    if(!managerInitialised) return;
+    typeof(self) strongSelf = weakSelf;
     MSAIMessageData *messageData = [MSAIMessageData new];
     [messageData setMessage:message];
     [messageData setProperties:properties];
     
-    [self trackDataItem:messageData];
+    [strongSelf trackDataItem:messageData];
   });
 }
 
@@ -159,8 +165,11 @@ static id appWillTerminateObserver;
 }
 
 +(void)trackMetricWithName:(NSString *)metricName value:(double)value properties:(NSDictionary *)properties{
+  if(!managerInitialised) return;
+  
+  __weak typeof(self) weakSelf = self;
   dispatch_async(metricEventQueue, ^{
-    if(!managerInitialised) return;
+    typeof(self) strongSelf = weakSelf;
     MSAIMetricData *metricData = [MSAIMetricData new];
     MSAIDataPoint *data = [MSAIDataPoint new];
     [data setCount:@(1)];
@@ -171,7 +180,7 @@ static id appWillTerminateObserver;
     NSMutableArray *metrics = [@[data] mutableCopy];
     [metricData setMetrics:metrics];
     [metricData setProperties:properties];
-    [self trackDataItem:metricData];
+    [strongSelf trackDataItem:metricData];
   });
 }
 
