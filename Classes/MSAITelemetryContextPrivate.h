@@ -8,54 +8,55 @@
 
 @interface MSAITelemetryContext()
 
+///-----------------------------------------------------------------------------
+/// @name Initialisation
+///-----------------------------------------------------------------------------
+
 /**
  *  The path to the telemetry endpoint.
  */
-@property(nonatomic, strong) NSString *endpointPath;
+@property(nonatomic, strong, readonly) NSString *endpointPath;
 
 /**
  *  The instrumentation key of the app.
  */
-@property(nonatomic, strong) NSString *instrumentationKey;
+@property(nonatomic, strong, readonly) NSString *instrumentationKey;
 
-/**
- *  A reference to the userDefaults being used to store values
- */
-@property(nonatomic, weak) NSUserDefaults *userDefaults;
+
 /**
  *  The application context.
  */
-@property(nonatomic, strong) MSAIApplication *application;
+@property(nonatomic, strong, readonly) MSAIApplication *application;
 
 /**
  *  The device context.
  */
-@property (nonatomic, strong)MSAIDevice *device;
+@property (nonatomic, strong, readonly)MSAIDevice *device;
 
 /**
  *  The location context.
  */
-@property (nonatomic, strong)MSAILocation *location;
+@property (nonatomic, strong, readonly)MSAILocation *location;
 
 /**
  *  The session context.
  */
-@property (nonatomic, strong)MSAISession *session;
+@property (nonatomic, strong, readonly)MSAISession *session;
 
 /**
  *  The user context.
  */
-@property (nonatomic, strong)MSAIUser *user;
+@property (nonatomic, strong, readonly)MSAIUser *user;
 
 /**
  *  The internal context.
  */
-@property (nonatomic, strong)MSAIInternal *internal;
+@property (nonatomic, strong, readonly)MSAIInternal *internal;
 
 /**
  *  The operation context.
  */
-@property (nonatomic, strong)MSAIOperation *operation;
+@property (nonatomic, strong, readonly)MSAIOperation *operation;
 
 /**
  *  Initializes a telemetry context.
@@ -82,21 +83,41 @@
                            internalContext:(MSAIInternal *)internalContext
                           operationContext:(MSAIOperation *)operationContext;
 
+///-----------------------------------------------------------------------------
+/// @name Session
+///-----------------------------------------------------------------------------
+
+/**
+ *  A reference to the userDefaults being used to store values
+ */
+@property(nonatomic, weak) NSUserDefaults *userDefaults;
+
+/**
+ *  Renews or even creates a new session if needed.
+ */
+- (void)updateSessionContext;
+
+/**
+ *  Checks if current session is the first one.
+ *
+ *  @return YES if current session has not been renewed or replaced by a new one
+ */
+- (BOOL)isFirstSession;
+
+/**
+ *  Creates a brand new session.
+ */
+- (void)createNewSession;
+
+///-----------------------------------------------------------------------------
+/// @name Helper
+///-----------------------------------------------------------------------------
+
 /**
  *  Returns context objects as dictionary.
  *
  *  @return a dictionary containing all context fields
  */
 - (MSAIOrderedDictionary *)contextDictionary;
-
-///-----------------------------------------------------------------------------
-/// @name Session management
-///-----------------------------------------------------------------------------
-
-- (void)updateSessionContext;
-
-- (BOOL)isFirstSession;
-
-- (void)createNewSession;
 
 @end

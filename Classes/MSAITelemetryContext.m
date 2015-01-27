@@ -9,6 +9,8 @@ NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
 
 @implementation MSAITelemetryContext
 
+#pragma mark - Initialisation
+
 - (instancetype)initWithInstrumentationKey:(NSString *)instrumentationKey
                               endpointPath:(NSString *)endpointPath
                         applicationContext:(MSAIApplication *)applicationContext
@@ -34,21 +36,7 @@ NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
   return self;
 }
 
-- (MSAIOrderedDictionary *)contextDictionary {  
-  
-  MSAIOrderedDictionary *contextDictionary = [self.application serializeToDictionary];
-  [contextDictionary addEntriesFromDictionary:[self.session serializeToDictionary]];
-  [contextDictionary addEntriesFromDictionary:[self.device serializeToDictionary]];
-  [contextDictionary addEntriesFromDictionary:[self.location serializeToDictionary]];
-  [contextDictionary addEntriesFromDictionary:[self.user serializeToDictionary]];
-  [contextDictionary addEntriesFromDictionary:[self.internal serializeToDictionary]];
-  [contextDictionary addEntriesFromDictionary:[self.operation serializeToDictionary]];
-  [self updateSessionContext];
-  
-  return contextDictionary;
-}
-
-#pragma mark - Helper
+#pragma mark - Session
 
 - (void)updateSessionContext {
   if ([_session.isNew isEqualToString:@"true"]) {
@@ -62,10 +50,24 @@ NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
 
 - (void)createNewSession {
   BOOL firstSession = [self isFirstSession];
-  
   _session.sessionId = msai_UUID();
   _session.isNew = @"true";
   _session.isFirst = (firstSession ? @"true" : @"false");
+}
+
+#pragma mark - Helper
+
+- (MSAIOrderedDictionary *)contextDictionary {
+  MSAIOrderedDictionary *contextDictionary = [self.application serializeToDictionary];
+  [contextDictionary addEntriesFromDictionary:[self.session serializeToDictionary]];
+  [contextDictionary addEntriesFromDictionary:[self.device serializeToDictionary]];
+  [contextDictionary addEntriesFromDictionary:[self.location serializeToDictionary]];
+  [contextDictionary addEntriesFromDictionary:[self.user serializeToDictionary]];
+  [contextDictionary addEntriesFromDictionary:[self.internal serializeToDictionary]];
+  [contextDictionary addEntriesFromDictionary:[self.operation serializeToDictionary]];
+  [self updateSessionContext];
+  
+  return contextDictionary;
 }
 
 @end

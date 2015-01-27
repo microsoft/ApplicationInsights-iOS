@@ -11,23 +11,41 @@
 
 extern NSString *const kMSAIApplicationWasLaunched;
 
-@interface MSAIMetricsManager () {
-}
-
-+ (MSAITelemetryContext *)telemetryContext;
-
-+ (MSAIChannel *)channel;
-
-+ (MSAIContext *)context;
+@interface MSAIMetricsManager ()
 
 ///-----------------------------------------------------------------------------
-/// @name Send data to channel
+/// @name Getters
 ///-----------------------------------------------------------------------------
 
 /**
- * Sends message to the channel.
+*  Creates the context which is part of the payload based on the app context.
+*
+*  @return a context which is used by the channel for creating the payload
+*/
++ (MSAITelemetryContext *)telemetryContext;
+
+/**
+ *  Returns the channel.
  *
- * @param telemetry    telemetry object
+ *  @return the channel, which is used by the manager for sending out data
+ */
++ (MSAIChannel *)channel;
+
+/**
+ *  Returns the context the manager has been configured with.
+ *
+ *  @return the context, which is used by the manager
+ */
++ (MSAIContext *)context;
+
+///-----------------------------------------------------------------------------
+/// @name Forward data to channel
+///-----------------------------------------------------------------------------
+
+/**
+ * Forwards the tracked data to the channel in order to send it.
+ *
+ * @param telemetry the data which should be sent to the server
  */
 + (void)trackDataItem:(MSAITelemetryData *)dataItem;
 

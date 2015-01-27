@@ -3,19 +3,16 @@
 #if MSAI_FEATURE_METRICS
 
 #import "AppInsightsPrivate.h"
-
 #import "MSAIHelper.h"
 
 #import "MSAIBaseManagerPrivate.h"
 #import "MSAIMetricsManagerPrivate.h"
-#import "MSAIMetricsSession.h"
 #import "MSAIChannel.h"
 #import "MSAIChannelPrivate.h"
 #import "MSAITelemetryContext.h"
 #import "MSAITelemetryContextPrivate.h"
 #import "MSAIContext.h"
 #import "MSAIContextPrivate.h"
-
 #import "MSAIEventData.h"
 #import "MSAIMessageData.h"
 #import "MSAIMetricData.h"
@@ -43,7 +40,7 @@ static id appWillTerminateObserver;
 
 @implementation MSAIMetricsManager
 
-#pragma mark - Init
+#pragma mark - Configure manager
 
 + (void)configureWithContext:(MSAIContext *)context appClient:(MSAIAppClient *)appClient{
   static dispatch_once_t onceToken;
@@ -57,10 +54,133 @@ static id appWillTerminateObserver;
     appContext = context;
     channel = [[MSAIChannel alloc] initWithAppClient:appClient telemetryContext:[self telemetryContext]];
   });
-  
 }
 
-#pragma mark - Observers
++ (void)setDisableMetricsManager:(BOOL)disable{
+  dispatch_barrier_async(metricEventQueue, ^{
+    disableMetricsManager = disable;
+  });
+}
+
++ (void)startManager {
+  if(disableMetricsManager) return;
+  dispatch_barrier_sync(metricEventQueue, ^{
+    [self registerObservers];
+    managerInitialised = YES;
+  });
+}
+
+#pragma mark - Getters
+
++ (MSAIChannel *)channel{
+  return channel;
+}
+
++ (MSAIContext *)context{
+  return appContext;
+}
+
++ (MSAITelemetryContext *)telemetryContext{
+  MSAIDevice *deviceContext = [MSAIDevice new];
+  [deviceContext setModel: [appContext deviceModel]];
+  [deviceContext setType:[appContext deviceType]];
+  [deviceContext setOsVersion:[appContext osVersion]];
+  [deviceContext setOs:[appContext osName]];
+  [deviceContext setDeviceId:msai_appAnonID()];
+  deviceContext.locale = msai_deviceLocale();
+  deviceContext.language = msai_deviceLanguage();
+  [deviceContext setOemName:@"Apple"];
+  deviceContext.screenResolution = msai_screenSize();
+  
+  MSAIInternal *internalContext = [MSAIInternal new];
+  [internalContext setSdkVersion: msai_sdkVersion()];
+  
+  MSAIApplication *applicationContext = [MSAIApplication new];
+  [applicationContext setVersion:[appContext appVersion]];
+  
+  MSAISession *sessionContext = [MSAISession new];
+  
+  MSAIOperation *operationContext = [MSAIOperation new];
+  MSAIUser *userContext = [MSAIUser new];
+  MSAILocation *locationContext = [MSAILocation new];
+  
+  //TODO: Add additional context data
+  MSAITelemetryContext *telemetryContext = [[MSAITelemetryContext alloc]initWithInstrumentationKey:[appContext instrumentationKey]
+                                                                                      endpointPath:MSAI_TELEMETRY_PATH
+                                                                                applicationContext:applicationContext
+                                                                                     deviceContext:deviceContext
+                                                                                   locationContext:locationContext
+                                                                                    sessionContext:sessionContext
+                                                                                       userContext:userContext
+                                                                                   internalContext:internalContext
+                                                                                  operationContext:operationContext];
+  return telemetryContext;
+}
+
+#pragma mark - Track data
+
++(void)trackEventWithName:(NSString *)eventName{
+  [self trackEventWithName:eventName properties:nil mesurements:nil];
+}
+
++(void)trackEventWithName:(NSString *)eventName properties:(NSDictionary *)properties{
+  [self trackEventWithName:eventName properties:properties mesurements:nil];
+}
+
++(void)trackEventWithName:(NSString *)eventName properties:(NSDictionary *)properties mesurements:(NSDictionary *)measurements{
+  dispatch_async(metricEventQueue, ^{
+    if(!managerInitialised) return;
+    MSAIEventData *eventData = [MSAIEventData new];
+    [eventData setName:eventName];
+    [eventData setProperties:properties];
+    [eventData setMeasurements:measurements];
+    
+    [self trackDataItem:eventData];
+  });
+}
+
++(void)trackTraceWithMessage:(NSString *)message{
+  [self trackTraceWithMessage:message properties:nil];
+}
+
++(void)trackTraceWithMessage:(NSString *)message properties:(NSDictionary *)properties{
+  dispatch_async(metricEventQueue, ^{
+    if(!managerInitialised) return;
+    MSAIMessageData *messageData = [MSAIMessageData new];
+    [messageData setMessage:message];
+    [messageData setProperties:properties];
+    
+    [self trackDataItem:messageData];
+  });
+}
+
++(void)trackMetricWithName:(NSString *)metricName value:(double)value{
+  [self trackMetricWithName:metricName value:value properties:nil];
+}
+
++(void)trackMetricWithName:(NSString *)metricName value:(double)value properties:(NSDictionary *)properties{
+  dispatch_async(metricEventQueue, ^{
+    if(!managerInitialised) return;
+    MSAIMetricData *metricData = [MSAIMetricData new];
+    MSAIDataPoint *data = [MSAIDataPoint new];
+    [data setCount:@(1)];
+    [data setKind:MSAIDataPointType_measurement];
+    [data setMax:@(value)];
+    [data setName:metricName];
+    [data setValue:@(value)];
+    NSMutableArray *metrics = [@[data] mutableCopy];
+    [metricData setMetrics:metrics];
+    [metricData setProperties:properties];
+    [self trackDataItem:metricData];
+  });
+}
+
++ (void)trackDataItem:(MSAITelemetryData *)dataItem{
+  if(disableMetricsManager || !managerInitialised) return;
+  [channel sendDataItem:dataItem];
+}
+
+#pragma mark - Session update
 
 + (void) registerObservers {
   NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
@@ -102,142 +222,6 @@ static id appWillTerminateObserver;
                                              [strongSelf endSession];
                                            }];
   }
-}
-
-#pragma mark - Getters
-
-+ (MSAIChannel *)channel{
-  return channel;
-}
-
-+ (MSAIContext *)context{
-  return appContext;
-}
-
-#pragma mark - Private
-
-+ (MSAITelemetryContext *)telemetryContext{
-  
-  MSAIDevice *deviceContext = [MSAIDevice new];
-  [deviceContext setModel: [appContext deviceModel]];
-  [deviceContext setType:[appContext deviceType]];
-  [deviceContext setOsVersion:[appContext osVersion]];
-  [deviceContext setOs:[appContext osName]];
-  [deviceContext setDeviceId:msai_appAnonID()];
-  deviceContext.locale = msai_deviceLocale();
-  deviceContext.language = msai_deviceLanguage();
-  [deviceContext setOemName:@"Apple"];
-  deviceContext.screenResolution = msai_screenSize();
-  
-  MSAIInternal *internalContext = [MSAIInternal new];
-  [internalContext setSdkVersion: msai_sdkVersion()];
-  
-  MSAIApplication *applicationContext = [MSAIApplication new];
-  [applicationContext setVersion:[appContext appVersion]];
-  
-  MSAISession *sessionContext = [MSAISession new];
-  
-  MSAIOperation *operationContext = [MSAIOperation new];
-  MSAIUser *userContext = [MSAIUser new];
-  MSAILocation *locationContext = [MSAILocation new];
-  
-  
-  //TODO: Add additional context data
-  MSAITelemetryContext *telemetryContext = [[MSAITelemetryContext alloc]initWithInstrumentationKey:[appContext instrumentationKey]
-                                                                                      endpointPath:MSAI_TELEMETRY_PATH
-                                                                                applicationContext:applicationContext
-                                                                                     deviceContext:deviceContext
-                                                                                   locationContext:locationContext
-                                                                                    sessionContext:sessionContext
-                                                                                       userContext:userContext
-                                                                                   internalContext:internalContext
-                                                                                  operationContext:operationContext];
-  return telemetryContext;
-}
-
-#pragma mark - Usage
-
-+(void)trackEventWithName:(NSString *)eventName{
-    [self trackEventWithName:eventName properties:nil mesurements:nil];
-}
-
-+(void)trackEventWithName:(NSString *)eventName properties:(NSDictionary *)properties{
-    [self trackEventWithName:eventName properties:properties mesurements:nil];
-}
-
-+(void)trackEventWithName:(NSString *)eventName properties:(NSDictionary *)properties mesurements:(NSDictionary *)measurements{
-  dispatch_async(metricEventQueue, ^{
-    if(!managerInitialised) return;
-    MSAIEventData *eventData = [MSAIEventData new];
-    [eventData setName:eventName];
-    [eventData setProperties:properties];
-    [eventData setMeasurements:measurements];
-    
-    [self trackDataItem:eventData];
-  });
-}
-
-+(void)trackTraceWithMessage:(NSString *)message{
-    [self trackTraceWithMessage:message properties:nil];
-}
-
-+(void)trackTraceWithMessage:(NSString *)message properties:(NSDictionary *)properties{
-  dispatch_async(metricEventQueue, ^{
-    if(!managerInitialised) return;
-    MSAIMessageData *messageData = [MSAIMessageData new];
-    [messageData setMessage:message];
-    [messageData setProperties:properties];
-    
-    [self trackDataItem:messageData];
-  });
-}
-
-+(void)trackMetricWithName:(NSString *)metricName value:(double)value{
-    [self trackMetricWithName:metricName value:value properties:nil];
-}
-
-+(void)trackMetricWithName:(NSString *)metricName value:(double)value properties:(NSDictionary *)properties{
-  dispatch_async(metricEventQueue, ^{
-    if(!managerInitialised) return;
-    MSAIMetricData *metricData = [MSAIMetricData new];
-    MSAIDataPoint *data = [MSAIDataPoint new];
-    [data setCount:@(1)];
-    [data setKind:MSAIDataPointType_measurement];
-    [data setMax:@(value)];
-    [data setName:metricName];
-    [data setValue:@(value)];
-    NSMutableArray *metrics = [@[data] mutableCopy];
-    [metricData setMetrics:metrics];
-    [metricData setProperties:properties];
-    [self trackDataItem:metricData];
-  });
-}
-
-+ (void)trackDataItem:(MSAITelemetryData *)dataItem{
-  if(disableMetricsManager || !managerInitialised) return;
-  [channel sendDataItem:dataItem];
-}
-
-#pragma mark -
-
-/**
- Begin the startup process
- */
-+ (void)startManager {
-  if(disableMetricsManager) return;
-  dispatch_barrier_sync(metricEventQueue, ^{
-  [self registerObservers];
-  managerInitialised = YES;
-  });
-}
-
-+ (void)setDisableMetricsManager:(BOOL)disable{
-  dispatch_barrier_async(metricEventQueue, ^{
-    disableMetricsManager = disable;
-  });
-}
-
-+ (void)trackNewSessionEvent {
 }
 
 + (void)updateSessionDate {

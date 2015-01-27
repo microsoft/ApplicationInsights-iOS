@@ -6,14 +6,32 @@
 @interface MSAIMetricsManager : NSObject
 
 ///-----------------------------------------------------------------------------
-/// @name Track data
+/// @name Configure manager
 ///-----------------------------------------------------------------------------
 
+/**
+*  Prepares manager for sending out data.
+*
+*  @param context   the context which contains information about the device and the application.
+*  @param appClient object which is needed to send out data.
+*/
 + (void)configureWithContext:(MSAIContext *)context appClient:(MSAIAppClient *)appClient;
 
+/**
+ *  Enables/disables the manager.
+ *
+ *  @param disable determines wheteher the manager should be activated.
+ */
 + (void)setDisableMetricsManager:(BOOL)disable;
 
+/**
+ *  This method should be called after the manager has been configured in order to create and send data.
+ */
 + (void)startManager;
+
+///-----------------------------------------------------------------------------
+/// @name Track data
+///-----------------------------------------------------------------------------
 
 /**
  *  Track the event by event name.
