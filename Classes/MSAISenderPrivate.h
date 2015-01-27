@@ -3,19 +3,14 @@
 
 @interface MSAISender ()
 
-@property(nonatomic, strong)NSTimer *timer;
+///-----------------------------------------------------------------------------
+/// @name Initialize & configure shared instance
+///-----------------------------------------------------------------------------
 
+/**
+*  The appClient is needed to create requests and send objects via an operation queue.
+*/
 @property(nonatomic, strong)MSAIAppClient *appClient;
-
-/**
- *  An array for collecting data, which should be sent to the telemetry server.
- */
-@property(nonatomic, strong, readonly) NSMutableArray *dataItemQueue;
-
-/**
- *  A queue which makes array operations thread safe.
- */
-@property (nonatomic, strong) dispatch_queue_t dataItemsOperations;
 
 /**
  *  The endpoint url of the telemetry server.
@@ -23,10 +18,10 @@
 @property (nonatomic, strong)NSString *endpointPath;
 
 /**
- *  Returns a shared MSAISender object.
- *
- *  @return A singleton MSAISender instance ready use
- */
+*  Returns a shared MSAISender object.
+*
+*  @return A singleton MSAISender instance ready use
+*/
 + (instancetype)sharedSender;
 
 /**
@@ -37,6 +32,20 @@
  */
 - (void)configureWithAppClient:(MSAIAppClient *)appClient endpointPath:(NSString *)endpointPath;
 
+///-----------------------------------------------------------------------------
+/// @name Queue management
+///-----------------------------------------------------------------------------
+
+/**
+ *  A queue which makes array operations thread safe.
+ */
+@property (nonatomic, strong) dispatch_queue_t dataItemsOperations;
+
+/**
+ *  An array for collecting data, which should be sent to the telemetry server.
+ */
+@property(nonatomic, strong) NSMutableArray *dataItemQueue;
+
 /**
  *  Add metrics data to sender queue.
  *
@@ -44,7 +53,24 @@
  */
 - (void)enqueueDataDict:(NSDictionary *)dataDict;
 
-- (NSMutableArray *)dataItemQueue;
+///-----------------------------------------------------------------------------
+/// @name Batching
+///-----------------------------------------------------------------------------
+
+/**
+ *  A timer source which is used to flush the queue after a cretain time.
+ */
+@property (nonatomic, strong) dispatch_source_t timerSource;
+
+/**
+ *  Starts the timer.
+ */
+- (void)startTimer;
+
+/**
+ *  Stops the timer if currently running.
+ */
+- (void)invalidateTimer;
 
 /**
  *  Sends all enqueued events.
@@ -52,11 +78,15 @@
 - (void)flushSenderQueue;
 
 /**
- *  Stops the timer if yurrently running and restarts it if needed.
+ *  Creates a HTTP operation and puts it to the queue.
  *
- *  @param restart if set to YES the timer will be scheduled again
+ *  @param request a request for sending a data object to the telemetry server
  */
-- (void)invalidateTimerAndRestart:(BOOL)restart;
+- (void)sendRequest:(NSURLRequest *)request;
+
+///-----------------------------------------------------------------------------
+/// @name Helper
+///-----------------------------------------------------------------------------
 
 /**
  *  Returnes a request for sending data to the telemetry sender.
@@ -67,11 +97,6 @@
  */
 - (NSURLRequest *)requestForData:(NSData *)data;
 
-/**
- *  Creates a HTTP operation and puts it to the queue.
- *
- *  @param request a request for sending a data object to the telemetry server
- */
-- (void)enqueueRequest:(NSURLRequest *)request;
+
 
 @end
