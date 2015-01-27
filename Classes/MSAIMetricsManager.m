@@ -213,6 +213,11 @@ static id appWillTerminateObserver;
   });
 }
 
++ (void)trackDataItem:(MSAITelemetryData *)dataItem{
+  if(disableMetricsManager || !managerInitialised) return;
+  [channel sendDataItem:dataItem];
+}
+
 #pragma mark -
 
 /**
