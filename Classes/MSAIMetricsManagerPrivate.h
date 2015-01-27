@@ -14,12 +14,6 @@ extern NSString *const kMSAIApplicationWasLaunched;
 @interface MSAIMetricsManager () {
 }
 
-+ (void)configureWithContext:(MSAIContext *)context appClient:(MSAIAppClient *)appClient;
-
-+ (void)setDisableMetricsManager:(BOOL)disable;
-
-+ (void)startManager;
-
 + (MSAITelemetryContext *)telemetryContext;
 
 + (MSAIChannel *)channel;

@@ -1,10 +1,19 @@
 #import "MSAIBaseManager.h"
 
+@class MSAIContext;
+@class MSAIAppClient;
+
 @interface MSAIMetricsManager : NSObject
 
 ///-----------------------------------------------------------------------------
 /// @name Track data
 ///-----------------------------------------------------------------------------
+
++ (void)configureWithContext:(MSAIContext *)context appClient:(MSAIAppClient *)appClient;
+
++ (void)setDisableMetricsManager:(BOOL)disable;
+
++ (void)startManager;
 
 /**
  *  Track the event by event name.
