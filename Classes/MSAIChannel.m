@@ -23,7 +23,6 @@
 }
 
 - (void)sendDataItem:(MSAITelemetryData *)dataItem {
-  
   [dataItem setVersion:@(2)];
   
   MSAIData *data = [MSAIData new];
@@ -48,7 +47,6 @@
   }
   
   [envelope setTags:[_telemetryContext  contextDictionary]];
-
   [_sender enqueueDataDict:[envelope serializeToDictionary]];
 }
 

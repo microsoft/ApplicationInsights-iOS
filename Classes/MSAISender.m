@@ -4,8 +4,8 @@
 #import "MSAIEnvelope.h"
 
 #ifdef DEBUG
-static NSInteger const defaultMaxBatchCount = 1;
-static NSInteger const defaultBatchInterval = 3;
+static NSInteger const defaultMaxBatchCount = 150;
+static NSInteger const defaultBatchInterval = 15;
 #else
 static NSInteger const defaultMaxBatchCount = 5;
 static NSInteger const defaultBatchInterval = 15;
@@ -55,12 +55,12 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
       [strongSelf->_dataItemQueue addObject:dataDict];
       
       if([strongSelf->_dataItemQueue count] >= defaultMaxBatchCount){
-        dispatch_async(dispatch_get_main_queue(), ^{
+        dispatch_sync(dispatch_get_main_queue(), ^{
           [strongSelf invalidateTimerAndRestart:NO];
         });
         [strongSelf flushSenderQueue];
       }else if([strongSelf->_dataItemQueue count] == 1){
-        dispatch_async(dispatch_get_main_queue(), ^{
+        dispatch_sync(dispatch_get_main_queue(), ^{
           [strongSelf invalidateTimerAndRestart:YES];
         });
       }
@@ -89,23 +89,25 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
   if(restart){
     _timer = [NSTimer scheduledTimerWithTimeInterval:defaultBatchInterval
                                               target: self
-                                            selector:@selector(flushSenderQueue)
+                                            selector:@selector(timerFinished)
                                             userInfo: nil repeats:NO];
   }
 }
 
-- (void)flushSenderQueue{
-  
+- (void)timerFinished{
   __weak typeof(self) weakSelf = self;
   dispatch_async(self.dataItemsOperations, ^{
     typeof(self) strongSelf = weakSelf;
-    
-    NSError *error = nil;
-    NSData *json = [NSJSONSerialization dataWithJSONObject:strongSelf->_dataItemQueue options:NSJSONWritingPrettyPrinted error:&error];
-    NSURLRequest *request = [strongSelf requestForData:json];
-    [strongSelf enqueueRequest:request];
-    [strongSelf->_dataItemQueue removeAllObjects];
+    [strongSelf flushSenderQueue];
   });
+}
+
+- (void)flushSenderQueue{
+    NSError *error = nil;
+    NSData *json = [NSJSONSerialization dataWithJSONObject:_dataItemQueue options:NSJSONWritingPrettyPrinted error:&error];
+    NSURLRequest *request = [self requestForData:json];
+    [self enqueueRequest:request];
+    [_dataItemQueue removeAllObjects];
 }
 
 - (NSURLRequest *)requestForData:(NSData *)data{
