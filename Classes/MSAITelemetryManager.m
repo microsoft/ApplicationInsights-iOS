@@ -141,16 +141,16 @@
   }
 #endif /* MSAI_FEATURE_CRASH_REPORTER */
   
-  // App Extensions can only use MSAICrashManager, so ignore all others automatically
-  if (msai_isRunningInAppExtension()) {
-    return;
-  }
-  
 #if MSAI_FEATURE_METRICS
   if (![self isMetricsManagerDisabled]) {
     [MSAIMetricsManager startManager];
   }
 #endif /* MSAI_FEATURE_METRICS */
+  
+  // App Extensions can only use MSAICrashManager, so ignore all others automatically
+  if (msai_isRunningInAppExtension()) {
+    return;
+  }
 }
 
 
