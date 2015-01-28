@@ -5,8 +5,8 @@
 
 @interface MSAIExceptionData : MSAIDomain
 
-@property (nonatomic, strong, readonly) NSString *envelopeTypeName;
-@property (nonatomic, strong, readonly) NSString *dataTypeName;
+@property (nonatomic, copy, readonly) NSString *envelopeTypeName;
+@property (nonatomic, copy, readonly) NSString *dataTypeName;
 @property (nonatomic, strong) NSString *handledAt;
 @property (nonatomic, strong) NSMutableArray *exceptions;
 @property (nonatomic, assign) MSAISeverityLevel severityLevel;
