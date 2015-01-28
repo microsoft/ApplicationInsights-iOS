@@ -10,6 +10,7 @@ This document contains the following sections:
 - [Download & Extract](#download)
 - [Set up Xcode](#xcode) 
 - [Modify Code](#modify)
+- [iOS 8 Extensions](#extension)
 - [Additional Options](#options)
 
 <a id="requirements"></a> 
@@ -64,39 +65,102 @@ The SDK runs on devices with iOS 6.0 or higher.
 
 2. Add the following line at the top of the file below your own #import statements:
 
-#import <AppInsights-iOS/AppInsights.h>
+		#import <AppInsights-iOS/AppInsights.h>
 
 3. Search for the method `application:didFinishLaunchingWithOptions:`
 
 4. Add the following lines (Replace `INSTRUMENTATION_KEY` with the app instrumentation key of your app):
 
-[[MSAITelemetryManager sharedMSAIManager] configureWithInstrumentationKey:@"INSTRUMENTATION_KEY"];
-[[MSAITelemetryManager sharedMSAIManager] startManager];
+		[[MSAITelemetryManager sharedMSAIManager] configureWithInstrumentationKey:@"INSTRUMENTATION_KEY"];
+		[[MSAITelemetryManager sharedMSAIManager] startManager];
 
 5. Send some data to the server:
 
-// Send an event with custom properties and measuremnts data
-[MSAIMetricsManager trackEventWithName:@"Hello World event!"
-properties:@{@"Test property 1":@"Some value",
-@"Test property 2":@"Some other value"}
-mesurements:@{@"Test measurement 1":@(4.8),
-@"Test measurement 2":@(15.16),
-@"Test measurement 3":@(23.42)}];
+		// Send an event with custom properties and measuremnts data
+		[MSAIMetricsManager trackEventWithName:@"Hello World event!"
+									 properties:@{@"Test property 1":@"Some value",
+												  @"Test property 2":@"Some other value"}
+									mesurements:@{@"Test measurement 1":@(4.8),
+												  @"Test measurement 2":@(15.16),
+		                                         @"Test measurement 3":@(23.42)}];
 
-// Send a message
-[MSAIMetricsManager trackTraceWithMessage:@"Test message"];
+		// Send a message
+		[MSAIMetricsManager trackTraceWithMessage:@"Test message"];
 
-// Manually send pageviews
-[MSAIMetricsManager trackPageView:@"MyViewController"
-duration:300
-properties:@{@"Test measurement 1":@(4.8)}];
+		// Manually send pageviews
+		[MSAIMetricsManager trackPageView:@"MyViewController"
+								  duration:300
+								properties:@{@"Test measurement 1":@(4.8)}];
 
-// Send a message
-[MSAIMetricsManager trackMetricWithName:@"Test metric" 
-value:42.2];
+		// Send a message
+		[MSAIMetricsManager trackMetricWithName:@"Test metric" 
+										   value:42.2];
 
 *Note:* The SDK is optimized to defer everything possible to a later time while making sure e.g. crashes on startup can also be caught and each module executes other code with a delay some seconds. This ensures that applicationDidFinishLaunching will process as fast as possible and the SDK will not block the startup sequence resulting in a possible kill by the watchdog process.
 
+### Swift
+
+1. Open your `AppDelegate.swift` file.
+
+2. Add the following line at the top of the file below your own #import statements:
+
+		#import AppInsights-iOS
+
+3. Search for the method `application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool`
+
+
+4. Add the following lines (Replace `INSTRUMENTATION_KEY` with the app instrumentation key of your app):
+
+		MSAITelemetryManager.sharedMSAIManager().configureWithInstrumentationKey("INSTRUMENTATION_KEY");
+        MSAITelemetryManager.sharedMSAIManager().startManager();
+
+5. Send some data to the server:
+
+		// Send an event with custom properties and measuremnts data
+		MSAIMetricsManager.trackEventWithName(name:"Hello World event!", 
+										 properties:@{"Test property 1":"Some value",
+												      "Test property 2":"Some other value"},
+										mesurements:@{"Test measurement 1":@(4.8),
+												      "Test measurement 2":@(15.16),
+ 											          "Test measurement 3":@(23.42)});
+
+		// Send a message
+		MSAIMetricsManager.trackTraceWithMessage(message:"Test message");
+
+		// Manually send pageviews
+		MSAIMetricsManager.trackPageView(pageView:"MyViewController",
+										  duration:300,
+										properties:@{"Test measurement 1":@(4.8)});
+
+		// Send a message
+		MSAIMetricsManager.trackMetricWithName(name:"Test metric",
+											   value:42.2);
+
+<a id="extensions"></a>
+## iOS 8 Extensions
+
+The following points need to be considered to use AppInsights SDK iOS with iOS 8 Extensions:
+
+1. Each extension is required to use the same values for version (`CFBundleShortVersionString`) and build number (`CFBundleVersion`) as the main app uses. (This is required only if you are using the same INSTRUMENTATION_KEY for your app and extensions).
+2. You need to make sure the SDK setup code is only invoked once. Since there is no `applicationDidFinishLaunching:` equivalent and `viewDidLoad` can run multiple times, you need to use a setup like the following example:
+
+        @interface TodayViewController () <NCWidgetProviding>
+
+        @property (nonatomic, assign) BOOL didSetupAppInsightsSDK;
+
+        @end
+
+        @implementation TodayViewController
+
+        - (void)viewDidLoad {
+          [super viewDidLoad];
+          if (!self.didSetupAppInsightsSDK) {
+            [[MSAITelemetryManager sharedMSAIManager] configureWithInstrumentationKey:@"INSTRUMENTATION_KEY"];
+		[[MSAITelemetryManager sharedMSAIManager] startManager];
+            self.didSetupAppInsightsSDK = YES;
+          }
+        }
+ 
 <a id="options"></a> 
 ## Additional Options
 
