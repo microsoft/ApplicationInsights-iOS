@@ -20,7 +20,7 @@
 // Notification message which AppInsightsManager is listening to, to retry requesting updated from the server
 #define MSAINetworkDidBecomeReachableNotification @"MSAINetworkDidBecomeReachable"
 
-
+#if MSAI_FEATURE_CRASH_REPORTER
 /**
  *  MSAI Crash Reporter error domain
  */
@@ -55,6 +55,6 @@ typedef NS_ENUM(NSInteger, MSAIErrorReason) {
   MSAIErrorUnknown
 };
 extern NSString *const __attribute__((unused)) kMSAIErrorDomain;
-
+#endif 
 
 #endif
