@@ -1,3 +1,4 @@
+#if MSAI_FEATURE_CRASH_REPORTER
 #import <XCTest/XCTest.h>
 
 #define HC_SHORTHAND
@@ -271,3 +272,4 @@
 }
 
 @end
+#endif
