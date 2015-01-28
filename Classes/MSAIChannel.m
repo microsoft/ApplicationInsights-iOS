@@ -9,6 +9,7 @@
 #import "MSAIData.h"
 #import "MSAISender.h"
 #import "MSAISenderPrivate.h"
+#import "MSAIHelper.h"
 
 @implementation MSAIChannel
 
@@ -41,6 +42,8 @@
   [data setBaseType:[dataItem dataTypeName]];
   
   MSAIEnvelope *envelope = [MSAIEnvelope new];
+  envelope.appId = msai_mainBundleIdentifier();
+  envelope.appVer = msai_appVersion();
   [envelope setTime:[self dateStringForDate:[NSDate date]]];
   [envelope setIKey:[_telemetryContext instrumentationKey]];
   [envelope setData:data];
