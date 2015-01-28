@@ -382,7 +382,7 @@
     
 #if MSAI_FEATURE_METRICS
     MSAILog(@"INFO: Setup MetricsManager");
-    [MSAIMetricsManager configureWithContext:_appContext appClient:_appClient];
+    [MSAIMetricsManager configureWithContext:_appContext appClient:[self appClient]];
 #endif /* MSAI_FEATURE_METRICS */
     
     if (![self isAppStoreEnvironment]) {
