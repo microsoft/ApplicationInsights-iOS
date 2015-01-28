@@ -16,6 +16,7 @@
 #import "MSAIEventData.h"
 #import "MSAIMessageData.h"
 #import "MSAIMetricData.h"
+#import "MSAIPageViewData.h"
 #import "MSAIDataPoint.h"
 #import "MSAIEnums.h"
 
@@ -183,6 +184,34 @@ static id appWillTerminateObserver;
     [strongSelf trackDataItem:metricData];
   });
 }
+
+#pragma mark PageView
+
++ (void)trackPageView:(NSString *)pageName {
+  [self trackPageView:pageName duration:nil];
+}
+
++ (void)trackPageView:(NSString *)pageName duration:(long)duration {
+  [self trackPageView:pageName duration:duration properties:nil];
+}
+
++ (void)trackPageView:(NSString *)pageName duration:(long)duration properties:(NSDictionary *)properties {
+  if(!managerInitialised) return;
+  
+  __weak typeof(self) weakSelf = self;
+  dispatch_async(metricEventQueue, ^{
+    typeof(self) strongSelf = weakSelf;
+    MSAIPageViewData *pageViewData = [MSAIPageViewData new];
+    
+    pageViewData.name = pageName;
+    pageViewData.duration = [NSString stringWithFormat:@"%ld", duration];
+    pageViewData.properties = properties;
+    
+    [strongSelf trackDataItem:pageViewData];
+  });
+}
+
+#pragma mark Track DataItem
 
 + (void)trackDataItem:(MSAITelemetryData *)dataItem{
   if(disableMetricsManager || !managerInitialised) return;
