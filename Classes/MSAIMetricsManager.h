@@ -89,4 +89,28 @@
  */
 +(void)trackMetricWithName:(NSString *)metricName value:(double)value properties:(NSDictionary *)properties;
 
+/**
+ * Track pageView by name of the page
+ *
+ *  @param pageName name of the page
+ */
++ (void)trackPageView:(NSString *)pageName;
+
+/**
+ *  Track pageView by name of the page
+ *
+ *  @param pageName name of the page
+ *  @param duration time the page has been viewed. This method is ideally called when a page view ends. The time has to be calculated by the developer.
+ */
++ (void)trackPageView:(NSString *)pageName duration:(long)duration;
+
+/**
+ * Track pageView by name of the page
+ *
+ *  @param pageName name of the page*  
+ *  @param duration time the page has been viewed. This method is ideally called when a page view ends. The time has to be calculated by the developer.
+ *  @param properties key-value pairs which can contain additional information about the page view
+ */
++ (void)trackPageView:(NSString *)pageName duration:(long)duration properties:(NSDictionary *)properties;
+
 @end
