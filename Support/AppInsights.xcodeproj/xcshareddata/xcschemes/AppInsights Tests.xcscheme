@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   version = "1.7">
+   LastUpgradeVersion = "0610"
+   version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
       buildImplicitDependencies = "YES">
@@ -8,15 +9,15 @@
          <BuildActionEntry
             buildForTesting = "YES"
             buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "1E5954CB15B6F24A00A03429"
-               BuildableName = "libAppInsights-iOS.a"
-               BlueprintName = "AppInsights-iOS"
-               ReferencedContainer = "container:AppInsights-iOS.xcodeproj">
+               BlueprintIdentifier = "1E5A458F16F0DFC200B55C04"
+               BuildableName = "AppInsightsTests.xctest"
+               BlueprintName = "AppInsights Tests"
+               ReferencedContainer = "container:AppInsights.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -25,45 +26,26 @@
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES"
-      buildConfiguration = "CodeCoverage">
-      <PostActions>
-         <ExecutionAction
-            ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
-            <ActionContent
-               title = "Run Script"
-               scriptText = "source ${SRCROOT}/../Vendor/XcodeCoverage/run_code_coverage_post.sh"
-               shellToInvoke = "/bin/bash">
-               <EnvironmentBuildable>
-                  <BuildableReference
-                     BuildableIdentifier = "primary"
-                     BlueprintIdentifier = "1E5954CB15B6F24A00A03429"
-                     BuildableName = "libAppInsights-iOS.a"
-                     BlueprintName = "AppInsights-iOS"
-                     ReferencedContainer = "container:AppInsights-iOS.xcodeproj">
-                  </BuildableReference>
-               </EnvironmentBuildable>
-            </ActionContent>
-         </ExecutionAction>
-      </PostActions>
+      buildConfiguration = "Debug">
       <Testables>
          <TestableReference
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "1E5A458F16F0DFC200B55C04"
-               BuildableName = "AppInsights-iOSTests.xctest"
-               BlueprintName = "AppInsights-iOSTests"
-               ReferencedContainer = "container:AppInsights-iOS.xcodeproj">
+               BuildableName = "AppInsightsTests.xctest"
+               BlueprintName = "AppInsights Tests"
+               ReferencedContainer = "container:AppInsights.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "1E5954CB15B6F24A00A03429"
-            BuildableName = "libAppInsights-iOS.a"
-            BlueprintName = "AppInsights-iOS"
-            ReferencedContainer = "container:AppInsights-iOS.xcodeproj">
+            BlueprintIdentifier = "1E5A458F16F0DFC200B55C04"
+            BuildableName = "AppInsightsTests.xctest"
+            BlueprintName = "AppInsights Tests"
+            ReferencedContainer = "container:AppInsights.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </TestAction>
@@ -79,10 +61,10 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "1E5954CB15B6F24A00A03429"
-            BuildableName = "libAppInsights-iOS.a"
-            BlueprintName = "AppInsights-iOS"
-            ReferencedContainer = "container:AppInsights-iOS.xcodeproj">
+            BlueprintIdentifier = "1E5A458F16F0DFC200B55C04"
+            BuildableName = "AppInsightsTests.xctest"
+            BlueprintName = "AppInsights Tests"
+            ReferencedContainer = "container:AppInsights.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -97,10 +79,10 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "1E5954CB15B6F24A00A03429"
-            BuildableName = "libAppInsights-iOS.a"
-            BlueprintName = "AppInsights-iOS"
-            ReferencedContainer = "container:AppInsights-iOS.xcodeproj">
+            BlueprintIdentifier = "1E5A458F16F0DFC200B55C04"
+            BuildableName = "AppInsightsTests.xctest"
+            BlueprintName = "AppInsights Tests"
+            ReferencedContainer = "container:AppInsights.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>

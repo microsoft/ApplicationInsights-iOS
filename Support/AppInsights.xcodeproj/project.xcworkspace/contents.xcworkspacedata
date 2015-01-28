@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:AppInsights-iOS.xcodeproj">
+      location = "self:AppInsights.xcodeproj">
    </FileRef>
 </Workspace>

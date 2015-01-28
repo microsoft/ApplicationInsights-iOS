@@ -13,10 +13,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "1E4F61E91621AD970033EFC5"
-               BuildableName = "AppInsights-iOS Framework"
-               BlueprintName = "AppInsights-iOS Framework"
-               ReferencedContainer = "container:AppInsights-iOS.xcodeproj">
+               BlueprintIdentifier = "1E8E66AD15BC3D7700632A2E"
+               BuildableName = "AppInsights Documentation"
+               BlueprintName = "AppInsights Documentation"
+               ReferencedContainer = "container:AppInsights.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -41,10 +41,10 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "1E4F61E91621AD970033EFC5"
-            BuildableName = "AppInsights-iOS Framework"
-            BlueprintName = "AppInsights-iOS Framework"
-            ReferencedContainer = "container:AppInsights-iOS.xcodeproj">
+            BlueprintIdentifier = "1E8E66AD15BC3D7700632A2E"
+            BuildableName = "AppInsights Documentation"
+            BlueprintName = "AppInsights Documentation"
+            ReferencedContainer = "container:AppInsights.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>

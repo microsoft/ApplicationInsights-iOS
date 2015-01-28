@@ -1,4 +1,4 @@
-#import <AppInsights-iOS/AppInsights.h>
+#import <AppInsights/AppInsights.h>
 
 extern NSString *const __attribute__((unused)) kMSAICrashKillSignal;
 

@@ -1,4 +1,4 @@
-#include "AppInsights-iOS.xcconfig"
+#include "AppInsights.xcconfig"
 
 BUILD_NUMBER = 1
 VERSION_STRING = 1.0.a1

@@ -3,7 +3,7 @@
 #ifndef MSAI_Private_h
 #define MSAI_Private_h
 
-#define MSAI_NAME @"AppInsights-iOS"
+#define MSAI_NAME @"AppInsights"
 #define MSAI_IDENTIFIER @"com.microsoft.applicationinsights.ios"
 #define MSAI_CRASH_SETTINGS @"MSAICrashManager.plist"
 #define MSAI_CRASH_ANALYZER @"MSAICrashManager.analyzer"
