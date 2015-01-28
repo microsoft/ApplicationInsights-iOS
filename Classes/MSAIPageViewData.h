@@ -5,8 +5,8 @@
 
 @interface MSAIPageViewData : MSAIEventData
 
-@property(nonatomic, strong, readonly)NSString *envelopeTypeName;
-@property(nonatomic, strong, readonly)NSString *dataTypeName;
+@property(nonatomic, copy, readonly)NSString *envelopeTypeName;
+@property(nonatomic, copy, readonly)NSString *dataTypeName;
 @property (nonatomic, strong) NSString *url;
 @property (nonatomic, strong) NSString *duration;
 

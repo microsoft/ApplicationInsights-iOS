@@ -5,8 +5,8 @@
 
 @interface MSAIMetricData : MSAIDomain
 
-@property(nonatomic, strong, readonly)NSString *envelopeTypeName;
-@property(nonatomic, strong, readonly)NSString *dataTypeName;
+@property(nonatomic, copy, readonly)NSString *envelopeTypeName;
+@property(nonatomic, copy, readonly)NSString *dataTypeName;
 @property (nonatomic, strong) NSMutableArray *metrics;
 
 

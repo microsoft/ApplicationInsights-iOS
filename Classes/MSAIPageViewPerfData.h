@@ -5,8 +5,8 @@
 
 @interface MSAIPageViewPerfData : MSAIPageViewData
 
-@property(nonatomic, strong, readonly)NSString *envelopeTypeName;
-@property(nonatomic, strong, readonly)NSString *dataTypeName;
+@property(nonatomic, copy, readonly)NSString *envelopeTypeName;
+@property(nonatomic, copy, readonly)NSString *dataTypeName;
 @property (nonatomic, strong) NSString *perfTotal;
 @property (nonatomic, strong) NSString *networkConnect;
 @property (nonatomic, strong) NSString *sentRequest;
