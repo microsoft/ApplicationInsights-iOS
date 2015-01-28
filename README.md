@@ -21,16 +21,16 @@ The SDK runs on devices with iOS 6.0 or higher.
 <a id="download"></a> 
 ## Download & Extract
 
-1. Download the latest [AppInsights SDK iOS](https://rink.hockeyapp.net/apps/19e2b445f2769757bd4d384e56f1fc3b) framework.
+1. Download the latest [AppInsights SDK for iOS](https://rink.hockeyapp.net/apps/19e2b445f2769757bd4d384e56f1fc3b) framework.
 
-2. Unzip the file. A new folder `AppInsights-iOS` is created.
+2. Unzip the file. A new folder `AppInsights` is created.
 
 3. Move the folder into your project directory. We usually put 3rd-party code into a subdirectory named `Vendor`, so we move the directory into it.
 
 <a id="xcode"></a> 
 ## Set up Xcode
 
-1. Drag & drop `AppInsights-iOS.embeddedframework` from your project directory to your Xcode project.
+1. Drag & drop `AppInsights.embeddedframework` from your project directory to your Xcode project.
 
 2. Similar to above, our projects have a group `Vendor`, so we drop it there.
 
@@ -65,7 +65,7 @@ The SDK runs on devices with iOS 6.0 or higher.
 
 2. Add the following line at the top of the file below your own #import statements:
 
-		#import <AppInsights-iOS/AppInsights.h>
+		#import <AppInsights/AppInsights.h>
 
 3. Search for the method `application:didFinishLaunchingWithOptions:`
 
@@ -104,7 +104,7 @@ The SDK runs on devices with iOS 6.0 or higher.
 
 2. Add the following line at the top of the file below your own #import statements:
 
-		#import AppInsights-iOS
+		#import AppInsights
 
 3. Search for the method `application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool`
 
@@ -176,17 +176,17 @@ Instead of manually adding the missing frameworks, you can also use our bundled 
 
 4. Expand `Configurations`.
 
-5. Select `AppInsights-iOS.xcconfig` for all your configurations (if you don't already use a `.xcconfig` file)
+5. Select `AppInsights.xcconfig` for all your configurations (if you don't already use a `.xcconfig` file)
 
 **Note:** You can also add the required frameworks manually to your targets `Build Phases` and continue with step `7.` instead.
 
 6. If you are already using a `.xcconfig` file, simply add the following line to it
 
-`#include "../Vendor/AppInsights-iOS/Support/AppInsights-iOS.xcconfig"`
+`#include "../Vendor/AppInsights/Support/AppInsights.xcconfig"`
 
 (Adjust the path depending where the `Project.xcconfig` file is located related to the Xcode project package)
 
-**Important note:** Check if you overwrite any of the build settings and add a missing `$(inherited)` entry on the projects build settings level, so the `AppInsights-iOS.xcconfig` settings will be passed through successfully.
+**Important note:** Check if you overwrite any of the build settings and add a missing `$(inherited)` entry on the projects build settings level, so the `AppInsights.xcconfig` settings will be passed through successfully.
 
 7. If you are getting build warnings, then the `.xcconfig` setting wasn't included successfully or its settings in `Other Linker Flags` get ignored because `$(inherited)` is missing on project or target level. Either add `$(inherited)` or link the following frameworks manually in `Link Binary With Libraries` under `Build Phases`:
 - `AssetsLibrary`
