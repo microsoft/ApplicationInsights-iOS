@@ -1,7 +1,3 @@
-## Version 4.0 Alpha 1
-
-- [NEW] `BITMetricsManager`: New component to gather app analytics
-
 ## Version 3.6.2
 
 - [UPDATE] Store anonymous UUID asynchronously into the keychain to work around rare keychain blocking behavior

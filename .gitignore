@@ -20,6 +20,7 @@ profile
 *.swp
 *~.nib
 profile
+idea/
 
 documentation/
 Products/

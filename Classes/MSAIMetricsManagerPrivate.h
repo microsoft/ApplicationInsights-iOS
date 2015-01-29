@@ -2,32 +2,52 @@
 
 #if MSAI_FEATURE_METRICS
 
+#import "MSAITelemetryContext.h"
+
+@class MSAIContext;
 @class MSAIAppClient;
+@class MSAIChannel;
+@class MSAITelemetryData;
 
-@interface MSAIMetricsManager () {
-}
+extern NSString *const kMSAIApplicationWasLaunched;
 
-/**
- * must be set
- */
-@property (nonatomic, strong) MSAIAppClient *appClient;
+@interface MSAIMetricsManager ()
 
-// used by MSAIMetricsManager if disable status is changed
-@property (nonatomic, getter = isMetricsManagerDisabled) BOOL disableMetricsManager;
-
-/**
- To send data in background
- */
-@property (nonatomic, assign) UIBackgroundTaskIdentifier backgroundTaskIdentifier;
-
+///-----------------------------------------------------------------------------
+/// @name Getters
+///-----------------------------------------------------------------------------
 
 /**
- * Removes the stored first_time setup, so the next session will be reported as first_session again
+*  Creates the context which is part of the payload based on the app context.
+*
+*  @return a context which is used by the channel for creating the payload
+*/
++ (MSAITelemetryContext *)telemetryContext;
+
+/**
+ *  Returns the channel.
  *
- * Call this before invoking `startManager`!
+ *  @return the channel, which is used by the manager for sending out data
  */
-- (void) cleanupInternalStorage;
++ (MSAIChannel *)channel;
 
+/**
+ *  Returns the context the manager has been configured with.
+ *
+ *  @return the context, which is used by the manager
+ */
++ (MSAIContext *)context;
+
+///-----------------------------------------------------------------------------
+/// @name Forward data to channel
+///-----------------------------------------------------------------------------
+
+/**
+ * Forwards the tracked data to the channel in order to send it.
+ *
+ * @param telemetry the data which should be sent to the server
+ */
++ (void)trackDataItem:(MSAITelemetryData *)dataItem;
 
 @end
 

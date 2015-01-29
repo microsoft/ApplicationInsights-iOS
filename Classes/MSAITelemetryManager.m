@@ -6,20 +6,10 @@
 #import "MSAIHelper.h"
 #import "MSAIAppClient.h"
 #import "MSAIKeychainUtils.h"
+#import "MSAIContext.h"
+#import "MSAIContextPrivate.h"
 
 #include <stdint.h>
-
-typedef struct {
-  uint8_t       info_version;
-  const char    msai_version[16];
-  const char    msai_build[16];
-} msai_info_t;
-
-msai_info_t applicationinsights_library_info __attribute__((section("__TEXT,__msai_ios,regular,no_dead_strip"))) = {
-  .info_version = 1,
-  .msai_version = MSAI_C_VERSION,
-  .msai_build = MSAI_C_BUILD
-};
 
 
 #if MSAI_FEATURE_CRASH_REPORTER
@@ -32,9 +22,8 @@ msai_info_t applicationinsights_library_info __attribute__((section("__TEXT,__ms
 
 
 @implementation MSAITelemetryManager {
-  NSString *_appIdentifier;
   
-  BOOL _validAppIdentifier;
+  BOOL _validInstrumentationKey;
   
   BOOL _startManagerIsInvoked;
   
@@ -43,17 +32,19 @@ msai_info_t applicationinsights_library_info __attribute__((section("__TEXT,__ms
   BOOL _managersInitialized;
   
   MSAIAppClient *_appClient;
+  
+  MSAIContext *_appContext;
 }
 
 #pragma mark - Private Class Methods
 
-- (BOOL)checkValidityOfAppIdentifier:(NSString *)identifier {
+- (BOOL)checkValidityOfInstrumentationKey:(NSString *)instrumentationKey {
   BOOL result = NO;
   
-  if (identifier) {
-    NSCharacterSet *hexSet = [NSCharacterSet characterSetWithCharactersInString:@"0123456789abcdef"];
-    NSCharacterSet *inStringSet = [NSCharacterSet characterSetWithCharactersInString:identifier];
-    result = ([identifier length] == 32) && ([hexSet isSupersetOfSet:inStringSet]);
+  if (instrumentationKey) {
+    NSCharacterSet *hexSet = [NSCharacterSet characterSetWithCharactersInString:@"0123456789abcdef-"];
+    NSCharacterSet *inStringSet = [NSCharacterSet characterSetWithCharactersInString:instrumentationKey];
+    result = ([instrumentationKey length] == 36) && ([hexSet isSupersetOfSet:inStringSet]);
   }
   
   return result;
@@ -103,7 +94,7 @@ msai_info_t applicationinsights_library_info __attribute__((section("__TEXT,__ms
       _appStoreEnvironment = YES;
     }
 #endif
-
+    
     [self performSelector:@selector(validateStartManagerIsInvoked) withObject:nil afterDelay:0.0f];
   }
   return self;
@@ -112,21 +103,22 @@ msai_info_t applicationinsights_library_info __attribute__((section("__TEXT,__ms
 
 #pragma mark - Public Instance Methods (Configuration)
 
-- (void)configureWithIdentifier:(NSString *)appIdentifier {
-  _appIdentifier = [appIdentifier copy];
+- (void)configureWithInstrumentationKey:(NSString *)instrumentationKey {
+  
+  _appContext = [[MSAIContext alloc] initWithInstrumentationKey:instrumentationKey isAppStoreEnvironment:_appStoreEnvironment];
   
   [self initializeModules];
 }
 
-- (void)configureWithIdentifier:(NSString *)appIdentifier delegate:(id)delegate {
+- (void)configureWithInstrumentationKey:(NSString *)instrumentationKey delegate:(id <MSAITelemetryManagerDelegate>)delegate {
   _delegate = delegate;
-  _appIdentifier = [appIdentifier copy];
+  _appContext = [[MSAIContext alloc] initWithInstrumentationKey:instrumentationKey isAppStoreEnvironment:_appStoreEnvironment];
   
   [self initializeModules];
 }
 
 - (void)startManager {
-  if (!_validAppIdentifier) return;
+  if (!_validInstrumentationKey) return;
   if (_startManagerIsInvoked) {
     NSLog(@"[AppInsightsSDK] Warning: startManager should only be invoked once! This call is ignored.");
     return;
@@ -149,24 +141,22 @@ msai_info_t applicationinsights_library_info __attribute__((section("__TEXT,__ms
   }
 #endif /* MSAI_FEATURE_CRASH_REPORTER */
   
+#if MSAI_FEATURE_METRICS
+  if (![self isMetricsManagerDisabled]) {
+    [MSAIMetricsManager startManager];
+  }
+#endif /* MSAI_FEATURE_METRICS */
+  
   // App Extensions can only use MSAICrashManager, so ignore all others automatically
   if (msai_isRunningInAppExtension()) {
     return;
   }
-
-#if MSAI_FEATURE_METRICS
-  if (_metricsManager && ![self isMetricsManagerDisabled]) {
-    [_metricsManager startManager];
-  }
-#endif /* MSAI_FEATURE_METRICS */
 }
 
 
 #if MSAI_FEATURE_METRICS
 - (void)setDisableMetricsManager:(BOOL)disableMetricsManager {
-  if (_metricsManager) {
-    [_metricsManager setDisableMetricsManager:disableMetricsManager];
-  }
+  [MSAIMetricsManager setDisableMetricsManager:disableMetricsManager];
   _disableMetricsManager = disableMetricsManager;
 }
 #endif /* MSAI_FEATURE_METRICS */
@@ -257,22 +247,22 @@ msai_info_t applicationinsights_library_info __attribute__((section("__TEXT,__ms
 }
 
 - (void)testIdentifier {
-  if (!_appIdentifier || [self isAppStoreEnvironment]) {
+  if (![_appContext instrumentationKey] || [_appContext isAppStoreEnvironment]) {
     return;
   }
   
   NSDate *now = [NSDate date];
   NSString *timeString = [NSString stringWithFormat:@"%.0f", [now timeIntervalSince1970]];
-  [self pingServerForIntegrationStartWorkflowWithTimeString:timeString appIdentifier:_appIdentifier];
+  [self pingServerForIntegrationStartWorkflowWithTimeString:timeString instrumentationKey:[_appContext instrumentationKey]];
 }
 
 
 - (NSString *)version {
-  return [NSString stringWithUTF8String:applicationinsights_library_info.msai_version];
+  return msai_sdkVersion();
 }
 
 - (NSString *)build {
-  return [NSString stringWithUTF8String:applicationinsights_library_info.msai_build];
+  return msai_sdkBuild();
 }
 
 
@@ -312,41 +302,41 @@ msai_info_t applicationinsights_library_info __attribute__((section("__TEXT,__ms
   return NO;
 }
 
-- (void)pingServerForIntegrationStartWorkflowWithTimeString:(NSString *)timeString appIdentifier:(NSString *)appIdentifier {
-  if (!appIdentifier || [self isAppStoreEnvironment]) {
+- (void)pingServerForIntegrationStartWorkflowWithTimeString:(NSString *)timeString instrumentationKey:(NSString *)instrumentationKey {
+  if (!instrumentationKey || [self isAppStoreEnvironment]) {
     return;
   }
   
-  NSString *integrationPath = [NSString stringWithFormat:@"api/3/apps/%@/integration", msai_encodeAppIdentifier(appIdentifier)];
+  NSString *integrationPath = [NSString stringWithFormat:@"api/3/apps/%@/integration", msai_encodeInstrumentationKey(instrumentationKey)];
   
   MSAILog(@"INFO: Sending integration workflow ping to %@", integrationPath);
   
   [[self appClient] postPath:integrationPath
-                        parameters:@{@"timestamp": timeString,
-                                     @"sdk": MSAI_NAME,
-                                     @"sdk_version": MSAI_VERSION,
-                                     @"bundle_version": [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"]
-                                     }
-                        completion:^(MSAIHTTPOperation *operation, NSData* responseData, NSError *error) {
-                          switch (operation.response.statusCode) {
-                            case 400:
-                              MSAILog(@"ERROR: App ID not found");
-                              break;
-                            case 201:
-                              MSAILog(@"INFO: Ping accepted.");
-                              break;
-                            case 200:
-                              MSAILog(@"INFO: Ping accepted. Server already knows.");
-                              break;
-                            default:
-                              MSAILog(@"ERROR: Unknown error");
-                              break;
-                          }
-                        }];
+                  parameters:@{@"timestamp": timeString,
+                               @"sdk": MSAI_NAME,
+                               @"sdk_version": MSAI_VERSION,
+                               @"bundle_version": [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"]
+                               }
+                  completion:^(MSAIHTTPOperation *operation, NSData* responseData, NSError *error) {
+                    switch (operation.response.statusCode) {
+                      case 400:
+                        MSAILog(@"ERROR: App ID not found");
+                        break;
+                      case 201:
+                        MSAILog(@"INFO: Ping accepted.");
+                        break;
+                      case 200:
+                        MSAILog(@"INFO: Ping accepted. Server already knows.");
+                        break;
+                      default:
+                        MSAILog(@"ERROR: Unknown error");
+                        break;
+                    }
+                  }];
 }
 
 - (void)validateStartManagerIsInvoked {
-  if (_validAppIdentifier && !_appStoreEnvironment) {
+  if (_validInstrumentationKey && !_appStoreEnvironment) {
     if (!_startManagerIsInvoked) {
       NSLog(@"[AppInsightsSDK] ERROR: You did not call [[MSAITelemetryManager sharedManager] startManager] to startup the AppInsightsSDK! Please do so after setting up all properties. The SDK is NOT running.");
     }
@@ -376,30 +366,29 @@ msai_info_t applicationinsights_library_info __attribute__((section("__TEXT,__ms
     return;
   }
   
-  _validAppIdentifier = [self checkValidityOfAppIdentifier:_appIdentifier];
+  _validInstrumentationKey = [self checkValidityOfInstrumentationKey:[_appContext instrumentationKey]];
   
   if (![self isSetUpOnMainThread]) return;
   
   _startManagerIsInvoked = NO;
   
-  if (_validAppIdentifier) {
+  if (_validInstrumentationKey) {
 #if MSAI_FEATURE_CRASH_REPORTER
     MSAILog(@"INFO: Setup CrashManager");
-    _crashManager = [[MSAICrashManager alloc] initWithAppIdentifier:_appIdentifier isAppStoreEnvironment:_appStoreEnvironment];
+    _crashManager = [[MSAICrashManager alloc] initWithAppContext:_appContext];
     _crashManager.appClient = [self appClient];
     _crashManager.delegate = _delegate;
 #endif /* MSAI_FEATURE_CRASH_REPORTER */
     
 #if MSAI_FEATURE_METRICS
     MSAILog(@"INFO: Setup MetricsManager");
-    _metricsManager = [[MSAIMetricsManager alloc] initWithAppIdentifier:_appIdentifier isAppStoreEnvironment:_appStoreEnvironment];
-    _metricsManager.appClient = [self appClient];
+    [MSAIMetricsManager configureWithContext:_appContext appClient:[self appClient]];
 #endif /* MSAI_FEATURE_METRICS */
-
+    
     if (![self isAppStoreEnvironment]) {
       NSString *integrationFlowTime = [self integrationFlowTimeString];
       if (integrationFlowTime && [self integrationFlowStartedWithTimeString:integrationFlowTime]) {
-        [self pingServerForIntegrationStartWorkflowWithTimeString:integrationFlowTime appIdentifier:_appIdentifier];
+        [self pingServerForIntegrationStartWorkflowWithTimeString:integrationFlowTime instrumentationKey:[_appContext instrumentationKey]];
       }
     }
     _managersInitialized = YES;

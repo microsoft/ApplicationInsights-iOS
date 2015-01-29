@@ -47,18 +47,18 @@ static NSString *MSAIKeychainUtilsErrorDomain = @"MSAIKeychainUtilsErrorDomain";
 	}
   
 	// Set up a query dictionary with the base query attributes: item type (generic), username, and service
-	
+
 	NSArray *keys = [[NSArray alloc] initWithObjects: (__bridge_transfer NSString *) kSecClass, kSecAttrAccount, kSecAttrService, nil];
-	NSArray *objects = [[NSArray alloc] initWithObjects: (__bridge_transfer NSString *) kSecClassGenericPassword, username, serviceName, nil];
+  NSArray *objects = @[(__bridge_transfer NSString *) kSecClassGenericPassword, username, serviceName];
 	
-	NSMutableDictionary *query = [[NSMutableDictionary alloc] initWithObjects: objects forKeys: keys];
+  NSMutableDictionary *query = [[NSMutableDictionary alloc] initWithObjects: objects forKeys: keys];
 	
 	// First do a query for attributes, in case we already have a Keychain item with no password data set.
 	// One likely way such an incorrect item could have come about is due to the previous (incorrect)
 	// version of this code (which set the password as a generic attribute instead of password data).
 	
 	NSMutableDictionary *attributeQuery = [query mutableCopy];
-	[attributeQuery setObject: (id) kCFBooleanTrue forKey:(__bridge_transfer id) kSecReturnAttributes];
+  attributeQuery[(__bridge_transfer id) kSecReturnAttributes] = (id) kCFBooleanTrue;
   CFTypeRef attrResult = NULL;
 	OSStatus status = SecItemCopyMatching((__bridge CFDictionaryRef) attributeQuery, &attrResult);
 //  NSDictionary *attributeResult = (__bridge_transfer NSDictionary *)attrResult;
@@ -78,7 +78,7 @@ static NSString *MSAIKeychainUtilsErrorDomain = @"MSAIKeychainUtilsErrorDomain";
 	// We have an existing item, now query for the password data associated with it.
 	
 	NSMutableDictionary *passwordQuery = [query mutableCopy];
-	[passwordQuery setObject: (id) kCFBooleanTrue forKey: (__bridge_transfer id) kSecReturnData];
+  passwordQuery[(__bridge_transfer id) kSecReturnData] = (id) kCFBooleanTrue;
   CFTypeRef resData = NULL;
 	status = SecItemCopyMatching((__bridge CFDictionaryRef) passwordQuery, (CFTypeRef *) &resData);
 	NSData *resultData = (__bridge_transfer NSData *)resData;
@@ -198,9 +198,9 @@ static NSString *MSAIKeychainUtilsErrorDomain = @"MSAIKeychainUtilsErrorDomain";
                           accessiblity,
                           nil];
 			
-			NSDictionary *query = [[NSDictionary alloc] initWithObjects: objects forKeys: keys];
+      NSDictionary *query = @{keys : objects};
 			
-			status = SecItemUpdate((__bridge CFDictionaryRef) query, (__bridge CFDictionaryRef) [NSDictionary dictionaryWithObject: [password dataUsingEncoding: NSUTF8StringEncoding] forKey: (__bridge_transfer NSString *) kSecValueData]);
+      status = SecItemUpdate((__bridge CFDictionaryRef) query, (__bridge CFDictionaryRef) @{(__bridge_transfer NSString *) kSecValueData : [password dataUsingEncoding:NSUTF8StringEncoding]});
 		}
 	}
 	else
@@ -224,7 +224,7 @@ static NSString *MSAIKeychainUtilsErrorDomain = @"MSAIKeychainUtilsErrorDomain";
                         accessiblity,
                         nil];
 		
-		NSDictionary *query = [[NSDictionary alloc] initWithObjects: objects forKeys: keys];
+    NSDictionary *query = [[NSDictionary alloc] initWithObjects: objects forKeys: keys];
     
 		status = SecItemAdd((__bridge CFDictionaryRef) query, NULL);
 	}
@@ -259,7 +259,7 @@ static NSString *MSAIKeychainUtilsErrorDomain = @"MSAIKeychainUtilsErrorDomain";
 	NSArray *keys = [[NSArray alloc] initWithObjects: (__bridge_transfer NSString *) kSecClass, kSecAttrAccount, kSecAttrService, kSecReturnAttributes, nil];
 	NSArray *objects = [[NSArray alloc] initWithObjects: (__bridge_transfer NSString *) kSecClassGenericPassword, username, serviceName, kCFBooleanTrue, nil];
 	
-	NSDictionary *query = [[NSDictionary alloc] initWithObjects: objects forKeys: keys];
+  NSDictionary *query = [[NSDictionary alloc] initWithObjects: objects forKeys: keys];
 	
 	OSStatus status = SecItemDelete((__bridge CFDictionaryRef) query);
 	
@@ -289,8 +289,9 @@ static NSString *MSAIKeychainUtilsErrorDomain = @"MSAIKeychainUtilsErrorDomain";
 	}
   
   NSMutableDictionary *searchData = [NSMutableDictionary new];
-  [searchData setObject:(__bridge id)kSecClassGenericPassword forKey:(__bridge id)kSecClass];
-  [searchData setObject:serviceName forKey:(__bridge id)kSecAttrService];
+  searchData[(__bridge id) kSecClass] = (__bridge id) kSecClassGenericPassword;
+  searchData[(__bridge id) kSecAttrService] = serviceName;
+
   
   OSStatus status = SecItemDelete((__bridge CFDictionaryRef)searchData);
   

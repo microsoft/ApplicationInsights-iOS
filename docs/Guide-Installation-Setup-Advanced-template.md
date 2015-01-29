@@ -1,6 +1,6 @@
-## Version 4.0 Alpha 1
+## Version 3.6.2
 
-- [Changelog](http://www.hockeyapp.net/help/sdk/ios/4.0-b.1/docs/docs/Changelog.html)
+- [Changelog](http://www.hockeyapp.net/help/sdk/ios/3.6.2/docs/docs/Changelog.html)
 
 ## Introduction
 
@@ -60,7 +60,6 @@ The SDK runs on devices with iOS 6.0 or higher.
 
 10. Add the following system frameworks, if they are missing:
     - `AssetsLibrary`
-    - `CFNetwork`
     - `CoreText`
     - `CoreGraphics`
     - `Foundation`
@@ -167,7 +166,7 @@ This documentation provides integrated help in Xcode for all public APIs and a s
 
 3. Copy the content into ~`/Library/Developer/Shared/Documentation/DocSets`
 
-The documentation is also available via the following URL: [http://hockeyapp.net/help/sdk/ios/4.0-b.1/](http://hockeyapp.net/help/sdk/ios/4.0-b.1/)
+The documentation is also available via the following URL: [http://hockeyapp.net/help/sdk/ios/3.6.2/](http://hockeyapp.net/help/sdk/ios/3.6.2/)
 
 ### Set up with xcconfig
 
@@ -199,7 +198,6 @@ Instead of manually adding the missing frameworks, you can also use our bundled 
     
 4. If you are getting build warnings, then the `.xcconfig` setting wasn't included successfully or its settings in `Other Linker Flags` get ignored because `$(inherited)` is missing on project or target level. Either add `$(inherited)` or link the following frameworks manually in `Link Binary With Libraries` under `Build Phases`:
     - `AssetsLibrary`
-    - `CFNetwork`
     - `CoreText`
     - `CoreGraphics`
     - `Foundation`

@@ -3,536 +3,282 @@
 #if MSAI_FEATURE_METRICS
 
 #import "AppInsightsPrivate.h"
-
 #import "MSAIHelper.h"
 
 #import "MSAIBaseManagerPrivate.h"
 #import "MSAIMetricsManagerPrivate.h"
-#import "MSAIMetricsSession.h"
+#import "MSAIChannel.h"
+#import "MSAIChannelPrivate.h"
+#import "MSAITelemetryContext.h"
+#import "MSAITelemetryContextPrivate.h"
+#import "MSAIContext.h"
+#import "MSAIContextPrivate.h"
+#import "MSAIEventData.h"
+#import "MSAIMessageData.h"
+#import "MSAIMetricData.h"
+#import "MSAIPageViewData.h"
+#import "MSAIDataPoint.h"
+#import "MSAIEnums.h"
 
 #if MSAI_FEATURE_CRASH_REPORTER
-#import "MSAICrashManager.h"
-#import "MSAICrashDetails.h"
 #endif
 
-NSString *const kMSAIMetricsCachesSessions = @"MSAIMetricsCachesSessions";
-NSString *const kMSAIMetricsTempSessionData = @"MSAIMetricsTempSessionData";
-NSString *const kMSAIMetricsLastAppVersion = @"MSAIMetricsLastAppVersion";
+NSString *const kMSAIApplicationWasLaunched = @"MSAIApplicationWasLaunched";
+static NSString *const kMSAIApplicationDidEnterBackgroundTime = @"MSAIApplicationDidEnterBackgroundTime";
+static NSInteger const defaultSessionExpirationTime = 20;
 
+static dispatch_queue_t metricEventQueue;
+static MSAIChannel *channel;
+static MSAITelemetryContext *context;
+static MSAIContext *appContext;
+static BOOL disableMetricsManager;
+static BOOL managerInitialised = NO;
 
-@implementation MSAIMetricsManager {
-  NSFileManager  *_fileManager;
-  NSString       *_metricsDataFile;
+static id appDidFinishLaunchingObserver;
+static id appWillEnterForegroundObserver;
+static id appDidEnterBackgroundObserver;
+static id appWillTerminateObserver;
+
+@implementation MSAIMetricsManager
+
+#pragma mark - Configure manager
+
++ (void)configureWithContext:(MSAIContext *)context appClient:(MSAIAppClient *)appClient{
+  static dispatch_once_t onceToken;
+  dispatch_once(&onceToken, ^{
+    metricEventQueue = dispatch_queue_create("com.microsoft.appInsights.metricEventQueue",DISPATCH_QUEUE_CONCURRENT);
+  });
   
-  // Used for storing the current session details once started.
-  NSString       *_metricsTempDataFile;
-  
-  // This is used to determine the session start time for crashed sessions
-  MSAIMetricsSession *_previousTempSession;
-  
-  id _appDidBecomeActiveObserver;
-  id _appDidEnterBackgroundObserver;
-  id _appDidTerminateObserver;
-  id _networkDidBecomeReachableObserver;
-  
-  BOOL _isSending;
-  
-  NSMutableArray *_cachedSessions;
+  dispatch_barrier_async(metricEventQueue, ^{
+    managerInitialised = NO;
+    if(disableMetricsManager) return;
+    appContext = context;
+    channel = [[MSAIChannel alloc] initWithAppClient:appClient telemetryContext:[self telemetryContext]];
+  });
 }
 
-
-#pragma mark - Init
-
-- (id)init {
-  if ((self = [super init])) {
-    _disableMetricsManager = NO;
-
-    _isSending = NO;
-    
-    _currentSession = nil;
-    _cachedSessions = [[NSMutableArray alloc] init];
-    _previousTempSession = nil;
-    
-    // set defaults
-    _fileManager = [[NSFileManager alloc] init];
-    
-    _metricsDataFile = [msai_settingsDir() stringByAppendingPathComponent:MSAI_METRICS_DATA];
-    _metricsTempDataFile = [msai_settingsDir() stringByAppendingPathComponent:MSAI_METRICS_TEMP_DATA];
-  }
-  return self;
++ (void)setDisableMetricsManager:(BOOL)disable{
+  dispatch_barrier_async(metricEventQueue, ^{
+    disableMetricsManager = disable;
+  });
 }
 
-- (void)dealloc {
-  [self unregisterObservers];
++ (void)startManager {
+  if(disableMetricsManager) return;
+  dispatch_barrier_sync(metricEventQueue, ^{
+    [self registerObservers];
+    managerInitialised = YES;
+  });
 }
 
+#pragma mark - Getters
 
-#pragma mark - Observers
++ (MSAIChannel *)channel{
+  return channel;
+}
 
-- (void) registerObservers {
++ (MSAIContext *)context{
+  return appContext;
+}
+
++ (MSAITelemetryContext *)telemetryContext{
+  MSAIDevice *deviceContext = [MSAIDevice new];
+  [deviceContext setModel: [appContext deviceModel]];
+  [deviceContext setType:[appContext deviceType]];
+  [deviceContext setOsVersion:[appContext osVersion]];
+  [deviceContext setOs:[appContext osName]];
+  [deviceContext setDeviceId:msai_appAnonID()];
+  deviceContext.locale = msai_deviceLocale();
+  deviceContext.language = msai_deviceLanguage();
+  [deviceContext setOemName:@"Apple"];
+  deviceContext.screenResolution = msai_screenSize();
+  
+  MSAIInternal *internalContext = [MSAIInternal new];
+  [internalContext setSdkVersion: msai_sdkVersion()];
+  
+  MSAIApplication *applicationContext = [MSAIApplication new];
+  [applicationContext setVersion:[appContext appVersion]];
+  
+  MSAISession *sessionContext = [MSAISession new];
+  
+  MSAIOperation *operationContext = [MSAIOperation new];
+  MSAIUser *userContext = [MSAIUser new];
+  MSAILocation *locationContext = [MSAILocation new];
+  
+  //TODO: Add additional context data
+  MSAITelemetryContext *telemetryContext = [[MSAITelemetryContext alloc]initWithInstrumentationKey:[appContext instrumentationKey]
+                                                                                      endpointPath:MSAI_TELEMETRY_PATH
+                                                                                applicationContext:applicationContext
+                                                                                     deviceContext:deviceContext
+                                                                                   locationContext:locationContext
+                                                                                    sessionContext:sessionContext
+                                                                                       userContext:userContext
+                                                                                   internalContext:internalContext
+                                                                                  operationContext:operationContext];
+  return telemetryContext;
+}
+
+#pragma mark - Track data
+
++(void)trackEventWithName:(NSString *)eventName{
+  [self trackEventWithName:eventName properties:nil mesurements:nil];
+}
+
++(void)trackEventWithName:(NSString *)eventName properties:(NSDictionary *)properties{
+  [self trackEventWithName:eventName properties:properties mesurements:nil];
+}
+  
++(void)trackEventWithName:(NSString *)eventName properties:(NSDictionary *)properties mesurements:(NSDictionary *)measurements{
+  if(!managerInitialised) return;
+  
+  __weak typeof(self) weakSelf = self;
+  dispatch_async(metricEventQueue, ^{
+    typeof(self) strongSelf = weakSelf;
+    MSAIEventData *eventData = [MSAIEventData new];
+    [eventData setName:eventName];
+    [eventData setProperties:properties];
+    [eventData setMeasurements:measurements];
+    
+    [strongSelf trackDataItem:eventData];
+  });
+}
+
++(void)trackTraceWithMessage:(NSString *)message{
+  [self trackTraceWithMessage:message properties:nil];
+}
+
++(void)trackTraceWithMessage:(NSString *)message properties:(NSDictionary *)properties{
+  if(!managerInitialised) return;
+  
+  __weak typeof(self) weakSelf = self;
+  dispatch_async(metricEventQueue, ^{
+    typeof(self) strongSelf = weakSelf;
+    MSAIMessageData *messageData = [MSAIMessageData new];
+    [messageData setMessage:message];
+    [messageData setProperties:properties];
+    
+    [strongSelf trackDataItem:messageData];
+  });
+}
+
++(void)trackMetricWithName:(NSString *)metricName value:(double)value{
+  [self trackMetricWithName:metricName value:value properties:nil];
+}
+
++(void)trackMetricWithName:(NSString *)metricName value:(double)value properties:(NSDictionary *)properties{
+  if(!managerInitialised) return;
+  
+  __weak typeof(self) weakSelf = self;
+  dispatch_async(metricEventQueue, ^{
+    typeof(self) strongSelf = weakSelf;
+    MSAIMetricData *metricData = [MSAIMetricData new];
+    MSAIDataPoint *data = [MSAIDataPoint new];
+    [data setCount:@(1)];
+    [data setKind:MSAIDataPointType_measurement];
+    [data setMax:@(value)];
+    [data setName:metricName];
+    [data setValue:@(value)];
+    NSMutableArray *metrics = [@[data] mutableCopy];
+    [metricData setMetrics:metrics];
+    [metricData setProperties:properties];
+    [strongSelf trackDataItem:metricData];
+  });
+}
+
+#pragma mark PageView
+
++ (void)trackPageView:(NSString *)pageName {
+  [self trackPageView:pageName duration:nil];
+}
+
++ (void)trackPageView:(NSString *)pageName duration:(long)duration {
+  [self trackPageView:pageName duration:duration properties:nil];
+}
+
++ (void)trackPageView:(NSString *)pageName duration:(long)duration properties:(NSDictionary *)properties {
+  if(!managerInitialised) return;
+  
+  __weak typeof(self) weakSelf = self;
+  dispatch_async(metricEventQueue, ^{
+    typeof(self) strongSelf = weakSelf;
+    MSAIPageViewData *pageViewData = [MSAIPageViewData new];
+    
+    pageViewData.name = pageName;
+    pageViewData.duration = [NSString stringWithFormat:@"%ld", duration];
+    pageViewData.properties = properties;
+    
+    [strongSelf trackDataItem:pageViewData];
+  });
+}
+
+#pragma mark Track DataItem
+
++ (void)trackDataItem:(MSAITelemetryData *)dataItem{
+  if(disableMetricsManager || !managerInitialised) return;
+  [channel sendDataItem:dataItem];
+}
+
+#pragma mark - Session update
+
++ (void) registerObservers {
   NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
   
   __weak typeof(self) weakSelf = self;
-  if (nil == _appDidEnterBackgroundObserver) {
-    _appDidEnterBackgroundObserver = [nc addObserverForName:UIApplicationDidEnterBackgroundNotification
+  if (nil == appDidFinishLaunchingObserver) {
+    appDidFinishLaunchingObserver = [nc addObserverForName:UIApplicationDidFinishLaunchingNotification
+                                                    object:nil
+                                                     queue:NSOperationQueue.mainQueue
+                                                usingBlock:^(NSNotification *note) {
+                                                  typeof(self) strongSelf = weakSelf;
+                                                  [strongSelf startSession];
+                                                }];
+  }
+  if (nil == appDidEnterBackgroundObserver) {
+    appDidEnterBackgroundObserver = [nc addObserverForName:UIApplicationDidEnterBackgroundNotification
+                                                    object:nil
+                                                     queue:NSOperationQueue.mainQueue
+                                                usingBlock:^(NSNotification *note) {
+                                                  typeof(self) strongSelf = weakSelf;
+                                                  [strongSelf updateSessionDate];
+                                                }];
+  }
+  if (nil == appWillEnterForegroundObserver) {
+    appWillEnterForegroundObserver = [nc addObserverForName:UIApplicationWillEnterForegroundNotification
                                                      object:nil
                                                       queue:NSOperationQueue.mainQueue
                                                  usingBlock:^(NSNotification *note) {
                                                    typeof(self) strongSelf = weakSelf;
-                                                   [strongSelf stopUsage];
+                                                   [strongSelf startSession];
                                                  }];
   }
-  if (nil == _appDidTerminateObserver) {
-    _appDidTerminateObserver = [nc addObserverForName:UIApplicationWillTerminateNotification
+  if (nil == appWillTerminateObserver) {
+    appWillTerminateObserver = [nc addObserverForName:UIApplicationWillTerminateNotification
                                                object:nil
                                                 queue:NSOperationQueue.mainQueue
                                            usingBlock:^(NSNotification *note) {
                                              typeof(self) strongSelf = weakSelf;
-                                             [strongSelf stopUsage];
+                                             [strongSelf endSession];
                                            }];
   }
-  if (nil == _appDidBecomeActiveObserver) {
-    _appDidBecomeActiveObserver = [nc addObserverForName:UIApplicationDidBecomeActiveNotification
-                                                  object:nil
-                                                   queue:NSOperationQueue.mainQueue
-                                              usingBlock:^(NSNotification *note) {
-                                                typeof(self) strongSelf = weakSelf;
-                                                [strongSelf startUsage];
-                                                [strongSelf sendDataInBackground];
-                                              }];
-  }
-  if (nil == _networkDidBecomeReachableObserver) {
-    _networkDidBecomeReachableObserver = [nc addObserverForName:MSAINetworkDidBecomeReachableNotification
-                                                         object:nil
-                                                          queue:NSOperationQueue.mainQueue
-                                                     usingBlock:^(NSNotification *note) {
-                                                       typeof(self) strongSelf = weakSelf;
-                                                       [strongSelf sendDataInBackground];
-                                                     }];
+}
+
++ (void)updateSessionDate {
+  [[NSUserDefaults standardUserDefaults] setDouble:[[NSDate date] timeIntervalSince1970] forKey:kMSAIApplicationDidEnterBackgroundTime];
+  [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++ (void)startSession {
+  double appDidEnterBackgroundTime = [[NSUserDefaults standardUserDefaults] doubleForKey:kMSAIApplicationDidEnterBackgroundTime];
+  double timeSinceLastBackground = [[NSDate date] timeIntervalSince1970] - appDidEnterBackgroundTime;
+  if (timeSinceLastBackground > defaultSessionExpirationTime) {
+    [context createNewSession];
+    [self trackEventWithName:@"Session Start Event"];
+    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kMSAIApplicationWasLaunched];
   }
 }
 
-- (void) unregisterObservers {
-  NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
-  
-  if (_appDidEnterBackgroundObserver) {
-    [nc removeObserver:_appDidEnterBackgroundObserver];
-    _appDidEnterBackgroundObserver = nil;
-  }
-  if (_appDidTerminateObserver) {
-    [nc removeObserver:_appDidTerminateObserver];
-    _appDidTerminateObserver = nil;
-  }
-  if (_appDidBecomeActiveObserver) {
-    [nc removeObserver:_appDidBecomeActiveObserver];
-    _appDidBecomeActiveObserver = nil;
-  }
-  if (_networkDidBecomeReachableObserver) {
-    [nc removeObserver:_networkDidBecomeReachableObserver];
-    _networkDidBecomeReachableObserver = nil;
-  }
-}
-
-
-#pragma mark - Storage
-
-/**
- Load stored session data
- */
-- (void)loadMetricsData {
-  if (![_fileManager fileExistsAtPath:_metricsDataFile])
-    return;
-  
-  NSData *codedData = [[NSData alloc] initWithContentsOfFile:_metricsDataFile];
-  if (codedData == nil) return;
-  
-  NSKeyedUnarchiver *unarchiver = nil;
-  
-  @try {
-    unarchiver = [[NSKeyedUnarchiver alloc] initForReadingWithData:codedData];
-  }
-  @catch (NSException *exception) {
-    return;
-  }
-  
-  if ([unarchiver containsValueForKey:kMSAIMetricsCachesSessions]) {
-    NSArray *sessions = [unarchiver decodeObjectForKey:kMSAIMetricsCachesSessions];
-    if ([sessions count] > 0) {
-      [_cachedSessions addObjectsFromArray:sessions];
-    }
-  }
-  
-  [unarchiver finishDecoding];
-}
-
-/**
- Store current session data into a cache file
- 
- @return BOOL YES if storing succeeded
- */
-- (BOOL)storeMetricsData {
-  NSMutableData *data = [[NSMutableData alloc] init];
-  NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc] initForWritingWithMutableData:data];
-  
-  [archiver encodeObject:_cachedSessions forKey:kMSAIMetricsCachesSessions];
-  
-  [archiver finishEncoding];
-  BOOL result = [data writeToFile:_metricsDataFile atomically:YES];
-  
-  return result;
-}
-
-
-/**
- Load stored temp session data
- 
- This only contains one started session details, so it can be used for crashed sessions
- */
-- (void)loadMetricsTempData {
-  if (![_fileManager fileExistsAtPath:_metricsTempDataFile])
-    return;
-  
-  NSData *codedData = [[NSData alloc] initWithContentsOfFile:_metricsTempDataFile];
-  if (codedData == nil) return;
-  
-  NSKeyedUnarchiver *unarchiver = nil;
-  
-  @try {
-    unarchiver = [[NSKeyedUnarchiver alloc] initForReadingWithData:codedData];
-  }
-  @catch (NSException *exception) {
-    return;
-  }
-  
-  if ([unarchiver containsValueForKey:kMSAIMetricsTempSessionData]) {
-    id data = [unarchiver decodeObjectForKey:kMSAIMetricsTempSessionData];
-    if ([data isKindOfClass:[MSAIMetricsSession class]]) {
-      _previousTempSession = (MSAIMetricsSession *)data;
-    }
-  }
-  
-  [unarchiver finishDecoding];
-  
-  // now delete the temp file
-  NSError *error = nil;
-  [_fileManager removeItemAtPath:_metricsTempDataFile error:&error];
-}
-
-/**
- Store current sessions data into a temp file
- 
- @return BOOL YES if storing succeeded
- */
-- (BOOL)storeMetricsTempData {
-  NSMutableData *data = [[NSMutableData alloc] init];
-  NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc] initForWritingWithMutableData:data];
-  
-  [archiver encodeObject:_currentSession forKey:kMSAIMetricsTempSessionData];
-  
-  [archiver finishEncoding];
-  BOOL result = [data writeToFile:_metricsTempDataFile atomically:YES];
-  
-  return result;
-}
-
-
-#pragma mark - Private
-
-/**
- Reset the first session value
- 
- Use with caution!
- */
-- (void) cleanupInternalStorage {
-  [self removeKeyFromKeychain:kMSAIMetricsLastAppVersion];
-}
-
-
-#pragma mark - Usage
-
-/**
- A new session started
- */
-- (void)startUsage {
-  if ([self isMetricsManagerDisabled]) return;
-  
-  if (_currentSession) return;
-  
-  UIApplicationState appState = [[UIApplication sharedApplication] applicationState];
-  if (appState == UIApplicationStateBackground) return;
-  
-  NSUUID *installationUUID = [[NSUUID alloc] initWithUUIDString:msai_appAnonID()];
-
-  if (!installationUUID) return;
-  
-  NSBundle *appBundle = [NSBundle mainBundle];
-  
-  if (!appBundle) return;
-  
-  NSDate *sessionStartDate = [NSDate date];
-  uint64_t sessionStartTime = (uint64_t)[sessionStartDate timeIntervalSince1970] * 1000; // CFAbsoluteTimeGetCurrent();
-  
-  // these values can only change via app starts
-  NSString *sessionAppLang = @"unknown";
-  NSArray *appLocalizations = [appBundle preferredLocalizations];
-  if (appLocalizations && [appLocalizations count] > 0) {
-    sessionAppLang = [appLocalizations objectAtIndex:0];
-  }
-  
-  NSString *sessionAppBuild = [appBundle objectForInfoDictionaryKey:@"CFBundleVersion"] ?: @"";
-  NSString *sessionAppVersion = [appBundle objectForInfoDictionaryKey:@"CFBundleShortVersionString"] ?: @"";
-  
-  NSString *sessionDeviceLocale = [[NSLocale currentLocale] localeIdentifier];
-  NSString *sessionDeviceModel = [self getDevicePlatform];
-  NSString *sessionDeviceOS = [[UIDevice currentDevice] systemVersion];
-  
-  BOOL firstSessionForAppVersion = NO;
-  
-  NSString *previousSessionAppVersion = [self stringValueFromKeychainForKey:kMSAIMetricsLastAppVersion];
-  if (!previousSessionAppVersion || ![sessionAppBuild isEqualToString:previousSessionAppVersion]) {
-    firstSessionForAppVersion = YES;
-  }
-  
-  _currentSession = [[MSAIMetricsSession alloc] initWithInstallationUUID:installationUUID
-                                                                     deviceModel:sessionDeviceModel
-                                                                 deviceOSVersion:sessionDeviceOS
-                                                                    deviceLocale:sessionDeviceLocale
-                                                                     appLanguage:sessionAppLang
-                                                                        appBuild:sessionAppBuild
-                                                                      appVersion:sessionAppVersion
-                                                                sessionStartTime:sessionStartTime
-                                                                  sessionEndTime:0
-                                                                    firstSession:firstSessionForAppVersion
-                     ];
-  
-  [self storeMetricsTempData];
-}
-
-/**
- A session has ended
- */
-- (void)stopUsage {
-  if ([self isMetricsManagerDisabled]) return;
-  
-  UIApplicationState appState = [[UIApplication sharedApplication] applicationState];
-  if (appState != UIApplicationStateBackground) return;
-
-  if (!_currentSession) return;
-  
-  if (_currentSession.sessionStartTime == 0) return;
-  
-  uint64_t sessionEndTime = (uint64_t)[[NSDate date] timeIntervalSince1970] * 1000;
-  
-  MSAIMetricsSession *finishedSession = [[MSAIMetricsSession alloc] initWithInstallationUUID:_currentSession.installationUUID
-                                                                                                 deviceModel:_currentSession.deviceModel
-                                                                                             deviceOSVersion:_currentSession.deviceOSVersion
-                                                                                                deviceLocale:_currentSession.deviceLocale
-                                                                                                 appLanguage:_currentSession.appLanguage
-                                                                                                    appBuild:_currentSession.appBuild
-                                                                                                  appVersion:_currentSession.appVersion
-                                                                                            sessionStartTime:_currentSession.sessionStartTime
-                                                                                              sessionEndTime:sessionEndTime
-                                                                                                firstSession:_currentSession.firstSession
-                                                 ];
-  _currentSession = nil;
-
-  BOOL result = NO;
-  
-  @synchronized(@"MSAIMetricsSessionCache") {
-    [_cachedSessions addObject:finishedSession];
-  
-    result = [self storeMetricsData];
-  }
-  
-  if (result) {
-    
-    if (finishedSession.firstSession) {
-      [self addStringValueToKeychainForThisDeviceOnly:finishedSession.appBuild forKey:kMSAIMetricsLastAppVersion];
-    }
-    
-    [self sendDataInBackground];
-  }
-}
-
-
-/**
- Check if the last session crashed and create a session object for that if so
- */
-- (void)processLastSessionIfCrashed {
-#if MSAIDK_FEATURE_CRASH_REPORTER
-  if (!_previousTempSession) return;
-  
-  BOOL didCrash = [[MSAITelemetryManager sharedManager].crashManager didCrashInLastSession];
-  
-  if (!didCrash) return;
-  
-  MSAICrashDetails *lastSessionCrashDetails = [[MSAITelemetryManager sharedManager].crashManager lastSessionCrashDetails];
-  uint64_t sessionEndTime = (uint64_t)[[lastSessionCrashDetails crashTime] timeIntervalSince1970] * 1000;
-  
-  MSAIMetricsSession *crashedSession = [[MSAIMetricsSession alloc] initWithInstallationUUID:_previousTempSession.installationUUID
-                                                                                                deviceModel:_previousTempSession.deviceModel
-                                                                                            deviceOSVersion:_previousTempSession.deviceOSVersion
-                                                                                               deviceLocale:_previousTempSession.deviceLocale
-                                                                                                appLanguage:_previousTempSession.appLanguage
-                                                                                                   appBuild:_previousTempSession.appBuild
-                                                                                                 appVersion:_previousTempSession.appVersion
-                                                                                           sessionStartTime:_previousTempSession.sessionStartTime
-                                                                                             sessionEndTime:sessionEndTime
-                                                                                               firstSession:_previousTempSession.firstSession
-                                                ];
-  
-  
-  @synchronized(@"MSAIMetricsSessionCache") {
-    [_cachedSessions addObject:crashedSession];
-    
-    [self storeMetricsData];
-  }
-  
-#endif
-}
-
-
-#pragma mark - Networking
-
-/**
- Send a single dataset
- */
-- (void)sendFinishedSessions {
-//  MSAITelemetrySessionMetrics *session = _cachedSessions[0];
-//  
-//  __weak typeof(self) weakSelf = self;
-//  [_client recordSession:session timeout:5 successHandler:^{
-//    NSLog(@"Successfully submitted session metrics");
-//    typeof(self) strongSelf = weakSelf;
-//    
-//    @synchronized(@"MSAIMetricsSessionCache") {
-//      [_cachedSessions removeObjectAtIndex:0];
-//      [strongSelf storeMetricsData];
-//    }
-//    
-//    NSTimeInterval remainingTime = [UIApplication sharedApplication].backgroundTimeRemaining;
-//    
-//    if (remainingTime > 10 && [_cachedSessions count] > 0) {
-//      UIApplicationState appState = [[UIApplication sharedApplication] applicationState];
-//      if (appState != UIApplicationStateBackground) {
-//        [strongSelf sendFinishedSessions];
-//        return;
-//      }
-//    }
-//    
-//    [strongSelf endSendingDataInBackground];
-//
-//  } failureHandler:^(NSError *error) {
-//    typeof(self) strongSelf = weakSelf;
-//
-//    NSLog(@"Failed submitting session");
-//    
-//    [strongSelf endSendingDataInBackground];
-//
-//  }];
-}
-
-
-/**
- Connect to the server and start sending available data
- */
-- (void)setupTelemetryClientAndSendData {
-//  __weak typeof(self) weakSelf = self;
-//  MSAITelemetryClientConfig *config = [[MSAITelemetryClientConfig alloc] initWithHost:kMSAISDKMetricsHostname port:kMSAISDKMetricsPort];
-//  [MSAITelemetryClient authenticateWithConfig:config
-//                                       appID:self.appIdentifier
-//                                     timeout:5
-//                                handlerQueue:dispatch_get_main_queue()
-//                              successHandler:^(MSAITelemetryClient *client) {
-//                                typeof(self) strongSelf = weakSelf;
-//                                /* Authentication succeeded; record some sessions */
-//                                _client = client;
-//                                [strongSelf sendFinishedSessions];
-//
-//                              }
-//                              failureHandler:^(NSError *error) {
-//                                typeof(self) strongSelf = weakSelf;
-//
-//                                if (error.domain == MSAITelemetryClientErrorDomain) {
-//                                  if (error.code == MSAITelemetryClientErrorAuthFailed) {
-//                                    /* Authentication failed */
-//                                  }
-//                                }
-//
-//                                NSLog(@"Auth failed due to error: %@", error);
-//                                
-//                                [strongSelf endSendingDataInBackground];
-//                              }];
-}
-
-
-/**
- End a background task for sending data
- */
-- (void)endSendingDataInBackground {
-//  if (_client) {
-//    [_client disconnect];
-//    _client = nil;
-//  }
-  
-  _isSending = NO;
-  
-  if (self.backgroundTaskIdentifier != UIBackgroundTaskInvalid) {
-    [[UIApplication sharedApplication] endBackgroundTask:self.backgroundTaskIdentifier];
-    self.backgroundTaskIdentifier = UIBackgroundTaskInvalid;
-  }
-}
-
-/**
- Control sending data in background
- */
-- (void)sendDataInBackground {
-  if ([self isMetricsManagerDisabled]) return;
-  
-  if (_isSending) return;
-
-  if ([_cachedSessions count] == 0) {
-    return;
-  }
-  
-  _isSending = YES;
-
-  __weak typeof(self) weakSelf = self;
-  self.backgroundTaskIdentifier = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
-    dispatch_async(dispatch_get_main_queue(), ^{
-      typeof(self) strongSelf = weakSelf;
-      [strongSelf endSendingDataInBackground];
-    });
-  }];
-  
-  dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-    typeof(self) strongSelf = weakSelf;
-    
-    [strongSelf setupTelemetryClientAndSendData];
-  });
-}
-
-#pragma mark -
-
-/**
- Begin the startup process
- */
-- (void)startManager {
-  if ([self isMetricsManagerDisabled]) return;
-  
-  MSAILog(@"INFO: Start MetricsManager");
-
-  [self registerObservers];
-  
-  [self loadMetricsTempData];
-  
-  [self startUsage];
-  
-  [self loadMetricsData];
-  
-  [self processLastSessionIfCrashed];
-
-  [self sendDataInBackground];
++ (void)endSession {
+  [self trackEventWithName:@"Session End Event"];
 }
 
 @end
