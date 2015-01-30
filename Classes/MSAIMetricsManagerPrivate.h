@@ -49,6 +49,17 @@ extern NSString *const kMSAIApplicationWasLaunched;
  */
 + (void)trackDataItem:(MSAITelemetryData *)dataItem;
 
+///-----------------------------------------------------------------------------
+/// @name Helper
+///-----------------------------------------------------------------------------
+
+/**
+ *  Returns if manager is enabled and configured.
+ *
+ *  @return YES if manager enabled and configured
+ */
++ (BOOL)isMangerAvailable;
+
 @end
 
 #endif
