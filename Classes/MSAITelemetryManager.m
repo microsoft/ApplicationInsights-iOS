@@ -2,13 +2,12 @@
 #import "AppInsightsPrivate.h"
 
 #import "MSAIBaseManagerPrivate.h"
-
 #import "MSAIHelper.h"
 #import "MSAIAppClient.h"
 #import "MSAIKeychainUtils.h"
 #import "MSAIContext.h"
 #import "MSAIContextPrivate.h"
-
+#import "MSAICategoryContainer.h"
 #include <stdint.h>
 
 
@@ -143,6 +142,7 @@
   
 #if MSAI_FEATURE_METRICS
   if (![self isMetricsManagerDisabled]) {
+
     [MSAIMetricsManager startManager];
   }
 #endif /* MSAI_FEATURE_METRICS */
@@ -152,7 +152,6 @@
     return;
   }
 }
-
 
 #if MSAI_FEATURE_METRICS
 - (void)setDisableMetricsManager:(BOOL)disableMetricsManager {
@@ -383,6 +382,7 @@
 #if MSAI_FEATURE_METRICS
     MSAILog(@"INFO: Setup MetricsManager");
     [MSAIMetricsManager configureWithContext:_appContext appClient:[self appClient]];
+    [MSAICategoryContainer activateCategory];
 #endif /* MSAI_FEATURE_METRICS */
     
     if (![self isAppStoreEnvironment]) {

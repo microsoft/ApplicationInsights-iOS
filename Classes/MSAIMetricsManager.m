@@ -185,7 +185,7 @@ static id appWillTerminateObserver;
   });
 }
 
-#pragma mark PageView
+#pragma mark - PageView
 
 + (void)trackPageView:(NSString *)pageName {
   [self trackPageView:pageName duration:nil];
@@ -279,6 +279,12 @@ static id appWillTerminateObserver;
 
 + (void)endSession {
   [self trackEventWithName:@"Session End Event"];
+}
+
+#pragma mark - Helper
+
++ (BOOL)isMangerAvailable{
+  return !disableMetricsManager && managerInitialised;
 }
 
 @end
