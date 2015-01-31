@@ -32,13 +32,14 @@
 
 - (void)msai_viewWillAppear:(BOOL)animated {
   [self msai_viewWillAppear:animated];
-  NSLog(@"willAppear");
+  
   if([MSAIMetricsManager isMangerAvailable]){
-    NSLog(@"Sending PageView");
-    [MSAIMetricsManager trackPageView:NSStringFromClass([self class])];
+    NSString *pageViewName = [NSString stringWithFormat:@"%@ %@", NSStringFromClass([self class]), self.title];
+    [MSAIMetricsManager trackPageView:pageViewName];
   }
 }
 
 @end
+
 
 
