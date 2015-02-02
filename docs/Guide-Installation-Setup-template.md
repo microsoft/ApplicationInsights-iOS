@@ -1,4 +1,4 @@
-## AppInsights SDK iOS (1.0.a1)
+## AppInsights SDK iOS (1.0-a.1)
 
 ## Introduction
 
