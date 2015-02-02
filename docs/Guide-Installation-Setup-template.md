@@ -116,26 +116,18 @@ The SDK runs on devices with iOS 6.0 or higher.
 		MSAITelemetryManager.sharedMSAIManager().startManager();
 
 5. Send some data to the server:
-
-		// Send an event with custom properties and measuremnts data
-		MSAIMetricsManager.trackEventWithName(name:"Hello World event!", 
-										 properties:@{"Test property 1":"Some value",
-												      "Test property 2":"Some other value"},
-										mesurements:@{"Test measurement 1":@(4.8),
-												      "Test measurement 2":@(15.16),
-												      "Test measurement 3":@(23.42)});
-
-		// Send a message
-		MSAIMetricsManager.trackTraceWithMessage(message:"Test message");
-
-		// Manually send pageviews
-		MSAIMetricsManager.trackPageView(pageView:"MyViewController",
-										  duration:300,
-										properties:@{"Test measurement 1":@(4.8)});
-
-		// Send a message
-		MSAIMetricsManager.trackMetricWithName(name:"Test metric",
-											   value:42.2);
+    
+    	// Send an event with custom properties and measuremnts data
+    	MSAIMetricsManager.trackEventWithName("Test event")
+    
+    	// Send a message
+    	MSAIMetricsManager.trackTraceWithMessage("Test message")
+    
+    	// Manually send pageviews
+    	MSAIMetricsManager.trackPageView("Test PageView", duration: 2342, properties:["property1":"value1"])
+    
+    	// Send a message
+    	MSAIMetricsManager.trackMetricWithName("Test metric", value:42.2)
 
 <a id="extensions"></a>
 ## iOS 8 Extensions
