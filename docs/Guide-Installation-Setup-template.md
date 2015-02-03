@@ -47,12 +47,8 @@ The SDK runs on devices with iOS 6.0 or higher.
 8. Add the following system frameworks, if they are missing:
 
 		AssetsLibrary
-		CoreText
-		CoreGraphics
 		Foundation
 		MobileCoreServices
-		QuartzCore
-		QuickLook
 		Security
 		SystemConfiguration
 		UIKit
@@ -117,7 +113,7 @@ The SDK runs on devices with iOS 6.0 or higher.
 
 5. Send some data to the server:
     
-    	// Send an event with custom properties and measuremnts data
+    	// Send an event
     	MSAIMetricsManager.trackEventWithName("Test event")
     
     	// Send a message
@@ -184,12 +180,8 @@ Instead of manually adding the missing frameworks, you can also use our bundled 
 7. If you are getting build warnings, then the `.xcconfig` setting wasn't included successfully or its settings in `Other Linker Flags` get ignored because `$(inherited)` is missing on project or target level. Either add `$(inherited)` or link the following frameworks manually in `Link Binary With Libraries` under `Build Phases`:
 
 		AssetsLibrary
-		CoreText
-		CoreGraphics
 		Foundation
 		MobileCoreServices
-		QuartzCore
-		QuickLook
 		Security
 		SystemConfiguration
 		UIKit
