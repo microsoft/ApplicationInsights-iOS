@@ -75,7 +75,7 @@
 /**
  *  Sends all enqueued events.
  */
-- (void)flushSenderQueue;
+- (void)persistQueue;
 
 /**
  *  Creates a HTTP operation and puts it to the queue.
