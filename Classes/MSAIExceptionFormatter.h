@@ -31,10 +31,10 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
+@class MSAICrashData;
+@class PLCrashReport;
 
 #import <Foundation/Foundation.h>
-
-#import <CrashReporter/PLCrashReport.h>
 
 // Dictionary keys for array elements returned by arrayOfAppUUIDsForCrashReport:
 #ifndef kMSAIBinaryImageKeyUUID
@@ -63,10 +63,11 @@ typedef NS_ENUM (NSInteger, MSAIBinaryImageType) {
 };
 
 
-@interface MSAICrashReportTextFormatter : NSObject {
+@interface MSAIExceptionFormatter : NSObject {
 }
 
-+ (NSString *)stringValueForCrashReport:(PLCrashReport *)report crashReporterKey:(NSString *)crashReporterKey;
++ (MSAICrashData *)crashDataForCrashReport:(PLCrashReport *)report crashReporterKey:(NSString *)crashReporterKey handledException:(NSException *)exception;
++ (MSAICrashData *)crashDataForCrashReport:(PLCrashReport *)report crashReporterKey:(NSString *)crashReporterKey;
 + (NSArray *)arrayOfAppUUIDsForCrashReport:(PLCrashReport *)report;
 + (NSString *)msai_archNameFromCPUType:(uint64_t)cpuType subType:(uint64_t)subType;
 + (MSAIBinaryImageType)msai_imageTypeForImagePath:(NSString *)imagePath processPath:(NSString *)processPath;
