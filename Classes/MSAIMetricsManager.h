@@ -113,4 +113,6 @@
  */
 + (void)trackPageView:(NSString *)pageName duration:(long)duration properties:(NSDictionary *)properties;
 
++ (void)trackException:(NSException *)exception;
+
 @end

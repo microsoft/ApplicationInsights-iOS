@@ -19,6 +19,10 @@
 #import "MSAIPageViewData.h"
 #import "MSAIDataPoint.h"
 #import "MSAIEnums.h"
+#import "MSAIExceptionFormatter.h"
+#import "MSAICrashData.h"
+#import <pthread.h>
+#import <CrashReporter/CrashReporter.h>
 
 #if MSAI_FEATURE_CRASH_REPORTER
 #endif
@@ -127,7 +131,7 @@ static id appWillTerminateObserver;
 +(void)trackEventWithName:(NSString *)eventName properties:(NSDictionary *)properties{
   [self trackEventWithName:eventName properties:properties mesurements:nil];
 }
-  
+
 +(void)trackEventWithName:(NSString *)eventName properties:(NSDictionary *)properties mesurements:(NSDictionary *)measurements{
   if(!managerInitialised) return;
   
@@ -183,6 +187,29 @@ static id appWillTerminateObserver;
     [metricData setProperties:properties];
     [strongSelf trackDataItem:metricData];
   });
+}
+
++ (void)trackException:(NSException *)exception{
+  
+  __weak typeof(self) weakSelf = self;
+  dispatch_async(metricEventQueue, ^{
+    typeof(self) strongSelf = weakSelf;
+    
+    PLCrashReporterSignalHandlerType signalHandlerType = PLCrashReporterSignalHandlerTypeBSD;
+    
+    PLCrashReporterSymbolicationStrategy symbolicationStrategy = PLCrashReporterSymbolicationStrategyAll;
+    
+    MSAIPLCrashReporterConfig *config = [[MSAIPLCrashReporterConfig alloc] initWithSignalHandlerType: signalHandlerType
+                                                                               symbolicationStrategy: symbolicationStrategy];
+    NSError *error = NULL;
+    MSAIPLCrashReporter *cm = [[MSAIPLCrashReporter alloc] initWithConfiguration:config];
+    NSData *data = [cm generateLiveReportWithThread:pthread_mach_thread_np(pthread_self())];
+    MSAIPLCrashReport *report = [[MSAIPLCrashReport alloc] initWithData:data error:&error];
+
+    MSAICrashData *exceptionData = [MSAIExceptionFormatter crashDataForCrashReport:report crashReporterKey:nil handledException:exception];
+    [strongSelf trackDataItem:exceptionData];
+  });
+
 }
 
 #pragma mark - PageView
