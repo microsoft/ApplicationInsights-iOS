@@ -49,7 +49,7 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
 
 - (void)configureWithAppClient:(MSAIAppClient *)appClient endpointPath:(NSString *)endpointPath {
   self.endpointPath = endpointPath;
-  self.endpointPath = appClient;
+  self.appClient = appClient;
 }
 
 #pragma mark - Queue management
@@ -74,7 +74,7 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
 
       [strongSelf->_dataItemQueue addObject:dataDict];
 
-      if([strongSelf->_dataItemQueue count] >= defaultMaxBatchCount) {
+      if([strongSelf->_dataItemQueue count] >= strongSelf.senderThreshold) {
         [strongSelf invalidateTimer];
         [strongSelf persistQueue];
       } else if([strongSelf->_dataItemQueue count] == 1) {
@@ -100,7 +100,7 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
   }
 
   self.timerSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, self.dataItemsOperations);
-  dispatch_source_set_timer(self.timerSource, dispatch_walltime(NULL, NSEC_PER_SEC * defaultBatchInterval), 1ull * NSEC_PER_SEC, 1ull * NSEC_PER_SEC);
+  dispatch_source_set_timer(self.timerSource, dispatch_walltime(NULL, NSEC_PER_SEC * self.senderInterval), 1ull * NSEC_PER_SEC, 1ull * NSEC_PER_SEC);
   dispatch_source_set_event_handler(self.timerSource, ^{
     [self invalidateTimer];
     [self persistQueue];
