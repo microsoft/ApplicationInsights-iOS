@@ -467,7 +467,7 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
  */
 + (MSAICrashData *)crashDataForCrashReport:(MSAIPLCrashReport *)report crashReporterKey:(NSString *)crashReporterKey {
   
-  [[self class]crashDataForCrashReport:report crashReporterKey:crashReporterKey handledException:nil];
+  return [[self class]crashDataForCrashReport:report crashReporterKey:crashReporterKey handledException:nil];
 }
 
 /**
