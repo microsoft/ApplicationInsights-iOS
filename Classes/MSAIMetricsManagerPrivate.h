@@ -14,31 +14,6 @@ extern NSString *const kMSAIApplicationWasLaunched;
 @interface MSAIMetricsManager ()
 
 ///-----------------------------------------------------------------------------
-/// @name Getters
-///-----------------------------------------------------------------------------
-
-/**
-*  Creates the context which is part of the payload based on the app context.
-*
-*  @return a context which is used by the channel for creating the payload
-*/
-+ (MSAITelemetryContext *)telemetryContext;
-
-/**
- *  Returns the channel.
- *
- *  @return the channel, which is used by the manager for sending out data
- */
-+ (MSAIChannel *)channel;
-
-/**
- *  Returns the context the manager has been configured with.
- *
- *  @return the context, which is used by the manager
- */
-+ (MSAIContext *)context;
-
-///-----------------------------------------------------------------------------
 /// @name Forward data to channel
 ///-----------------------------------------------------------------------------
 

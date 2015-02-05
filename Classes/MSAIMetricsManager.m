@@ -32,9 +32,6 @@ static NSString *const kMSAIApplicationDidEnterBackgroundTime = @"MSAIApplicatio
 static NSInteger const defaultSessionExpirationTime = 20;
 
 static dispatch_queue_t metricEventQueue;
-static MSAIChannel *channel;
-static MSAITelemetryContext *context;
-static MSAIContext *appContext;
 static BOOL disableMetricsManager;
 static BOOL managerInitialised = NO;
 
@@ -47,20 +44,6 @@ static id appWillTerminateObserver;
 
 #pragma mark - Configure manager
 
-+ (void)configureWithContext:(MSAIContext *)context appClient:(MSAIAppClient *)appClient{
-  static dispatch_once_t onceToken;
-  dispatch_once(&onceToken, ^{
-    metricEventQueue = dispatch_queue_create("com.microsoft.appInsights.metricEventQueue",DISPATCH_QUEUE_CONCURRENT);
-  });
-  
-  dispatch_barrier_async(metricEventQueue, ^{
-    managerInitialised = NO;
-    if(disableMetricsManager) return;
-    appContext = context;
-    channel = [[MSAIChannel alloc] initWithAppClient:appClient telemetryContext:[self telemetryContext]];
-  });
-}
-
 + (void)setDisableMetricsManager:(BOOL)disable{
   dispatch_barrier_async(metricEventQueue, ^{
     disableMetricsManager = disable;
@@ -69,57 +52,16 @@ static id appWillTerminateObserver;
 
 + (void)startManager {
   if(disableMetricsManager) return;
+  
+  static dispatch_once_t onceToken;
+  dispatch_once(&onceToken, ^{
+    metricEventQueue = dispatch_queue_create("com.microsoft.appInsights.metricEventQueue",DISPATCH_QUEUE_CONCURRENT);
+  });
+  
   dispatch_barrier_sync(metricEventQueue, ^{
     [self registerObservers];
     managerInitialised = YES;
   });
-}
-
-#pragma mark - Getters
-
-+ (MSAIChannel *)channel{
-  return channel;
-}
-
-+ (MSAIContext *)context{
-  return appContext;
-}
-
-+ (MSAITelemetryContext *)telemetryContext{
-  MSAIDevice *deviceContext = [MSAIDevice new];
-  [deviceContext setModel: [appContext deviceModel]];
-  [deviceContext setType:[appContext deviceType]];
-  [deviceContext setOsVersion:[appContext osVersion]];
-  [deviceContext setOs:[appContext osName]];
-  [deviceContext setDeviceId:msai_appAnonID()];
-  deviceContext.locale = msai_deviceLocale();
-  deviceContext.language = msai_deviceLanguage();
-  [deviceContext setOemName:@"Apple"];
-  deviceContext.screenResolution = msai_screenSize();
-  
-  MSAIInternal *internalContext = [MSAIInternal new];
-  [internalContext setSdkVersion: msai_sdkVersion()];
-  
-  MSAIApplication *applicationContext = [MSAIApplication new];
-  [applicationContext setVersion:[appContext appVersion]];
-  
-  MSAISession *sessionContext = [MSAISession new];
-  
-  MSAIOperation *operationContext = [MSAIOperation new];
-  MSAIUser *userContext = [MSAIUser new];
-  MSAILocation *locationContext = [MSAILocation new];
-  
-  //TODO: Add additional context data
-  MSAITelemetryContext *telemetryContext = [[MSAITelemetryContext alloc]initWithInstrumentationKey:[appContext instrumentationKey]
-                                                                                      endpointPath:MSAI_TELEMETRY_PATH
-                                                                                applicationContext:applicationContext
-                                                                                     deviceContext:deviceContext
-                                                                                   locationContext:locationContext
-                                                                                    sessionContext:sessionContext
-                                                                                       userContext:userContext
-                                                                                   internalContext:internalContext
-                                                                                  operationContext:operationContext];
-  return telemetryContext;
 }
 
 #pragma mark - Track data
@@ -191,25 +133,25 @@ static id appWillTerminateObserver;
 
 + (void)trackException:(NSException *)exception{
   
+  
+  
+  PLCrashReporterSignalHandlerType signalHandlerType = PLCrashReporterSignalHandlerTypeBSD;
+  
+  PLCrashReporterSymbolicationStrategy symbolicationStrategy = PLCrashReporterSymbolicationStrategyAll;
+  
+  MSAIPLCrashReporterConfig *config = [[MSAIPLCrashReporterConfig alloc] initWithSignalHandlerType: signalHandlerType
+                                                                             symbolicationStrategy: symbolicationStrategy];
+  NSError *error = NULL;
+  MSAIPLCrashReporter *cm = [[MSAIPLCrashReporter alloc] initWithConfiguration:config];
+  NSData *data = [cm generateLiveReportWithThread:pthread_mach_thread_np(pthread_self())];
+  MSAIPLCrashReport *report = [[MSAIPLCrashReport alloc] initWithData:data error:&error];
+  
   __weak typeof(self) weakSelf = self;
   dispatch_async(metricEventQueue, ^{
     typeof(self) strongSelf = weakSelf;
-    
-    PLCrashReporterSignalHandlerType signalHandlerType = PLCrashReporterSignalHandlerTypeBSD;
-    
-    PLCrashReporterSymbolicationStrategy symbolicationStrategy = PLCrashReporterSymbolicationStrategyAll;
-    
-    MSAIPLCrashReporterConfig *config = [[MSAIPLCrashReporterConfig alloc] initWithSignalHandlerType: signalHandlerType
-                                                                               symbolicationStrategy: symbolicationStrategy];
-    NSError *error = NULL;
-    MSAIPLCrashReporter *cm = [[MSAIPLCrashReporter alloc] initWithConfiguration:config];
-    NSData *data = [cm generateLiveReportWithThread:pthread_mach_thread_np(pthread_self())];
-    MSAIPLCrashReport *report = [[MSAIPLCrashReport alloc] initWithData:data error:&error];
-
     MSAICrashData *exceptionData = [MSAIExceptionFormatter crashDataForCrashReport:report crashReporterKey:nil handledException:exception];
     [strongSelf trackDataItem:exceptionData];
   });
-
 }
 
 #pragma mark - PageView
@@ -242,7 +184,7 @@ static id appWillTerminateObserver;
 
 + (void)trackDataItem:(MSAITelemetryData *)dataItem{
   if(disableMetricsManager || !managerInitialised) return;
-  [channel sendDataItem:dataItem];
+  [[MSAIChannel sharedChannel] sendDataItem:dataItem];
 }
 
 #pragma mark - Session update
@@ -298,7 +240,7 @@ static id appWillTerminateObserver;
   double appDidEnterBackgroundTime = [[NSUserDefaults standardUserDefaults] doubleForKey:kMSAIApplicationDidEnterBackgroundTime];
   double timeSinceLastBackground = [[NSDate date] timeIntervalSince1970] - appDidEnterBackgroundTime;
   if (timeSinceLastBackground > defaultSessionExpirationTime) {
-    [context createNewSession];
+    [[[MSAIChannel sharedChannel] telemetryContext] createNewSession];
     [self trackEventWithName:@"Session Start Event"];
     [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kMSAIApplicationWasLaunched];
   }
