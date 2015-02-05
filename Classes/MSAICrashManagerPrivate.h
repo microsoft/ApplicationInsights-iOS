@@ -27,7 +27,6 @@
 /**
  * must be set
  */
-@property (nonatomic, strong) MSAIAppClient *appClient;
 
 @property (nonatomic) NSUncaughtExceptionHandler *exceptionHandler;
 
