@@ -79,11 +79,6 @@
   return @"";
 }
 
-- (NSString *)encodedInstrumentationKey {
-  return msai_encodeInstrumentationKey([_appContext instrumentationKey]);
-}
-
-
 #pragma mark - Manager Control
 
 - (void)startManager {
