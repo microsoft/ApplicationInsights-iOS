@@ -53,6 +53,8 @@
  */
 - (void)enqueueDataDict:(NSDictionary *)dataDict;
 
+- (void)enqueueCrashDict:(NSDictionary *)crashDict withCompletionBlock:(MSAINetworkCompletionBlock)completion;
+
 ///-----------------------------------------------------------------------------
 /// @name Batching
 ///-----------------------------------------------------------------------------
