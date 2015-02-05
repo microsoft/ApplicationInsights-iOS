@@ -1,6 +1,7 @@
 #import "MSAISender.h"
 #import "MSAIAppClient.h"
 #import "MSAISenderPrivate.h"
+#import "MSAIPersistence.h"
 
 #ifdef DEBUG
 static NSInteger const defaultMaxBatchCount = 150; //TODO are these values defined?!
@@ -11,13 +12,6 @@ static NSInteger const defaultBatchInterval = 15;
 #endif
 
 static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.senderQueue";
-
-@interface MSAISender()
-
-@property (nonatomic, copy) NSString *currentFilePath;
-
-@end
-
 
 @implementation MSAISender
 
@@ -60,7 +54,6 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
   __weak typeof(self) weakSelf = self;
   dispatch_sync(self.dataItemsOperations, ^{
     typeof(self) strongSelf = weakSelf;
-
     queue = [NSMutableArray arrayWithArray:strongSelf->_dataItemQueue];
   });
   return queue;
@@ -111,93 +104,26 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
 #pragma mark - Persistence
 
 - (void)persistQueue {
-  //NSError *error = nil;
-  //NSData *json = [NSJSONSerialization dataWithJSONObject:self.dataItemQueue options:NSJSONWritingPrettyPrinted error:&error];
-  //NSURLRequest *request = [self requestForData:json];
-  //[self sendRequest:request];
-
-  NSData *data = [NSKeyedArchiver archivedDataWithRootObject:[self.dataItemQueue copy]]; //use immutable copy
-  __weak typeof(self) weakSelf = self;
-
-  //TODO check if we need the queue at all!
-  dispatch_queue_t backgroundQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-  dispatch_async(backgroundQueue, ^{
-    typeof(self) strongSelf = weakSelf;
-    NSString *fileURL = [strongSelf fileURL];
-    if([data writeToFile:fileURL atomically:YES]) {
-      NSLog(@"Wrote %@", fileURL);
-    }
-    else {
-      NSLog(@"Unable to write %@", fileURL);
-    }
-
-  });
-
+  //use immutable copy
+  [MSAIPersistence persistBundle:[self.dataItemQueue copy]];
   [self.dataItemQueue removeAllObjects];
 
   [self triggerSending];
 }
 
-- (NSString *)fileURL {
-  NSString *cachesFolder = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
-  NSString *timestamp = [NSString stringWithFormat:@"%f", [[NSDate date] timeIntervalSince1970] * 1000];
-  NSString *fileName = [NSString stringWithFormat:@"app-insights-bundle-%@", timestamp];
-  NSString *filePath = [cachesFolder stringByAppendingPathComponent:fileName];
-
-  return filePath;
-}
-
-- (NSArray *)persistedFilePaths {
-  NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-  NSString *documentsDirectory = [paths objectAtIndex:0];
-  NSArray *filePaths = [[NSFileManager defaultManager] subpathsOfDirectoryAtPath:documentsDirectory  error:nil];
-  NSLog(@"All saved bundles %@", filePaths);
-
-  return filePaths;
-}
-
-- (void)deleteCurrentBundle {
-  if((self.currentFilePath) && ([self.currentFilePath isKindOfClass:[NSString class]]) && (self.currentFilePath.length > 0)) {
-    NSError *error = nil;
-    [[NSFileManager defaultManager] removeItemAtPath:self.currentFilePath error:&error];
-    if(error) {
-      NSLog(@"Error deleting file at path %@", self.currentFilePath);
-    }
-    else {
-      NSLog(@"Successfully deleted file at path %@", self.currentFilePath);
-    }
-    self.currentFilePath = nil;
-    //TODO check if we might get a problem here!
-  }
-}
-
-
-
 #pragma mark - Sending
 
 - (void)triggerSending {
-  if(([[self persistedFilePaths] count] > 0) && (!self.currentFilePath)) {
-    self.currentFilePath = [[self persistedFilePaths] firstObject];
-    NSArray *bundle = [NSKeyedUnarchiver unarchiveObjectWithFile:self.currentFilePath];
-    NSError *error = nil;
-
-    NSData *json = [NSJSONSerialization dataWithJSONObject:bundle options:NSJSONWritingPrettyPrinted error:&error];
-    if(!error) {
-      NSURLRequest *request = [self requestForData:json];
-      [self sendRequest:request];
-    }
-    else {
-      NSLog(@"Error creating JSON from bundle array");
-      //TODO: more error handling!
-    }
+  NSArray *bundle = [MSAIPersistence nextBundle];
+  NSError *error = nil;
+  NSData *json = [NSJSONSerialization dataWithJSONObject:bundle options:NSJSONWritingPrettyPrinted error:&error];
+  if(!error) {
+    NSURLRequest *request = [self requestForData:json];
+    [self sendRequest:request];
   }
   else {
-    if([self currentFilePath]) {
-      NSLog(@"Already sending another file");
-    }
-    else {
-      NSLog(@"Nothing to send");
-    }
+    NSLog(@"Error creating JSON from bundle array");
+    //TODO: more error handling!
   }
 }
 
@@ -217,12 +143,11 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
                        } else {
                          NSLog(@"Sent data with status code: %ld", (long) statusCode);
                          NSLog(@"Response data:\n%@", [NSJSONSerialization JSONObjectWithData:responseData options:0 error:nil]);
-                         [strongSelf deleteCurrentBundle];
+                         [MSAIPersistence deleteActiveBundle];
                          [strongSelf triggerSending];
                        }
                      } else {
                        NSLog(@"Sending failed");
-                       strongSelf.currentFilePath = nil;
                        //TODO trigger sending again -> later and somewhere else?!
                      }
                    }];
