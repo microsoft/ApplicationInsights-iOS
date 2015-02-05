@@ -54,4 +54,43 @@
     return dict;
 }
 
+#pragma mark - NSCoding
+
+- (id)initWithCoder:(NSCoder *)coder {
+  self = [super initWithCoder:coder];
+  if(self) {
+    self.kind = (MSAIDataPointType) [coder decodeIntForKey:@"self.kind"];
+    self.value = [coder decodeObjectForKey:@"self.value"];
+    self.count = [coder decodeObjectForKey:@"self.count"];
+    self.min = [coder decodeObjectForKey:@"self.min"];
+    self.max = [coder decodeObjectForKey:@"self.max"];
+    self.stdDev = [coder decodeObjectForKey:@"self.stdDev"];
+    self.dependencyKind = (MSAIDependencyKind) [coder decodeIntForKey:@"self.dependencyKind"];
+    self.success = [coder decodeBoolForKey:@"self.success"];
+    self.async = [coder decodeBoolForKey:@"self.async"];
+    self.dependencySource = (MSAIDependencySourceType) [coder decodeIntForKey:@"self.dependencySource"];
+    _envelopeTypeName = [coder decodeObjectForKey:@"_envelopeTypeName"];
+    _dataTypeName = [coder decodeObjectForKey:@"_dataTypeName"];
+  }
+
+  return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+  [super encodeWithCoder:coder];
+  [coder encodeInt:self.kind forKey:@"self.kind"];
+  [coder encodeObject:self.value forKey:@"self.value"];
+  [coder encodeObject:self.count forKey:@"self.count"];
+  [coder encodeObject:self.min forKey:@"self.min"];
+  [coder encodeObject:self.max forKey:@"self.max"];
+  [coder encodeObject:self.stdDev forKey:@"self.stdDev"];
+  [coder encodeInt:self.dependencyKind forKey:@"self.dependencyKind"];
+  [coder encodeBool:self.success forKey:@"self.success"];
+  [coder encodeBool:self.async forKey:@"self.async"];
+  [coder encodeInt:self.dependencySource forKey:@"self.dependencySource"];
+  [coder encodeObject:self.envelopeTypeName forKey:@"_envelopeTypeName"];
+  [coder encodeObject:self.dataTypeName forKey:@"_dataTypeName"];
+}
+
+
 @end

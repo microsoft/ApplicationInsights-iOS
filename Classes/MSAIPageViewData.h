@@ -3,12 +3,16 @@
 #import "MSAITelemetryData.h"
 #import "MSAIDomain.h"
 
-@interface MSAIPageViewData : MSAIEventData
+@interface MSAIPageViewData : MSAIEventData <NSCoding>
 
 @property(nonatomic, copy, readonly)NSString *envelopeTypeName;
 @property(nonatomic, copy, readonly)NSString *dataTypeName;
 @property (nonatomic, strong) NSString *url;
 @property (nonatomic, strong) NSString *duration;
+
+- (id)initWithCoder:(NSCoder *)coder;
+
+- (void)encodeWithCoder:(NSCoder *)coder;
 
 
 @end

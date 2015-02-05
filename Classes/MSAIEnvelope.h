@@ -3,23 +3,27 @@
 #import "MSAITelemetryData.h"
 #import "MSAIDomain.h"
 
-@interface MSAIEnvelope : MSAIObject
+@interface MSAIEnvelope : MSAIObject <NSCoding>
 
-@property (nonatomic, strong) NSNumber *version;
-@property (nonatomic, strong) NSString *name;
-@property (nonatomic, strong) NSString *time;
+@property (nonatomic, copy) NSNumber *version;
+@property (nonatomic, copy) NSString *name;
+@property (nonatomic, copy) NSString *time;
 @property (nonatomic, strong) NSNumber *sampleRate;
-@property (nonatomic, strong) NSString *seq;
-@property (nonatomic, strong) NSString *iKey;
+@property (nonatomic, copy) NSString *seq;
+@property (nonatomic, copy) NSString *iKey;
 @property (nonatomic, strong) NSNumber *flags;
-@property (nonatomic, strong) NSString *deviceId;
-@property (nonatomic, strong) NSString *os;
-@property (nonatomic, strong) NSString *osVer;
-@property (nonatomic, strong) NSString *appId;
-@property (nonatomic, strong) NSString *appVer;
-@property (nonatomic, strong) NSString *userId;
+@property (nonatomic, copy) NSString *deviceId;
+@property (nonatomic, copy) NSString *os;
+@property (nonatomic, copy) NSString *osVer;
+@property (nonatomic, copy) NSString *appId;
+@property (nonatomic, copy) NSString *appVer;
+@property (nonatomic, copy) NSString *userId;
 @property (nonatomic, strong) MSAIOrderedDictionary *tags;
 @property (nonatomic, strong) MSAIBase *data;
+
+- (id)initWithCoder:(NSCoder *)coder;
+
+- (void)encodeWithCoder:(NSCoder *)coder;
 
 
 @end

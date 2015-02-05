@@ -60,4 +60,46 @@
     return dict;
 }
 
+#pragma mark - NSCoding
+
+- (id)initWithCoder:(NSCoder *)coder {
+  self = [super init];
+  if(self) {
+    self.deviceId = [coder decodeObjectForKey:@"self.deviceId"];
+    self.ip = [coder decodeObjectForKey:@"self.ip"];
+    self.language = [coder decodeObjectForKey:@"self.language"];
+    self.locale = [coder decodeObjectForKey:@"self.locale"];
+    self.model = [coder decodeObjectForKey:@"self.model"];
+    self.network = [coder decodeObjectForKey:@"self.network"];
+    self.oemName = [coder decodeObjectForKey:@"self.oemName"];
+    self.os = [coder decodeObjectForKey:@"self.os"];
+    self.osVersion = [coder decodeObjectForKey:@"self.osVersion"];
+    self.roleInstance = [coder decodeObjectForKey:@"self.roleInstance"];
+    self.roleName = [coder decodeObjectForKey:@"self.roleName"];
+    self.screenResolution = [coder decodeObjectForKey:@"self.screenResolution"];
+    self.type = [coder decodeObjectForKey:@"self.type"];
+    self.vmName = [coder decodeObjectForKey:@"self.vmName"];
+  }
+
+  return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+  [coder encodeObject:self.deviceId forKey:@"self.deviceId"];
+  [coder encodeObject:self.ip forKey:@"self.ip"];
+  [coder encodeObject:self.language forKey:@"self.language"];
+  [coder encodeObject:self.locale forKey:@"self.locale"];
+  [coder encodeObject:self.model forKey:@"self.model"];
+  [coder encodeObject:self.network forKey:@"self.network"];
+  [coder encodeObject:self.oemName forKey:@"self.oemName"];
+  [coder encodeObject:self.os forKey:@"self.os"];
+  [coder encodeObject:self.osVersion forKey:@"self.osVersion"];
+  [coder encodeObject:self.roleInstance forKey:@"self.roleInstance"];
+  [coder encodeObject:self.roleName forKey:@"self.roleName"];
+  [coder encodeObject:self.screenResolution forKey:@"self.screenResolution"];
+  [coder encodeObject:self.type forKey:@"self.type"];
+  [coder encodeObject:self.vmName forKey:@"self.vmName"];
+}
+
+
 @end

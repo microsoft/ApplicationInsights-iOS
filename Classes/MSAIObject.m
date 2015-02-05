@@ -1,4 +1,5 @@
 #import "MSAIObject.h"
+#import "MSAIDomain.h"
 
 @implementation MSAIObject
 
@@ -26,5 +27,13 @@
   NSString *returnString = [[jsonString stringByReplacingOccurrencesOfString:@"\"true\"" withString:@"true"] stringByReplacingOccurrencesOfString:@"\"false\"" withString:@"false"];
   return returnString;
 }
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+}
+
+- (id)initWithCoder:(NSCoder *)coder {
+  return [super init];
+}
+
 
 @end

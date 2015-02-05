@@ -2,7 +2,7 @@
 #import "MSAITelemetryData.h"
 #import "MSAIDomain.h"
 
-@interface MSAIRemoteDependencyData : MSAIDomain
+@interface MSAIRemoteDependencyData : MSAIDomain <NSCoding>
 
 @property (nonatomic, copy, readonly) NSString *envelopeTypeName;
 @property (nonatomic, copy, readonly) NSString *dataTypeName;
@@ -16,6 +16,10 @@
 @property (nonatomic, assign) BOOL success;
 @property (nonatomic, assign) BOOL async;
 @property (nonatomic, assign) MSAIDependencySourceType dependencySource;
+
+- (id)initWithCoder:(NSCoder *)coder;
+
+- (void)encodeWithCoder:(NSCoder *)coder;
 
 
 @end

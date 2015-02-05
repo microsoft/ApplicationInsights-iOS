@@ -27,4 +27,25 @@
     return dict;
 }
 
+#pragma mark - NSCoding
+
+- (id)initWithCoder:(NSCoder *)coder {
+  self = [super initWithCoder:coder];
+  if(self) {
+    self.sessionId = [coder decodeObjectForKey:@"self.sessionId"];
+    self.isFirst = [coder decodeObjectForKey:@"self.isFirst"];
+    self.isNew = [coder decodeObjectForKey:@"self.isNew"];
+  }
+
+  return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+  [super encodeWithCoder:coder];
+  [coder encodeObject:self.sessionId forKey:@"self.sessionId"];
+  [coder encodeObject:self.isFirst forKey:@"self.isFirst"];
+  [coder encodeObject:self.isNew forKey:@"self.isNew"];
+}
+
+
 @end

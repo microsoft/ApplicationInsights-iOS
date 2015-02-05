@@ -3,7 +3,7 @@
 #import "MSAITelemetryData.h"
 #import "MSAIDomain.h"
 
-@interface MSAIPageViewPerfData : MSAIPageViewData
+@interface MSAIPageViewPerfData : MSAIPageViewData <NSCoding>
 
 @property(nonatomic, copy, readonly)NSString *envelopeTypeName;
 @property(nonatomic, copy, readonly)NSString *dataTypeName;
@@ -12,6 +12,10 @@
 @property (nonatomic, strong) NSString *sentRequest;
 @property (nonatomic, strong) NSString *receivedResponse;
 @property (nonatomic, strong) NSString *domProcessing;
+
+- (id)initWithCoder:(NSCoder *)coder;
+
+- (void)encodeWithCoder:(NSCoder *)coder;
 
 
 @end
