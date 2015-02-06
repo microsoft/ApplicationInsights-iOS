@@ -6,8 +6,6 @@
 
 @implementation MSAIPersistence
 
-static NSString *activeBundlePath = @"";
-
 + (void)persistBundle:(NSArray *)bundle {
   if(bundle && bundle.count > 0) {
     NSData *data = [NSKeyedArchiver archivedDataWithRootObject:bundle];
@@ -32,36 +30,31 @@ static NSString *activeBundlePath = @"";
   NSArray *paths = [self persistedBundlePaths];
   if(([paths count] > 0)) {
     for (NSString *path in paths) {
-      NSArray *bundle = [NSKeyedUnarchiver unarchiveObjectWithFile:path];
-      if(bundle) {
-        return bundle;
+      if([path containsString:@"app-insights-bundle-"]) {
+        NSArray *bundle = [NSKeyedUnarchiver unarchiveObjectWithFile:path];
+        if(bundle) {
+          [self deleteBundleAtPath:path];
+          return bundle;
+        }
       }
     }
   }
   return nil;
 }
 
-+ (BOOL)deleteActiveBundle {
-  if(activeBundlePath.length > 0) {
++ (void)deleteBundleAtPath:(NSString *)path {
+  if((path > 0) && ([path containsString:@"app-insights-bundle-"])) {
     NSError *error = nil;
-    [[NSFileManager defaultManager] removeItemAtPath:activeBundlePath error:&error];
+    [[NSFileManager defaultManager] removeItemAtPath:path error:&error];
     if(error) {
-      NSLog(@"Error deleting file at path %@", activeBundlePath);
-      activeBundlePath = @"";
-
-      return NO;
+      NSLog(@"Error deleting file at path %@", path);
     }
     else {
-      NSLog(@"Successfully deleted file at path %@", activeBundlePath);
-      activeBundlePath = @"";
-      return YES;
+      NSLog(@"Successfully deleted file at path %@", path);
     }
-    //TODO check if we might get a problem here!
   }
   else {
-    activeBundlePath = @"";
-
-    return NO;
+    NSLog(@"Empty Path, so nothing can be deleted");
   }
 }
 

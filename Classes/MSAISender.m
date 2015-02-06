@@ -13,6 +13,12 @@ static NSInteger const defaultBatchInterval = 15;
 
 static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.senderQueue";
 
+@interface MSAISender ()
+
+@property (nonatomic, strong) NSArray *currentBundle;
+
+@end
+
 @implementation MSAISender
 
   //TODO: split sending and persisting in two
@@ -111,7 +117,8 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
 
 - (void)triggerSending {
   NSArray *bundle = [MSAIPersistence nextBundle];
-  if(bundle) {
+  if(bundle && !self.currentBundle) {
+    self.currentBundle = bundle;
     NSError *error = nil;
     NSData *json = [NSJSONSerialization dataWithJSONObject:bundle options:NSJSONWritingPrettyPrinted error:&error];
     if(!error) {
@@ -119,7 +126,8 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
       [self sendRequest:request];
     }
     else {
-      NSLog(@"Error creating JSON from bundle array");
+      NSLog(@"Error creating JSON from bundle array, saving bundle back to disk");
+      [MSAIPersistence persistBundle:bundle];
         //TODO: more error handling!
     }
   }
@@ -142,11 +150,13 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
                                       } else {
                                         NSLog(@"Sent data with status code: %ld", (long) statusCode);
                                         NSLog(@"Response data:\n%@", [NSJSONSerialization JSONObjectWithData:responseData options:0 error:nil]);
-                                        [MSAIPersistence deleteActiveBundle];
+                                        self.currentBundle = nil;
                                         [strongSelf triggerSending];
                                       }
                                     } else {
                                       NSLog(@"Sending failed");
+                                      [MSAIPersistence persistBundle:self.currentBundle];
+                                      self.currentBundle = nil;
                                         //TODO trigger sending again -> later and somewhere else?!
                                     }
                                   }];

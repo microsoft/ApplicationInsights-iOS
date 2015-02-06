@@ -8,6 +8,5 @@
 
 + (void)persistBundle:(NSArray *)bundle;
 + (NSArray *)nextBundle;
-+ (BOOL)deleteActiveBundle;
 
 @end
