@@ -29,6 +29,15 @@ static NSString *activeBundlePath = @"";
 }
 
 + (NSArray *)nextBundle {
+  NSArray *paths = [self persistedBundlePaths];
+  if(([paths count] > 0)) {
+    for (NSString *path in paths) {
+      NSArray *bundle = [NSKeyedUnarchiver unarchiveObjectWithFile:path];
+      if(bundle) {
+        return bundle;
+      }
+    }
+  }
   return nil;
 }
 
@@ -57,21 +66,23 @@ static NSString *activeBundlePath = @"";
 }
 
 + (NSString *)pathToBundle {
-  NSString *cachesFolder = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+  NSString *documentFolder = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
   NSString *timestamp = [NSString stringWithFormat:@"%f", [[NSDate date] timeIntervalSince1970] * 1000];
   NSString *fileName = [NSString stringWithFormat:@"app-insights-bundle-%@", timestamp];
-  NSString *filePath = [cachesFolder stringByAppendingPathComponent:fileName];
+  NSString *filePath = [documentFolder stringByAppendingPathComponent:fileName];
 
   return filePath;
 }
 
 + (NSArray *)persistedBundlePaths {
-  NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-  NSString *documentsDirectory = [paths objectAtIndex:0];
-  NSArray *filePaths = [[NSFileManager defaultManager] subpathsOfDirectoryAtPath:documentsDirectory  error:nil];
-  NSLog(@"All saved bundles %@", filePaths);
-
-  return filePaths;
+  NSString *documentFolder = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+  NSArray *fileNames = [[NSFileManager defaultManager] subpathsOfDirectoryAtPath:documentFolder  error:nil];
+  NSMutableArray *fullPaths = [NSMutableArray arrayWithCapacity:fileNames.count];
+  for (NSString *fileName in fileNames) {
+    [fullPaths addObject:[documentFolder stringByAppendingPathComponent:fileName]];
+  }
+  
+  return fullPaths;
 }
 
 @end

@@ -4,7 +4,7 @@
 #import "MSAIPersistence.h"
 
 #ifdef DEBUG
-static NSInteger const defaultMaxBatchCount = 150; //TODO are these values defined?!
+static NSInteger const defaultMaxBatchCount = 4; //TODO are these values defined?!
 static NSInteger const defaultBatchInterval = 15;
 #else
 static NSInteger const defaultMaxBatchCount = 5;
@@ -15,19 +15,19 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
 
 @implementation MSAISender
 
-//TODO: split sending and persisting in two
+  //TODO: split sending and persisting in two
 
 #pragma mark - Initialize & configure shared instance
 
 + (instancetype)sharedSender {
   static MSAISender *sharedInstance = nil;
   static dispatch_once_t onceToken;
-
+  
   dispatch_once(&onceToken, ^{
     sharedInstance = [MSAISender new];
     dispatch_queue_t serialQueue = dispatch_queue_create(MSAIDataItemsOperationsQueue, DISPATCH_QUEUE_SERIAL);
     [sharedInstance setDataItemsOperations:serialQueue];
-
+    
   });
   return sharedInstance;
 }
@@ -49,7 +49,7 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
 #pragma mark - Queue management
 
 - (NSMutableArray *)dataItemQueue {
-
+  
   __block NSMutableArray *queue = nil;
   __weak typeof(self) weakSelf = self;
   dispatch_sync(self.dataItemsOperations, ^{
@@ -64,12 +64,13 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
     __weak typeof(self) weakSelf = self;
     dispatch_async(self.dataItemsOperations, ^{
       typeof(self) strongSelf = weakSelf;
-
+      
       [strongSelf->_dataItemQueue addObject:dataDict];
-
+      
       if([strongSelf->_dataItemQueue count] >= strongSelf.senderThreshold) {
         [strongSelf invalidateTimer];
         [strongSelf persistQueue];
+        [strongSelf triggerSending];
       } else if([strongSelf->_dataItemQueue count] == 1) {
         [strongSelf startTimer];
       }
@@ -87,11 +88,11 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
 }
 
 - (void)startTimer {
-
+  
   if(self.timerSource) {
     [self invalidateTimer];
   }
-
+  
   self.timerSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, self.dataItemsOperations);
   dispatch_source_set_timer(self.timerSource, dispatch_walltime(NULL, NSEC_PER_SEC * self.senderInterval), 1ull * NSEC_PER_SEC, 1ull * NSEC_PER_SEC);
   dispatch_source_set_event_handler(self.timerSource, ^{
@@ -101,57 +102,55 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
   dispatch_resume(self.timerSource);
 }
 
-#pragma mark - Persistence
-
 - (void)persistQueue {
-  //use immutable copy
-  [MSAIPersistence persistBundle:[self.dataItemQueue copy]];
-  [self.dataItemQueue removeAllObjects];
-
-  [self triggerSending];
+  [MSAIPersistence persistBundle:[self->_dataItemQueue copy]];
+  [self->_dataItemQueue removeAllObjects];
 }
 
 #pragma mark - Sending
 
 - (void)triggerSending {
   NSArray *bundle = [MSAIPersistence nextBundle];
-  NSError *error = nil;
-  NSData *json = [NSJSONSerialization dataWithJSONObject:bundle options:NSJSONWritingPrettyPrinted error:&error];
-  if(!error) {
-    NSURLRequest *request = [self requestForData:json];
-    [self sendRequest:request];
+  if(bundle) {
+    NSError *error = nil;
+    NSData *json = [NSJSONSerialization dataWithJSONObject:bundle options:NSJSONWritingPrettyPrinted error:&error];
+    if(!error) {
+      NSURLRequest *request = [self requestForData:json];
+      [self sendRequest:request];
+    }
+    else {
+      NSLog(@"Error creating JSON from bundle array");
+        //TODO: more error handling!
+    }
   }
-  else {
-    NSLog(@"Error creating JSON from bundle array");
-    //TODO: more error handling!
-  }
+  
 }
 
 - (void)sendRequest:(NSURLRequest *)request {
   __weak typeof(self) weakSelf = self;
-
+  
   MSAIHTTPOperation *operation = [self.appClient
-      operationWithURLRequest:request
-                   completion:^(MSAIHTTPOperation *operation, NSData *responseData, NSError *error) {
-
-                     typeof(self) strongSelf = weakSelf;
-                     NSInteger statusCode = [operation.response statusCode];
-
-                     if(nil == error) {
-                       if(nil == responseData || [responseData length] == 0) {
-                         NSLog(@"Sending failed with an empty response!");
-                       } else {
-                         NSLog(@"Sent data with status code: %ld", (long) statusCode);
-                         NSLog(@"Response data:\n%@", [NSJSONSerialization JSONObjectWithData:responseData options:0 error:nil]);
-                         [MSAIPersistence deleteActiveBundle];
-                         [strongSelf triggerSending];
-                       }
-                     } else {
-                       NSLog(@"Sending failed");
-                       //TODO trigger sending again -> later and somewhere else?!
-                     }
-                   }];
-
+                                  operationWithURLRequest:request
+                                  completion:^(MSAIHTTPOperation *operation, NSData *responseData, NSError *error) {
+                                    
+                                    typeof(self) strongSelf = weakSelf;
+                                    NSInteger statusCode = [operation.response statusCode];
+                                    
+                                    if(nil == error) {
+                                      if(nil == responseData || [responseData length] == 0) {
+                                        NSLog(@"Sending failed with an empty response!");
+                                      } else {
+                                        NSLog(@"Sent data with status code: %ld", (long) statusCode);
+                                        NSLog(@"Response data:\n%@", [NSJSONSerialization JSONObjectWithData:responseData options:0 error:nil]);
+                                        [MSAIPersistence deleteActiveBundle];
+                                        [strongSelf triggerSending];
+                                      }
+                                    } else {
+                                      NSLog(@"Sending failed");
+                                        //TODO trigger sending again -> later and somewhere else?!
+                                    }
+                                  }];
+  
   [self.appClient enqeueHTTPOperation:operation];
 }
 
@@ -161,7 +160,7 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
   NSMutableURLRequest *request = [self.appClient requestWithMethod:@"POST"
                                                               path:self.endpointPath
                                                         parameters:nil];
-
+  
   [request setHTTPBody:data];
   [request setCachePolicy:NSURLRequestReloadIgnoringLocalCacheData];
   NSString *contentType = @"application/json";
