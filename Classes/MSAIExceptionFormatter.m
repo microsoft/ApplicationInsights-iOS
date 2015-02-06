@@ -365,6 +365,27 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
   
   crashData.headers = crashHeaders;
   
+  /* If an exception stack trace is available, output an Apple-compatible backtrace. */
+  if (report.exceptionInfo != nil && report.exceptionInfo.stackFrames != nil && [report.exceptionInfo.stackFrames count] > 0) {
+    MSAIPLCrashReportExceptionInfo *exception = report.exceptionInfo;
+    
+    MSAICrashDataThread *threadData = [MSAICrashDataThread new];
+    threadData.crashDataThreadId = @(-1);
+    
+    /* Write out the frames. In raw reports, Apple writes this out as a simple list of PCs. In the minimally
+     * post-processed report, Apple writes this out as full frame entries. We use the latter format. */
+    for (NSUInteger frame_idx = 0; frame_idx < [exception.stackFrames count]; frame_idx++) {
+      MSAIPLCrashReportStackFrameInfo *frameInfo = exception.stackFrames[frame_idx];
+      
+      
+      MSAICrashDataThreadFrame *frame = [[self class] msai_formatStackFrame: frameInfo frameIndex: frame_idx report: report lp64: lp64];
+      [threadData.frames addObject:frame];
+    }
+    [crashData.threads addObject:threadData];
+  }
+  
+  
+  
   /* Threads */
   for (MSAIPLCrashReportThreadInfo *thread in report.threads) {
     MSAICrashDataThread *threadData = [MSAICrashDataThread new];
