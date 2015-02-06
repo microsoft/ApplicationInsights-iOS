@@ -1,13 +1,30 @@
-//
-//  MSAIEnvelopeManagerPrivate.h
-//  AppInsights
-//
-//  Created by GrafZahl on 06/02/15.
-//
-//
+@class MSAIEnvelope;
+@class MSAITelemetryData;
+@class MSAITelemetryContext;
 
-#ifndef AppInsights_MSAIEnvelopeManagerPrivate_h
-#define AppInsights_MSAIEnvelopeManagerPrivate_h
+@interface MSAIEnvelopeManager()
 
+/**
+ *  The context object, which contains information about current session, the device, the user etc.
+ */
+@property(nonatomic, strong, readonly)MSAITelemetryContext *telemetryContext;
 
-#endif
+/**
+ *  Initializes the telemetry channel.
+ *
+ *  @param telemetryContext information about the client and the AI account
+ */
+- (void)configureWithTelemetryContext:(MSAITelemetryContext *)telemetryContext;
+
+/**
+ *  Returns the formatted string for a given date.
+ *
+ *  @param date the date to be converted to a string
+ *
+ *  @return the string representation for a given date
+ */
+- (NSString *)dateStringForDate:(NSDate *)date;
+
+- (MSAIEnvelope *)envelopeForTelemetryData:(MSAITelemetryData *)telemetryData;
+
+@end
