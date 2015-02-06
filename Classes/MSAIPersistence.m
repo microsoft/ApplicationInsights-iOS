@@ -11,7 +11,6 @@
     NSData *data = [NSKeyedArchiver archivedDataWithRootObject:bundle];
     __weak typeof(self) weakSelf = self;
 
-    //TODO check if we need the queue at all!
     dispatch_queue_t backgroundQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     dispatch_async(backgroundQueue, ^{
       typeof(self) strongSelf = weakSelf;

@@ -4,7 +4,7 @@
 #import "MSAIPersistence.h"
 
 #ifdef DEBUG
-static NSInteger const defaultMaxBatchCount = 4; //TODO are these values defined?!
+static NSInteger const defaultMaxBatchCount = 150;
 static NSInteger const defaultBatchInterval = 15;
 #else
 static NSInteger const defaultMaxBatchCount = 5;
@@ -20,8 +20,6 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
 @end
 
 @implementation MSAISender
-
-  //TODO: split sending and persisting in two
 
 #pragma mark - Initialize & configure shared instance
 
