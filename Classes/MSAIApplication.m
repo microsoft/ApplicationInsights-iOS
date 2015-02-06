@@ -21,4 +21,20 @@
     return dict;
 }
 
+#pragma mark - NSCoding
+
+- (id)initWithCoder:(NSCoder *)coder {
+  self = [super init];
+  if(self) {
+    self.version = [coder decodeObjectForKey:@"self.version"];
+  }
+
+  return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+  [coder encodeObject:self.version forKey:@"self.version"];
+}
+
+
 @end

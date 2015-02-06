@@ -2,7 +2,7 @@
 #import "MSAITelemetryData.h"
 #import "MSAIDomain.h"
 
-@interface MSAIDevice : MSAIObject
+@interface MSAIDevice : MSAIObject <NSCoding>
 
 @property (nonatomic, strong) NSString *deviceId;
 @property (nonatomic, strong) NSString *ip;
@@ -18,6 +18,10 @@
 @property (nonatomic, strong) NSString *screenResolution;
 @property (nonatomic, strong) NSString *type;
 @property (nonatomic, strong) NSString *vmName;
+
+- (id)initWithCoder:(NSCoder *)coder;
+
+- (void)encodeWithCoder:(NSCoder *)coder;
 
 
 @end

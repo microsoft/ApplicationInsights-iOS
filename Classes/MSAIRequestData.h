@@ -2,7 +2,7 @@
 #import "MSAITelemetryData.h"
 #import "MSAIDomain.h"
 
-@interface MSAIRequestData : MSAIDomain
+@interface MSAIRequestData : MSAIDomain <NSCoding>
 
 @property(nonatomic, copy, readonly)NSString *envelopeTypeName;
 @property(nonatomic, copy, readonly)NSString *dataTypeName;
@@ -14,6 +14,10 @@
 @property (nonatomic, strong) NSString *httpMethod;
 @property (nonatomic, strong) NSString *url;
 @property (nonatomic, strong) MSAIOrderedDictionary *measurements;
+
+- (id)initWithCoder:(NSCoder *)coder;
+
+- (void)encodeWithCoder:(NSCoder *)coder;
 
 
 @end

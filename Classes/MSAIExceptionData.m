@@ -39,4 +39,31 @@
     return dict;
 }
 
+#pragma mark - NSCoding
+
+- (id)initWithCoder:(NSCoder *)coder {
+  self = [super initWithCoder:coder];
+  if(self) {
+    self.handledAt = [coder decodeObjectForKey:@"self.handledAt"];
+    self.exceptions = [coder decodeObjectForKey:@"self.exceptions"];
+    self.severityLevel = (MSAISeverityLevel) [coder decodeIntForKey:@"self.severityLevel"];
+    self.measurements = [coder decodeObjectForKey:@"self.measurements"];
+    _envelopeTypeName = [coder decodeObjectForKey:@"_envelopeTypeName"];
+    _dataTypeName = [coder decodeObjectForKey:@"_dataTypeName"];
+  }
+
+  return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+  [super encodeWithCoder:coder];
+  [coder encodeObject:self.handledAt forKey:@"self.handledAt"];
+  [coder encodeObject:self.exceptions forKey:@"self.exceptions"];
+  [coder encodeInt:self.severityLevel forKey:@"self.severityLevel"];
+  [coder encodeObject:self.measurements forKey:@"self.measurements"];
+  [coder encodeObject:self.envelopeTypeName forKey:@"_envelopeTypeName"];
+  [coder encodeObject:self.dataTypeName forKey:@"_dataTypeName"];
+}
+
+
 @end

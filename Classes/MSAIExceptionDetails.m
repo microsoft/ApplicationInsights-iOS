@@ -45,4 +45,32 @@
     return dict;
 }
 
+#pragma mark - NSCoding
+
+- (id)initWithCoder:(NSCoder *)coder {
+  self = [super init];
+  if(self) {
+    self.exceptionDetailsId = [coder decodeObjectForKey:@"self.exceptionDetailsId"];
+    self.outerId = [coder decodeObjectForKey:@"self.outerId"];
+    self.typeName = [coder decodeObjectForKey:@"self.typeName"];
+    self.message = [coder decodeObjectForKey:@"self.message"];
+    self.hasFullStack = [coder decodeBoolForKey:@"self.hasFullStack"];
+    self.stack = [coder decodeObjectForKey:@"self.stack"];
+    self.parsedStack = [coder decodeObjectForKey:@"self.parsedStack"];
+  }
+
+  return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+  [coder encodeObject:self.exceptionDetailsId forKey:@"self.exceptionDetailsId"];
+  [coder encodeObject:self.outerId forKey:@"self.outerId"];
+  [coder encodeObject:self.typeName forKey:@"self.typeName"];
+  [coder encodeObject:self.message forKey:@"self.message"];
+  [coder encodeBool:self.hasFullStack forKey:@"self.hasFullStack"];
+  [coder encodeObject:self.stack forKey:@"self.stack"];
+  [coder encodeObject:self.parsedStack forKey:@"self.parsedStack"];
+}
+
+
 @end
