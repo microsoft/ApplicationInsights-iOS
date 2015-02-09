@@ -1084,7 +1084,7 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
     MSAIPLCrashReport *report = nil;
     NSString *crashUUID = @"";
     NSString *installString = nil;
-    MSAICrashData *crashItem = nil;
+    MSAIEnvelope *crashItem = nil;
     NSString *appBundleIdentifier = nil;
     NSString *appBundleVersion = nil;
     NSString *osVersion = nil;
@@ -1131,7 +1131,7 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
     installString = msai_appAnonID() ?: @"";
     
     if (report) {
-      crashItem = [MSAIExceptionFormatter crashDataForCrashReport:report crashReporterKey:installString];
+      crashItem = [MSAIExceptionFormatter crashDataForCrashReport:report];
       if ([report.applicationInfo.applicationVersion compare:[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"]] == NSOrderedSame) {
         _crashIdenticalCurrentVersion = YES;
       }
