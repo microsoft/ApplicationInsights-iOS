@@ -8,7 +8,7 @@
 
 #pragma mark - Public
 
-+ (void)persistBundle:(NSArray *)bundle {
++ (void)persistBundle:(NSArray *)bundle withHighPriority:(BOOL)highPriority {
   if(bundle && bundle.count > 0) {
     NSData *data = [NSKeyedArchiver archivedDataWithRootObject:bundle];
     __weak typeof(self) weakSelf = self;

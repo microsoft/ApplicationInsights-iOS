@@ -11,18 +11,18 @@
 @interface MSAIPersistence : NSObject
 
 
+
 ///-----------------------------------------------------------------------------
 /// @name Save bundle of data
 ///-----------------------------------------------------------------------------
 
 /**
-* Prepares manager for sending out data.
 *
 * @param bundle a bundle of tracked events (telemetry, crashes, ...) that will be serialized and saved.
 *
 * @warning: The data within the array needs to implement NSCoding.
 */
-+ (void)persistBundle:(NSArray *)bundle;
++ (void)persistBundle:(NSArray *)bundle withHighPriority:(BOOL)highPriority;
 
 
 ///-----------------------------------------------------------------------------
@@ -31,7 +31,8 @@
 
 
 /**
-* @return an arbitrary bundle of previously saved data from disk and deletes it.
+* @return an bundle of previously saved data from disk and deletes it. It will return bundles with high priority before
+* bundles with regular priority. Within the order of bundles within the priority is arbitrary.
 * Returns 'nil' if no bundle is available*
 */
 
