@@ -21,4 +21,20 @@
     return dict;
 }
 
+#pragma mark - NSCoding
+
+- (id)initWithCoder:(NSCoder *)coder {
+  self = [super init];
+  if(self) {
+    self.ip = [coder decodeObjectForKey:@"self.ip"];
+  }
+
+  return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+  [coder encodeObject:self.ip forKey:@"self.ip"];
+}
+
+
 @end

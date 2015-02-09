@@ -1,7 +1,7 @@
 #import "MSAISender.h"
 #import "MSAIAppClient.h"
 #import "MSAISenderPrivate.h"
-#import "MSAIEnvelope.h"
+#import "MSAIPersistence.h"
 
 #ifdef DEBUG
 static NSInteger const defaultMaxBatchCount = 150;
@@ -13,11 +13,17 @@ static NSInteger const defaultBatchInterval = 15;
 
 static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.senderQueue";
 
+@interface MSAISender ()
+
+@property (nonatomic, strong) NSArray *currentBundle;
+
+@end
+
 @implementation MSAISender
 
 #pragma mark - Initialize & configure shared instance
 
-+ (instancetype)sharedSender{
++ (instancetype)sharedSender {
   static MSAISender *sharedInstance = nil;
   static dispatch_once_t onceToken;
   
@@ -25,49 +31,51 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
     sharedInstance = [MSAISender new];
     dispatch_queue_t serialQueue = dispatch_queue_create(MSAIDataItemsOperationsQueue, DISPATCH_QUEUE_SERIAL);
     [sharedInstance setDataItemsOperations:serialQueue];
+    
   });
   return sharedInstance;
 }
 
-- (instancetype)init{
-  if(self = [super init]){
-    _dataItemQueue = [NSMutableArray array];
+- (instancetype)init {
+  if(self = [super init]) {
+    self.dataItemQueue = [NSMutableArray array];
+    self.senderThreshold = defaultMaxBatchCount;
+    self.senderInterval = defaultBatchInterval;
   }
   return self;
 }
 
-- (void)configureWithAppClient:(MSAIAppClient *)appClient endpointPath:(NSString *)endpointPath{
-  _endpointPath = endpointPath;
-  _appClient = appClient;
+- (void)configureWithAppClient:(MSAIAppClient *)appClient endpointPath:(NSString *)endpointPath {
+  self.endpointPath = endpointPath;
+  self.appClient = appClient;
 }
 
 #pragma mark - Queue management
 
-- (NSMutableArray *)dataItemQueue{
+- (NSMutableArray *)dataItemQueue {
   
   __block NSMutableArray *queue = nil;
   __weak typeof(self) weakSelf = self;
   dispatch_sync(self.dataItemsOperations, ^{
     typeof(self) strongSelf = weakSelf;
-    
     queue = [NSMutableArray arrayWithArray:strongSelf->_dataItemQueue];
   });
   return queue;
 }
 
-- (void)enqueueDataDict:(NSDictionary *)dataDict{
-  
-  if (dataDict) {
+- (void)enqueueDataDict:(NSDictionary *)dataDict {
+  if(dataDict) {
     __weak typeof(self) weakSelf = self;
     dispatch_async(self.dataItemsOperations, ^{
       typeof(self) strongSelf = weakSelf;
       
       [strongSelf->_dataItemQueue addObject:dataDict];
       
-      if([strongSelf->_dataItemQueue count] >= defaultMaxBatchCount){
+      if([strongSelf->_dataItemQueue count] >= strongSelf.senderThreshold) {
         [strongSelf invalidateTimer];
-        [strongSelf flushSenderQueue];
-      }else if([strongSelf->_dataItemQueue count] == 1){
+        [strongSelf persistQueue];
+        [strongSelf triggerSending];
+      } else if([strongSelf->_dataItemQueue count] == 1) {
         [strongSelf startTimer];
       }
     });
@@ -83,8 +91,8 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
 
 #pragma mark - Batching
 
-- (void)invalidateTimer{
-  if(self.timerSource){
+- (void)invalidateTimer {
+  if(self.timerSource) {
     dispatch_source_cancel(self.timerSource);
     self.timerSource = nil;
   }
@@ -92,47 +100,73 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
 
 - (void)startTimer {
   
-  if(self.timerSource){
+  if(self.timerSource) {
     [self invalidateTimer];
   }
   
   self.timerSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, self.dataItemsOperations);
-  dispatch_source_set_timer(self.timerSource, dispatch_walltime(NULL, NSEC_PER_SEC * defaultBatchInterval), 1ull * NSEC_PER_SEC, 1ull * NSEC_PER_SEC);
+  dispatch_source_set_timer(self.timerSource, dispatch_walltime(NULL, NSEC_PER_SEC * self.senderInterval), 1ull * NSEC_PER_SEC, 1ull * NSEC_PER_SEC);
   dispatch_source_set_event_handler(self.timerSource, ^{
     [self invalidateTimer];
-    [self flushSenderQueue];
+    [self persistQueue];
   });
   dispatch_resume(self.timerSource);
 }
 
-- (void)flushSenderQueue{
-  NSError *error = nil;
-  NSData *json = [NSJSONSerialization dataWithJSONObject:_dataItemQueue options:NSJSONWritingPrettyPrinted error:&error];
-  NSURLRequest *request = [self requestForData:json];
-  [self sendRequest:request];
-  [_dataItemQueue removeAllObjects];
+- (void)persistQueue {
+  [MSAIPersistence persistBundle:[self->_dataItemQueue copy]];
+  [self->_dataItemQueue removeAllObjects];
 }
 
-- (void)sendRequest:(NSURLRequest *)request{
-  MSAIHTTPOperation *operation = [_appClient
+#pragma mark - Sending
+
+- (void)triggerSending {
+  NSArray *bundle = [MSAIPersistence nextBundle];
+  if(bundle && !self.currentBundle) {
+    self.currentBundle = bundle;
+    NSError *error = nil;
+    NSData *json = [NSJSONSerialization dataWithJSONObject:bundle options:NSJSONWritingPrettyPrinted error:&error];
+    if(!error) {
+      NSURLRequest *request = [self requestForData:json];
+      [self sendRequest:request];
+    }
+    else {
+      NSLog(@"Error creating JSON from bundle array, saving bundle back to disk");
+      [MSAIPersistence persistBundle:bundle];
+        //TODO: more error handling!
+    }
+  }
+  
+}
+
+- (void)sendRequest:(NSURLRequest *)request {
+  __weak typeof(self) weakSelf = self;
+  
+  MSAIHTTPOperation *operation = [self.appClient
                                   operationWithURLRequest:request
-                                  completion:^(MSAIHTTPOperation *operation, NSData* responseData, NSError *error) {
+                                  completion:^(MSAIHTTPOperation *operation, NSData *responseData, NSError *error) {
                                     
+                                    typeof(self) strongSelf = weakSelf;
                                     NSInteger statusCode = [operation.response statusCode];
                                     
-                                    if (nil == error) {
-                                      if (nil == responseData || [responseData length] == 0) {
+                                    if(nil == error) {
+                                      if(nil == responseData || [responseData length] == 0) {
                                         NSLog(@"Sending failed with an empty response!");
-                                      } else{
-                                        NSLog(@"Sent data with status code: %ld", (long)statusCode);
+                                      } else {
+                                        NSLog(@"Sent data with status code: %ld", (long) statusCode);
                                         NSLog(@"Response data:\n%@", [NSJSONSerialization JSONObjectWithData:responseData options:0 error:nil]);
+                                        self.currentBundle = nil;
+                                        [strongSelf triggerSending];
                                       }
-                                    }else{
+                                    } else {
                                       NSLog(@"Sending failed");
+                                      [MSAIPersistence persistBundle:self.currentBundle];
+                                      self.currentBundle = nil;
+                                        //TODO trigger sending again -> later and somewhere else?!
                                     }
                                   }];
   
-  [_appClient enqeueHTTPOperation:operation];
+  [self.appClient enqeueHTTPOperation:operation];
 }
 
 - (void)sendRequest:(NSURLRequest *)request withCompletionBlock:(MSAINetworkCompletionBlock)completion{
@@ -145,13 +179,13 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
 
 #pragma mark - Helper
 
-- (NSURLRequest *)requestForData:(NSData *)data{
-  NSMutableURLRequest *request = [_appClient requestWithMethod:@"POST"
-                                                          path:_endpointPath
-                                                    parameters:nil];
+- (NSURLRequest *)requestForData:(NSData *)data {
+  NSMutableURLRequest *request = [self.appClient requestWithMethod:@"POST"
+                                                              path:self.endpointPath
+                                                        parameters:nil];
   
   [request setHTTPBody:data];
-  [request setCachePolicy: NSURLRequestReloadIgnoringLocalCacheData];
+  [request setCachePolicy:NSURLRequestReloadIgnoringLocalCacheData];
   NSString *contentType = @"application/json";
   [request setValue:contentType forHTTPHeaderField:@"Content-type"];
   return request;

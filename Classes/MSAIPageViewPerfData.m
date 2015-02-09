@@ -37,4 +37,33 @@
     return dict;
 }
 
+#pragma mark - NSCoding
+
+- (id)initWithCoder:(NSCoder *)coder {
+  self = [super initWithCoder:coder];
+  if(self) {
+    self.perfTotal = [coder decodeObjectForKey:@"self.perfTotal"];
+    self.networkConnect = [coder decodeObjectForKey:@"self.networkConnect"];
+    self.sentRequest = [coder decodeObjectForKey:@"self.sentRequest"];
+    self.receivedResponse = [coder decodeObjectForKey:@"self.receivedResponse"];
+    self.domProcessing = [coder decodeObjectForKey:@"self.domProcessing"];
+    _envelopeTypeName = [coder decodeObjectForKey:@"_envelopeTypeName"];
+    _dataTypeName = [coder decodeObjectForKey:@"_dataTypeName"];
+  }
+
+  return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+  [super encodeWithCoder:coder];
+  [coder encodeObject:self.perfTotal forKey:@"self.perfTotal"];
+  [coder encodeObject:self.networkConnect forKey:@"self.networkConnect"];
+  [coder encodeObject:self.sentRequest forKey:@"self.sentRequest"];
+  [coder encodeObject:self.receivedResponse forKey:@"self.receivedResponse"];
+  [coder encodeObject:self.domProcessing forKey:@"self.domProcessing"];
+  [coder encodeObject:self.envelopeTypeName forKey:@"_envelopeTypeName"];
+  [coder encodeObject:self.dataTypeName forKey:@"_dataTypeName"];
+}
+
+
 @end

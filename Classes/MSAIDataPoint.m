@@ -39,4 +39,32 @@
   return dict;
 }
 
+#pragma mark - NSCoding
+
+- (id)initWithCoder:(NSCoder *)coder {
+  self = [self init];
+  if(self) {
+    self.name = [coder decodeObjectForKey:@"self.name"];
+    self.kind = (MSAIDataPointType) [coder decodeIntForKey:@"self.kind"];
+    self.value = [coder decodeObjectForKey:@"self.value"];
+    self.count = [coder decodeObjectForKey:@"self.count"];
+    self.min = [coder decodeObjectForKey:@"self.min"];
+    self.max = [coder decodeObjectForKey:@"self.max"];
+    self.stdDev = [coder decodeObjectForKey:@"self.stdDev"];
+  }
+
+  return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+  [coder encodeObject:self.name forKey:@"self.name"];
+  [coder encodeInt:self.kind forKey:@"self.kind"];
+  [coder encodeObject:self.value forKey:@"self.value"];
+  [coder encodeObject:self.count forKey:@"self.count"];
+  [coder encodeObject:self.min forKey:@"self.min"];
+  [coder encodeObject:self.max forKey:@"self.max"];
+  [coder encodeObject:self.stdDev forKey:@"self.stdDev"];
+}
+
+
 @end
