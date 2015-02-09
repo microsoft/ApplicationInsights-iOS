@@ -16,7 +16,7 @@
   }
 }
 
-+ (id)sharedChannel {
++ (id)sharedManager {
   static MSAIEnvelopeManager *sharedManager = nil;
   static dispatch_once_t onceToken;
   dispatch_once(&onceToken, ^{
@@ -60,6 +60,12 @@
   dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
   NSString *dateString = [dateFormatter stringFromDate:date];
   return dateString;
+}
+
+- (void)createNewSession{
+  @synchronized(self) {
+    [_telemetryContext createNewSession];
+  }
 }
 
 @end

@@ -1186,68 +1186,70 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
 - (void)sendCrashReportWithFilename:(NSString *)filename crashData:(MSAICrashData *)crashData {
 
   MSAILog(@"INFO: Sending crash reports started.");
-  __weak typeof (self) weakSelf = self;
-  [[MSAIChannel sharedChannel] sendCrashItem:crashData withCompletionBlock:^(MSAIHTTPOperation *operation, NSData* responseData, NSError *error) {
-                                   typeof (self) strongSelf = weakSelf;
-                                   
-                                   _sendingInProgress = NO;
-                                   
-                                   NSInteger statusCode = [operation.response statusCode];
-
-                                   if (nil == error) {
-                                     if (nil == responseData || [responseData length] == 0) {
-                                       error = [NSError errorWithDomain:kMSAICrashErrorDomain
-                                                                   code:MSAICrashAPIReceivedEmptyResponse
-                                                               userInfo:@{
-                                                                          NSLocalizedDescriptionKey: @"Sending failed with an empty response!"
-                                                                          }
-                                                ];
-                                     } else if (statusCode >= 200 && statusCode < 400) {
-                                       [strongSelf cleanCrashReportWithFilename:filename];
-                                       
-                                       // AppInsights uses PList XML format
-                                       NSMutableDictionary *response = [NSPropertyListSerialization propertyListWithData:responseData
-                                                                                                                 options:NSPropertyListMutableContainersAndLeaves
-                                                                                                                  format:nil
-                                                                                                                   error:&error];
-                                       MSAILog(@"INFO: Received API response: %@", response);
-                                       
-                                       if (strongSelf.delegate != nil &&
-                                           [strongSelf.delegate respondsToSelector:@selector(crashManagerDidFinishSendingCrashReport:)]) {
-                                         [strongSelf.delegate crashManagerDidFinishSendingCrashReport:self];
-                                       }
-                                       
-                                       // only if sending the crash report went successfully, continue with the next one (if there are more)
-                                       [strongSelf sendNextCrashReport];
-                                     } else if (statusCode == 400) {
-                                       [strongSelf cleanCrashReportWithFilename:filename];
-                                       
-                                       error = [NSError errorWithDomain:kMSAICrashErrorDomain
-                                                                   code:MSAICrashAPIAppVersionRejected
-                                                               userInfo:@{
-                                                                          NSLocalizedDescriptionKey: @"The server rejected receiving crash reports for this app version!"
-                                                                          }
-                                                ];
-                                     } else {
-                                       error = [NSError errorWithDomain:kMSAICrashErrorDomain
-                                                                   code:MSAICrashAPIErrorWithStatusCode
-                                                               userInfo:@{
-                                                                          NSLocalizedDescriptionKey: [NSString stringWithFormat:@"Sending failed with status code: %li", (long)statusCode]
-                                                                          }
-                                                ];
-                                     }
-                                   }
-                                   
-                                   if (error) {
-                                     if (strongSelf.delegate != nil &&
-                                         [strongSelf.delegate respondsToSelector:@selector(crashManager:didFailWithError:)]) {
-                                       [strongSelf.delegate crashManager:self didFailWithError:error];
-                                     }
-                                     
-                                     MSAILog(@"ERROR: %@", [error localizedDescription]);
-                                   }
-                                   
-                                 }];
+  
+  // TODO: persist or send crash report
+//  __weak typeof (self) weakSelf = self;
+//  [[MSAIChannel sharedChannel] sendCrashEnvelope:crashData withCompletionBlock:^(MSAIHTTPOperation *operation, NSData* responseData, NSError *error) {
+//                                   typeof (self) strongSelf = weakSelf;
+//                                   
+//                                   _sendingInProgress = NO;
+//                                   
+//                                   NSInteger statusCode = [operation.response statusCode];
+//
+//                                   if (nil == error) {
+//                                     if (nil == responseData || [responseData length] == 0) {
+//                                       error = [NSError errorWithDomain:kMSAICrashErrorDomain
+//                                                                   code:MSAICrashAPIReceivedEmptyResponse
+//                                                               userInfo:@{
+//                                                                          NSLocalizedDescriptionKey: @"Sending failed with an empty response!"
+//                                                                          }
+//                                                ];
+//                                     } else if (statusCode >= 200 && statusCode < 400) {
+//                                       [strongSelf cleanCrashReportWithFilename:filename];
+//                                       
+//                                       // AppInsights uses PList XML format
+//                                       NSMutableDictionary *response = [NSPropertyListSerialization propertyListWithData:responseData
+//                                                                                                                 options:NSPropertyListMutableContainersAndLeaves
+//                                                                                                                  format:nil
+//                                                                                                                   error:&error];
+//                                       MSAILog(@"INFO: Received API response: %@", response);
+//                                       
+//                                       if (strongSelf.delegate != nil &&
+//                                           [strongSelf.delegate respondsToSelector:@selector(crashManagerDidFinishSendingCrashReport:)]) {
+//                                         [strongSelf.delegate crashManagerDidFinishSendingCrashReport:self];
+//                                       }
+//                                       
+//                                       // only if sending the crash report went successfully, continue with the next one (if there are more)
+//                                       [strongSelf sendNextCrashReport];
+//                                     } else if (statusCode == 400) {
+//                                       [strongSelf cleanCrashReportWithFilename:filename];
+//                                       
+//                                       error = [NSError errorWithDomain:kMSAICrashErrorDomain
+//                                                                   code:MSAICrashAPIAppVersionRejected
+//                                                               userInfo:@{
+//                                                                          NSLocalizedDescriptionKey: @"The server rejected receiving crash reports for this app version!"
+//                                                                          }
+//                                                ];
+//                                     } else {
+//                                       error = [NSError errorWithDomain:kMSAICrashErrorDomain
+//                                                                   code:MSAICrashAPIErrorWithStatusCode
+//                                                               userInfo:@{
+//                                                                          NSLocalizedDescriptionKey: [NSString stringWithFormat:@"Sending failed with status code: %li", (long)statusCode]
+//                                                                          }
+//                                                ];
+//                                     }
+//                                   }
+//                                   
+//                                   if (error) {
+//                                     if (strongSelf.delegate != nil &&
+//                                         [strongSelf.delegate respondsToSelector:@selector(crashManager:didFailWithError:)]) {
+//                                       [strongSelf.delegate crashManager:self didFailWithError:error];
+//                                     }
+//                                     
+//                                     MSAILog(@"ERROR: %@", [error localizedDescription]);
+//                                   }
+//                                   
+//                                 }];
   
   if (self.delegate != nil && [self.delegate respondsToSelector:@selector(crashManagerWillSendCrashReport:)]) {
     [self.delegate crashManagerWillSendCrashReport:self];
