@@ -3,9 +3,5 @@
 #import "MSAIDomain.h"
 
 @interface MSAIDomain : MSAITelemetryData <NSCoding>
-- (id)initWithCoder:(NSCoder *)coder;
-
-- (void)encodeWithCoder:(NSCoder *)coder;
-
 
 @end

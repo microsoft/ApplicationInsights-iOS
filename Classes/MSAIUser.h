@@ -9,9 +9,4 @@
 @property (nonatomic, strong) NSString *userAgent;
 @property (nonatomic, strong) NSString *userId;
 
-- (id)initWithCoder:(NSCoder *)coder;
-
-- (void)encodeWithCoder:(NSCoder *)coder;
-
-
 @end

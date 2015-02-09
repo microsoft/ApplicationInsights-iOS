@@ -6,9 +6,4 @@
 
 @property (nonatomic, strong) NSString *ip;
 
-- (id)initWithCoder:(NSCoder *)coder;
-
-- (void)encodeWithCoder:(NSCoder *)coder;
-
-
 @end

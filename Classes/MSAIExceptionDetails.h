@@ -12,9 +12,4 @@
 @property (nonatomic, strong) NSString *stack;
 @property (nonatomic, strong) NSMutableArray *parsedStack;
 
-- (id)initWithCoder:(NSCoder *)coder;
-
-- (void)encodeWithCoder:(NSCoder *)coder;
-
-
 @end

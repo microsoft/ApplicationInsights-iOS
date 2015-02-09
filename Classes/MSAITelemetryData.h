@@ -10,8 +10,4 @@
 @property (nonatomic, strong) NSString *name;
 @property (nonatomic, strong) NSDictionary *properties;
 
-- (id)initWithCoder:(NSCoder *)coder;
-
-- (void)encodeWithCoder:(NSCoder *)coder;
-
 @end

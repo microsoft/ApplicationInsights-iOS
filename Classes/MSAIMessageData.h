@@ -9,9 +9,4 @@
 @property (nonatomic, strong) NSString *message;
 @property (nonatomic, assign) MSAISeverityLevel severityLevel;
 
-- (id)initWithCoder:(NSCoder *)coder;
-
-- (void)encodeWithCoder:(NSCoder *)coder;
-
-
 @end

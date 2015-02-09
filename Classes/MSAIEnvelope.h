@@ -21,9 +21,5 @@
 @property (nonatomic, strong) MSAIOrderedDictionary *tags;
 @property (nonatomic, strong) MSAIBase *data;
 
-- (id)initWithCoder:(NSCoder *)coder;
-
-- (void)encodeWithCoder:(NSCoder *)coder;
-
 
 @end

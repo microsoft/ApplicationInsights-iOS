@@ -9,9 +9,4 @@
 @property (nonatomic, strong) NSString *parentId;
 @property (nonatomic, strong) NSString *rootId;
 
-- (id)initWithCoder:(NSCoder *)coder;
-
-- (void)encodeWithCoder:(NSCoder *)coder;
-
-
 @end

@@ -10,9 +10,4 @@
 @property (nonatomic, strong) NSString *url;
 @property (nonatomic, strong) NSString *duration;
 
-- (id)initWithCoder:(NSCoder *)coder;
-
-- (void)encodeWithCoder:(NSCoder *)coder;
-
-
 @end

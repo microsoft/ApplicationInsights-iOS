@@ -15,9 +15,4 @@
 @property (nonatomic, strong) NSString *url;
 @property (nonatomic, strong) MSAIOrderedDictionary *measurements;
 
-- (id)initWithCoder:(NSCoder *)coder;
-
-- (void)encodeWithCoder:(NSCoder *)coder;
-
-
 @end

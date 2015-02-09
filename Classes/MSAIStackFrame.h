@@ -10,9 +10,4 @@
 @property (nonatomic, strong) NSString *fileName;
 @property (nonatomic, strong) NSNumber *line;
 
-- (id)initWithCoder:(NSCoder *)coder;
-
-- (void)encodeWithCoder:(NSCoder *)coder;
-
-
 @end

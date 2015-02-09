@@ -13,9 +13,4 @@
 @property (nonatomic, strong) NSString *receivedResponse;
 @property (nonatomic, strong) NSString *domProcessing;
 
-- (id)initWithCoder:(NSCoder *)coder;
-
-- (void)encodeWithCoder:(NSCoder *)coder;
-
-
 @end

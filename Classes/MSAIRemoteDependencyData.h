@@ -17,9 +17,4 @@
 @property (nonatomic, assign) BOOL async;
 @property (nonatomic, assign) MSAIDependencySourceType dependencySource;
 
-- (id)initWithCoder:(NSCoder *)coder;
-
-- (void)encodeWithCoder:(NSCoder *)coder;
-
-
 @end
