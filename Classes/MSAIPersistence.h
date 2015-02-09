@@ -11,6 +11,10 @@
 @interface MSAIPersistence : NSObject
 
 
+typedef NS_ENUM(NSInteger, MSAIPersistencePriority) {
+  MSAIPersistencePriorityHigh = 0,
+  MSAIPersistencePriorityLow = 1
+};
 
 ///-----------------------------------------------------------------------------
 /// @name Save bundle of data
@@ -19,11 +23,18 @@
 /**
 *
 * @param bundle a bundle of tracked events (telemetry, crashes, ...) that will be serialized and saved.
-*
+* @param priority The priority of the bundle we want to save.
+* @param completionBlock A block that will be executed after we have tried to save the bundle.
 * @warning: The data within the array needs to implement NSCoding.
 */
-+ (void)persistBundle:(NSArray *)bundle withHighPriority:(BOOL)highPriority;
++ (void)persistBundle:(NSArray *)bundle withPriority:(MSAIPersistencePriority)priority withCompletionBlock: (void (^)(BOOL success)) completionBlock;
 
+
+/**
+*
+*/
++ (void)persistBundle:(NSArray *)bundle withPriority:(MSAIPersistencePriority)priority;
+//TODO Provide documentation
 
 ///-----------------------------------------------------------------------------
 /// @name Get a bundle of saved data

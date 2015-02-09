@@ -114,7 +114,7 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
 }
 
 - (void)persistQueue {
-  [MSAIPersistence persistBundle:[self->_dataItemQueue copy] withHighPriority:NO];
+  [MSAIPersistence persistBundle:[self->_dataItemQueue copy] withPriority:MSAIPersistencePriorityLow];
   [self->_dataItemQueue removeAllObjects];
 }
 
@@ -132,7 +132,7 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
     }
     else {
       NSLog(@"Error creating JSON from bundle array, saving bundle back to disk");
-      [MSAIPersistence persistBundle:bundle withHighPriority:NO];
+      [MSAIPersistence persistBundle:bundle withPriority:MSAIPersistencePriorityLow];
         //TODO: more error handling!
     }
   }
@@ -160,7 +160,7 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
                                       }
                                     } else {
                                       NSLog(@"Sending failed");
-                                      [MSAIPersistence persistBundle:self.currentBundle withHighPriority:NO];
+                                      [MSAIPersistence persistBundle:self.currentBundle withPriority:MSAIPersistencePriorityLow];
                                       self.currentBundle = nil;
                                         //TODO trigger sending again -> later and somewhere else?!
                                     }
