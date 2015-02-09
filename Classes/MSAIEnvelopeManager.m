@@ -6,6 +6,7 @@
 #import "MSAITelemetryContext.h"
 #import "MSAITelemetryContextPrivate.h"
 #import "MSAIHelper.h"
+#import "MSAIExceptionFormatter.h"
 
 @implementation MSAIEnvelopeManager
 
@@ -53,6 +54,14 @@
   
   envelope.tags = _telemetryContext.contextDictionary;
   return envelope;
+}
+
+- (MSAIEnvelope *)envelopeForCrashReport:(MSAIPLCrashReport *)report{
+  return [self envelopeForCrashReport:report exception:nil];
+}
+
+- (MSAIEnvelope *)envelopeForCrashReport:(MSAIPLCrashReport *)report exception:(NSException *)exception{
+  return [MSAIExceptionFormatter crashDataForCrashReport:report handledException:exception];
 }
 
 - (NSString *)dateStringForDate:(NSDate *)date {

@@ -1,6 +1,7 @@
 @class MSAIEnvelope;
 @class MSAITelemetryData;
 @class MSAITelemetryContext;
+@class MSAIPLCrashReport;
 
 @interface MSAIEnvelopeManager()
 
@@ -28,6 +29,10 @@
 - (NSString *)dateStringForDate:(NSDate *)date;
 
 - (MSAIEnvelope *)envelopeForTelemetryData:(MSAITelemetryData *)telemetryData;
+
+- (MSAIEnvelope *)envelopeForCrashReport:(MSAIPLCrashReport *)report;
+
+- (MSAIEnvelope *)envelopeForCrashReport:(MSAIPLCrashReport *)report exception:(NSException *)exception;
 
 - (void)createNewSession;
 @end

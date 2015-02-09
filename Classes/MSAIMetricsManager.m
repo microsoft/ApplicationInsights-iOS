@@ -137,8 +137,6 @@ static id appWillTerminateObserver;
 
 + (void)trackException:(NSException *)exception{
   
-  
-  
   PLCrashReporterSignalHandlerType signalHandlerType = PLCrashReporterSignalHandlerTypeBSD;
   
   PLCrashReporterSymbolicationStrategy symbolicationStrategy = PLCrashReporterSymbolicationStrategyAll;
@@ -154,8 +152,8 @@ static id appWillTerminateObserver;
   dispatch_async(metricEventQueue, ^{
     typeof(self) strongSelf = weakSelf;
     
-    MSAICrashData *exceptionData = [MSAIExceptionFormatter crashDataForCrashReport:report crashReporterKey:nil handledException:exception];
-    [strongSelf trackDataItem:exceptionData];
+    MSAIEnvelope *envelope = [[MSAIEnvelopeManager sharedManager] envelopeForCrashReport:report exception:exception];
+    [strongSelf trackDataItem:envelope];
   });
 }
 
