@@ -50,6 +50,7 @@
 #import "MSAICrashDataHeaders.h"
 #import "MSAICrashDataBinary.h"
 #import "MSAICrashDataThreadFrame.h"
+#import "MSAIEnvelope.h"
 
 /*
  * XXX: The ARM64 CPU type, and ARM_V7S and ARM_V8 Mach-O CPU subtypes are not
@@ -195,7 +196,44 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
  */
 @implementation MSAIExceptionFormatter
 
-+ (MSAICrashData *)crashDataForCrashReport:(PLCrashReport *)report crashReporterKey:(NSString *)crashReporterKey handledException:(NSException *)exception{
++ (MSAIEnvelope *)crashDataForCrashReport:(PLCrashReport *)report handledException:(NSException *)exception{
+  
+  MSAIEnvelope *envelope = [MSAIEnvelope new];
+  
+  /* System info */
+  {
+    /* Map to apple style OS nane */
+    NSString *osName;
+    switch (report.systemInfo.operatingSystem) {
+      case PLCrashReportOperatingSystemiPhoneOS:
+        osName = @"iPhone OS";
+        break;
+        case PLCrashReportOperatingSystemMacOSX:
+      case PLCrashReportOperatingSystemiPhoneSimulator:
+        osName = @"Mac OS X";
+        break;
+      default:
+        osName = [NSString stringWithFormat: @"Unknown (%d)", report.systemInfo.operatingSystem];
+        break;
+    }
+    
+    NSString *osBuild = @"???";
+    if (report.systemInfo.operatingSystemBuild != nil){
+      osBuild = report.systemInfo.operatingSystemBuild;
+    }
+    
+    NSLocale *enUSPOSIXLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
+    NSDateFormatter *rfc3339Formatter = [[NSDateFormatter alloc] init];
+    [rfc3339Formatter setLocale:enUSPOSIXLocale];
+    [rfc3339Formatter setDateFormat:@"yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'"];
+    [rfc3339Formatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
+    
+    envelope.osVer = [NSString stringWithFormat:@"%@(%@)", report.systemInfo.operatingSystemVersion, osBuild];
+    envelope.os = osName;
+    envelope.time = [rfc3339Formatter stringFromDate:report.systemInfo.timestamp];
+    envelope.appId = report.applicationInfo.applicationIdentifier;
+    envelope.appVer = report.applicationInfo.applicationVersion;
+  }
   
   MSAICrashData *crashData = [MSAICrashData new];
   MSAICrashDataHeaders *crashHeaders = [MSAICrashDataHeaders new];
@@ -254,13 +292,10 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
   }
   
   {
-    NSString *crashDataHeadersId = @"???";
-    if (crashReporterKey && [crashReporterKey length] > 0)
-      crashDataHeadersId = crashReporterKey;
-    
     NSString *incidentIdentifier = @"???";
     if (report.uuidRef != NULL) {
       incidentIdentifier = (NSString *) CFBridgingRelease(CFUUIDCreateString(NULL, report.uuidRef));
+      crashHeaders.crashDataHeadersId = incidentIdentifier;
     }
   }
   
@@ -474,7 +509,7 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
   
   crashData.binaries = binaries;
   
-  return crashData;
+  return envelope;
 }
 
 /**
@@ -486,9 +521,9 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
  *
  * @return Returns the formatted result on success, or nil if an error occurs.
  */
-+ (MSAICrashData *)crashDataForCrashReport:(MSAIPLCrashReport *)report crashReporterKey:(NSString *)crashReporterKey {
++ (MSAIEnvelope *)crashDataForCrashReport:(MSAIPLCrashReport *)report {
   
-  return [[self class]crashDataForCrashReport:report crashReporterKey:crashReporterKey handledException:nil];
+  return [[self class]crashDataForCrashReport:report handledException:nil];
 }
 
 /**

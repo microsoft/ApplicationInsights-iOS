@@ -31,7 +31,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-@class MSAICrashData;
+@class MSAIEnvelope;
 @class PLCrashReport;
 
 #import <Foundation/Foundation.h>
@@ -66,8 +66,8 @@ typedef NS_ENUM (NSInteger, MSAIBinaryImageType) {
 @interface MSAIExceptionFormatter : NSObject {
 }
 
-+ (MSAICrashData *)crashDataForCrashReport:(PLCrashReport *)report crashReporterKey:(NSString *)crashReporterKey handledException:(NSException *)exception;
-+ (MSAICrashData *)crashDataForCrashReport:(PLCrashReport *)report crashReporterKey:(NSString *)crashReporterKey;
++ (MSAIEnvelope *)crashDataForCrashReport:(PLCrashReport *)report handledException:(NSException *)exception;
++ (MSAIEnvelope *)crashDataForCrashReport:(PLCrashReport *)report;
 + (NSArray *)arrayOfAppUUIDsForCrashReport:(PLCrashReport *)report;
 + (NSString *)msai_archNameFromCPUType:(uint64_t)cpuType subType:(uint64_t)subType;
 + (MSAIBinaryImageType)msai_imageTypeForImagePath:(NSString *)imagePath processPath:(NSString *)processPath;
