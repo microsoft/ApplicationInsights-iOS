@@ -6,6 +6,8 @@
 
 @implementation MSAIPersistence
 
+#pragma mark - Public
+
 + (void)persistBundle:(NSArray *)bundle {
   if(bundle && bundle.count > 0) {
     NSData *data = [NSKeyedArchiver archivedDataWithRootObject:bundle];
@@ -14,7 +16,7 @@
     dispatch_queue_t backgroundQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     dispatch_async(backgroundQueue, ^{
       typeof(self) strongSelf = weakSelf;
-      NSString *fileURL = [strongSelf pathToBundle];
+      NSString *fileURL = [strongSelf createFullPathForBundle];
       if([data writeToFile:fileURL atomically:YES]) {
         NSLog(@"Wrote %@", fileURL);
       }
@@ -26,7 +28,7 @@
 }
 
 + (NSArray *)nextBundle {
-  NSArray *paths = [self persistedBundlePaths];
+  NSArray *paths = [self allBundlePaths];
   if(([paths count] > 0)) {
     for (NSString *path in paths) {
       if([path containsString:@"app-insights-bundle-"]) {
@@ -41,6 +43,8 @@
   return nil;
 }
 
+#pragma mark - Private
+
 + (void)deleteBundleAtPath:(NSString *)path {
   if((path > 0) && ([path containsString:@"app-insights-bundle-"])) {
     NSError *error = nil;
@@ -53,11 +57,11 @@
     }
   }
   else {
-    NSLog(@"Empty Path, so nothing can be deleted");
+    NSLog(@"Empty path, so nothing can be deleted");
   }
 }
 
-+ (NSString *)pathToBundle {
++ (NSString *)createFullPathForBundle {
   NSString *documentFolder = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
   NSString *timestamp = [NSString stringWithFormat:@"%f", [[NSDate date] timeIntervalSince1970] * 1000];
   NSString *fileName = [NSString stringWithFormat:@"app-insights-bundle-%@", timestamp];
@@ -66,7 +70,7 @@
   return filePath;
 }
 
-+ (NSArray *)persistedBundlePaths {
++ (NSArray *)allBundlePaths {
   NSString *documentFolder = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
   NSArray *fileNames = [[NSFileManager defaultManager] subpathsOfDirectoryAtPath:documentFolder  error:nil];
   NSMutableArray *fullPaths = [NSMutableArray arrayWithCapacity:fileNames.count];
