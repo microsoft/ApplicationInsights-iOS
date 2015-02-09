@@ -39,7 +39,7 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
 - (instancetype)init {
   if(self = [super init]) {
     self.dataItemQueue = [NSMutableArray array];
-    self.senderThreshold = defaultMaxBatchCount;
+    self.senderBatchSize = defaultMaxBatchCount;
     self.senderInterval = defaultBatchInterval;
   }
   return self;
@@ -71,7 +71,7 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
       
       [strongSelf->_dataItemQueue addObject:dataDict];
       
-      if([strongSelf->_dataItemQueue count] >= strongSelf.senderThreshold) {
+      if([strongSelf->_dataItemQueue count] >= strongSelf.senderBatchSize) {
         [strongSelf invalidateTimer];
         [strongSelf persistQueue];
         [strongSelf triggerSending];
