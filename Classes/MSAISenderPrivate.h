@@ -32,48 +32,6 @@
  */
 - (void)configureWithAppClient:(MSAIAppClient *)appClient endpointPath:(NSString *)endpointPath;
 
-///-----------------------------------------------------------------------------
-/// @name Queue management
-///-----------------------------------------------------------------------------
-
-/**
- *  A queue which makes array operations thread safe.
- */
-@property (nonatomic, strong) dispatch_queue_t dataItemsOperations;
-
-/**
- *  An array for collecting data, which should be sent to the telemetry server.
- */
-@property(nonatomic, strong) NSMutableArray *dataItemQueue;
-
-/**
- *  Add metrics data to sender queue.
- *
- *  @param dataDict data which should be sent
- */
-- (void)enqueueDataDict:(NSDictionary *)dataDict;
-
-- (void)enqueueCrashDict:(NSDictionary *)crashDict withCompletionBlock:(MSAINetworkCompletionBlock)completion;
-
-///-----------------------------------------------------------------------------
-/// @name Batching
-///-----------------------------------------------------------------------------
-
-/**
- *  A timer source which is used to flush the queue after a cretain time.
- */
-@property (nonatomic, strong) dispatch_source_t timerSource;
-
-/**
- *  Starts the timer.
- */
-- (void)startTimer;
-
-/**
- *  Stops the timer if currently running.
- */
-- (void)invalidateTimer;
-
 /**
  *  Sends all enqueued events.
  */

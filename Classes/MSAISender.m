@@ -3,15 +3,6 @@
 #import "MSAISenderPrivate.h"
 #import "MSAIPersistence.h"
 
-#ifdef DEBUG
-static NSInteger const defaultMaxBatchCount = 150;
-static NSInteger const defaultBatchInterval = 15;
-#else
-static NSInteger const defaultMaxBatchCount = 5;
-static NSInteger const defaultBatchInterval = 15;
-#endif
-
-static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.senderQueue";
 
 @interface MSAISender ()
 
@@ -29,94 +20,20 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
   
   dispatch_once(&onceToken, ^{
     sharedInstance = [MSAISender new];
-    dispatch_queue_t serialQueue = dispatch_queue_create(MSAIDataItemsOperationsQueue, DISPATCH_QUEUE_SERIAL);
-    [sharedInstance setDataItemsOperations:serialQueue];
+    
     
   });
   return sharedInstance;
 }
 
-- (instancetype)init {
-  if(self = [super init]) {
-    self.dataItemQueue = [NSMutableArray array];
-    self.senderBatchSize = defaultMaxBatchCount;
-    self.senderInterval = defaultBatchInterval;
-  }
-  return self;
-}
+
 
 - (void)configureWithAppClient:(MSAIAppClient *)appClient endpointPath:(NSString *)endpointPath {
   self.endpointPath = endpointPath;
   self.appClient = appClient;
 }
 
-#pragma mark - Queue management
 
-- (NSMutableArray *)dataItemQueue {
-  
-  __block NSMutableArray *queue = nil;
-  __weak typeof(self) weakSelf = self;
-  dispatch_sync(self.dataItemsOperations, ^{
-    typeof(self) strongSelf = weakSelf;
-    queue = [NSMutableArray arrayWithArray:strongSelf->_dataItemQueue];
-  });
-  return queue;
-}
-
-- (void)enqueueDataDict:(NSDictionary *)dataDict {
-  if(dataDict) {
-    __weak typeof(self) weakSelf = self;
-    dispatch_async(self.dataItemsOperations, ^{
-      typeof(self) strongSelf = weakSelf;
-      
-      [strongSelf->_dataItemQueue addObject:dataDict];
-      
-      if([strongSelf->_dataItemQueue count] >= strongSelf.senderBatchSize) {
-        [strongSelf invalidateTimer];
-        [strongSelf persistQueue];
-        [strongSelf sendSavedData];
-      } else if([strongSelf->_dataItemQueue count] == 1) {
-        [strongSelf startTimer];
-      }
-    });
-  }
-}
-
-- (void)enqueueCrashDict:(NSDictionary *)crashDict withCompletionBlock:(MSAINetworkCompletionBlock)completion{
-  NSError *error = nil;
-  NSData *json = [NSJSONSerialization dataWithJSONObject:crashDict options:NSJSONWritingPrettyPrinted error:&error];
-  NSURLRequest *request = [self requestForData:json];
-  [self sendRequest:request withCompletionBlock:completion];
-}
-
-#pragma mark - Batching
-
-- (void)invalidateTimer {
-  if(self.timerSource) {
-    dispatch_source_cancel(self.timerSource);
-    self.timerSource = nil;
-  }
-}
-
-- (void)startTimer {
-  
-  if(self.timerSource) {
-    [self invalidateTimer];
-  }
-  
-  self.timerSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, self.dataItemsOperations);
-  dispatch_source_set_timer(self.timerSource, dispatch_walltime(NULL, NSEC_PER_SEC * self.senderInterval), 1ull * NSEC_PER_SEC, 1ull * NSEC_PER_SEC);
-  dispatch_source_set_event_handler(self.timerSource, ^{
-    [self invalidateTimer];
-    [self persistQueue];
-  });
-  dispatch_resume(self.timerSource);
-}
-
-- (void)persistQueue {
-  [MSAIPersistence persistBundle:[self->_dataItemQueue copy] withHighPriority:NO];
-  [self->_dataItemQueue removeAllObjects];
-}
 
 #pragma mark - Sending
 
@@ -160,7 +77,7 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
                                       }
                                     } else {
                                       NSLog(@"Sending failed");
-                                      [MSAIPersistence persistBundle:self.currentBundle withHighPriority:NO];
+                                      //[MSAIPersistence persistBundle:self.currentBundle];
                                       self.currentBundle = nil;
                                         //TODO trigger sending again -> later and somewhere else?!
                                     }

@@ -17,59 +17,61 @@
 
 + (instancetype)sharedChannel;
 
-/**
- *  The context object, which contains information about current session, the device, the user etc.
- */
-@property(nonatomic, strong, readonly)MSAITelemetryContext *telemetryContext;
-
-/**
- *  The sender instance.
- */
-@property(nonatomic, strong, readonly)MSAISender *sender;
-
-/**
- *  Initializes the telemetry channel.
- *
- *  @param appClient     the app client for sending data
- *  @param clientContext information about the client and the AI account
- *
- *  @return a channel instance.
- */
-- (instancetype)configureWithAppClient:(MSAIAppClient *) appClient telemetryContext:(MSAITelemetryContext *)telemetryContext;
-
 ///-----------------------------------------------------------------------------
-/// @name Enqueue data
+/// @name Queue management
 ///-----------------------------------------------------------------------------
+
+/**
+ *  A queue which makes array operations thread safe.
+ */
+@property (nonatomic, strong) dispatch_queue_t dataItemsOperations;
+
+/**
+ *  An array for collecting data, which should be sent to the telemetry server.
+ */
+@property(nonatomic, strong) NSMutableArray *dataItemQueue;
 
 /**
  *  Sends out telemetry data to the server.
  *
  *  @param dataItem the data object, which should be sent to the telemetry server
  */
-- (void)sendDataItem:(MSAITelemetryData *)dataItem;
-
-- (void)sendCrashItem:(MSAICrashData *)crashItem withCompletionBlock:(MSAINetworkCompletionBlock)completion;
+- (void)enqueueEnvelope:(MSAIEnvelope *)envelope highPriority:(BOOL)highPriority;
 
 ///-----------------------------------------------------------------------------
-/// @name Helper
+/// @name Batching
 ///-----------------------------------------------------------------------------
 
-/**
- *  Creates a dictionary out of the given telemetry data and context information.
+/*
+ * Interval for sending data to the server in seconds.
  *
- *  @param dataItem the telemetry data to send
- *
- *  @return return a dictionary which contains the telemetry data and context information
+ * Default: 15
  */
-- (NSDictionary *)dictionaryFromDataItem:(MSAITelemetryData *)dataItem;
+@property (nonatomic, assign) NSInteger senderInterval;
+
+/*
+ * Threshold for sending data to the server. Default batch size for debugging is 150, for release
+ * configuration, the batch size is 5.
+ *
+ * @warning: we advice to not set the batch size below 5 events.
+ *
+ * Default: 5
+ */
+@property (nonatomic, assign) NSInteger senderBatchSize;
 
 /**
- *  Returns the formatted string for a given date.
- *
- *  @param date the date to be converted to a string
- *
- *  @return the string representation for a given date
+ *  A timer source which is used to flush the queue after a cretain time.
  */
-- (NSString *)dateStringForDate:(NSDate *)date;
+@property (nonatomic, strong) dispatch_source_t timerSource;
+
+/**
+ *  Starts the timer.
+ */
+- (void)startTimer;
+
+/**
+ *  Stops the timer if currently running.
+ */
+- (void)invalidateTimer;
 
 @end
