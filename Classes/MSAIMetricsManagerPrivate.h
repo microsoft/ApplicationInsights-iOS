@@ -2,11 +2,6 @@
 
 #if MSAI_FEATURE_METRICS
 
-#import "MSAITelemetryContext.h"
-
-@class MSAIContext;
-@class MSAIAppClient;
-@class MSAIChannel;
 @class MSAITelemetryData;
 
 extern NSString *const kMSAIApplicationWasLaunched;

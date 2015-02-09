@@ -36,7 +36,7 @@
                                                                                        userContext:nil
                                                                                    internalContext:nil
                                                                                   operationContext:nil];
-  _sut = [[MSAIChannel alloc]initWithAppClient:_appClient telemetryContext:telemetryContext];
+  _sut = [[MSAIChannel sharedChannel]configureWithAppClient:_appClient telemetryContext:telemetryContext];
 }
 
 #pragma mark - Setup Tests
