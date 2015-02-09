@@ -4,6 +4,10 @@
 
 #import <Foundation/Foundation.h>
 
+/**
+* A simple class that handles serialisation and deserialisation of bundles of data.
+*/
+
 @interface MSAIPersistence : NSObject
 
 
@@ -12,9 +16,11 @@
 ///-----------------------------------------------------------------------------
 
 /**
-*  Prepares manager for sending out data.
+* Prepares manager for sending out data.
 *
-*  @param bundle a bundle of tracked events (telemetry, crashes, ...) that will be serialized and saved
+* @param bundle a bundle of tracked events (telemetry, crashes, ...) that will be serialized and saved.
+*
+* @warning: The data within the array needs to implement NSCoding.
 */
 + (void)persistBundle:(NSArray *)bundle;
 
@@ -25,10 +31,9 @@
 
 
 /**
-* Returns an arbitrary bundle of previously saved data from disk and deletes it.
-* Returns 'nil' if no bundle is available
+* @return an arbitrary bundle of previously saved data from disk and deletes it.
+* Returns 'nil' if no bundle is available*
 */
-
 
 + (NSArray *)nextBundle;
 

@@ -74,7 +74,7 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
       if([strongSelf->_dataItemQueue count] >= strongSelf.senderBatchSize) {
         [strongSelf invalidateTimer];
         [strongSelf persistQueue];
-        [strongSelf triggerSending];
+        [strongSelf sendSavedData];
       } else if([strongSelf->_dataItemQueue count] == 1) {
         [strongSelf startTimer];
       }
@@ -120,7 +120,7 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
 
 #pragma mark - Sending
 
-- (void)triggerSending {
+- (void)sendSavedData {
   NSArray *bundle = [MSAIPersistence nextBundle];
   if(bundle && !self.currentBundle) {
     self.currentBundle = bundle;
@@ -156,7 +156,7 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
                                         NSLog(@"Sent data with status code: %ld", (long) statusCode);
                                         NSLog(@"Response data:\n%@", [NSJSONSerialization JSONObjectWithData:responseData options:0 error:nil]);
                                         self.currentBundle = nil;
-                                        [strongSelf triggerSending];
+                                        [strongSelf sendSavedData];
                                       }
                                     } else {
                                       NSLog(@"Sending failed");
