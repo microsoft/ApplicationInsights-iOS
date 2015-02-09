@@ -4,6 +4,8 @@
 
 @interface MSAIEnvelopeManager()
 
++ (instancetype)sharedManager;
+
 /**
  *  The context object, which contains information about current session, the device, the user etc.
  */
@@ -27,4 +29,5 @@
 
 - (MSAIEnvelope *)envelopeForTelemetryData:(MSAITelemetryData *)telemetryData;
 
+- (void)createNewSession;
 @end
