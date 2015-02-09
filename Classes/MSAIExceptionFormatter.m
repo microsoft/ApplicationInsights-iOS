@@ -461,13 +461,13 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
     if ([imageName length] > 0 && [[imageName substringToIndex:1] isEqualToString:@"~"])
       imageName = [NSString stringWithFormat:@"/Users/USER%@", [imageName substringFromIndex:1]];
     
-    binary.path = [NSString stringWithFormat:@"%@%@", binaryDesignator, [imageInfo.imageName lastPathComponent]];
+    binary.path = imageName;
     
     NSString *fmt = (lp64) ? @"%18#" PRIx64 : @"%10#" PRIx64;
     
     binary.startAddress = [NSString stringWithFormat:fmt, imageInfo.imageBaseAddress];
     binary.endAddress = [NSString stringWithFormat:fmt, imageInfo.imageBaseAddress + (MAX(1, imageInfo.imageSize) - 1)];
-    binary.name = imageName;
+    binary.name = [NSString stringWithFormat:@"%@%@", binaryDesignator, [imageInfo.imageName lastPathComponent]];
     
     [binaries addObject:binary];
   }
