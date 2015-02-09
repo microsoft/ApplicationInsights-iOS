@@ -12,8 +12,11 @@
 
 #import "MSAIBaseManagerPrivate.h"
 #import "MSAICrashManagerPrivate.h"
-#import "MSAICrashReportTextFormatter.h"
+#import "MSAIExceptionFormatter.h"
 #import "MSAICrashDetailsPrivate.h"
+#import "MSAICrashData.h"
+#import "MSAIChannel.h"
+#import "MSAIChannelPrivate.h"
 
 #include <sys/sysctl.h>
 
@@ -270,7 +273,7 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
  */
 - (NSString *) extractAppUUIDs:(MSAIPLCrashReport *)report {
   NSMutableString *uuidString = [NSMutableString string];
-  NSArray *uuidArray = [MSAICrashReportTextFormatter arrayOfAppUUIDsForCrashReport:report];
+  NSArray *uuidArray = [MSAIExceptionFormatter arrayOfAppUUIDsForCrashReport:report];
   
   for (NSDictionary *element in uuidArray) {
     if (element[kMSAIBinaryImageKeyUUID] && element[kMSAIBinaryImageKeyArch] && element[kMSAIBinaryImageKeyUUID]) {
@@ -415,7 +418,7 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
   if (sysctlbyname("hw.cpusubtype", &subtype, &size, NULL, 0))
     return archName;
 
-  archName = [MSAICrashReportTextFormatter msai_archNameFromCPUType:type subType:subtype] ?: @"???";
+  archName = [MSAIExceptionFormatter msai_archNameFromCPUType:type subType:subtype] ?: @"???";
   
   return archName;
 }
@@ -1072,9 +1075,7 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
   
   if ([_crashFiles count] == 0)
     return;
-  
-  NSString *crashXML = nil;
-  
+
   NSString *filename = _crashFiles[0];
   NSString *cacheFilename = [filename lastPathComponent];
   NSData *crashData = [NSData dataWithContentsOfFile:filename];
@@ -1083,7 +1084,7 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
     MSAIPLCrashReport *report = nil;
     NSString *crashUUID = @"";
     NSString *installString = nil;
-    NSString *crashLogString = nil;
+    MSAICrashData *crashItem = nil;
     NSString *appBundleIdentifier = nil;
     NSString *appBundleVersion = nil;
     NSString *osVersion = nil;
@@ -1094,30 +1095,31 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
     NSPropertyListFormat format;
     
     if ([[cacheFilename pathExtension] isEqualToString:@"fake"]) {
-      NSDictionary *fakeReportDict = (NSDictionary *)[NSPropertyListSerialization
-                                                      propertyListWithData:crashData
-                                                      options:NSPropertyListMutableContainersAndLeaves
-                                                      format:&format
-                                                      error:&error];
-      
-      crashLogString = fakeReportDict[kMSAIFakeCrashReport];
-      crashUUID = fakeReportDict[kMSAIFakeCrashUUID];
-      appBundleIdentifier = fakeReportDict[kMSAIFakeCrashAppBundleIdentifier];
-      appBundleVersion = fakeReportDict[kMSAIFakeCrashAppVersion];
-      appBinaryUUIDs = fakeReportDict[kMSAIFakeCrashAppBinaryUUID];
-      deviceModel = fakeReportDict[kMSAIFakeCrashDeviceModel];
-      osVersion = fakeReportDict[kMSAIFakeCrashOSVersion];
-      
-      metaFilename = [cacheFilename stringByReplacingOccurrencesOfString:@".fake" withString:@".meta"];
-      if ([appBundleVersion compare:[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"]] == NSOrderedSame) {
-        _crashIdenticalCurrentVersion = YES;
-      }
+      crashItem = [MSAICrashData new];
+//      NSDictionary *fakeReportDict = (NSDictionary *)[NSPropertyListSerialization
+//                                                      propertyListWithData:crashData
+//                                                      options:NSPropertyListMutableContainersAndLeaves
+//                                                      format:&format
+//                                                      error:&error];
+//      
+//      crashLogString = fakeReportDict[kMSAIFakeCrashReport];
+//      crashUUID = fakeReportDict[kMSAIFakeCrashUUID];
+//      appBundleIdentifier = fakeReportDict[kMSAIFakeCrashAppBundleIdentifier];
+//      appBundleVersion = fakeReportDict[kMSAIFakeCrashAppVersion];
+//      appBinaryUUIDs = fakeReportDict[kMSAIFakeCrashAppBinaryUUID];
+//      deviceModel = fakeReportDict[kMSAIFakeCrashDeviceModel];
+//      osVersion = fakeReportDict[kMSAIFakeCrashOSVersion];
+//      
+//      metaFilename = [cacheFilename stringByReplacingOccurrencesOfString:@".fake" withString:@".meta"];
+//      if ([appBundleVersion compare:[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"]] == NSOrderedSame) {
+//        _crashIdenticalCurrentVersion = YES;
+//      }
       
     } else {
       report = [[MSAIPLCrashReport alloc] initWithData:crashData error:&error];
     }
     
-    if (report == nil && crashLogString == nil) {
+    if (report == nil && crashItem == nil) {
       MSAILog(@"WARNING: Could not parse crash report");
       // we cannot do anything with this report, so delete it
       [self cleanCrashReportWithFilename:filename];
@@ -1129,16 +1131,7 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
     installString = msai_appAnonID() ?: @"";
     
     if (report) {
-      if (report.uuidRef != NULL) {
-        crashUUID = (NSString *) CFBridgingRelease(CFUUIDCreateString(NULL, report.uuidRef));
-      }
-      metaFilename = [cacheFilename stringByAppendingPathExtension:@"meta"];
-      crashLogString = [MSAICrashReportTextFormatter stringValueForCrashReport:report crashReporterKey:installString];
-      appBundleIdentifier = report.applicationInfo.applicationIdentifier;
-      appBundleVersion = report.applicationInfo.applicationVersion;
-      osVersion = report.systemInfo.operatingSystemVersion;
-      deviceModel = [self.appContext deviceModel];
-      appBinaryUUIDs = [self extractAppUUIDs:report];
+      crashItem = [MSAIExceptionFormatter crashDataForCrashReport:report crashReporterKey:installString];
       if ([report.applicationInfo.applicationVersion compare:[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"]] == NSOrderedSame) {
         _crashIdenticalCurrentVersion = YES;
       }
@@ -1148,60 +1141,13 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
       _crashIdenticalCurrentVersion = YES;
     }
     
-    NSString *username = @"";
-    NSString *useremail = @"";
-    NSString *userid = @"";
-    NSString *applicationLog = @"";
-    NSString *description = @"";
-    
-    NSData *plist = [NSData dataWithContentsOfFile:[_crashesDir stringByAppendingPathComponent:metaFilename]];
-    if (plist) {
-      NSDictionary *metaDict = (NSDictionary *)[NSPropertyListSerialization
-                                                propertyListWithData:plist
-                                                options:NSPropertyListMutableContainersAndLeaves
-                                                format:&format
-                                                error:&error];
-      
-      username = [self stringValueFromKeychainForKey:[NSString stringWithFormat:@"%@.%@", cacheFilename, kMSAICrashMetaUserName]] ?: @"";
-      useremail = [self stringValueFromKeychainForKey:[NSString stringWithFormat:@"%@.%@", cacheFilename, kMSAICrashMetaUserEmail]] ?: @"";
-      userid = [self stringValueFromKeychainForKey:[NSString stringWithFormat:@"%@.%@", cacheFilename, kMSAICrashMetaUserID]] ?: @"";
-      applicationLog = metaDict[kMSAICrashMetaApplicationLog] ?: @"";
-      description = [NSString stringWithContentsOfFile:[NSString stringWithFormat:@"%@.desc", [_crashesDir stringByAppendingPathComponent: cacheFilename]] encoding:NSUTF8StringEncoding error:&error];
-    } else {
-      MSAILog(@"ERROR: Reading crash meta data. %@", error);
-    }
-    
-    if ([applicationLog length] > 0) {
-      if ([description length] > 0) {
-        description = [NSString stringWithFormat:@"%@\n\nLog:\n%@", description, applicationLog];
-      } else {
-        description = [NSString stringWithFormat:@"Log:\n%@", applicationLog];
-      }
-    }
-    
-    crashXML = [NSString stringWithFormat:@"<crashes><crash><applicationname><![CDATA[%@]]></applicationname><uuids>%@</uuids><bundleidentifier>%@</bundleidentifier><systemversion>%@</systemversion><platform>%@</platform><senderversion>%@</senderversion><version>%@</version><uuid>%@</uuid><log><![CDATA[%@]]></log><userid>%@</userid><username>%@</username><contact>%@</contact><installstring>%@</installstring><description><![CDATA[%@]]></description></crash></crashes>",
-                [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleExecutable"],
-                appBinaryUUIDs,
-                appBundleIdentifier,
-                osVersion,
-                deviceModel,
-                [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"],
-                appBundleVersion,
-                crashUUID,
-                [crashLogString stringByReplacingOccurrencesOfString:@"]]>" withString:@"]]" @"]]><![CDATA[" @">" options:NSLiteralSearch range:NSMakeRange(0,crashLogString.length)],
-                userid,
-                username,
-                useremail,
-                installString,
-                [description stringByReplacingOccurrencesOfString:@"]]>" withString:@"]]" @"]]><![CDATA[" @">" options:NSLiteralSearch range:NSMakeRange(0,description.length)]];
-    
     // store this crash report as user approved, so if it fails it will retry automatically
     _approvedCrashReports[filename] = @YES;
 
     [self saveSettings];
     
-    MSAILog(@"INFO: Sending crash reports:\n%@", crashXML);
-    [self sendCrashReportWithFilename:filename xml:crashXML];
+    MSAILog(@"INFO: Sending crash reports:\n%@", [crashData description]);
+    [self sendCrashReportWithFilename:filename crashData:crashItem];
   } else {
     // we cannot do anything with this report, so delete it
     [self cleanCrashReportWithFilename:filename];
@@ -1230,48 +1176,6 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
 
 #pragma mark - Networking
 
-- (NSURLRequest *)requestWithXML:(NSString*)xml {
-  NSString *postCrashPath = [NSString stringWithFormat:@"api/2/apps/%@/crashes", self.encodedInstrumentationKey];
-  
-  NSMutableURLRequest *request = [self.appClient requestWithMethod:@"POST"
-                                                              path:postCrashPath
-                                                        parameters:nil];
-  
-  [request setCachePolicy: NSURLRequestReloadIgnoringLocalCacheData];
-  [request setValue:@"AppInsightsSDK/iOS" forHTTPHeaderField:@"User-Agent"];
-  [request setValue:@"gzip" forHTTPHeaderField:@"Accept-Encoding"];
-
-  NSString *boundary = @"----FOO";
-  NSString *contentType = [NSString stringWithFormat:@"multipart/form-data; boundary=%@", boundary];
-  [request setValue:contentType forHTTPHeaderField:@"Content-type"];
-	
-  NSMutableData *postBody =  [NSMutableData data];
-  
-  [postBody appendData:[MSAIAppClient dataWithPostValue:MSAI_NAME
-                                                 forKey:@"sdk"
-                                               boundary:boundary]];
-  
-  [postBody appendData:[MSAIAppClient dataWithPostValue:MSAI_VERSION
-                                                 forKey:@"sdk_version"
-                                               boundary:boundary]];
-  
-  [postBody appendData:[MSAIAppClient dataWithPostValue:@"no"
-                                                 forKey:@"feedbackEnabled"
-                                               boundary:boundary]];
-  
-  [postBody appendData:[MSAIAppClient dataWithPostValue:[xml dataUsingEncoding:NSUTF8StringEncoding]
-                                                 forKey:@"xml"
-                                            contentType:@"text/xml"
-                                               boundary:boundary
-                                               filename:@"crash.xml"]];
-  
-  [postBody appendData:[[NSString stringWithFormat:@"\r\n--%@--\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-  
-  [request setHTTPBody:postBody];
-  
-  return request;
-}
-
 /**
  *	 Send the XML data to the server
  *
@@ -1279,14 +1183,11 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
  *
  *	@param	xml	The XML data that needs to be send to the server
  */
-- (void)sendCrashReportWithFilename:(NSString *)filename xml:(NSString*)xml {
-  
-  NSURLRequest* request = [self requestWithXML:xml];
-  
+- (void)sendCrashReportWithFilename:(NSString *)filename crashData:(MSAICrashData *)crashData {
+
+  MSAILog(@"INFO: Sending crash reports started.");
   __weak typeof (self) weakSelf = self;
-  MSAIHTTPOperation *operation = [self.appClient
-                                 operationWithURLRequest:request
-                                 completion:^(MSAIHTTPOperation *operation, NSData* responseData, NSError *error) {
+  [[MSAIChannel sharedChannel] sendCrashItem:crashData withCompletionBlock:^(MSAIHTTPOperation *operation, NSData* responseData, NSError *error) {
                                    typeof (self) strongSelf = weakSelf;
                                    
                                    _sendingInProgress = NO;
@@ -1351,10 +1252,6 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
   if (self.delegate != nil && [self.delegate respondsToSelector:@selector(crashManagerWillSendCrashReport:)]) {
     [self.delegate crashManagerWillSendCrashReport:self];
   }
-  
-  MSAILog(@"INFO: Sending crash reports started.");
-
-  [self.appClient enqeueHTTPOperation:operation];
 }
 
 @end

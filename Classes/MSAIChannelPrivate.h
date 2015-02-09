@@ -1,4 +1,5 @@
 #import <Foundation/Foundation.h>
+#import "MSAIHTTPOperation.h"
 
 @class MSAIEnvelope;
 @class MSAITelemetryContext;
@@ -6,12 +7,15 @@
 @class MSAITelemetryContext;
 @class MSAITelemetryData;
 @class MSAISender;
+@class MSAICrashData;
 
 @interface MSAIChannel ()
 
 ///-----------------------------------------------------------------------------
 /// @name Initialisation
 ///-----------------------------------------------------------------------------
+
++ (instancetype)sharedChannel;
 
 /**
  *  The context object, which contains information about current session, the device, the user etc.
@@ -31,7 +35,7 @@
  *
  *  @return a channel instance.
  */
-- (instancetype)initWithAppClient:(MSAIAppClient *) appClient telemetryContext:(MSAITelemetryContext *)telemetryContext;
+- (instancetype)configureWithAppClient:(MSAIAppClient *) appClient telemetryContext:(MSAITelemetryContext *)telemetryContext;
 
 ///-----------------------------------------------------------------------------
 /// @name Enqueue data
@@ -43,6 +47,8 @@
  *  @param dataItem the data object, which should be sent to the telemetry server
  */
 - (void)sendDataItem:(MSAITelemetryData *)dataItem;
+
+- (void)sendCrashItem:(MSAICrashData *)crashItem withCompletionBlock:(MSAINetworkCompletionBlock)completion;
 
 ///-----------------------------------------------------------------------------
 /// @name Helper

@@ -5,12 +5,9 @@
 @property(nonatomic, strong) MSAIContext *appContext;
 
 - (instancetype)initWithAppContext:(MSAIContext *)appContext;
-
 - (void)startManager;
 
 - (NSString *)executableUUID;
-
-- (NSString *)encodedInstrumentationKey;
 
 /**
  * by default, just logs the message
