@@ -10,14 +10,6 @@
 ///-----------------------------------------------------------------------------
 
 /**
-*  Prepares manager for sending out data.
-*
-*  @param context   the context which contains information about the device and the application.
-*  @param appClient object which is needed to send out data.
-*/
-+ (void)configureWithContext:(MSAIContext *)context appClient:(MSAIAppClient *)appClient;
-
-/**
  *  Enables/disables the manager.
  *
  *  @param disable Determines wheteher the manager should be activated.
@@ -112,5 +104,7 @@
  *  @param properties key-value pairs which can contain additional information about the page view
  */
 + (void)trackPageView:(NSString *)pageName duration:(long)duration properties:(NSDictionary *)properties;
+
++ (void)trackException:(NSException *)exception;
 
 @end

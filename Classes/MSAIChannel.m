@@ -15,14 +15,22 @@
 
 #pragma mark - Initialisation
 
-- (instancetype)initWithAppClient:(MSAIAppClient *) appClient telemetryContext:(MSAITelemetryContext *)telemetryContext {
+- (instancetype)configureWithAppClient:(MSAIAppClient *) appClient telemetryContext:(MSAITelemetryContext *)telemetryContext {
   
-  if ((self = [self init])) {
     _telemetryContext = telemetryContext;
     _sender = [MSAISender sharedSender];
     [_sender configureWithAppClient:appClient endpointPath:[_telemetryContext endpointPath]];
-  }
+
   return self;
+}
+
++ (id)sharedChannel {
+  static MSAIChannel *sharedChannel = nil;
+  static dispatch_once_t onceToken;
+  dispatch_once(&onceToken, ^{
+    sharedChannel = [self new];
+  });
+  return sharedChannel;
 }
 
 #pragma mark - Enqueue data
@@ -30,6 +38,11 @@
 - (void)sendDataItem:(MSAITelemetryData *)dataItem {
   NSDictionary *dataDict = [self dictionaryFromDataItem:dataItem];
   [_sender enqueueDataDict:dataDict];
+}
+
+- (void)sendCrashItem:(MSAICrashData *)crashItem withCompletionBlock:(MSAINetworkCompletionBlock) completion{
+  NSDictionary *crashDict = [self dictionaryFromDataItem:crashItem];
+  [_sender enqueueCrashDict:crashDict withCompletionBlock:completion];
 }
 
 #pragma mark - Helper

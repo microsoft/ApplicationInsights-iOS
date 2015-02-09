@@ -8,6 +8,10 @@
 #import "MSAIContext.h"
 #import "MSAIContextPrivate.h"
 #import "MSAICategoryContainer.h"
+#import "MSAIChannel.h"
+#import "MSAIChannelPrivate.h"
+#import "MSAITelemetryContext.h"
+#import "MSAITelemetryContextPrivate.h"
 #include <stdint.h>
 
 
@@ -128,21 +132,18 @@
   MSAILog(@"INFO: Starting MSAITelemetryManager");
   _startManagerIsInvoked = YES;
   
+  [[MSAIChannel sharedChannel]configureWithAppClient:[self appClient] telemetryContext: [self telemetryContext]];
 #if MSAI_FEATURE_CRASH_REPORTER
   // start CrashManager
   if (![self isCrashManagerDisabled]) {
     MSAILog(@"INFO: Start CrashManager");
-    if (_serverURL) {
-      [_crashManager setServerURL:_serverURL];
-    }
-    
     [_crashManager startManager];
   }
 #endif /* MSAI_FEATURE_CRASH_REPORTER */
   
 #if MSAI_FEATURE_METRICS
   if (![self isMetricsManagerDisabled]) {
-
+    MSAILog(@"INFO: Start MetricsManager");
     [MSAIMetricsManager startManager];
   }
 #endif /* MSAI_FEATURE_METRICS */
@@ -267,6 +268,43 @@
 
 #pragma mark - Private Instance Methods
 
+- (MSAITelemetryContext *)telemetryContext{
+  MSAIDevice *deviceContext = [MSAIDevice new];
+  [deviceContext setModel: [_appContext deviceModel]];
+  [deviceContext setType:[_appContext deviceType]];
+  [deviceContext setOsVersion:[_appContext osVersion]];
+  [deviceContext setOs:[_appContext osName]];
+  [deviceContext setDeviceId:msai_appAnonID()];
+  deviceContext.locale = msai_deviceLocale();
+  deviceContext.language = msai_deviceLanguage();
+  [deviceContext setOemName:@"Apple"];
+  deviceContext.screenResolution = msai_screenSize();
+  
+  MSAIInternal *internalContext = [MSAIInternal new];
+  [internalContext setSdkVersion: msai_sdkVersion()];
+  
+  MSAIApplication *applicationContext = [MSAIApplication new];
+  [applicationContext setVersion:[_appContext appVersion]];
+  
+  MSAISession *sessionContext = [MSAISession new];
+  
+  MSAIOperation *operationContext = [MSAIOperation new];
+  MSAIUser *userContext = [MSAIUser new];
+  MSAILocation *locationContext = [MSAILocation new];
+  
+  //TODO: Add additional context data
+  MSAITelemetryContext *telemetryContext = [[MSAITelemetryContext alloc]initWithInstrumentationKey:[_appContext instrumentationKey]
+                                                                                      endpointPath:MSAI_TELEMETRY_PATH
+                                                                                applicationContext:applicationContext
+                                                                                     deviceContext:deviceContext
+                                                                                   locationContext:locationContext
+                                                                                    sessionContext:sessionContext
+                                                                                       userContext:userContext
+                                                                                   internalContext:internalContext
+                                                                                  operationContext:operationContext];
+  return telemetryContext;
+}
+
 - (MSAIAppClient *)appClient {
   if (!_appClient) {
     _appClient = [[MSAIAppClient alloc] initWithBaseURL:[NSURL URLWithString:_serverURL ? _serverURL : MSAI_SDK_URL]];
@@ -372,16 +410,15 @@
   _startManagerIsInvoked = NO;
   
   if (_validInstrumentationKey) {
+    
 #if MSAI_FEATURE_CRASH_REPORTER
     MSAILog(@"INFO: Setup CrashManager");
-    _crashManager = [[MSAICrashManager alloc] initWithAppContext:_appContext];
-    _crashManager.appClient = [self appClient];
+    _crashManager = [[MSAICrashManager alloc]initWithAppContext:_appContext];
     _crashManager.delegate = _delegate;
 #endif /* MSAI_FEATURE_CRASH_REPORTER */
     
 #if MSAI_FEATURE_METRICS
     MSAILog(@"INFO: Setup MetricsManager");
-    [MSAIMetricsManager configureWithContext:_appContext appClient:[self appClient]];
     [MSAICategoryContainer activateCategory];
 #endif /* MSAI_FEATURE_METRICS */
     

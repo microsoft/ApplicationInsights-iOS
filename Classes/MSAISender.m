@@ -82,7 +82,14 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
   }
 }
 
-#pragma mark - Timer
+- (void)enqueueCrashDict:(NSDictionary *)crashDict withCompletionBlock:(MSAINetworkCompletionBlock)completion{
+  NSError *error = nil;
+  NSData *json = [NSJSONSerialization dataWithJSONObject:crashDict options:NSJSONWritingPrettyPrinted error:&error];
+  NSURLRequest *request = [self requestForData:json];
+  [self sendRequest:request withCompletionBlock:completion];
+}
+
+#pragma mark - Batching
 
 - (void)invalidateTimer {
   if(self.timerSource) {
@@ -160,6 +167,14 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
                                   }];
   
   [self.appClient enqeueHTTPOperation:operation];
+}
+
+- (void)sendRequest:(NSURLRequest *)request withCompletionBlock:(MSAINetworkCompletionBlock)completion{
+  MSAIHTTPOperation *operation = [_appClient
+                                  operationWithURLRequest:request
+                                  completion:completion];
+  
+  [_appClient enqeueHTTPOperation:operation];
 }
 
 #pragma mark - Helper

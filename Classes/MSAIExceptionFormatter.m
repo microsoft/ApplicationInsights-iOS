@@ -45,7 +45,11 @@
 #define SEL_NAME_SECT "__cstring"
 #endif
 
-#import "MSAICrashReportTextFormatter.h"
+#import "MSAIExceptionFormatter.h"
+#import "MSAICrashData.h"
+#import "MSAICrashDataHeaders.h"
+#import "MSAICrashDataBinary.h"
+#import "MSAICrashDataThreadFrame.h"
 
 /*
  * XXX: The ARM64 CPU type, and ARM_V7S and ARM_V8 Mach-O CPU subtypes are not
@@ -116,12 +120,12 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
     /* Check if this is the correct image. If we were being even more careful, we'd check the LC_UUID */
     if (strcmp(name, imageName) != 0)
       continue;
-
+    
     /* Determine whether this is a 64-bit or 32-bit Mach-O file */
     BOOL m64 = NO;
     if (header->magic == MH_MAGIC_64)
       m64 = YES;
-
+    
     NSString *uuidString = nil;
     const uint8_t *command;
     uint32_t	ncmds;
@@ -149,11 +153,11 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
         command += load_command->cmdsize;
       }
     }
-
+    
     // Check if this is the correct image by comparing the UUIDs
     if (!uuidString || ![uuidString isEqualToString:imageUUID])
       continue;
-        
+    
     /* Fetch the __objc_methname section */
     const char *methname_sect;
     uint64_t methname_sect_size;
@@ -189,43 +193,18 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
 /**
  * Formats PLCrashReport data as human-readable text.
  */
-@implementation MSAICrashReportTextFormatter
+@implementation MSAIExceptionFormatter
 
-
-/**
- * Formats the provided @a report as human-readable text in the given @a textFormat, and return
- * the formatted result as a string.
- *
- * @param report The report to format.
- * @param textFormat The text format to use.
- *
- * @return Returns the formatted result on success, or nil if an error occurs.
- */
-+ (NSString *)stringValueForCrashReport:(MSAIPLCrashReport *)report crashReporterKey:(NSString *)crashReporterKey {
-	NSMutableString* text = [NSMutableString string];
-	boolean_t lp64 = true; // quiesce GCC uninitialized value warning
++ (MSAICrashData *)crashDataForCrashReport:(PLCrashReport *)report crashReporterKey:(NSString *)crashReporterKey handledException:(NSException *)exception{
   
-	/* Header */
-	
-  /* Map to apple style OS nane */
-  NSString *osName;
-  switch (report.systemInfo.operatingSystem) {
-    case PLCrashReportOperatingSystemMacOSX:
-      osName = @"Mac OS X";
-      break;
-    case PLCrashReportOperatingSystemiPhoneOS:
-      osName = @"iPhone OS";
-      break;
-    case PLCrashReportOperatingSystemiPhoneSimulator:
-      osName = @"Mac OS X";
-      break;
-    default:
-      osName = [NSString stringWithFormat: @"Unknown (%d)", report.systemInfo.operatingSystem];
-      break;
-  }
+  MSAICrashData *crashData = [MSAICrashData new];
+  MSAICrashDataHeaders *crashHeaders = [MSAICrashDataHeaders new];
+  NSString *unknownString = @"???";
+  
+  boolean_t lp64 = true; // quiesce GCC uninitialized value warning
   
   /* Map to Apple-style code type, and mark whether architecture is LP64 (64-bit) */
-  NSString *codeType = nil;
+  NSNumber *codeType = nil;
   {
     /* Attempt to derive the code type from the binary images */
     for (MSAIPLCrashReportBinaryImageInfo *image in report.images) {
@@ -237,36 +216,7 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
       if (image.codeType.typeEncoding != PLCrashReportProcessorTypeEncodingMach)
         continue;
       
-      switch (image.codeType.type) {
-        case CPU_TYPE_ARM:
-          codeType = @"ARM";
-          lp64 = false;
-          break;
-          
-        case CPU_TYPE_ARM64:
-          codeType = @"ARM-64";
-          lp64 = true;
-          break;
-          
-        case CPU_TYPE_X86:
-          codeType = @"X86";
-          lp64 = false;
-          break;
-          
-        case CPU_TYPE_X86_64:
-          codeType = @"X86-64";
-          lp64 = true;
-          break;
-          
-        case CPU_TYPE_POWERPC:
-          codeType = @"PPC";
-          lp64 = false;
-          break;
-          
-        default:
-          // Do nothing, handled below.
-          break;
-      }
+      codeType = @(image.codeType.type);
       
       /* Stop immediately if code type was discovered */
       if (codeType != nil)
@@ -281,26 +231,22 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
 #pragma clang diagnostic pop
         case PLCrashReportArchitectureARMv6:
         case PLCrashReportArchitectureARMv7:
-          codeType = @"ARM";
+          codeType = @(CPU_TYPE_ARM);
           lp64 = false;
           break;
         case PLCrashReportArchitectureX86_32:
-          codeType = @"X86";
+          codeType = @(CPU_TYPE_X86);
           lp64 = false;
           break;
         case PLCrashReportArchitectureX86_64:
-          codeType = @"X86-64";
+          codeType = @(CPU_TYPE_X86_64);
           lp64 = true;
           break;
         case PLCrashReportArchitecturePPC:
-          codeType = @"PPC";
+          codeType = @(CPU_TYPE_POWERPC);
           lp64 = false;
           break;
         default:
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated"
-          codeType = [NSString stringWithFormat: @"Unknown (%d)", report.systemInfo.architecture];
-#pragma clang diagnostic pop
           lp64 = true;
           break;
       }
@@ -308,33 +254,23 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
   }
   
   {
-    NSString *reporterKey = @"???";
+    NSString *crashDataHeadersId = @"???";
     if (crashReporterKey && [crashReporterKey length] > 0)
-      reporterKey = crashReporterKey;
-    
-    NSString *hardwareModel = @"???";
-    if (report.hasMachineInfo && report.machineInfo.modelName != nil)
-      hardwareModel = report.machineInfo.modelName;
+      crashDataHeadersId = crashReporterKey;
     
     NSString *incidentIdentifier = @"???";
     if (report.uuidRef != NULL) {
       incidentIdentifier = (NSString *) CFBridgingRelease(CFUUIDCreateString(NULL, report.uuidRef));
     }
-    
-    [text appendFormat: @"Incident Identifier: %@\n", incidentIdentifier];
-    [text appendFormat: @"CrashReporter Key:   %@\n", reporterKey];
-    [text appendFormat: @"Hardware Model:      %@\n", hardwareModel];
   }
   
   /* Application and process info */
   {
-    NSString *unknownString = @"???";
-    
     NSString *processName = unknownString;
-    NSString *processId = unknownString;
     NSString *processPath = unknownString;
     NSString *parentProcessName = unknownString;
-    NSString *parentProcessId = unknownString;
+    NSNumber *processId = nil;
+    NSNumber *parentProcessId = nil;
     
     /* Process information was not available in earlier crash report versions */
     if (report.hasProcessInfo) {
@@ -343,7 +279,7 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
         processName = report.processInfo.processName;
       
       /* PID */
-      processId = [@(report.processInfo.processID) stringValue];
+      processId = @(report.processInfo.processID);
       
       /* Process Path */
       if (report.processInfo.processPath != nil) {
@@ -361,50 +297,30 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
         parentProcessName = report.processInfo.parentProcessName;
       
       /* Parent Process ID */
-      parentProcessId = [@(report.processInfo.parentProcessID) stringValue];
+      parentProcessId = @(report.processInfo.parentProcessID);
     }
     
-    [text appendFormat: @"Process:         %@ [%@]\n", processName, processId];
-    [text appendFormat: @"Path:            %@\n", processPath];
-    [text appendFormat: @"Identifier:      %@\n", report.applicationInfo.applicationIdentifier];
-    [text appendFormat: @"Version:         %@\n", report.applicationInfo.applicationVersion];
-    [text appendFormat: @"Code Type:       %@\n", codeType];
-    [text appendFormat: @"Parent Process:  %@ [%@]\n", parentProcessName, parentProcessId];
+    crashHeaders.process = processName;
+    crashHeaders.processId = processId;
+    crashHeaders.parentProcess = parentProcessName;
+    crashHeaders.parentProcessId = parentProcessId;
+    crashHeaders.applicationIdentifier = report.applicationInfo.applicationIdentifier;
+    crashHeaders.applicationBuild = report.applicationInfo.applicationVersion;
+    crashHeaders.applicationPath = processPath;
   }
-  
-  [text appendString: @"\n"];
-  
-  /* System info */
-  {
-    NSString *osBuild = @"???";
-    if (report.systemInfo.operatingSystemBuild != nil)
-      osBuild = report.systemInfo.operatingSystemBuild;
-    
-    NSLocale *enUSPOSIXLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
-    NSDateFormatter *rfc3339Formatter = [[NSDateFormatter alloc] init];
-    [rfc3339Formatter setLocale:enUSPOSIXLocale];
-    [rfc3339Formatter setDateFormat:@"yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'"];
-    [rfc3339Formatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
-    
-    [text appendFormat: @"Date/Time:       %@\n", [rfc3339Formatter stringFromDate:report.systemInfo.timestamp]];
-    [text appendFormat: @"OS Version:      %@ %@ (%@)\n", osName, report.systemInfo.operatingSystemVersion, osBuild];
-    [text appendFormat: @"Report Version:  104\n"];
-  }
-  
-  [text appendString: @"\n"];
   
   /* Exception code */
-  [text appendFormat: @"Exception Type:  %@\n", report.signalInfo.name];
-  [text appendFormat: @"Exception Codes: %@ at 0x%" PRIx64 "\n", report.signalInfo.code, report.signalInfo.address];
+  crashHeaders.exceptionAddress = [NSString stringWithFormat:@"0x%" PRIx64, report.signalInfo.address];
+  crashHeaders.exceptionType = (exception) ? exception.name : report.signalInfo.name;
+  crashHeaders.exceptionReason = (exception) ? exception.reason : nil;
+  crashHeaders.exceptionCode = report.signalInfo.code;
   
   for (MSAIPLCrashReportThreadInfo *thread in report.threads) {
     if (thread.crashed) {
-      [text appendFormat: @"Crashed Thread:  %ld\n", (long) thread.threadNumber];
+      crashHeaders.crashThread = @(thread.threadNumber);
       break;
     }
   }
-  
-  [text appendString: @"\n"];
   
   MSAIPLCrashReportThreadInfo *crashed_thread = nil;
   for (MSAIPLCrashReportThreadInfo *thread in report.threads) {
@@ -416,17 +332,13 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
   
   /* Uncaught Exception */
   if (report.hasExceptionInfo) {
-    [text appendFormat: @"Application Specific Information:\n"];
-    [text appendFormat: @"*** Terminating app due to uncaught exception '%@', reason: '%@'\n",
-     report.exceptionInfo.exceptionName, report.exceptionInfo.exceptionReason];
-    
-    [text appendString: @"\n"];
+    crashHeaders.exceptionReason = report.exceptionInfo.exceptionReason;
   } else if (crashed_thread != nil) {
     // try to find the selector in case this was a crash in obj_msgSend
     // we search this wether the crash happend in obj_msgSend or not since we don't have the symbol!
     
     NSString *foundSelector = nil;
-
+    
     // search the registers value for the current arch
 #if TARGET_IPHONE_SIMULATOR
     if (lp64) {
@@ -447,113 +359,99 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
 #endif
     
     if (foundSelector) {
-      [text appendFormat: @"Application Specific Information:\n"];
-      [text appendFormat: @"Selector name found in current argument registers: %@\n", foundSelector];
-      [text appendString: @"\n"];
+      crashHeaders.exceptionReason = [NSString stringWithFormat:@"Selector name found in current argument registers: %@\n", foundSelector];
     }
   }
+  
+  crashData.headers = crashHeaders;
   
   /* If an exception stack trace is available, output an Apple-compatible backtrace. */
   if (report.exceptionInfo != nil && report.exceptionInfo.stackFrames != nil && [report.exceptionInfo.stackFrames count] > 0) {
     MSAIPLCrashReportExceptionInfo *exception = report.exceptionInfo;
     
-    /* Create the header. */
-    [text appendString: @"Last Exception Backtrace:\n"];
+    MSAICrashDataThread *threadData = [MSAICrashDataThread new];
+    threadData.crashDataThreadId = @(-1);
     
     /* Write out the frames. In raw reports, Apple writes this out as a simple list of PCs. In the minimally
      * post-processed report, Apple writes this out as full frame entries. We use the latter format. */
     for (NSUInteger frame_idx = 0; frame_idx < [exception.stackFrames count]; frame_idx++) {
       MSAIPLCrashReportStackFrameInfo *frameInfo = exception.stackFrames[frame_idx];
-      [text appendString: [[self class] msai_formatStackFrame: frameInfo frameIndex: frame_idx report: report lp64: lp64]];
+      
+      
+      MSAICrashDataThreadFrame *frame = [[self class] msai_formatStackFrame: frameInfo frameIndex: frame_idx report: report lp64: lp64];
+      [threadData.frames addObject:frame];
     }
-    [text appendString: @"\n"];
+    [crashData.threads addObject:threadData];
   }
+  
+  
   
   /* Threads */
-  NSInteger maxThreadNum = 0;
   for (MSAIPLCrashReportThreadInfo *thread in report.threads) {
-    if (thread.crashed) {
-      [text appendFormat: @"Thread %ld Crashed:\n", (long) thread.threadNumber];
-    } else {
-      [text appendFormat: @"Thread %ld:\n", (long) thread.threadNumber];
-    }
+    MSAICrashDataThread *threadData = [MSAICrashDataThread new];
+    threadData.crashDataThreadId = @(thread.threadNumber);
+    
     for (NSUInteger frame_idx = 0; frame_idx < [thread.stackFrames count]; frame_idx++) {
       MSAIPLCrashReportStackFrameInfo *frameInfo = thread.stackFrames[frame_idx];
-      [text appendString: [[self class] msai_formatStackFrame: frameInfo frameIndex: frame_idx report: report lp64: lp64]];
+      MSAICrashDataThreadFrame *frame = [[self class] msai_formatStackFrame: frameInfo frameIndex: frame_idx report: report lp64: lp64];
+      [threadData.frames addObject:frame];
     }
-    [text appendString: @"\n"];
     
-    /* Track the highest thread number */
-    maxThreadNum = MAX(maxThreadNum, thread.threadNumber);
-  }
-  
-  /* Registers */
-  if (crashed_thread != nil) {
-    [text appendFormat: @"Thread %ld crashed with %@ Thread State:\n", (long) crashed_thread.threadNumber, codeType];
-    
-    int regColumn = 0;
-    for (MSAIPLCrashReportRegisterInfo *reg in crashed_thread.registers) {
-      NSString *reg_fmt;
+    /* Registers */
+    if(thread.crashed){
       
-      /* Use 32-bit or 64-bit fixed width format for the register values */
-      if (lp64)
-        reg_fmt = @"%6s: 0x%016" PRIx64 " ";
-      else
-        reg_fmt = @"%6s: 0x%08" PRIx64 " ";
-      
-      /* Remap register names to match Apple's crash reports */
-      NSString *regName = reg.registerName;
-      if (report.machineInfo != nil && report.machineInfo.processorInfo.typeEncoding == PLCrashReportProcessorTypeEncodingMach) {
-        MSAIPLCrashReportProcessorInfo *pinfo = report.machineInfo.processorInfo;
-        cpu_type_t arch_type = pinfo.type & ~CPU_ARCH_MASK;
+      for (MSAIPLCrashReportRegisterInfo *reg in crashed_thread.registers) {
         
-        /* Apple uses 'ip' rather than 'r12' on ARM */
-        if (arch_type == CPU_TYPE_ARM && [regName isEqual: @"r12"]) {
-          regName = @"ip";
+        /* Remap register names to match Apple's crash reports */
+        NSString *regName = reg.registerName;
+        if (report.machineInfo != nil && report.machineInfo.processorInfo.typeEncoding == PLCrashReportProcessorTypeEncodingMach) {
+          MSAIPLCrashReportProcessorInfo *pinfo = report.machineInfo.processorInfo;
+          cpu_type_t arch_type = pinfo.type & ~CPU_ARCH_MASK;
+          
+          /* Apple uses 'ip' rather than 'r12' on ARM */
+          if (arch_type == CPU_TYPE_ARM && [regName isEqual: @"r12"]) {
+            regName = @"ip";
+          }
+        }
+        
+        NSString *formattedRegName = [NSString stringWithFormat:@"%6s", [regName UTF8String]];
+        NSString *formattedRegValue = @"";
+        /* Use 32-bit or 64-bit fixed width format for the register values */
+        if (lp64){
+          
+          formattedRegValue = [NSString stringWithFormat:@"0x%016" PRIx64, reg.registerValue];
+        }else{
+          formattedRegValue = [NSString stringWithFormat:@"0x%08" PRIx64, reg.registerValue];
+        }
+        
+        if(threadData.frames.count > 0){
+          [[(MSAICrashDataThreadFrame *)threadData.frames[0] registers] setValue:formattedRegValue forKey:formattedRegName];
         }
       }
-      [text appendFormat: reg_fmt, [regName UTF8String], reg.registerValue];
-      
-      regColumn++;
-      if (regColumn == 4) {
-        [text appendString: @"\n"];
-        regColumn = 0;
-      }
     }
     
-    if (regColumn != 0)
-      [text appendString: @"\n"];
-    
-    [text appendString: @"\n"];
+    [crashData.threads addObject:threadData];
   }
   
   /* Images. The iPhone crash report format sorts these in ascending order, by the base address */
-  [text appendString: @"Binary Images:\n"];
+  NSMutableArray *binaries = [NSMutableArray new];
   for (MSAIPLCrashReportBinaryImageInfo *imageInfo in [report.images sortedArrayUsingFunction: msai_binaryImageSort context: nil]) {
-    NSString *uuid;
+    
+    MSAICrashDataBinary *binary = [MSAICrashDataBinary new];
+    
     /* Fetch the UUID if it exists */
-    if (imageInfo.hasImageUUID)
-      uuid = imageInfo.imageUUID;
-    else
-      uuid = @"???";
+    binary.uuid = (imageInfo.hasImageUUID) ? imageInfo.imageUUID : unknownString;
     
     /* Determine the architecture string */
-    NSString *archName = [[self class] msai_archNameFromImageInfo:imageInfo];
+    binary.cpuType = codeType;
+    binary.cpuSubType = @(imageInfo.codeType.subtype);
     
     /* Determine if this is the main executable or an app specific framework*/
-    NSString *binaryDesignator = @" ";
     MSAIBinaryImageType imageType = [[self class] msai_imageTypeForImagePath:imageInfo.imageName
                                                                  processPath:report.processInfo.processPath];
+    NSString *binaryDesignator = @" ";
     if (imageType != MSAIBinaryImageTypeOther) {
-        binaryDesignator = @"+";
-    }
-    
-    /* base_address - terminating_address [designator]file_name arch <uuid> file_path */
-    NSString *fmt = nil;
-    if (lp64) {
-      fmt = @"%18#" PRIx64 " - %18#" PRIx64 " %@%@ %@  <%@> %@\n";
-    } else {
-      fmt = @"%10#" PRIx64 " - %10#" PRIx64 " %@%@ %@  <%@> %@\n";
+      binaryDesignator = @"+";
     }
     
     /* Remove username from the image path */
@@ -563,18 +461,34 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
     if ([imageName length] > 0 && [[imageName substringToIndex:1] isEqualToString:@"~"])
       imageName = [NSString stringWithFormat:@"/Users/USER%@", [imageName substringFromIndex:1]];
     
-    [text appendFormat: fmt,
-     imageInfo.imageBaseAddress,
-     imageInfo.imageBaseAddress + (MAX(1, imageInfo.imageSize) - 1), // The Apple format uses an inclusive range
-     binaryDesignator,
-     [imageInfo.imageName lastPathComponent],
-     archName,
-     uuid,
-     imageName];
+    binary.path = imageName;
+    
+    NSString *fmt = (lp64) ? @"%18#" PRIx64 : @"%10#" PRIx64;
+    
+    binary.startAddress = [NSString stringWithFormat:fmt, imageInfo.imageBaseAddress];
+    binary.endAddress = [NSString stringWithFormat:fmt, imageInfo.imageBaseAddress + (MAX(1, imageInfo.imageSize) - 1)];
+    binary.name = [NSString stringWithFormat:@"%@%@", binaryDesignator, [imageInfo.imageName lastPathComponent]];
+    
+    [binaries addObject:binary];
   }
   
+  crashData.binaries = binaries;
   
-  return text;
+  return crashData;
+}
+
+/**
+ * Formats the provided @a report as human-readable text in the given @a textFormat, and return
+ * the formatted result as a string.
+ *
+ * @param report The report to format.
+ * @param textFormat The text format to use.
+ *
+ * @return Returns the formatted result on success, or nil if an error occurs.
+ */
++ (MSAICrashData *)crashDataForCrashReport:(MSAIPLCrashReport *)report crashReporterKey:(NSString *)crashReporterKey {
+  
+  return [[self class]crashDataForCrashReport:report crashReporterKey:crashReporterKey handledException:nil];
 }
 
 /**
@@ -609,7 +523,7 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
       return [NSString stringWithUTF8String:foundSelector];
     }
   }
-    
+  
   return nil;
 }
 
@@ -623,7 +537,7 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
  * @return Returns the formatted result on success, or nil if an error occurs.
  */
 + (NSArray *)arrayOfAppUUIDsForCrashReport:(MSAIPLCrashReport *)report {
-	NSMutableArray* appUUIDs = [NSMutableArray array];
+  NSMutableArray* appUUIDs = [NSMutableArray array];
   
   /* Images. The iPhone crash report format sorts these in ascending order, by the base address */
   for (MSAIPLCrashReportBinaryImageInfo *imageInfo in [report.images sortedArrayUsingFunction: msai_binaryImageSort context: nil]) {
@@ -636,7 +550,7 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
     
     /* Determine the architecture string */
     NSString *archName = [[self class] msai_archNameFromImageInfo:imageInfo];
-
+    
     /* Determine if this is the app executable or app specific framework */
     MSAIBinaryImageType imageType = [[self class] msai_imageTypeForImagePath:imageInfo.imageName
                                                                  processPath:report.processInfo.processPath];
@@ -681,7 +595,7 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
         [imagePath hasPrefix:processPath]) {
       imageType = MSAIBinaryImageTypeAppBinary;
     } else if ([standardizedImagePath hasPrefix:appBundleContentsPath] ||
-                // Fix issue with iOS 8 `stringByStandardizingPath` removing leading `/private` path (when not running in the debugger or simulator only)
+               // Fix issue with iOS 8 `stringByStandardizingPath` removing leading `/private` path (when not running in the debugger or simulator only)
                [imagePath hasPrefix:appBundleContentsPath]) {
       imageType = MSAIBinaryImageTypeAppFramework;
     }
@@ -694,7 +608,7 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
 {
   NSString *archName = @"???";
   if (imageInfo.codeType != nil && imageInfo.codeType.typeEncoding == PLCrashReportProcessorTypeEncodingMach) {
-    archName = [MSAICrashReportTextFormatter msai_archNameFromCPUType:imageInfo.codeType.type subType:imageInfo.codeType.subtype];
+    archName = [[self class] msai_archNameFromCPUType:imageInfo.codeType.type subType:imageInfo.codeType.subtype];
   }
   
   return archName;
@@ -757,10 +671,9 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
       // Use the default archName value (initialized above).
       break;
   }
-
+  
   return archName;
 }
-
 
 /**
  * Format a stack frame for display in a thread backtrace.
@@ -772,10 +685,10 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
  *
  * @return Returns a formatted frame line.
  */
-+ (NSString *)msai_formatStackFrame: (MSAIPLCrashReportStackFrameInfo *) frameInfo
-                        frameIndex: (NSUInteger) frameIndex
-                            report: (MSAIPLCrashReport *) report
-                              lp64: (BOOL) lp64
++ (MSAICrashDataThreadFrame *)msai_formatStackFrame: (MSAIPLCrashReportStackFrameInfo *) frameInfo
+                                         frameIndex: (NSUInteger) frameIndex
+                                             report: (MSAIPLCrashReport *) report
+                                               lp64: (BOOL) lp64
 {
   /* Base image address containing instrumention pointer, offset of the IP from that base
    * address, and the associated image name */
@@ -843,11 +756,11 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
   /* Note that width specifiers are ignored for %@, but work for C strings.
    * UTF-8 is not correctly handled with %s (it depends on the system encoding), but
    * UTF-16 is supported via %S, so we use it here */
-  return [NSString stringWithFormat: @"%-4ld%-35S 0x%0*" PRIx64 " %@\n",
-          (long) frameIndex,
-          (const uint16_t *)[imageName cStringUsingEncoding: NSUTF16StringEncoding],
-          lp64 ? 16 : 8, frameInfo.instructionPointer,
-          symbolString];
+  MSAICrashDataThreadFrame *frame = [MSAICrashDataThreadFrame new];
+  frame.address = [NSString stringWithFormat:@"0x%0*" PRIx64, lp64 ? 16 : 8, frameInfo.instructionPointer];
+  frame.symbol = symbolString;
+  
+  return frame;
 }
 
 @end
