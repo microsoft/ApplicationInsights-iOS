@@ -8,24 +8,32 @@
 
 #pragma mark - Public
 
-+ (void)persistBundle:(NSArray *)bundle withHighPriority:(BOOL)highPriority {
++ (void)persistBundle:(NSArray *)bundle withPriority:(MSAIPersistencePriority)priority withCompletionBlock: (void (^)(BOOL success)) completionBlock {
+  //TODO implement completion block and async queue stuff
   if(bundle && bundle.count > 0) {
     NSData *data = [NSKeyedArchiver archivedDataWithRootObject:bundle];
-    __weak typeof(self) weakSelf = self;
+    if(data) {
+      __weak typeof(self) weakSelf = self;
 
-    dispatch_queue_t backgroundQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-    dispatch_async(backgroundQueue, ^{
-      typeof(self) strongSelf = weakSelf;
-      NSString *fileURL = [strongSelf createFullPathForBundle];
-      if([data writeToFile:fileURL atomically:YES]) {
-        NSLog(@"Wrote %@", fileURL);
-      }
-      else {
-        NSLog(@"Unable to write %@", fileURL);
-      }
-    });
+      dispatch_queue_t backgroundQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+      dispatch_async(backgroundQueue, ^{
+        typeof(self) strongSelf = weakSelf;
+        NSString *fileURL = [strongSelf createFullPathForBundle];
+        completionBlock([data writeToFile:fileURL atomically:YES]);
+      });
+    }
+    else if(completionBlock != nil) {
+      completionBlock(NO);
+    }
   }
 }
+
++ (void)persistBundle:(NSArray *)bundle withPriority:(MSAIPersistencePriority)priority {
+  //TODO implement completion block and async queue stuff
+
+}
+
+
 
 + (NSArray *)nextBundle {
   NSArray *paths = [self allBundlePaths];

@@ -51,7 +51,7 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
 - (void)enqueueEnvelope:(MSAIEnvelope *)envelope highPriority:(BOOL)highPriority{
   
   if(highPriority){
-    [MSAIPersistence persistBundle:[NSArray arrayWithObject:envelope] withHighPriority:YES];
+    [MSAIPersistence persistBundle:[NSArray arrayWithObject:envelope] withPriority:MSAIPersistencePriorityLow];
   }else{
     [self enqueueEnvelope:envelope];
   }
@@ -113,7 +113,7 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
 
 - (void)persistQueue {
   
-  [MSAIPersistence persistBundle:self.dataItemQueue withHighPriority:NO];
+  [MSAIPersistence persistBundle:self.dataItemQueue withPriority:MSAIPersistencePriorityLow];
 }
 
 @end
