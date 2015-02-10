@@ -33,7 +33,13 @@
 
 }
 
++ (void)persistFakeReportBundle:(NSArray *)bundle{
+  // TODO save envelop for fake crash report. we need it for certain crashes
+}
 
++ (NSArray *)fakeReportBundle{
+  // TODO get most recent fake envelope (meta info needed for certain crashes)
+}
 
 + (NSArray *)nextBundle {
   NSArray *paths = [self allBundlePaths];

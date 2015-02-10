@@ -582,8 +582,8 @@
 				1BC859691A7ACA820018FB6B /* MSAICategoryContainer.h */,
 				1BC8596A1A7ACA820018FB6B /* MSAICategoryContainer.m */,
 				1BC8596D1A7ACC040018FB6B /* PageViewLogging_UIViewController.h */,
-				59493E91C1D38C3FC5F77D19 /* MSAIPersistence.m */,
 				594931F0F69C22CBB67A2AD9 /* MSAIPersistence.h */,
+				59493E91C1D38C3FC5F77D19 /* MSAIPersistence.m */,
 			);
 			name = Helper;
 			sourceTree = "<group>";

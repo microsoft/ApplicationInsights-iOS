@@ -36,6 +36,10 @@ typedef NS_ENUM(NSInteger, MSAIPersistencePriority) {
 + (void)persistBundle:(NSArray *)bundle withPriority:(MSAIPersistencePriority)priority;
 //TODO Provide documentation
 
++ (void)persistFakeReportBundle:(NSArray *)bundle;
+
++ (NSArray *)fakeReportBundle;
+
 ///-----------------------------------------------------------------------------
 /// @name Get a bundle of saved data
 ///-----------------------------------------------------------------------------
