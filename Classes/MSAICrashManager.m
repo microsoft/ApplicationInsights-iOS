@@ -17,6 +17,11 @@
 #import "MSAICrashData.h"
 #import "MSAIChannel.h"
 #import "MSAIChannelPrivate.h"
+#import "MSAIPersistence.h"
+#import "MSAIEnvelope.h"
+#import "MSAICrashData.h"
+#import "MSAIEnvelopeManager.h"
+#import "MSAIEnvelopeManagerPrivate.h"
 
 #include <sys/sysctl.h>
 
@@ -973,94 +978,19 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
  *  Creates a fake crash report because the app was killed while being in foreground
  */
 - (void)createCrashReportForAppKill {
-  NSString *fakeReportUUID = msai_UUID();
-  NSString *fakeReporterKey = msai_appAnonID() ?: @"???";
+  MSAICrashDataHeaders *crashHeaders = [MSAICrashDataHeaders new];
+  crashHeaders.crashDataHeadersId = msai_UUID();
+  crashHeaders.exceptionType = kMSAICrashKillSignal;
+  crashHeaders.exceptionCode = @"00000020 at 0x8badf00d";
+  crashHeaders.exceptionReason = @"The application did not terminate cleanly but no crash occured. The app received at least one Low Memory Warning.";
   
-  NSString *fakeReportAppVersion = [[NSUserDefaults standardUserDefaults] objectForKey:kMSAIAppVersion];
-  if (!fakeReportAppVersion)
-    return;
+  MSAICrashData *crashData = [MSAICrashData new];
+  crashData.headers = crashHeaders;
   
-  NSString *fakeReportOSVersion = [[NSUserDefaults standardUserDefaults] objectForKey:kMSAIAppOSVersion] ?: [[UIDevice currentDevice] systemVersion];
-  NSString *fakeReportOSVersionString = fakeReportOSVersion;
-  NSString *fakeReportOSBuild = [[NSUserDefaults standardUserDefaults] objectForKey:kMSAIAppOSBuild] ?: [self osBuild];
-  if (fakeReportOSBuild) {
-    fakeReportOSVersionString = [NSString stringWithFormat:@"%@ (%@)", fakeReportOSVersion, fakeReportOSBuild];
-  }
+  MSAIEnvelope *fakeCrashEnvelope = [[MSAIEnvelopeManager sharedManager] envelope];
+  fakeCrashEnvelope.data = crashData;
   
-  NSString *fakeReportAppBundleIdentifier = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleIdentifier"];
-  NSString *fakeReportDeviceModel = [self.appContext deviceModel] ?: @"Unknown";
-  NSString *fakeReportAppUUIDs = [[NSUserDefaults standardUserDefaults] objectForKey:kMSAIAppUUIDs] ?: @"";
-  
-  NSString *fakeSignalName = kMSAICrashKillSignal;
-  
-  NSMutableString *fakeReportString = [NSMutableString string];
-
-  [fakeReportString appendFormat:@"Incident Identifier: %@\n", fakeReportUUID];
-  [fakeReportString appendFormat:@"CrashReporter Key:   %@\n", fakeReporterKey];
-  [fakeReportString appendFormat:@"Hardware Model:      %@\n", fakeReportDeviceModel];
-  [fakeReportString appendFormat:@"Identifier:      %@\n", fakeReportAppBundleIdentifier];
-  [fakeReportString appendFormat:@"Version:         %@\n", fakeReportAppVersion];
-  [fakeReportString appendString:@"Code Type:       ARM\n"];
-  [fakeReportString appendString:@"\n"];
-  
-  NSLocale *enUSPOSIXLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
-  NSDateFormatter *rfc3339Formatter = [[NSDateFormatter alloc] init];
-  [rfc3339Formatter setLocale:enUSPOSIXLocale];
-  [rfc3339Formatter setDateFormat:@"yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'"];
-  [rfc3339Formatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
-  NSString *fakeCrashTimestamp = [rfc3339Formatter stringFromDate:[NSDate date]];
-
-  // we use the current date, since we don't know when the kill actually happened
-  [fakeReportString appendFormat:@"Date/Time:       %@\n", fakeCrashTimestamp];
-  [fakeReportString appendFormat:@"OS Version:      %@\n", fakeReportOSVersionString];
-  [fakeReportString appendString:@"Report Version:  104\n"];
-  [fakeReportString appendString:@"\n"];
-  [fakeReportString appendFormat:@"Exception Type:  %@\n", fakeSignalName];
-  [fakeReportString appendString:@"Exception Codes: 00000020 at 0x8badf00d\n"];
-  [fakeReportString appendString:@"\n"];
-  [fakeReportString appendString:@"Application Specific Information:\n"];
-  [fakeReportString appendString:@"The application did not terminate cleanly but no crash occured."];
-  if (self.didReceiveMemoryWarningInLastSession) {
-    [fakeReportString appendString:@" The app received at least one Low Memory Warning."];
-  }
-  [fakeReportString appendString:@"\n\n"];
-  
-  NSString *fakeReportFilename = [NSString stringWithFormat: @"%.0f", [NSDate timeIntervalSinceReferenceDate]];
-  
-  NSError *error = nil;
-  
-  NSMutableDictionary *rootObj = [NSMutableDictionary dictionaryWithCapacity:2];
-  rootObj[kMSAIFakeCrashUUID] = fakeReportUUID;
-  rootObj[kMSAIFakeCrashAppVersion] = fakeReportAppVersion;
-  rootObj[kMSAIFakeCrashAppBundleIdentifier] = fakeReportAppBundleIdentifier;
-  rootObj[kMSAIFakeCrashOSVersion] = fakeReportOSVersion;
-  rootObj[kMSAIFakeCrashDeviceModel] = fakeReportDeviceModel;
-  rootObj[kMSAIFakeCrashAppBinaryUUID] = fakeReportAppUUIDs;
-  rootObj[kMSAIFakeCrashReport] = fakeReportString;
-  
-  _lastSessionCrashDetails = [[MSAICrashDetails alloc] initWithIncidentIdentifier:fakeReportUUID
-                                                                     reporterKey:fakeReporterKey
-                                                                          signal:fakeSignalName
-                                                                   exceptionName:nil
-                                                                 exceptionReason:nil
-                                                                    appStartTime:nil
-                                                                       crashTime:nil
-                                                                       osVersion:fakeReportOSVersion
-                                                                         osBuild:fakeReportOSBuild
-                                                                        appBuild:fakeReportAppVersion
-                              ];
-
-  NSData *plist = [NSPropertyListSerialization dataWithPropertyList:(id)rootObj
-                                                             format:NSPropertyListBinaryFormat_v1_0
-                                                            options:0
-                                                              error:&error];
-  if (plist) {
-    if ([plist writeToFile:[_crashesDir stringByAppendingPathComponent:[fakeReportFilename stringByAppendingPathExtension:@"fake"]] atomically:YES]) {
-      [self storeMetaDataForCrashReportFilename:fakeReportFilename];
-    }
-  } else {
-    MSAILog(@"ERROR: Writing fake crash report. %@", [error description]);
-  }
+  [MSAIPersistence persistFakeReportBundle:[NSArray arrayWithObject:fakeCrashEnvelope]];
 }
 
 /**
@@ -1084,7 +1014,7 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
     MSAIPLCrashReport *report = nil;
     NSString *crashUUID = @"";
     NSString *installString = nil;
-    MSAIEnvelope *crashItem = nil;
+    MSAIEnvelope *crashEnvelope = nil;
     NSString *appBundleIdentifier = nil;
     NSString *appBundleVersion = nil;
     NSString *osVersion = nil;
@@ -1095,31 +1025,18 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
     NSPropertyListFormat format;
     
     if ([[cacheFilename pathExtension] isEqualToString:@"fake"]) {
-      crashItem = [MSAICrashData new];
-//      NSDictionary *fakeReportDict = (NSDictionary *)[NSPropertyListSerialization
-//                                                      propertyListWithData:crashData
-//                                                      options:NSPropertyListMutableContainersAndLeaves
-//                                                      format:&format
-//                                                      error:&error];
-//      
-//      crashLogString = fakeReportDict[kMSAIFakeCrashReport];
-//      crashUUID = fakeReportDict[kMSAIFakeCrashUUID];
-//      appBundleIdentifier = fakeReportDict[kMSAIFakeCrashAppBundleIdentifier];
-//      appBundleVersion = fakeReportDict[kMSAIFakeCrashAppVersion];
-//      appBinaryUUIDs = fakeReportDict[kMSAIFakeCrashAppBinaryUUID];
-//      deviceModel = fakeReportDict[kMSAIFakeCrashDeviceModel];
-//      osVersion = fakeReportDict[kMSAIFakeCrashOSVersion];
-//      
-//      metaFilename = [cacheFilename stringByReplacingOccurrencesOfString:@".fake" withString:@".meta"];
-//      if ([appBundleVersion compare:[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"]] == NSOrderedSame) {
-//        _crashIdenticalCurrentVersion = YES;
-//      }
-      
+      NSArray *fakeReportBundle = [MSAIPersistence fakeReportBundle];
+      if(fakeReportBundle && fakeReportBundle.count > 0){
+        crashEnvelope = fakeReportBundle[0];
+        if ([crashEnvelope.appId compare:[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"]] == NSOrderedSame) {
+          _crashIdenticalCurrentVersion = YES;
+        }
+      }
     } else {
       report = [[MSAIPLCrashReport alloc] initWithData:crashData error:&error];
     }
     
-    if (report == nil && crashItem == nil) {
+    if (report == nil && crashEnvelope == nil) {
       MSAILog(@"WARNING: Could not parse crash report");
       // we cannot do anything with this report, so delete it
       [self cleanCrashReportWithFilename:filename];
@@ -1128,10 +1045,8 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
       return;
     }
     
-    installString = msai_appAnonID() ?: @"";
-    
     if (report) {
-      crashItem = [MSAIExceptionFormatter crashDataForCrashReport:report];
+      crashEnvelope = [MSAIExceptionFormatter crashDataForCrashReport:report];
       if ([report.applicationInfo.applicationVersion compare:[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"]] == NSOrderedSame) {
         _crashIdenticalCurrentVersion = YES;
       }
@@ -1147,7 +1062,7 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
     [self saveSettings];
     
     MSAILog(@"INFO: Sending crash reports:\n%@", [crashData description]);
-    [self sendCrashReportWithFilename:filename crashData:crashItem];
+    [self sendCrashReportWithFilename:filename envelope:crashEnvelope];
   } else {
     // we cannot do anything with this report, so delete it
     [self cleanCrashReportWithFilename:filename];
@@ -1183,7 +1098,7 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
  *
  *	@param	xml	The XML data that needs to be send to the server
  */
-- (void)sendCrashReportWithFilename:(NSString *)filename crashData:(MSAICrashData *)crashData {
+- (void)sendCrashReportWithFilename:(NSString *)filename envelope:(MSAIEnvelope *)envelope {
 
   MSAILog(@"INFO: Sending crash reports started.");
   
