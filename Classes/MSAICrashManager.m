@@ -22,6 +22,7 @@
 #import "MSAICrashData.h"
 #import "MSAIEnvelopeManager.h"
 #import "MSAIEnvelopeManagerPrivate.h"
+#import "MSAIData.h"
 
 #include <sys/sysctl.h>
 
@@ -987,8 +988,12 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
   MSAICrashData *crashData = [MSAICrashData new];
   crashData.headers = crashHeaders;
   
+  MSAIData *data = [MSAIData new];
+  data.baseData = crashData;
+  data.baseType = crashData.dataTypeName;
+  
   MSAIEnvelope *fakeCrashEnvelope = [[MSAIEnvelopeManager sharedManager] envelope];
-  fakeCrashEnvelope.data = crashData;
+  fakeCrashEnvelope.data = data;
   
   [MSAIPersistence persistFakeReportBundle:[NSArray arrayWithObject:fakeCrashEnvelope]];
 }
