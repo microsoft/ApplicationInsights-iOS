@@ -49,7 +49,7 @@
     }
     else {
       NSLog(@"Error creating JSON from bundle array, saving bundle back to disk");
-      [MSAIPersistence persistBundle:bundle withPriority:MSAIPersistencePriorityLow];
+      [MSAIPersistence persistBundle:bundle withPriority:MSAIPersistencePriorityRegular];
         //TODO: more error handling!
     }
   }

@@ -61,8 +61,6 @@
     self.httpMethod = [coder decodeObjectForKey:@"self.httpMethod"];
     self.url = [coder decodeObjectForKey:@"self.url"];
     self.measurements = [coder decodeObjectForKey:@"self.measurements"];
-    _envelopeTypeName = [coder decodeObjectForKey:@"_envelopeTypeName"];
-    _dataTypeName = [coder decodeObjectForKey:@"_dataTypeName"];
   }
 
   return self;
@@ -78,8 +76,6 @@
   [coder encodeObject:self.httpMethod forKey:@"self.httpMethod"];
   [coder encodeObject:self.url forKey:@"self.url"];
   [coder encodeObject:self.measurements forKey:@"self.measurements"];
-  [coder encodeObject:self.envelopeTypeName forKey:@"_envelopeTypeName"];
-  [coder encodeObject:self.dataTypeName forKey:@"_dataTypeName"];
 }
 
 

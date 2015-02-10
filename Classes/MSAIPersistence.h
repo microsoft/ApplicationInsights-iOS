@@ -11,9 +11,15 @@
 @interface MSAIPersistence : NSObject
 
 
+
+/**
+* Priority for a bundle
+*/
+
 typedef NS_ENUM(NSInteger, MSAIPersistencePriority) {
   MSAIPersistencePriorityHigh = 0,
-  MSAIPersistencePriorityLow = 1
+  MSAIPersistencePriorityRegular = 1,
+  MSAIPersistencePriorityFakeCrash = 2
 };
 
 ///-----------------------------------------------------------------------------
@@ -32,25 +38,41 @@ typedef NS_ENUM(NSInteger, MSAIPersistencePriority) {
 
 /**
 *
+* @param bundle a bundle of tracked events (telemetry, crashes, ...) that will be serialized and saved.
+* @param priority The priority of the bundle we want to save.
+* @warning: The data within the array needs to implement NSCoding.
 */
 + (void)persistBundle:(NSArray *)bundle withPriority:(MSAIPersistencePriority)priority;
-//TODO Provide documentation
 
-+ (void)persistFakeReportBundle:(NSArray *)bundle;
-
-+ (NSArray *)fakeReportBundle;
 
 ///-----------------------------------------------------------------------------
 /// @name Get a bundle of saved data
 ///-----------------------------------------------------------------------------
 
-
 /**
-* @return an bundle of previously saved data from disk and deletes it. It will return bundles with high priority before
+* Get a bundle of previously saved data from disk and deletes it. It will return bundles with high priority before
 * bundles with regular priority. Within the order of bundles within the priority is arbitrary.
-* Returns 'nil' if no bundle is available*
+* Returns 'nil' if no bundle is available
+* @return a bundle of AppInsightsData that's ready to be sent to the server
 */
 
 + (NSArray *)nextBundle;
+
+///-----------------------------------------------------------------------------
+/// @name Handling of FakeReport
+///-----------------------------------------------------------------------------
+
+/**
+* Persist a "fake" crash report.
+* @param bundle The bundle of application insights data
+*/
++ (void)persistFakeReportBundle:(NSArray *)bundle;
+
+/**
+* Get the first of all saved fake crash reports (an arbitrary one in case we have several fake reports)
+* @return a fake crash report, wrapped as a bundle
+*/
++ (NSArray *)fakeReportBundle;
+
 
 @end

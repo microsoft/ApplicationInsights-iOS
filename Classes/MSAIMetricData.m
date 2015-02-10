@@ -42,8 +42,6 @@
   self = [super initWithCoder:coder];
   if(self) {
     self.metrics = [coder decodeObjectForKey:@"self.metrics"];
-    _envelopeTypeName = [coder decodeObjectForKey:@"_envelopeTypeName"];
-    _dataTypeName = [coder decodeObjectForKey:@"_dataTypeName"];
   }
 
   return self;
@@ -52,8 +50,6 @@
 - (void)encodeWithCoder:(NSCoder *)coder {
   [super encodeWithCoder:coder];
   [coder encodeObject:self.metrics forKey:@"self.metrics"];
-  [coder encodeObject:self.envelopeTypeName forKey:@"_envelopeTypeName"];
-  [coder encodeObject:self.dataTypeName forKey:@"_dataTypeName"];
 }
 
 

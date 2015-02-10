@@ -35,8 +35,6 @@
   if(self) {
     self.url = [coder decodeObjectForKey:@"self.url"];
     self.duration = [coder decodeObjectForKey:@"self.duration"];
-    _envelopeTypeName = [coder decodeObjectForKey:@"_envelopeTypeName"];
-    _dataTypeName = [coder decodeObjectForKey:@"_dataTypeName"];
   }
 
   return self;
@@ -46,8 +44,6 @@
   [super encodeWithCoder:coder];
   [coder encodeObject:self.url forKey:@"self.url"];
   [coder encodeObject:self.duration forKey:@"self.duration"];
-  [coder encodeObject:self.envelopeTypeName forKey:@"_envelopeTypeName"];
-  [coder encodeObject:self.dataTypeName forKey:@"_dataTypeName"];
 }
 
 

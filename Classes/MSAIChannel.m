@@ -13,7 +13,7 @@
 #import "MSAIPersistence.h"
 
 #ifdef DEBUG
-static NSInteger const defaultMaxBatchCount = 150;
+static NSInteger const defaultMaxBatchCount = 5;
 static NSInteger const defaultBatchInterval = 15;
 #else
 static NSInteger const defaultMaxBatchCount = 5;
@@ -49,16 +49,16 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
 #pragma mark - Queue management
 
 - (void)enqueueEnvelope:(MSAIEnvelope *)envelope highPriority:(BOOL)highPriority{
-  
+
   if(highPriority){
-    [MSAIPersistence persistBundle:[NSArray arrayWithObject:envelope] withPriority:MSAIPersistencePriorityLow];
+    [MSAIPersistence persistBundle:[NSArray arrayWithObject:envelope] withPriority:MSAIPersistencePriorityRegular];
   }else{
     [self enqueueEnvelope:envelope];
   }
 }
 
 - (NSMutableArray *)dataItemQueue {
-  
+
   __block NSMutableArray *queue = nil;
   __weak typeof(self) weakSelf = self;
   dispatch_sync(self.dataItemsOperations, ^{
@@ -73,12 +73,12 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
     __weak typeof(self) weakSelf = self;
     dispatch_async(self.dataItemsOperations, ^{
       typeof(self) strongSelf = weakSelf;
-      
+
       [strongSelf->_dataItemQueue addObject:envelope];
-      
+
       if([strongSelf->_dataItemQueue count] >= strongSelf.senderBatchSize) {
         [strongSelf invalidateTimer];
-        [strongSelf persistQueue];
+        [MSAIPersistence persistBundle:strongSelf->_dataItemQueue withPriority:MSAIPersistencePriorityRegular];
         [strongSelf->_dataItemQueue removeAllObjects];
       } else if([strongSelf->_dataItemQueue count] == 1) {
         [strongSelf startTimer];
@@ -97,11 +97,11 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
 }
 
 - (void)startTimer {
-  
+
   if(self.timerSource) {
     [self invalidateTimer];
   }
-  
+
   self.timerSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, self.dataItemsOperations);
   dispatch_source_set_timer(self.timerSource, dispatch_walltime(NULL, NSEC_PER_SEC * self.senderInterval), 1ull * NSEC_PER_SEC, 1ull * NSEC_PER_SEC);
   dispatch_source_set_event_handler(self.timerSource, ^{
@@ -112,8 +112,8 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
 }
 
 - (void)persistQueue {
-  
-  [MSAIPersistence persistBundle:self.dataItemQueue withPriority:MSAIPersistencePriorityLow];
+  //TODO this doesn't seem to work properly!
+  [MSAIPersistence persistBundle:self.dataItemQueue withPriority:MSAIPersistencePriorityRegular];
 }
 
 @end

@@ -69,8 +69,6 @@
     self.success = [coder decodeBoolForKey:@"self.success"];
     self.async = [coder decodeBoolForKey:@"self.async"];
     self.dependencySource = (MSAIDependencySourceType) [coder decodeIntForKey:@"self.dependencySource"];
-    _envelopeTypeName = [coder decodeObjectForKey:@"_envelopeTypeName"];
-    _dataTypeName = [coder decodeObjectForKey:@"_dataTypeName"];
   }
 
   return self;
@@ -88,8 +86,6 @@
   [coder encodeBool:self.success forKey:@"self.success"];
   [coder encodeBool:self.async forKey:@"self.async"];
   [coder encodeInt:self.dependencySource forKey:@"self.dependencySource"];
-  [coder encodeObject:self.envelopeTypeName forKey:@"_envelopeTypeName"];
-  [coder encodeObject:self.dataTypeName forKey:@"_dataTypeName"];
 }
 
 

@@ -48,8 +48,6 @@
     self.exceptions = [coder decodeObjectForKey:@"self.exceptions"];
     self.severityLevel = (MSAISeverityLevel) [coder decodeIntForKey:@"self.severityLevel"];
     self.measurements = [coder decodeObjectForKey:@"self.measurements"];
-    _envelopeTypeName = [coder decodeObjectForKey:@"_envelopeTypeName"];
-    _dataTypeName = [coder decodeObjectForKey:@"_dataTypeName"];
   }
 
   return self;
@@ -61,8 +59,6 @@
   [coder encodeObject:self.exceptions forKey:@"self.exceptions"];
   [coder encodeInt:self.severityLevel forKey:@"self.severityLevel"];
   [coder encodeObject:self.measurements forKey:@"self.measurements"];
-  [coder encodeObject:self.envelopeTypeName forKey:@"_envelopeTypeName"];
-  [coder encodeObject:self.dataTypeName forKey:@"_dataTypeName"];
 }
 
 
