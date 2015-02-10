@@ -412,8 +412,8 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
     for (NSUInteger frame_idx = 0; frame_idx < [exception.stackFrames count]; frame_idx++) {
       MSAIPLCrashReportStackFrameInfo *frameInfo = exception.stackFrames[frame_idx];
       
-      
-      MSAICrashDataThreadFrame *frame = [[self class] msai_formatStackFrame: frameInfo frameIndex: frame_idx report: report lp64: lp64];
+      MSAICrashDataThreadFrame *frame = [MSAICrashDataThreadFrame new];
+      frame.address = [NSString stringWithFormat:@"0x%0*" PRIx64, lp64 ? 16 : 8, frameInfo.instructionPointer];
       [threadData.frames addObject:frame];
     }
     [crashData.threads addObject:threadData];
@@ -428,7 +428,8 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
     
     for (NSUInteger frame_idx = 0; frame_idx < [thread.stackFrames count]; frame_idx++) {
       MSAIPLCrashReportStackFrameInfo *frameInfo = thread.stackFrames[frame_idx];
-      MSAICrashDataThreadFrame *frame = [[self class] msai_formatStackFrame: frameInfo frameIndex: frame_idx report: report lp64: lp64];
+      MSAICrashDataThreadFrame *frame = [MSAICrashDataThreadFrame new];
+      frame.address = [NSString stringWithFormat:@"0x%0*" PRIx64, lp64 ? 16 : 8, frameInfo.instructionPointer];
       [threadData.frames addObject:frame];
     }
     
@@ -710,6 +711,7 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
   return archName;
 }
 
+//TODO: Remove method since it's not needed anymore
 /**
  * Format a stack frame for display in a thread backtrace.
  *
@@ -793,7 +795,6 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
    * UTF-16 is supported via %S, so we use it here */
   MSAICrashDataThreadFrame *frame = [MSAICrashDataThreadFrame new];
   frame.address = [NSString stringWithFormat:@"0x%0*" PRIx64, lp64 ? 16 : 8, frameInfo.instructionPointer];
-  frame.symbol = symbolString;
   
   return frame;
 }

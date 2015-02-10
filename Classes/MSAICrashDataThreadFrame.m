@@ -19,10 +19,11 @@
     if (self.address != nil) {
         [dict setObject:self.address forKey:@"address"];
     }
-    if (self.symbol != nil) {
-        [dict setObject:self.symbol forKey:@"symbol"];
-    }
-    if (self.registers != nil) {
+  // symbol is not needed
+//    if (self.symbol != nil) {
+//        [dict setObject:self.symbol forKey:@"symbol"];
+//    }
+    if (self.registers != nil && self.registers.count > 0) {
         [dict setObject:self.registers forKey:@"registers"];
     }
     return dict;
