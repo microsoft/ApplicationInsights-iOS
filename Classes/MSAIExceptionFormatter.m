@@ -254,7 +254,35 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
       if (image.codeType.typeEncoding != PLCrashReportProcessorTypeEncodingMach)
         continue;
       
-      codeType = @(image.codeType.type);
+      switch (image.codeType.type) {
+        case CPU_TYPE_ARM:
+          codeType = @(image.codeType.type);
+          lp64 = false;
+          break;
+          
+        case CPU_TYPE_ARM64:
+          codeType = @(image.codeType.type);
+          lp64 = true;
+          break;
+          
+        case CPU_TYPE_X86:
+          codeType = @(image.codeType.type);
+          lp64 = false;
+          break;
+          
+        case CPU_TYPE_X86_64:
+          codeType = @(image.codeType.type);
+          lp64 = true;
+          break;
+          
+        case CPU_TYPE_POWERPC:
+          codeType = @(image.codeType.type);
+          lp64 = false;
+          break;
+        default:
+          // Do nothing, handled below.
+          break;
+      }
       
       /* Stop immediately if code type was discovered */
       if (codeType != nil)
@@ -342,6 +370,12 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
     crashHeaders.applicationIdentifier = report.applicationInfo.applicationIdentifier;
     crashHeaders.applicationBuild = report.applicationInfo.applicationVersion;
     crashHeaders.applicationPath = processPath;
+    
+    NSString *incidentIdentifier = @"???";
+    if (report.uuidRef != NULL) {
+      incidentIdentifier = (NSString *) CFBridgingRelease(CFUUIDCreateString(NULL, report.uuidRef));
+    }
+    crashHeaders.crashDataHeadersId = incidentIdentifier;
   }
   
   /* Exception code */
@@ -450,7 +484,7 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
           }
         }
         
-        NSString *formattedRegName = [NSString stringWithFormat:@"%6s", [regName UTF8String]];
+        NSString *formattedRegName = [NSString stringWithFormat:@"%s", [regName UTF8String]];
         NSString *formattedRegValue = @"";
         /* Use 32-bit or 64-bit fixed width format for the register values */
         if (lp64){
@@ -485,7 +519,7 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
     /* Determine if this is the main executable or an app specific framework*/
     MSAIBinaryImageType imageType = [[self class] msai_imageTypeForImagePath:imageInfo.imageName
                                                                  processPath:report.processInfo.processPath];
-    NSString *binaryDesignator = @" ";
+    NSString *binaryDesignator = @"";
     if (imageType != MSAIBinaryImageTypeOther) {
       binaryDesignator = @"+";
     }
@@ -499,7 +533,7 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
     
     binary.path = imageName;
     
-    NSString *fmt = (lp64) ? @"%18#" PRIx64 : @"%10#" PRIx64;
+    NSString *fmt = (lp64) ? @"0x%016" PRIx64 : @"0x%08" PRIx64;
     
     binary.startAddress = [NSString stringWithFormat:fmt, imageInfo.imageBaseAddress];
     binary.endAddress = [NSString stringWithFormat:fmt, imageInfo.imageBaseAddress + (MAX(1, imageInfo.imageSize) - 1)];
