@@ -1012,17 +1012,7 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
   
   if ([crashData length] > 0) {
     MSAIPLCrashReport *report = nil;
-    NSString *crashUUID = @"";
-    NSString *installString = nil;
     MSAIEnvelope *crashEnvelope = nil;
-    NSString *appBundleIdentifier = nil;
-    NSString *appBundleVersion = nil;
-    NSString *osVersion = nil;
-    NSString *deviceModel = nil;
-    NSString *appBinaryUUIDs = nil;
-    NSString *metaFilename = nil;
-    
-    NSPropertyListFormat format;
     
     if ([[cacheFilename pathExtension] isEqualToString:@"fake"]) {
       NSArray *fakeReportBundle = [MSAIPersistence fakeReportBundle];
