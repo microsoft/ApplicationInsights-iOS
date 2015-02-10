@@ -26,20 +26,13 @@
   return sharedManager;
 }
 
-- (MSAIEnvelope *)envelopeForTelemetryData:(MSAITelemetryData *)telemetryData{
-  [telemetryData setVersion:@(2)];
-  
-  MSAIData *data = [MSAIData new];
-  data.baseData = telemetryData;
-  data.baseType = telemetryData.dataTypeName;
+- (MSAIEnvelope *)envelope{
   
   MSAIEnvelope *envelope = [MSAIEnvelope new];
   envelope.appId = msai_mainBundleIdentifier();
   envelope.appVer = _telemetryContext.application.version;
   envelope.Time = [self dateStringForDate:[NSDate date]];
   envelope.iKey = _telemetryContext.instrumentationKey;
-  envelope.data = data;
-  envelope.name = telemetryData.envelopeTypeName;
   
   MSAIDevice *deviceContext = _telemetryContext.device;
   if (deviceContext.deviceId) {
@@ -53,6 +46,20 @@
   }
   
   envelope.tags = _telemetryContext.contextDictionary;
+  return envelope;
+}
+
+- (MSAIEnvelope *)envelopeForTelemetryData:(MSAITelemetryData *)telemetryData{
+  [telemetryData setVersion:@(2)];
+  
+  MSAIData *data = [MSAIData new];
+  data.baseData = telemetryData;
+  data.baseType = telemetryData.dataTypeName;
+  
+  MSAIEnvelope *envelope = [self envelope];
+  envelope.data = data;
+  envelope.name = telemetryData.envelopeTypeName;
+  
   return envelope;
 }
 

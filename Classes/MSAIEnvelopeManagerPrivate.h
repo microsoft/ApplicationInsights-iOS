@@ -28,6 +28,8 @@
  */
 - (NSString *)dateStringForDate:(NSDate *)date;
 
+- (MSAIEnvelope *)envelope;
+
 - (MSAIEnvelope *)envelopeForTelemetryData:(MSAITelemetryData *)telemetryData;
 
 - (MSAIEnvelope *)envelopeForCrashReport:(MSAIPLCrashReport *)report;
