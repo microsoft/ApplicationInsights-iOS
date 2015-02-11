@@ -1,6 +1,3 @@
-//
-// Created by Benjamin Reimold on 05.02.15.
-//
 
 #import "MSAIPersistence.h"
 
@@ -8,6 +5,9 @@ NSString *const highPrioString = @"highPrio";
 NSString *const regularPrioString = @"regularPrio";
 NSString *const fakeCrashString = @"fakeCrash";
 NSString *const fileBaseString = @"app-insights-bundle-";
+
+NSString *const kMSAIPersistenceSuccessNotification = @"MSAIPersistenceSuccessNotification";
+
 
 @implementation MSAIPersistence
 
@@ -22,9 +22,13 @@ NSString *const fileBaseString = @"app-insights-bundle-";
       dispatch_queue_t backgroundQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
       dispatch_async(backgroundQueue, ^{
         typeof(self) strongSelf = weakSelf;
-        NSString *fileURL = [strongSelf createFullPathForBundleWithPriority:priority];
+        NSString *fileURL = [strongSelf newFileURLForPriority:priority];
+        BOOL success = [data writeToFile:fileURL atomically:YES];
+        if(success) {
+          [strongSelf sendBundleSavedNotification];
+        }
         if(completionBlock) {
-          completionBlock([data writeToFile:fileURL atomically:YES]);
+          completionBlock(success);
         }
       });
     }
@@ -43,9 +47,10 @@ NSString *const fileBaseString = @"app-insights-bundle-";
       dispatch_queue_t backgroundQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
       dispatch_async(backgroundQueue, ^{
         typeof(self) strongSelf = weakSelf;
-        NSString *fileURL = [strongSelf createFullPathForBundleWithPriority:priority];
+        NSString *fileURL = [strongSelf newFileURLForPriority:priority];
         if([data writeToFile:fileURL atomically:YES]) {
           NSLog(@"Wrote %@", fileURL);
+          [strongSelf sendBundleSavedNotification];
         }
         else {
           NSLog(@"Unable to write %@", fileURL);
@@ -60,13 +65,13 @@ NSString *const fileBaseString = @"app-insights-bundle-";
 }
 
 + (NSArray *)nextBundle {
-  NSString *path = [self nextPathToBundleForPriority:MSAIPersistencePriorityHigh];
+  NSString *path = [self nextURLWithPriority:MSAIPersistencePriorityHigh];
   if(!path) {
-    path = [self nextPathToBundleForPriority:MSAIPersistencePriorityRegular];
+    path = [self nextURLWithPriority:MSAIPersistencePriorityRegular];
   }
 
   if(path) {
-    NSArray *bundle = [self unarchiveBundleAtPath:path];
+    NSArray *bundle = [self bundleAtPath:path];
     if(bundle) {
       return bundle;
     }
@@ -84,7 +89,7 @@ NSString *const fileBaseString = @"app-insights-bundle-";
 }
 
 + (NSArray *)fakeReportBundle {
-  NSString *path = [self nextPathToBundleForPriority:MSAIPersistencePriorityFakeCrash];
+  NSString *path = [self nextURLWithPriority:MSAIPersistencePriorityFakeCrash];
   if(path && [path isKindOfClass:[NSString class]] && path.length > 0) {
     NSArray *bundle = [NSKeyedUnarchiver unarchiveObjectWithFile:path];
     if(bundle) {
@@ -97,7 +102,7 @@ NSString *const fileBaseString = @"app-insights-bundle-";
 
 #pragma mark - Private
 
-+ (NSArray *)unarchiveBundleAtPath:(NSString *)path {
++ (NSArray *)bundleAtPath:(NSString *)path {
   if(path) {
     if([path rangeOfString:fileBaseString].location != NSNotFound) {
       NSArray *bundle = [NSKeyedUnarchiver unarchiveObjectWithFile:path];
@@ -126,36 +131,34 @@ NSString *const fileBaseString = @"app-insights-bundle-";
   }
 }
 
-+ (NSString *)createFullPathForBundleWithPriority:(MSAIPersistencePriority)priority {
++ (NSString *)newFileURLForPriority:(MSAIPersistencePriority)priority {
   NSString *documentFolder = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
   NSString *timestamp = [NSString stringWithFormat:@"%f", [[NSDate date] timeIntervalSince1970] * 1000];
   NSString *fileName = [NSString stringWithFormat:@"%@%@", fileBaseString, timestamp];
   NSString *filePath;
 
-
   switch(priority) {
     case MSAIPersistencePriorityHigh: {
-      [self createFoldersIfNecessaryAtPath:[documentFolder stringByAppendingPathComponent:highPrioString]];
+      [self createFolderAtPathIfNeeded:[documentFolder stringByAppendingPathComponent:highPrioString]];
       filePath = [[documentFolder stringByAppendingPathComponent:highPrioString] stringByAppendingPathComponent:fileName];
       break;
     };
     case MSAIPersistencePriorityFakeCrash: {
-      [self createFoldersIfNecessaryAtPath:[documentFolder stringByAppendingPathComponent:fakeCrashString]];
+      [self createFolderAtPathIfNeeded:[documentFolder stringByAppendingPathComponent:fakeCrashString]];
       filePath = [[documentFolder stringByAppendingPathComponent:fakeCrashString] stringByAppendingPathComponent:fileName];
       break;
     };
     default: {
-      [self createFoldersIfNecessaryAtPath:[documentFolder stringByAppendingPathComponent:regularPrioString]];
+      [self createFolderAtPathIfNeeded:[documentFolder stringByAppendingPathComponent:regularPrioString]];
       filePath = [[documentFolder stringByAppendingPathComponent:regularPrioString] stringByAppendingPathComponent:fileName];
       break;
     };
   }
 
-
   return filePath;
 }
 
-+ (void)createFoldersIfNecessaryAtPath:(NSString *)path {
++ (void)createFolderAtPathIfNeeded:(NSString *)path {
   if (path && ![[NSFileManager defaultManager] fileExistsAtPath:path]) {
     NSError *error = nil;
     [[NSFileManager defaultManager] createDirectoryAtPath:path withIntermediateDirectories:NO attributes:nil error:&error];
@@ -165,7 +168,7 @@ NSString *const fileBaseString = @"app-insights-bundle-";
   }
 }
 
-+ (NSString *)nextPathToBundleForPriority:(MSAIPersistencePriority)priority {
++ (NSString *)nextURLWithPriority:(MSAIPersistencePriority)priority {
   NSString *documentFolder = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
   NSString *subfolderPath;
 
@@ -193,5 +196,12 @@ NSString *const fileBaseString = @"app-insights-bundle-";
   }
 }
 
+- (void)sendBundleSavedNotification {
+  dispatch_async(dispatch_get_main_queue(),^{
+    [[NSNotificationCenter defaultCenter] postNotificationName:kMSAIPersistenceSuccessNotification
+                                                        object:nil
+                                                      userInfo:nil];
+  });
+}
 
 @end

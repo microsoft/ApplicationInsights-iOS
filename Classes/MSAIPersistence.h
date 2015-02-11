@@ -1,7 +1,3 @@
-//
-// Created by Benjamin Reimold on 05.02.15.
-//
-
 #import <Foundation/Foundation.h>
 
 /**
@@ -10,6 +6,7 @@
 
 @interface MSAIPersistence : NSObject
 
+FOUNDATION_EXPORT NSString *const kMSAIPersistenceSuccessNotification;
 
 
 /**
@@ -27,7 +24,7 @@ typedef NS_ENUM(NSInteger, MSAIPersistencePriority) {
 ///-----------------------------------------------------------------------------
 
 /**
-*
+* Saves the bundle and sends out a kMSAIPersistenceSuccessNotification in case of success
 * @param bundle a bundle of tracked events (telemetry, crashes, ...) that will be serialized and saved.
 * @param priority The priority of the bundle we want to save.
 * @param completionBlock A block that will be executed after we have tried to save the bundle.
@@ -37,7 +34,7 @@ typedef NS_ENUM(NSInteger, MSAIPersistencePriority) {
 
 
 /**
-*
+* Saves the bundle and sends out a kMSAIPersistenceSuccessNotification in case of success
 * @param bundle a bundle of tracked events (telemetry, crashes, ...) that will be serialized and saved.
 * @param priority The priority of the bundle we want to save.
 * @warning: The data within the array needs to implement NSCoding.
