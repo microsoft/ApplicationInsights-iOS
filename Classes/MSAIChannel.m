@@ -57,10 +57,10 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
       [strongSelf->_dataItemQueue addObject:envelope];
       
       if([strongSelf->_dataItemQueue count] >= strongSelf.senderBatchSize) {
-//        [strongSelf invalidateTimer];
-//        NSArray *bundle = [NSArray arrayWithArray:strongSelf->_dataItemQueue];
-//        [MSAIPersistence persistBundle:bundle withPriority:MSAIPersistencePriorityRegular withCompletionBlock:nil];
-//        [strongSelf->_dataItemQueue removeAllObjects];
+        [strongSelf invalidateTimer];
+        NSArray *bundle = [NSArray arrayWithArray:strongSelf->_dataItemQueue];
+        [MSAIPersistence persistBundle:bundle withPriority:MSAIPersistencePriorityRegular withCompletionBlock:nil];
+        [strongSelf->_dataItemQueue removeAllObjects];
       } else if([strongSelf->_dataItemQueue count] == 1) {
         [strongSelf startTimer];
       }
