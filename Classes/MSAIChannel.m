@@ -58,10 +58,11 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
       
       if([strongSelf->_dataItemQueue count] >= strongSelf.senderBatchSize) {
         [strongSelf invalidateTimer];
-        [MSAIPersistence persistBundle:strongSelf->_dataItemQueue withPriority:MSAIPersistencePriorityRegular];
+        NSArray *bundle = [NSArray arrayWithArray:strongSelf->_dataItemQueue];
+        [MSAIPersistence persistBundle:bundle withPriority:MSAIPersistencePriorityRegular];
         [strongSelf->_dataItemQueue removeAllObjects];
       } else if([strongSelf->_dataItemQueue count] == 1) {
-        [strongSelf startTimer];
+        //[strongSelf startTimer];
       }
     });
   }
