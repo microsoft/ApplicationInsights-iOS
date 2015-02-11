@@ -133,6 +133,7 @@ NSString *const kMSAIPersistenceSuccessNotification = @"MSAIPersistenceSuccessNo
 
 + (NSString *)newFileURLForPriority:(MSAIPersistencePriority)priority {
   NSString *documentFolder = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+  //TODO use something else than timestamp
   NSString *timestamp = [NSString stringWithFormat:@"%f", [[NSDate date] timeIntervalSince1970] * 1000];
   NSString *fileName = [NSString stringWithFormat:@"%@%@", fileBaseString, timestamp];
   NSString *filePath;
