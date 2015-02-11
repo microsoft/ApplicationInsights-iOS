@@ -32,16 +32,6 @@ typedef NS_ENUM(NSInteger, MSAIPersistencePriority) {
 */
 + (void)persistBundle:(NSArray *)bundle withPriority:(MSAIPersistencePriority)priority withCompletionBlock: (void (^)(BOOL success)) completionBlock;
 
-
-/**
-* Saves the bundle and sends out a kMSAIPersistenceSuccessNotification in case of success
-* @param bundle a bundle of tracked events (telemetry, crashes, ...) that will be serialized and saved.
-* @param priority The priority of the bundle we want to save.
-* @warning: The data within the array needs to implement NSCoding.
-*/
-+ (void)persistBundle:(NSArray *)bundle withPriority:(MSAIPersistencePriority)priority;
-
-
 ///-----------------------------------------------------------------------------
 /// @name Get a bundle of saved data
 ///-----------------------------------------------------------------------------

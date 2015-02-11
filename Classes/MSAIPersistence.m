@@ -8,23 +8,32 @@ NSString *const fileBaseString = @"app-insights-bundle-";
 
 NSString *const kMSAIPersistenceSuccessNotification = @"MSAIPersistenceSuccessNotification";
 
+static dispatch_queue_t persistenceQueue;
+static dispatch_once_t onceToken;
+
 
 @implementation MSAIPersistence
 
 #pragma mark - Public
 
+
 + (void)persistBundle:(NSArray *)bundle withPriority:(MSAIPersistencePriority)priority withCompletionBlock:(void (^)(BOOL success))completionBlock {
+  dispatch_once(&onceToken, ^{
+    persistenceQueue = dispatch_queue_create("com.microsoft.appInsights.persistenceQueue", DISPATCH_QUEUE_SERIAL);
+  });
+
   if(bundle && bundle.count > 0) {
+    NSString *fileURL;
+
     NSData *data = [NSKeyedArchiver archivedDataWithRootObject:bundle];
     if(data) {
       __weak typeof(self) weakSelf = self;
-
-      dispatch_queue_t backgroundQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-      dispatch_async(backgroundQueue, ^{
+      dispatch_async(persistenceQueue, ^{
         typeof(self) strongSelf = weakSelf;
         NSString *fileURL = [strongSelf newFileURLForPriority:priority];
         BOOL success = [data writeToFile:fileURL atomically:YES];
         if(success) {
+          NSLog(@"Wrote %@", fileURL);
           [strongSelf sendBundleSavedNotification];
         }
         if(completionBlock) {
@@ -33,33 +42,11 @@ NSString *const kMSAIPersistenceSuccessNotification = @"MSAIPersistenceSuccessNo
       });
     }
     else if(completionBlock != nil) {
+      NSLog(@"Unable to write %@", fileURL);
       completionBlock(NO);
     }
-  }
-}
-
-+ (void)persistBundle:(NSArray *)bundle withPriority:(MSAIPersistencePriority)priority {
-  if(bundle && bundle.count > 0) {
-    NSData *data = [NSKeyedArchiver archivedDataWithRootObject:bundle];
-    if(data) {
-      __weak typeof(self) weakSelf = self;
-
-      dispatch_queue_t backgroundQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-      dispatch_async(backgroundQueue, ^{
-        typeof(self) strongSelf = weakSelf;
-        NSString *fileURL = [strongSelf newFileURLForPriority:priority];
-        if([data writeToFile:fileURL atomically:YES]) {
-          NSLog(@"Wrote %@", fileURL);
-          [strongSelf sendBundleSavedNotification];
-        }
-        else {
-          NSLog(@"Unable to write %@", fileURL);
-        }
-      });
-
-    }
     else {
-      NSLog(@"Unable to create NSData from bundle.");
+      NSLog(@"Unable to write %@", fileURL);
     }
   }
 }
@@ -85,10 +72,12 @@ NSString *const kMSAIPersistenceSuccessNotification = @"MSAIPersistenceSuccessNo
   }
 }
 
+//TODO make this serial
 + (void)persistFakeReportBundle:(NSArray *)bundle {
-  [self persistBundle:bundle withPriority:MSAIPersistencePriorityFakeCrash];
+  [self persistBundle:bundle withPriority:MSAIPersistencePriorityFakeCrash withCompletionBlock:nil];
 }
 
+//TODO make this serial
 + (NSArray *)fakeReportBundle {
   NSString *path = [self nextURLWithPriority:MSAIPersistencePriorityFakeCrash];
   if(path && [path isKindOfClass:[NSString class]] && path.length > 0) {

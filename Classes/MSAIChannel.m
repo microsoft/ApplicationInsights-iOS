@@ -59,7 +59,7 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
       if([strongSelf->_dataItemQueue count] >= strongSelf.senderBatchSize) {
         [strongSelf invalidateTimer];
         NSArray *bundle = [NSArray arrayWithArray:strongSelf->_dataItemQueue];
-        [MSAIPersistence persistBundle:bundle withPriority:MSAIPersistencePriorityRegular];
+        [MSAIPersistence persistBundle:bundle withPriority:MSAIPersistencePriorityRegular withCompletionBlock:nil];
         [strongSelf->_dataItemQueue removeAllObjects];
       } else if([strongSelf->_dataItemQueue count] == 1) {
         //[strongSelf startTimer];
@@ -70,7 +70,7 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
 
 - (void)processEnvelope:(MSAIEnvelope *)envelope withCompletionBlock: (void (^)(BOOL success)) completionBlock{
 
-    [MSAIPersistence persistBundle:[NSArray arrayWithObject:envelope] withPriority:MSAIPersistencePriorityRegular];
+    [MSAIPersistence persistBundle:[NSArray arrayWithObject:envelope] withPriority:MSAIPersistencePriorityRegular withCompletionBlock:nil];
 }
 
 - (NSMutableArray *)dataItemQueue {
@@ -110,7 +110,7 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
 
 - (void)persistQueue {
   //TODO this doesn't seem to work properly!
-  [MSAIPersistence persistBundle:self.dataItemQueue withPriority:MSAIPersistencePriorityRegular];
+  [MSAIPersistence persistBundle:self.dataItemQueue withPriority:MSAIPersistencePriorityRegular withCompletionBlock:nil];
 }
 
 @end
