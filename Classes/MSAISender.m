@@ -2,7 +2,7 @@
 #import "MSAIAppClient.h"
 #import "MSAISenderPrivate.h"
 #import "MSAIPersistence.h"
-
+#import "MSAIEnvelope.h"
 
 @interface MSAISender ()
 
@@ -24,8 +24,6 @@
   return sharedInstance;
 }
 
-
-
 - (void)configureWithAppClient:(MSAIAppClient *)appClient endpointPath:(NSString *)endpointPath {
   self.endpointPath = endpointPath;
   self.appClient = appClient;
@@ -33,7 +31,6 @@
 }
 
 - (void)registerObservers{
-  
   NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
   __weak typeof(self) weakSelf = self;
   [center addObserverForName:kMSAIPersistenceSuccessNotification
@@ -45,18 +42,17 @@
                       [strongSelf sendSavedData];
                     });
   }];
-  
-  
 }
 
 #pragma mark - Sending
 
 - (void)sendSavedData {
   NSArray *bundle = [MSAIPersistence nextBundle];
-  if(bundle && !self.currentBundle) {
+  if(bundle && bundle.count > 0 && !self.currentBundle) {
     self.currentBundle = bundle;
+    NSDictionary *envelopeDict = [bundle[0] serializeToDictionary];
     NSError *error = nil;
-    NSData *json = [NSJSONSerialization dataWithJSONObject:bundle options:NSJSONWritingPrettyPrinted error:&error];
+    NSData *json = [NSJSONSerialization dataWithJSONObject:envelopeDict options:NSJSONWritingPrettyPrinted error:&error];
     if(!error) {
       NSURLRequest *request = [self requestForData:json];
       [self sendRequest:request];
@@ -67,7 +63,6 @@
         //TODO: more error handling!
     }
   }
-  
 }
 
 - (void)sendRequest:(NSURLRequest *)request {
