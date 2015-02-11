@@ -51,6 +51,7 @@
 #import "MSAICrashDataBinary.h"
 #import "MSAICrashDataThreadFrame.h"
 #import "MSAIHelper.h"
+#import "MSAIEnvelope.h"
 
 /*
  * XXX: The ARM64 CPU type, and ARM_V7S and ARM_V8 Mach-O CPU subtypes are not
