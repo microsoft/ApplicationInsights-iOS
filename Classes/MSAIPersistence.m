@@ -196,7 +196,7 @@ NSString *const kMSAIPersistenceSuccessNotification = @"MSAIPersistenceSuccessNo
   }
 }
 
-- (void)sendBundleSavedNotification {
++ (void)sendBundleSavedNotification {
   dispatch_async(dispatch_get_main_queue(),^{
     [[NSNotificationCenter defaultCenter] postNotificationName:kMSAIPersistenceSuccessNotification
                                                         object:nil
