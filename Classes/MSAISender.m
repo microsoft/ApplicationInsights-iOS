@@ -50,9 +50,8 @@
   NSArray *bundle = [MSAIPersistence nextBundle];
   if(bundle && bundle.count > 0 && !self.currentBundle) {
     self.currentBundle = bundle;
-    NSDictionary *envelopeDict = [bundle[0] serializeToDictionary];
     NSError *error = nil;
-    NSData *json = [NSJSONSerialization dataWithJSONObject:envelopeDict options:NSJSONWritingPrettyPrinted error:&error];
+    NSData *json = [NSJSONSerialization dataWithJSONObject:[self jsonArrayFromArray:bundle] options:NSJSONWritingPrettyPrinted error:&error];
     if(!error) {
       NSURLRequest *request = [self requestForData:json];
       [self sendRequest:request];
@@ -74,20 +73,18 @@
                                     
                                     typeof(self) strongSelf = weakSelf;
                                     NSInteger statusCode = [operation.response statusCode];
-                                    
-                                    if(nil == error) {
-                                      if(nil == responseData || [responseData length] == 0) {
-                                        NSLog(@"Sending failed with an empty response!");
-                                      } else {
+                                    self.currentBundle = nil;
+                                    if(statusCode >= 200 && statusCode < 400) {
+                                      
                                         NSLog(@"Sent data with status code: %ld", (long) statusCode);
                                         NSLog(@"Response data:\n%@", [NSJSONSerialization JSONObjectWithData:responseData options:0 error:nil]);
-                                        self.currentBundle = nil;
+                                        
                                         [strongSelf sendSavedData];
-                                      }
+                                      
                                     } else {
                                       NSLog(@"Sending failed");
                                       //[MSAIPersistence persistBundle:self.currentBundle];
-                                      self.currentBundle = nil;
+                                      
                                         //TODO trigger sending again -> later and somewhere else?!
                                     }
                                   }];
@@ -104,6 +101,16 @@
 }
 
 #pragma mark - Helper
+
+- (NSArray *)jsonArrayFromArray:(NSArray *)envelopeArray{
+  
+  NSMutableArray *array = [NSMutableArray new];
+  
+  for(MSAIEnvelope *envelope in envelopeArray){
+    [array addObject:[envelope serializeToDictionary]];
+  }
+  return array;
+}
 
 - (NSURLRequest *)requestForData:(NSData *)data {
   NSMutableURLRequest *request = [self.appClient requestWithMethod:@"POST"
