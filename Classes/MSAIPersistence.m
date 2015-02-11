@@ -9,7 +9,7 @@ NSString *const fileBaseString = @"app-insights-bundle-";
 NSString *const kMSAIPersistenceSuccessNotification = @"MSAIPersistenceSuccessNotification";
 
 static dispatch_queue_t persistenceQueue;
-static dispatch_once_t onceToken;
+static dispatch_once_t onceToken = nil;
 
 
 @implementation MSAIPersistence
