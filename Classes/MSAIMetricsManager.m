@@ -188,7 +188,7 @@ static id appWillTerminateObserver;
   if(disableMetricsManager || !managerInitialised) return;
   
   MSAIEnvelope *envelope = [[MSAIEnvelopeManager sharedManager] envelopeForTelemetryData:dataItem];
-  [[MSAIChannel sharedChannel] enqueueEnvelope:envelope highPriority:NO];
+  [[MSAIChannel sharedChannel] enqueueEnvelope:envelope];
 }
 
 #pragma mark - Session update
