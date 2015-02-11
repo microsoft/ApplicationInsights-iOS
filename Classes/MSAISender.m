@@ -20,8 +20,6 @@
   
   dispatch_once(&onceToken, ^{
     sharedInstance = [MSAISender new];
-    
-    
   });
   return sharedInstance;
 }
@@ -31,9 +29,24 @@
 - (void)configureWithAppClient:(MSAIAppClient *)appClient endpointPath:(NSString *)endpointPath {
   self.endpointPath = endpointPath;
   self.appClient = appClient;
+  [self registerObservers];
 }
 
-
+- (void)registerObservers{
+  
+  NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+  __weak typeof(self) weakSelf = self;
+  [center addObserverForName:kMSAIPersistenceSuccessNotification
+                      object:nil
+                       queue:nil
+                  usingBlock:^(NSNotification *note) {
+                    typeof(self) strongSelf = weakSelf;
+                    [strongSelf sendSavedData];
+                    NSLog(@"Successfully persisted");
+  }];
+  
+  
+}
 
 #pragma mark - Sending
 
