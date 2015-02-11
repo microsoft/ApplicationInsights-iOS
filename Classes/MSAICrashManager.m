@@ -12,7 +12,7 @@
 
 #import "MSAIBaseManagerPrivate.h"
 #import "MSAICrashManagerPrivate.h"
-#import "MSAIExceptionFormatter.h"
+#import "MSAICrashDataProvider.h"
 #import "MSAICrashDetailsPrivate.h"
 #import "MSAICrashData.h"
 #import "MSAIChannel.h"
@@ -279,7 +279,7 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
  */
 - (NSString *) extractAppUUIDs:(MSAIPLCrashReport *)report {
   NSMutableString *uuidString = [NSMutableString string];
-  NSArray *uuidArray = [MSAIExceptionFormatter arrayOfAppUUIDsForCrashReport:report];
+  NSArray *uuidArray = [MSAICrashDataProvider arrayOfAppUUIDsForCrashReport:report];
   
   for (NSDictionary *element in uuidArray) {
     if (element[kMSAIBinaryImageKeyUUID] && element[kMSAIBinaryImageKeyArch] && element[kMSAIBinaryImageKeyUUID]) {
@@ -424,7 +424,7 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
   if (sysctlbyname("hw.cpusubtype", &subtype, &size, NULL, 0))
     return archName;
   
-  archName = [MSAIExceptionFormatter msai_archNameFromCPUType:type subType:subtype] ?: @"???";
+  archName = [MSAICrashDataProvider msai_archNameFromCPUType:type subType:subtype] ?: @"???";
   
   return archName;
 }
@@ -1041,7 +1041,7 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
     }
     
     if (report) {
-      crashEnvelope = [MSAIExceptionFormatter crashDataForCrashReport:report];
+      crashEnvelope = [MSAICrashDataProvider crashDataForCrashReport:report];
       if ([report.applicationInfo.applicationVersion compare:[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"]] == NSOrderedSame) {
         _crashIdenticalCurrentVersion = YES;
       }
