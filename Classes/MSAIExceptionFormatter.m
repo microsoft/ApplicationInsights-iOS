@@ -50,7 +50,7 @@
 #import "MSAICrashDataHeaders.h"
 #import "MSAICrashDataBinary.h"
 #import "MSAICrashDataThreadFrame.h"
-#import "MSAIEnvelope.h"
+#import "MSAIHelper.h"
 
 /*
  * XXX: The ARM64 CPU type, and ARM_V7S and ARM_V8 Mach-O CPU subtypes are not
@@ -319,13 +319,7 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
     }
   }
   
-  {
-    NSString *incidentIdentifier = @"???";
-    if (report.uuidRef != NULL) {
-      incidentIdentifier = (NSString *) CFBridgingRelease(CFUUIDCreateString(NULL, report.uuidRef));
-      crashHeaders.crashDataHeadersId = incidentIdentifier;
-    }
-  }
+  crashHeaders.crashDataHeadersId = msai_UUID();
   
   /* Application and process info */
   {
@@ -829,6 +823,7 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
    * UTF-16 is supported via %S, so we use it here */
   MSAICrashDataThreadFrame *frame = [MSAICrashDataThreadFrame new];
   frame.address = [NSString stringWithFormat:@"0x%0*" PRIx64, lp64 ? 16 : 8, frameInfo.instructionPointer];
+  frame.symbol = symbolString;
   
   return frame;
 }
