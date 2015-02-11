@@ -140,16 +140,17 @@ NSString *const fileBaseString = @"app-insights-bundle-";
       break;
     };
     case MSAIPersistencePriorityFakeCrash: {
-      [self createFoldersIfNecessaryAtPath:[documentFolder stringByAppendingPathComponent:highPrioString]];
+      [self createFoldersIfNecessaryAtPath:[documentFolder stringByAppendingPathComponent:fakeCrashString]];
       filePath = [[documentFolder stringByAppendingPathComponent:fakeCrashString] stringByAppendingPathComponent:fileName];
       break;
     };
     default: {
-      [self createFoldersIfNecessaryAtPath:[documentFolder stringByAppendingPathComponent:highPrioString]];
+      [self createFoldersIfNecessaryAtPath:[documentFolder stringByAppendingPathComponent:regularPrioString]];
       filePath = [[documentFolder stringByAppendingPathComponent:regularPrioString] stringByAppendingPathComponent:fileName];
       break;
     };
   }
+
 
   return filePath;
 }
