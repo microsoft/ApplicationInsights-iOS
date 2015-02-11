@@ -32,10 +32,9 @@
  */
 - (void)configureWithAppClient:(MSAIAppClient *)appClient endpointPath:(NSString *)endpointPath;
 
-/**
- *  Sends all enqueued events.
- */
-- (void)persistQueue;
+///-----------------------------------------------------------------------------
+/// @name Sending data
+///-----------------------------------------------------------------------------
 
 /**
  *  Creates a HTTP operation and puts it to the queue.

@@ -32,11 +32,13 @@
 @property(nonatomic, strong) NSMutableArray *dataItemQueue;
 
 /**
- *  Sends out telemetry data to the server.
+ *  Processes telemetry data (events, metrics, exceptions, traces) to the server.
  *
- *  @param dataItem the data object, which should be sent to the telemetry server
+ *  @param dataItem the data object, which should be processed
  */
-- (void)enqueueEnvelope:(MSAIEnvelope *)envelope highPriority:(BOOL)highPriority;
+- (void)enqueueEnvelope:(MSAIEnvelope *)envelope;
+
+- (void)processEnvelope:(MSAIEnvelope *)envelope withCompletionBlock: (void (^)(BOOL success)) completionBlock;
 
 ///-----------------------------------------------------------------------------
 /// @name Batching
