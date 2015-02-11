@@ -41,8 +41,9 @@
                        queue:nil
                   usingBlock:^(NSNotification *note) {
                     typeof(self) strongSelf = weakSelf;
-                    [strongSelf sendSavedData];
-                    NSLog(@"Successfully persisted");
+                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                      [strongSelf sendSavedData];
+                    });
   }];
   
   
