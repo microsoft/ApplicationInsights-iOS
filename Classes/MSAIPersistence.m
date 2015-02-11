@@ -73,6 +73,7 @@ NSString *const kMSAIPersistenceSuccessNotification = @"MSAIPersistenceSuccessNo
   if(path) {
     NSArray *bundle = [self bundleAtPath:path];
     if(bundle) {
+      [self deleteBundleAtPath:path];
       return bundle;
     }
     else {
@@ -133,6 +134,7 @@ NSString *const kMSAIPersistenceSuccessNotification = @"MSAIPersistenceSuccessNo
 
 + (NSString *)newFileURLForPriority:(MSAIPersistencePriority)priority {
   NSString *documentFolder = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+  //TODO use something else than timestamp
   NSString *timestamp = [NSString stringWithFormat:@"%f", [[NSDate date] timeIntervalSince1970] * 1000];
   NSString *fileName = [NSString stringWithFormat:@"%@%@", fileBaseString, timestamp];
   NSString *filePath;
@@ -187,9 +189,11 @@ NSString *const kMSAIPersistenceSuccessNotification = @"MSAIPersistenceSuccessNo
     }
   }
 
-  NSArray *fileNames = [[NSFileManager defaultManager] subpathsOfDirectoryAtPath:documentFolder error:nil];
+  NSString *path = [documentFolder stringByAppendingPathComponent:subfolderPath];
+
+  NSArray *fileNames = [[NSFileManager defaultManager] subpathsOfDirectoryAtPath:path error:nil];
   if(fileNames && fileNames.count > 0) {
-    return [subfolderPath stringByAppendingPathComponent:[fileNames firstObject]];
+    return [path stringByAppendingPathComponent:[fileNames firstObject]];
   }
   else {
     return nil;
