@@ -62,7 +62,7 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
         [MSAIPersistence persistBundle:bundle withPriority:MSAIPersistencePriorityRegular withCompletionBlock:nil];
         [strongSelf->_dataItemQueue removeAllObjects];
       } else if([strongSelf->_dataItemQueue count] == 1) {
-        //[strongSelf startTimer];
+        [strongSelf startTimer];
       }
     });
   }
