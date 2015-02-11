@@ -19,7 +19,7 @@
 #import "MSAIPageViewData.h"
 #import "MSAIDataPoint.h"
 #import "MSAIEnums.h"
-#import "MSAIExceptionFormatter.h"
+#import "MSAICrashDataProvider.h"
 #import "MSAICrashData.h"
 #import <pthread.h>
 #import <CrashReporter/CrashReporter.h>

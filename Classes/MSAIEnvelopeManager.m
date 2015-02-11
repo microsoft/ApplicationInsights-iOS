@@ -6,7 +6,7 @@
 #import "MSAITelemetryContext.h"
 #import "MSAITelemetryContextPrivate.h"
 #import "MSAIHelper.h"
-#import "MSAIExceptionFormatter.h"
+#import "MSAICrashDataProvider.h"
 
 @implementation MSAIEnvelopeManager
 
@@ -68,7 +68,7 @@
 }
 
 - (MSAIEnvelope *)envelopeForCrashReport:(MSAIPLCrashReport *)report exception:(NSException *)exception{
-  return [MSAIExceptionFormatter crashDataForCrashReport:report handledException:exception];
+  return [MSAICrashDataProvider crashDataForCrashReport:report handledException:exception];
 }
 
 - (NSString *)dateStringForDate:(NSDate *)date {
