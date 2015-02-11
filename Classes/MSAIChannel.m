@@ -48,13 +48,28 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
 
 #pragma mark - Queue management
 
-- (void)enqueueEnvelope:(MSAIEnvelope *)envelope highPriority:(BOOL)highPriority{
-
-  if(highPriority){
-    [MSAIPersistence persistBundle:[NSArray arrayWithObject:envelope] withPriority:MSAIPersistencePriorityRegular];
-  }else{
-    [self enqueueEnvelope:envelope];
+- (void)enqueueEnvelope:(MSAIEnvelope *)envelope{
+  if(envelope) {
+    __weak typeof(self) weakSelf = self;
+    dispatch_async(self.dataItemsOperations, ^{
+      typeof(self) strongSelf = weakSelf;
+      
+      [strongSelf->_dataItemQueue addObject:envelope];
+      
+      if([strongSelf->_dataItemQueue count] >= strongSelf.senderBatchSize) {
+        [strongSelf invalidateTimer];
+        [MSAIPersistence persistBundle:strongSelf->_dataItemQueue withPriority:MSAIPersistencePriorityRegular];
+        [strongSelf->_dataItemQueue removeAllObjects];
+      } else if([strongSelf->_dataItemQueue count] == 1) {
+        [strongSelf startTimer];
+      }
+    });
   }
+}
+
+- (void)processEnvelope:(MSAIEnvelope *)envelope withCompletionBlock: (void (^)(BOOL success)) completionBlock{
+
+    [MSAIPersistence persistBundle:[NSArray arrayWithObject:envelope] withPriority:MSAIPersistencePriorityRegular];
 }
 
 - (NSMutableArray *)dataItemQueue {
@@ -66,25 +81,6 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
     queue = [NSMutableArray arrayWithArray:strongSelf->_dataItemQueue];
   });
   return queue;
-}
-
-- (void)enqueueEnvelope:(MSAIEnvelope *)envelope {
-  if(envelope) {
-    __weak typeof(self) weakSelf = self;
-    dispatch_async(self.dataItemsOperations, ^{
-      typeof(self) strongSelf = weakSelf;
-
-      [strongSelf->_dataItemQueue addObject:envelope];
-
-      if([strongSelf->_dataItemQueue count] >= strongSelf.senderBatchSize) {
-        [strongSelf invalidateTimer];
-        [MSAIPersistence persistBundle:strongSelf->_dataItemQueue withPriority:MSAIPersistencePriorityRegular];
-        [strongSelf->_dataItemQueue removeAllObjects];
-      } else if([strongSelf->_dataItemQueue count] == 1) {
-        [strongSelf startTimer];
-      }
-    });
-  }
 }
 
 #pragma mark - Batching
