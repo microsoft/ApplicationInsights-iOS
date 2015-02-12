@@ -16,7 +16,7 @@
 static NSInteger const defaultMaxBatchCount = 5;
 static NSInteger const defaultBatchInterval = 15;
 #else
-static NSInteger const defaultMaxBatchCount = 5;
+static NSInteger const defaultMaxBatchCount = 150;
 static NSInteger const defaultBatchInterval = 15;
 #endif
 
@@ -28,12 +28,14 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
 
 + (id)sharedChannel {
   static MSAIChannel *sharedChannel = nil;
+  
   static dispatch_once_t onceToken;
   dispatch_once(&onceToken, ^{
     sharedChannel = [self new];
     dispatch_queue_t serialQueue = dispatch_queue_create(MSAIDataItemsOperationsQueue, DISPATCH_QUEUE_SERIAL);
     [sharedChannel setDataItemsOperations:serialQueue];
   });
+  
   return sharedChannel;
 }
 
@@ -50,18 +52,24 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
 
 - (void)enqueueEnvelope:(MSAIEnvelope *)envelope{
   if(envelope) {
+    
     __weak typeof(self) weakSelf = self;
     dispatch_async(self.dataItemsOperations, ^{
       typeof(self) strongSelf = weakSelf;
       
+      // Enqueue item
       [strongSelf->_dataItemQueue addObject:envelope];
       
       if([strongSelf->_dataItemQueue count] >= strongSelf.senderBatchSize) {
+        
+        // Max batch count has been reached, so write queue to disk and delete all items.
         [strongSelf invalidateTimer];
         NSArray *bundle = [NSArray arrayWithArray:strongSelf->_dataItemQueue];
         [MSAIPersistence persistBundle:bundle withPriority:MSAIPersistencePriorityRegular withCompletionBlock:nil];
         [strongSelf->_dataItemQueue removeAllObjects];
       } else if([strongSelf->_dataItemQueue count] == 1) {
+        
+        // It is the first item, let's start the timer
         [strongSelf startTimer];
       }
     });
@@ -69,16 +77,16 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
 }
 
 - (void)processEnvelope:(MSAIEnvelope *)envelope withCompletionBlock: (void (^)(BOOL success)) completionBlock{
-
-    [MSAIPersistence persistBundle:[NSArray arrayWithObject:envelope] withPriority:MSAIPersistencePriorityRegular withCompletionBlock:completionBlock];
+    [MSAIPersistence persistBundle:[NSArray arrayWithObject:envelope]
+                      withPriority:MSAIPersistencePriorityHigh withCompletionBlock:completionBlock];
 }
 
 - (NSMutableArray *)dataItemQueue {
-
   __block NSMutableArray *queue = nil;
   __weak typeof(self) weakSelf = self;
   dispatch_sync(self.dataItemsOperations, ^{
     typeof(self) strongSelf = weakSelf;
+    
     queue = [NSMutableArray arrayWithArray:strongSelf->_dataItemQueue];
   });
   return queue;
@@ -95,6 +103,7 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
 
 - (void)startTimer {
 
+  // Reset timer, if it is already running
   if(self.timerSource) {
     [self invalidateTimer];
   }
@@ -102,6 +111,8 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
   self.timerSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, self.dataItemsOperations);
   dispatch_source_set_timer(self.timerSource, dispatch_walltime(NULL, NSEC_PER_SEC * self.senderInterval), 1ull * NSEC_PER_SEC, 1ull * NSEC_PER_SEC);
   dispatch_source_set_event_handler(self.timerSource, ^{
+    
+    // On completion: Reset timer and persist items
     [self invalidateTimer];
     [self persistQueue];
   });

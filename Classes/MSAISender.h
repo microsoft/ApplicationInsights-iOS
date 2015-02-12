@@ -6,11 +6,9 @@
 
 @interface MSAISender : NSObject
 
-/*
-* Triggers sending the saved data. Does nothing if nothing has been persisted, yet.
-*
-* @return
-*/
+/**
+ *  Triggers sending the saved data. Does nothing if nothing has been persisted, yet. This method should be called by MSAITelemetryMnager on app start.
+ */
 - (void)sendSavedData;
 
 @end

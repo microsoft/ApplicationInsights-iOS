@@ -266,7 +266,6 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
   }
 }
 
-
 /**
  *	 Extract all app sepcific UUIDs from the crash reports
  *
@@ -1080,9 +1079,6 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
       break;
   }
 }
-
-
-
 
 #pragma mark - Networking
 

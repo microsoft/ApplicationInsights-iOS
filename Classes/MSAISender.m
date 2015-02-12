@@ -30,6 +30,8 @@
   [self registerObservers];
 }
 
+#pragma mark - Handle persistence events
+
 - (void)registerObservers{
   NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
   __weak typeof(self) weakSelf = self;
@@ -39,6 +41,8 @@
                   usingBlock:^(NSNotification *note) {
                     typeof(self) strongSelf = weakSelf;
                     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                      
+                      // If something was persisted, we have to send it to the server.
                       [strongSelf sendSavedData];
                     });
   }];
@@ -96,16 +100,13 @@
   MSAIHTTPOperation *operation = [_appClient
                                   operationWithURLRequest:request
                                   completion:completion];
-  
   [_appClient enqeueHTTPOperation:operation];
 }
 
 #pragma mark - Helper
 
 - (NSArray *)jsonArrayFromArray:(NSArray *)envelopeArray{
-  
   NSMutableArray *array = [NSMutableArray new];
-  
   for(MSAIEnvelope *envelope in envelopeArray){
     [array addObject:[envelope serializeToDictionary]];
   }

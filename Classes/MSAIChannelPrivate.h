@@ -32,12 +32,18 @@
 @property(nonatomic, strong) NSMutableArray *dataItemQueue;
 
 /**
- *  Processes telemetry data (events, metrics, exceptions, traces) to the server.
+ *  Enqueue telemetry data (events, metrics, exceptions, traces) before processing it.
  *
- *  @param dataItem the data object, which should be processed
+ *  @param envelope the data object, which should be processed
  */
 - (void)enqueueEnvelope:(MSAIEnvelope *)envelope;
 
+/**
+ *  Directly process telemetry data (crashs) without enqueuing it first.
+ *
+ *  @param envelope        the envelope object to process.
+ *  @param completionBlock the block, which should be executed after the envelope has been persisted.
+ */
 - (void)processEnvelope:(MSAIEnvelope *)envelope withCompletionBlock: (void (^)(BOOL success)) completionBlock;
 
 ///-----------------------------------------------------------------------------
