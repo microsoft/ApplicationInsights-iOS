@@ -139,7 +139,10 @@ static dispatch_once_t onceToken = nil;
 * For each MSAIPersistenceType, we create a folder in the app's NSDocuments directory
 */
 + (NSString *)newFileURLForPriority:(MSAIPersistenceType)type {
-  NSString *documentFolder = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+  [self createApplicationSupportDirectoryIfNeeded];
+
+  NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
+  NSString *documentFolder = [NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES) lastObject];
   //TODO use something else than timestamp
   NSString *timestamp = [NSString stringWithFormat:@"%f", [[NSDate date] timeIntervalSince1970] * 1000];
   NSString *fileName = [NSString stringWithFormat:@"%@%@", kFileBaseString, timestamp];
@@ -167,7 +170,7 @@ static dispatch_once_t onceToken = nil;
 }
 
 /**
-* create a folder within at the given path and excludes it from backup
+* create a folder within at the given path
 */
 + (void)createFolderAtPathIfNeeded:(NSString *)path {
   if(path && ![[NSFileManager defaultManager] fileExistsAtPath:path]) {
@@ -179,8 +182,35 @@ static dispatch_once_t onceToken = nil;
   }
 }
 
+/**
+* Create ApplicationSupport directory if necessary and exclude it from iCloud Backup
+*/
++ (void)createApplicationSupportDirectoryIfNeeded {
+  NSString *appplicationSupportDir = [NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES) lastObject];
+  if (![[NSFileManager defaultManager] fileExistsAtPath:appplicationSupportDir isDirectory:NULL]) {
+    NSError *error = nil;
+    if (![[NSFileManager defaultManager] createDirectoryAtPath:appplicationSupportDir withIntermediateDirectories:YES attributes:nil error:&error]) {
+      NSLog(@"%@", error.localizedDescription);
+    }
+    else {
+      NSURL *url = [NSURL fileURLWithPath:appplicationSupportDir];
+      if (![url setResourceValue:@YES
+                          forKey:NSURLIsExcludedFromBackupKey
+                           error:&error])
+      {
+        NSLog(@"Error excluding %@ from backup %@", url.lastPathComponent, error.localizedDescription);
+      }
+      else {
+        NSLog(@"Exclude %@ from backup", url);
+      }
+    }
+  }
+}
+
 + (NSString *)nextURLWithPriority:(MSAIPersistenceType)priority {
-  NSString *documentFolder = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+  [self createApplicationSupportDirectoryIfNeeded];
+
+  NSString *documentFolder = [NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES) lastObject];
   NSString *subfolderPath;
 
   switch(priority) {
