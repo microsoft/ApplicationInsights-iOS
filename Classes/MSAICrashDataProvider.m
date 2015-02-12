@@ -443,7 +443,8 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
     
     /* Write out the frames. In raw reports, Apple writes this out as a simple list of PCs. In the minimally
      * post-processed report, Apple writes this out as full frame entries. We use the latter format. */
-    for (NSUInteger frame_idx = 0; frame_idx < [exception.stackFrames count]; frame_idx++) {
+    int i = (int)[exception.stackFrames count] - 1;
+    for (NSUInteger frame_idx = i; i >= 0; i--) {
       MSAIPLCrashReportStackFrameInfo *frameInfo = exception.stackFrames[frame_idx];
       
       MSAICrashDataThreadFrame *frame = [MSAICrashDataThreadFrame new];
@@ -461,7 +462,8 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
     MSAICrashDataThread *threadData = [MSAICrashDataThread new];
     threadData.crashDataThreadId = @(thread.threadNumber);
     
-    for (NSUInteger frame_idx = 0; frame_idx < [thread.stackFrames count]; frame_idx++) {
+    int i = (int)[thread.stackFrames count] - 1;
+    for (NSUInteger frame_idx = i; i >= 0; i--) {
       MSAIPLCrashReportStackFrameInfo *frameInfo = thread.stackFrames[frame_idx];
       MSAICrashDataThreadFrame *frame = [MSAICrashDataThreadFrame new];
       frame.address = [NSString stringWithFormat:@"0x%0*" PRIx64, lp64 ? 16 : 8, frameInfo.instructionPointer];
