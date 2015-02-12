@@ -161,11 +161,11 @@ static dispatch_once_t onceToken = nil;
 
   switch(priority) {
     case MSAIPersistencePriorityHigh: {
-      subfolderPath = [documentFolder stringByAppendingPathComponent:highPrioString];
+      subfolderPath = highPrioString;
       break;
     };
     case MSAIPersistencePriorityFakeCrash: {
-      subfolderPath = [documentFolder stringByAppendingPathComponent:fakeCrashString];
+      subfolderPath = fakeCrashString;
       break;
     };
     default: {
