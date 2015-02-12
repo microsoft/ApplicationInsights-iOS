@@ -6,6 +6,10 @@
 
 @interface MSAIPersistence : NSObject
 
+/**
+* Notification that will be send on the main thread to notifiy observers of a successfully saved bundle.
+* This is typically used to trigger sending to the server.
+*/
 FOUNDATION_EXPORT NSString *const kMSAIPersistenceSuccessNotification;
 
 
