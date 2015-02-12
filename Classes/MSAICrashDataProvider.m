@@ -472,34 +472,27 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
       
       for (MSAIPLCrashReportRegisterInfo *reg in crashed_thread.registers) {
         
-        /* Remap register names to match Apple's crash reports */
         NSString *regName = reg.registerName;
-        if (report.machineInfo != nil && report.machineInfo.processorInfo.typeEncoding == PLCrashReportProcessorTypeEncodingMach) {
-          MSAIPLCrashReportProcessorInfo *pinfo = report.machineInfo.processorInfo;
-          cpu_type_t arch_type = pinfo.type & ~CPU_ARCH_MASK;
-          
-          /* Apple uses 'ip' rather than 'r12' on ARM */
-          if (arch_type == CPU_TYPE_ARM && [regName isEqual: @"r12"]) {
-            regName = @"ip";
+        
+        // Currently we only need "lr"
+        if([regName isEqualToString:@"lr"]){
+          NSString *formattedRegName = [NSString stringWithFormat:@"%s", [regName UTF8String]];
+          NSString *formattedRegValue = @"";
+          /* Use 32-bit or 64-bit fixed width format for the register values */
+          if (lp64){
+            
+            formattedRegValue = [NSString stringWithFormat:@"0x%016" PRIx64, reg.registerValue];
+          }else{
+            formattedRegValue = [NSString stringWithFormat:@"0x%08" PRIx64, reg.registerValue];
           }
-        }
-        
-        NSString *formattedRegName = [NSString stringWithFormat:@"%s", [regName UTF8String]];
-        NSString *formattedRegValue = @"";
-        /* Use 32-bit or 64-bit fixed width format for the register values */
-        if (lp64){
           
-          formattedRegValue = [NSString stringWithFormat:@"0x%016" PRIx64, reg.registerValue];
-        }else{
-          formattedRegValue = [NSString stringWithFormat:@"0x%08" PRIx64, reg.registerValue];
-        }
-        
-        if(threadData.frames.count > 0){
-          [[(MSAICrashDataThreadFrame *)threadData.frames[0] registers] setValue:formattedRegValue forKey:formattedRegName];
+          if(threadData.frames.count > 0){
+            [[(MSAICrashDataThreadFrame *)threadData.frames[0] registers] setValue:formattedRegValue forKey:formattedRegName];
+          }
+          break;
         }
       }
     }
-    
     [crashData.threads addObject:threadData];
   }
   
