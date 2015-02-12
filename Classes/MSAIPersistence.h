@@ -10,7 +10,8 @@ FOUNDATION_EXPORT NSString *const kMSAIPersistenceSuccessNotification;
 
 
 /**
-* Priority for a bundle
+* The MSAIPersistenceType determines the way how a bundle is saved.
+* Bundles of type MSAIPersistenceTypeHighPriority will be loaded before all bundles if type MSAIPersistenceTypeRegular.
 */
 
 typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
