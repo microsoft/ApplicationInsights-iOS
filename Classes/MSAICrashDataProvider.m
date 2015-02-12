@@ -53,6 +53,8 @@
 #import "MSAIHelper.h"
 #import "MSAIEnvelope.h"
 #import "MSAIData.h"
+#import "MSAIEnvelopeManagerPrivate.h"
+#import "MSAIEnvelopeManager.h"
 
 /*
  * XXX: The ARM64 CPU type, and ARM_V7S and ARM_V8 Mach-O CPU subtypes are not
@@ -202,7 +204,7 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
   
   NSMutableArray *addresses = [NSMutableArray new];
   
-  MSAIEnvelope *envelope = [MSAIEnvelope new];
+  MSAIEnvelope *envelope = [[MSAIEnvelopeManager sharedManager] envelope];
   
   /* System info */
   {
