@@ -10,6 +10,8 @@
 
 @implementation MSAIEnvelopeManager
 
+#pragma mark - Initialize and configure singleton instance
+
 - (void)configureWithTelemetryContext:(MSAITelemetryContext *)telemetryContext{
 
   @synchronized(self) {
@@ -19,6 +21,7 @@
 
 + (id)sharedManager {
   static MSAIEnvelopeManager *sharedManager = nil;
+  
   static dispatch_once_t onceToken;
   dispatch_once(&onceToken, ^{
     sharedManager = [self new];
@@ -26,8 +29,17 @@
   return sharedManager;
 }
 
+#pragma mark - Update context
+
+- (void)createNewSession{
+  @synchronized(self) {
+    [_telemetryContext createNewSession];
+  }
+}
+
+#pragma mark - Create envelope objects
+
 - (MSAIEnvelope *)envelope{
-  
   MSAIEnvelope *envelope = [MSAIEnvelope new];
   envelope.appId = msai_mainBundleIdentifier();
   envelope.appVer = _telemetryContext.application.version;
@@ -68,20 +80,17 @@
 }
 
 - (MSAIEnvelope *)envelopeForCrashReport:(MSAIPLCrashReport *)report exception:(NSException *)exception{
-  return [MSAICrashDataProvider crashDataForCrashReport:report handledException:exception];
+  return [MSAICrashDataProvider crashDataForCrashReport:(PLCrashReport *)report handledException:exception];
 }
+
+#pragma mark - Helper
 
 - (NSString *)dateStringForDate:(NSDate *)date {
   NSDateFormatter *dateFormatter = [NSDateFormatter new];
   dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
   NSString *dateString = [dateFormatter stringFromDate:date];
+  
   return dateString;
-}
-
-- (void)createNewSession{
-  @synchronized(self) {
-    [_telemetryContext createNewSession];
-  }
 }
 
 @end
