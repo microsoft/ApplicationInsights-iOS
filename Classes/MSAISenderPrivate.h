@@ -52,10 +52,18 @@
  *
  *  @param data the data which should be sent
  *
- *  @return a request which contains the given data.
+ *  @return a request which contains the given data
  */
 - (NSURLRequest *)requestForData:(NSData *)data;
 
+/**
+ *  Convert a collection of envelope objects to array of dictionaries.
+ *
+ *  @param envelopeArray array of envelope objects
+ *
+ *  @return a json array of envelope objects
+ */
+- (NSArray *)jsonArrayFromArray:(NSArray *)envelopeArray;
 
 
 @end
