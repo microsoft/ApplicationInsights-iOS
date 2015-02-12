@@ -542,6 +542,7 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
   data.baseType = crashData.dataTypeName;
   
   envelope.data = data;
+  envelope.name = crashData.envelopeTypeName;
   
   return envelope;
 }
