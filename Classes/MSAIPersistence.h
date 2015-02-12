@@ -28,7 +28,7 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
 * Saves the bundle and sends out a kMSAIPersistenceSuccessNotification in case of success
 * @param bundle a bundle of tracked events (telemetry, crashes, ...) that will be serialized and saved.
 * @param type The type of the bundle we want to save.
-* @param completionBlock A block that will be executed after we have tried to save the bundle.
+* @param completionBlock An optional block that will be executed after we have tried to save the bundle.
 * @warning: The data within the array needs to implement NSCoding.
 */
 + (void)persistBundle:(NSArray *)bundle ofType:(MSAIPersistenceType)type withCompletionBlock: (void (^)(BOOL success)) completionBlock;
@@ -38,8 +38,8 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
 ///-----------------------------------------------------------------------------
 
 /**
-* Get a bundle of previously saved data from disk and deletes it. It will return bundles with high priority before
-* bundles with regular priority. Within the order of bundles within the priority is arbitrary.
+* Get a bundle of previously saved data from disk and deletes it. It will return bundles of MSAIPersistenceType first.
+* Between bundles of the same MSAIPersistenceType, the order is arbitrary.
 * Returns 'nil' if no bundle is available
 * @return a bundle of AppInsightsData that's ready to be sent to the server
 */

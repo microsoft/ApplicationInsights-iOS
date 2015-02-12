@@ -16,7 +16,10 @@ static dispatch_once_t onceToken = nil;
 
 #pragma mark - Public
 
-
+/**
+* Creates a serial background queue that saves the Bundle using NSKeyedArchiver and NSData's writeToFile:atomically
+* The optional bundle is optional.
+*/
 + (void)persistBundle:(NSArray *)bundle ofType:(MSAIPersistenceType)type withCompletionBlock:(void (^)(BOOL success))completionBlock {
   dispatch_once(&onceToken, ^{
     persistenceQueue = dispatch_queue_create(kPersistenceQueueString, DISPATCH_QUEUE_SERIAL);
@@ -70,10 +73,17 @@ static dispatch_once_t onceToken = nil;
   }
 }
 
+/**
+* Method used to persist the "fake" crash reports. Fake crash reports are handled but are similar to the other bundle
+* types under the hood.
+*/
 + (void)persistFakeReportBundle:(NSArray *)bundle {
   [self persistBundle:bundle ofType:MSAIPersistenceTypeFakeCrash withCompletionBlock:nil];
 }
 
+/*
+* @Returns a bundle that includes a fake crash report.
+ */
 + (NSArray *)fakeReportBundle {
   NSString *path = [self nextURLWithPriority:MSAIPersistenceTypeFakeCrash];
   if(path && [path isKindOfClass:[NSString class]] && path.length > 0) {
@@ -87,6 +97,10 @@ static dispatch_once_t onceToken = nil;
 
 #pragma mark - Private
 
+/**
+* Deserializes a bundle from disk using NSKeyedUnarchiver and deletes it from disk
+* @return a bundle of data or nil
+*/
 + (NSArray *)bundleAtPath:(NSString *)path {
   if(path) {
     if([path rangeOfString:kFileBaseString].location != NSNotFound) {
@@ -100,6 +114,9 @@ static dispatch_once_t onceToken = nil;
   return nil;
 }
 
+/**
+* Deletes a file at the given path.
+*/
 + (void)deleteBundleAtPath:(NSString *)path {
   if([path rangeOfString:kFileBaseString].location != NSNotFound) {
     NSError *error = nil;
@@ -116,14 +133,22 @@ static dispatch_once_t onceToken = nil;
   }
 }
 
-+ (NSString *)newFileURLForPriority:(MSAIPersistenceType)priority {
-  NSString *documentFolder = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+/**
+* Creates the path for a file depending on the MSAIPersistenceType.
+* The filename includes the timestamp.
+* For each MSAIPersistenceType, we create a folder in the app's NSDocuments directory
+*/
++ (NSString *)newFileURLForPriority:(MSAIPersistenceType)type {
+  [self createApplicationSupportDirectoryIfNeeded];
+
+  NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
+  NSString *documentFolder = [NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES) lastObject];
   //TODO use something else than timestamp
   NSString *timestamp = [NSString stringWithFormat:@"%f", [[NSDate date] timeIntervalSince1970] * 1000];
   NSString *fileName = [NSString stringWithFormat:@"%@%@", kFileBaseString, timestamp];
   NSString *filePath;
 
-  switch(priority) {
+  switch(type) {
     case MSAIPersistenceTypeHighPriority: {
       [self createFolderAtPathIfNeeded:[documentFolder stringByAppendingPathComponent:kHighPrioString]];
       filePath = [[documentFolder stringByAppendingPathComponent:kHighPrioString] stringByAppendingPathComponent:fileName];
@@ -144,6 +169,9 @@ static dispatch_once_t onceToken = nil;
   return filePath;
 }
 
+/**
+* create a folder within at the given path
+*/
 + (void)createFolderAtPathIfNeeded:(NSString *)path {
   if(path && ![[NSFileManager defaultManager] fileExistsAtPath:path]) {
     NSError *error = nil;
@@ -154,8 +182,35 @@ static dispatch_once_t onceToken = nil;
   }
 }
 
+/**
+* Create ApplicationSupport directory if necessary and exclude it from iCloud Backup
+*/
++ (void)createApplicationSupportDirectoryIfNeeded {
+  NSString *appplicationSupportDir = [NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES) lastObject];
+  if (![[NSFileManager defaultManager] fileExistsAtPath:appplicationSupportDir isDirectory:NULL]) {
+    NSError *error = nil;
+    if (![[NSFileManager defaultManager] createDirectoryAtPath:appplicationSupportDir withIntermediateDirectories:YES attributes:nil error:&error]) {
+      NSLog(@"%@", error.localizedDescription);
+    }
+    else {
+      NSURL *url = [NSURL fileURLWithPath:appplicationSupportDir];
+      if (![url setResourceValue:@YES
+                          forKey:NSURLIsExcludedFromBackupKey
+                           error:&error])
+      {
+        NSLog(@"Error excluding %@ from backup %@", url.lastPathComponent, error.localizedDescription);
+      }
+      else {
+        NSLog(@"Exclude %@ from backup", url);
+      }
+    }
+  }
+}
+
 + (NSString *)nextURLWithPriority:(MSAIPersistenceType)priority {
-  NSString *documentFolder = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+  [self createApplicationSupportDirectoryIfNeeded];
+
+  NSString *documentFolder = [NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES) lastObject];
   NSString *subfolderPath;
 
   switch(priority) {
