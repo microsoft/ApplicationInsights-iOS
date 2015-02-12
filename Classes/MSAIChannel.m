@@ -70,7 +70,7 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
 
 - (void)processEnvelope:(MSAIEnvelope *)envelope withCompletionBlock: (void (^)(BOOL success)) completionBlock{
 
-    [MSAIPersistence persistBundle:[NSArray arrayWithObject:envelope] withPriority:MSAIPersistencePriorityRegular withCompletionBlock:nil];
+    [MSAIPersistence persistBundle:[NSArray arrayWithObject:envelope] withPriority:MSAIPersistencePriorityRegular withCompletionBlock:completionBlock];
 }
 
 - (NSMutableArray *)dataItemQueue {
