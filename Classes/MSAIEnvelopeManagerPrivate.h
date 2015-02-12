@@ -2,6 +2,8 @@
 @class MSAITelemetryData;
 @class MSAITelemetryContext;
 @class MSAIPLCrashReport;
+#import <Foundation/Foundation.h>
+#import "MSAIEnvelopeManager.h"
 
 @interface MSAIEnvelopeManager()
 
