@@ -140,7 +140,7 @@ NSString *msai_screenSize(void){
 }
 
 NSString *msai_sdkVersion(void){
-  return [NSString stringWithUTF8String:applicationinsights_library_info.msai_version];
+  return [NSString stringWithFormat:@"ios:%@", [NSString stringWithUTF8String:applicationinsights_library_info.msai_version]];
 }
 
 NSString *msai_sdkBuild(void) {
