@@ -78,6 +78,7 @@ static dispatch_once_t onceToken = nil;
 * types under the hood.
 */
 + (void)persistFakeReportBundle:(NSArray *)bundle {
+  //TODO this will result in the SuccessNotification to be send. Do we want this?!
   [self persistBundle:bundle ofType:MSAIPersistenceTypeFakeCrash withCompletionBlock:nil];
 }
 
@@ -136,13 +137,12 @@ static dispatch_once_t onceToken = nil;
 /**
 * Creates the path for a file depending on the MSAIPersistenceType.
 * The filename includes the timestamp.
-* For each MSAIPersistenceType, we create a folder in the app's NSDocuments directory
+* For each MSAIPersistenceType, we create a folder within the app's Application Support directory directory
 */
 + (NSString *)newFileURLForPriority:(MSAIPersistenceType)type {
   [self createApplicationSupportDirectoryIfNeeded];
 
-  NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
-  NSString *documentFolder = [NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES) lastObject];
+  NSString *applicationSupportDir = [NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES) lastObject];
   //TODO use something else than timestamp
   NSString *timestamp = [NSString stringWithFormat:@"%f", [[NSDate date] timeIntervalSince1970] * 1000];
   NSString *fileName = [NSString stringWithFormat:@"%@%@", kFileBaseString, timestamp];
@@ -150,18 +150,18 @@ static dispatch_once_t onceToken = nil;
 
   switch(type) {
     case MSAIPersistenceTypeHighPriority: {
-      [self createFolderAtPathIfNeeded:[documentFolder stringByAppendingPathComponent:kHighPrioString]];
-      filePath = [[documentFolder stringByAppendingPathComponent:kHighPrioString] stringByAppendingPathComponent:fileName];
+      [self createFolderAtPathIfNeeded:[applicationSupportDir stringByAppendingPathComponent:kHighPrioString]];
+      filePath = [[applicationSupportDir stringByAppendingPathComponent:kHighPrioString] stringByAppendingPathComponent:fileName];
       break;
     };
     case MSAIPersistenceTypeFakeCrash: {
-      [self createFolderAtPathIfNeeded:[documentFolder stringByAppendingPathComponent:kFakeCrashString]];
-      filePath = [[documentFolder stringByAppendingPathComponent:kFakeCrashString] stringByAppendingPathComponent:fileName];
+      [self createFolderAtPathIfNeeded:[applicationSupportDir stringByAppendingPathComponent:kFakeCrashString]];
+      filePath = [[applicationSupportDir stringByAppendingPathComponent:kFakeCrashString] stringByAppendingPathComponent:fileName];
       break;
     };
     default: {
-      [self createFolderAtPathIfNeeded:[documentFolder stringByAppendingPathComponent:kRegularPrioString]];
-      filePath = [[documentFolder stringByAppendingPathComponent:kRegularPrioString] stringByAppendingPathComponent:fileName];
+      [self createFolderAtPathIfNeeded:[applicationSupportDir stringByAppendingPathComponent:kRegularPrioString]];
+      filePath = [[applicationSupportDir stringByAppendingPathComponent:kRegularPrioString] stringByAppendingPathComponent:fileName];
       break;
     };
   }
@@ -207,13 +207,16 @@ static dispatch_once_t onceToken = nil;
   }
 }
 
-+ (NSString *)nextURLWithPriority:(MSAIPersistenceType)priority {
+/**
+* @returns the URL to the next file depeneding for the specified type. If there's no file, return nil.
+*/
++ (NSString *)nextURLWithPriority:(MSAIPersistenceType)type {
   [self createApplicationSupportDirectoryIfNeeded];
 
   NSString *documentFolder = [NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES) lastObject];
   NSString *subfolderPath;
 
-  switch(priority) {
+  switch(type) {
     case MSAIPersistenceTypeHighPriority: {
       subfolderPath = kHighPrioString;
       break;
@@ -239,6 +242,10 @@ static dispatch_once_t onceToken = nil;
   }
 }
 
+/**
+* Send a kMSAIPersistenceSuccessNotification to the main thread to notify observers that we have successfully saved a file
+* This is typocally used to trigger sending.
+*/
 + (void)sendBundleSavedNotification {
   dispatch_async(dispatch_get_main_queue(), ^{
     [[NSNotificationCenter defaultCenter] postNotificationName:kMSAIPersistenceSuccessNotification
