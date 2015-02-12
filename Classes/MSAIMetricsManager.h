@@ -16,11 +16,6 @@
  */
 + (void)setDisableMetricsManager:(BOOL)disable;
 
-/**
- *  This method should be called after the manager has been configured in order to create and send data.
- */
-+ (void)startManager;
-
 ///-----------------------------------------------------------------------------
 /// @name Track data
 ///-----------------------------------------------------------------------------
@@ -82,14 +77,14 @@
 +(void)trackMetricWithName:(NSString *)metricName value:(double)value properties:(NSDictionary *)properties;
 
 /**
- * Track pageView by name of the page
+ * Track pageView by name of the page.
  *
  *  @param pageName Name of the page/view which is being tracked.
  */
 + (void)trackPageView:(NSString *)pageName;
 
 /**
- *  Track pageView by name of the page
+ *  Track pageView by name of the page.
  *
  *  @param pageName Name of the page/view which is being tracked.
  *  @param duration Time the page has been viewed in milliseconds. This method is ideally called when a page view ends where the time has to be calculated by the developer.
@@ -97,7 +92,7 @@
 + (void)trackPageView:(NSString *)pageName duration:(long)duration;
 
 /**
- * Track pageView by name of the page
+ * Track pageView by name of the page.
  *
  *  @param pageName Name of the page/view which is being tracked.
  *  @param duration time the page has been viewed. This method is ideally called when a page view ends. The time has to be calculated by the developer.
@@ -105,6 +100,11 @@
  */
 + (void)trackPageView:(NSString *)pageName duration:(long)duration properties:(NSDictionary *)properties;
 
+/**
+ *  Track handled exception.
+ *
+ *  @param exception the handled exception, which should be send to the server.
+ */
 + (void)trackException:(NSException *)exception;
 
 @end

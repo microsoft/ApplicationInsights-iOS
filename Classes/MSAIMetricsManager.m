@@ -26,10 +26,6 @@
 #import "MSAIEnvelopeManager.h"
 #import "MSAIEnvelopeManagerPrivate.h"
 
-
-#if MSAI_FEATURE_CRASH_REPORTER
-#endif
-
 NSString *const kMSAIApplicationWasLaunched = @"MSAIApplicationWasLaunched";
 static NSString *const kMSAIApplicationDidEnterBackgroundTime = @"MSAIApplicationDidEnterBackgroundTime";
 static NSInteger const defaultSessionExpirationTime = 20;
@@ -136,28 +132,19 @@ static id appWillTerminateObserver;
 }
 
 + (void)trackException:(NSException *)exception{
-  
   PLCrashReporterSignalHandlerType signalHandlerType = PLCrashReporterSignalHandlerTypeBSD;
-  
   PLCrashReporterSymbolicationStrategy symbolicationStrategy = PLCrashReporterSymbolicationStrategyAll;
-  
   MSAIPLCrashReporterConfig *config = [[MSAIPLCrashReporterConfig alloc] initWithSignalHandlerType: signalHandlerType
-                                                                             symbolicationStrategy: symbolicationStrategy];
-  NSError *error = NULL;
+                                                                              symbolicationStrategy: symbolicationStrategy];
   MSAIPLCrashReporter *cm = [[MSAIPLCrashReporter alloc] initWithConfiguration:config];
   NSData *data = [cm generateLiveReportWithThread:pthread_mach_thread_np(pthread_self())];
-  MSAIPLCrashReport *report = [[MSAIPLCrashReport alloc] initWithData:data error:&error];
+  MSAIPLCrashReport *report = [[MSAIPLCrashReport alloc] initWithData:data error:nil];
   
-  __weak typeof(self) weakSelf = self;
   dispatch_async(metricEventQueue, ^{
-    typeof(self) strongSelf = weakSelf;
-    
-    MSAIEnvelope *envelope = [[MSAIEnvelopeManager sharedManager] envelopeForCrashReport:report exception:exception];
-    [strongSelf trackDataItem:envelope];
+    MSAIEnvelope *envelope = [[MSAIEnvelopeManager sharedManager] envelopeForCrashReport:(PLCrashReport *)report exception:exception];
+    [[MSAIChannel sharedChannel] enqueueEnvelope:envelope];
   });
 }
-
-#pragma mark - PageView
 
 + (void)trackPageView:(NSString *)pageName {
   [self trackPageView:pageName duration:nil];
