@@ -60,7 +60,6 @@ static dispatch_once_t onceToken = nil;
   if(path) {
     NSArray *bundle = [self bundleAtPath:path];
     if(bundle) {
-      [self deleteBundleAtPath:path];
       return bundle;
     }
     else {
@@ -72,18 +71,15 @@ static dispatch_once_t onceToken = nil;
   }
 }
 
-//TODO make this serial
 + (void)persistFakeReportBundle:(NSArray *)bundle {
   [self persistBundle:bundle withPriority:MSAIPersistencePriorityFakeCrash withCompletionBlock:nil];
 }
 
-//TODO make this serial
 + (NSArray *)fakeReportBundle {
   NSString *path = [self nextURLWithPriority:MSAIPersistencePriorityFakeCrash];
   if(path && [path isKindOfClass:[NSString class]] && path.length > 0) {
-    NSArray *bundle = [NSKeyedUnarchiver unarchiveObjectWithFile:path];
+    NSArray *bundle = [self bundleAtPath:path];
     if(bundle) {
-      [self deleteBundleAtPath:path];
       return bundle;
     }
   }
