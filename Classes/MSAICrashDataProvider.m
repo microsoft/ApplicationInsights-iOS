@@ -52,6 +52,7 @@
 #import "MSAICrashDataThreadFrame.h"
 #import "MSAIHelper.h"
 #import "MSAIEnvelope.h"
+#import "MSAIData.h"
 
 /*
  * XXX: The ARM64 CPU type, and ARM_V7S and ARM_V8 Mach-O CPU subtypes are not
@@ -198,6 +199,8 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
 @implementation MSAICrashDataProvider
 
 + (MSAIEnvelope *)crashDataForCrashReport:(PLCrashReport *)report handledException:(NSException *)exception{
+  
+  NSMutableArray *addresses = [NSMutableArray new];
   
   MSAIEnvelope *envelope = [MSAIEnvelope new];
   
@@ -443,6 +446,7 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
       
       MSAICrashDataThreadFrame *frame = [MSAICrashDataThreadFrame new];
       frame.address = [NSString stringWithFormat:@"0x%0*" PRIx64, lp64 ? 16 : 8, frameInfo.instructionPointer];
+      [addresses addObject:[NSNumber numberWithUnsignedLongLong:frameInfo.instructionPointer]];
       [threadData.frames addObject:frame];
     }
     [crashData.threads addObject:threadData];
@@ -459,6 +463,7 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
       MSAIPLCrashReportStackFrameInfo *frameInfo = thread.stackFrames[frame_idx];
       MSAICrashDataThreadFrame *frame = [MSAICrashDataThreadFrame new];
       frame.address = [NSString stringWithFormat:@"0x%0*" PRIx64, lp64 ? 16 : 8, frameInfo.instructionPointer];
+      [addresses addObject:[NSNumber numberWithUnsignedLongLong:frameInfo.instructionPointer]];
       [threadData.frames addObject:frame];
     }
     
@@ -504,42 +509,56 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
     
     MSAICrashDataBinary *binary = [MSAICrashDataBinary new];
     
-    /* Fetch the UUID if it exists */
-    binary.uuid = (imageInfo.hasImageUUID) ? imageInfo.imageUUID : unknownString;
-    
-    /* Determine the architecture string */
-    binary.cpuType = codeType;
-    binary.cpuSubType = @(imageInfo.codeType.subtype);
-    
-    /* Determine if this is the main executable or an app specific framework*/
-    MSAIBinaryImageType imageType = [[self class] msai_imageTypeForImagePath:imageInfo.imageName
-                                                                 processPath:report.processInfo.processPath];
-    NSString *binaryDesignator = @"";
-    if (imageType != MSAIBinaryImageTypeOther) {
-      binaryDesignator = @"+";
-    }
-    
-    /* Remove username from the image path */
-    NSString *imageName = @"";
-    if (imageInfo.imageName && [imageInfo.imageName length] > 0)
-      imageName = [imageInfo.imageName stringByAbbreviatingWithTildeInPath];
-    if ([imageName length] > 0 && [[imageName substringToIndex:1] isEqualToString:@"~"])
-      imageName = [NSString stringWithFormat:@"/Users/USER%@", [imageName substringFromIndex:1]];
-    
-    binary.path = imageName;
-    
     NSString *fmt = (lp64) ? @"0x%016" PRIx64 : @"0x%08" PRIx64;
     
-    binary.startAddress = [NSString stringWithFormat:fmt, imageInfo.imageBaseAddress];
-    binary.endAddress = [NSString stringWithFormat:fmt, imageInfo.imageBaseAddress + (MAX(1, imageInfo.imageSize) - 1)];
-    binary.name = [NSString stringWithFormat:@"%@%@", binaryDesignator, [imageInfo.imageName lastPathComponent]];
+    uint64_t startAddress = imageInfo.imageBaseAddress;
+    binary.startAddress = [NSString stringWithFormat:fmt, startAddress];
     
-    [binaries addObject:binary];
+    uint64_t endAddress = imageInfo.imageBaseAddress + (MAX(1, imageInfo.imageSize) - 1);
+    binary.endAddress = [NSString stringWithFormat:fmt, endAddress];
+    
+    if([self isBinaryWithStart:startAddress end:endAddress inAddresses:addresses]){
+      
+      /* Remove username from the image path */
+      NSString *imageName = @"";
+      if (imageInfo.imageName && [imageInfo.imageName length] > 0)
+        imageName = [imageInfo.imageName stringByAbbreviatingWithTildeInPath];
+      if ([imageName length] > 0 && [[imageName substringToIndex:1] isEqualToString:@"~"])
+        imageName = [NSString stringWithFormat:@"/Users/USER%@", [imageName substringFromIndex:1]];
+      
+      binary.path = imageName;
+      binary.name = [imageInfo.imageName lastPathComponent];
+
+      /* Fetch the UUID if it exists */
+      binary.uuid = (imageInfo.hasImageUUID) ? imageInfo.imageUUID : unknownString;
+      
+      /* Determine the architecture string */
+      binary.cpuType = codeType;
+      binary.cpuSubType = @(imageInfo.codeType.subtype);
+      
+      [binaries addObject:binary];
+    }
   }
   
   crashData.binaries = binaries;
   
+  MSAIData *data = [MSAIData new];
+  data.baseData = crashData;
+  data.baseType = crashData.dataTypeName;
+  
+  envelope.data = data;
+  
   return envelope;
+}
+
++ (BOOL)isBinaryWithStart:(uint64_t)start end:(uint64_t)end inAddresses:(NSArray *)addresses{
+  for(NSNumber *address in addresses){
+    
+    if([address unsignedLongLongValue] >= start && [address unsignedLongLongValue] <= end){
+      return YES;
+    }
+  }
+  return NO;
 }
 
 /**
@@ -588,10 +607,8 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
       return [NSString stringWithUTF8String:foundSelector];
     }
   }
-  
   return nil;
 }
-
 
 /**
  * Returns an array of app UUIDs and their architecture
