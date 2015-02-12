@@ -1,12 +1,12 @@
-
 #import "MSAIPersistence.h"
 
-NSString *const highPrioString = @"highPrio";
-NSString *const regularPrioString = @"regularPrio";
-NSString *const fakeCrashString = @"fakeCrash";
-NSString *const fileBaseString = @"app-insights-bundle-";
+NSString *const kHighPrioString = @"highPrio";
+NSString *const kRegularPrioString = @"regularPrio";
+NSString *const kFakeCrashString = @"fakeCrash";
+NSString *const kFileBaseString = @"app-insights-bundle-";
 
 NSString *const kMSAIPersistenceSuccessNotification = @"MSAIPersistenceSuccessNotification";
+char const *kPersistenceQueueString = "com.microsoft.appInsights.persistenceQueue";
 
 static dispatch_queue_t persistenceQueue;
 static dispatch_once_t onceToken = nil;
@@ -17,20 +17,19 @@ static dispatch_once_t onceToken = nil;
 #pragma mark - Public
 
 
-+ (void)persistBundle:(NSArray *)bundle withPriority:(MSAIPersistencePriority)priority withCompletionBlock:(void (^)(BOOL success))completionBlock {
++ (void)persistBundle:(NSArray *)bundle ofType:(MSAIPersistenceType)type withCompletionBlock:(void (^)(BOOL success))completionBlock {
   dispatch_once(&onceToken, ^{
-    persistenceQueue = dispatch_queue_create("com.microsoft.appInsights.persistenceQueue", DISPATCH_QUEUE_SERIAL);
+    persistenceQueue = dispatch_queue_create(kPersistenceQueueString, DISPATCH_QUEUE_SERIAL);
   });
 
   if(bundle && bundle.count > 0) {
-    NSString *fileURL;
-
+    NSString *fileURL = [self newFileURLForPriority:type];
     NSData *data = [NSKeyedArchiver archivedDataWithRootObject:bundle];
+
     if(data) {
       __weak typeof(self) weakSelf = self;
       dispatch_async(persistenceQueue, ^{
         typeof(self) strongSelf = weakSelf;
-        NSString *fileURL = [strongSelf newFileURLForPriority:priority];
         BOOL success = [data writeToFile:fileURL atomically:YES];
         if(success) {
           NSLog(@"Wrote %@", fileURL);
@@ -52,9 +51,9 @@ static dispatch_once_t onceToken = nil;
 }
 
 + (NSArray *)nextBundle {
-  NSString *path = [self nextURLWithPriority:MSAIPersistencePriorityHigh];
+  NSString *path = [self nextURLWithPriority:MSAIPersistenceTypeHighPriority];
   if(!path) {
-    path = [self nextURLWithPriority:MSAIPersistencePriorityRegular];
+    path = [self nextURLWithPriority:MSAIPersistenceTypeRegular];
   }
 
   if(path) {
@@ -72,11 +71,11 @@ static dispatch_once_t onceToken = nil;
 }
 
 + (void)persistFakeReportBundle:(NSArray *)bundle {
-  [self persistBundle:bundle withPriority:MSAIPersistencePriorityFakeCrash withCompletionBlock:nil];
+  [self persistBundle:bundle ofType:MSAIPersistenceTypeFakeCrash withCompletionBlock:nil];
 }
 
 + (NSArray *)fakeReportBundle {
-  NSString *path = [self nextURLWithPriority:MSAIPersistencePriorityFakeCrash];
+  NSString *path = [self nextURLWithPriority:MSAIPersistenceTypeFakeCrash];
   if(path && [path isKindOfClass:[NSString class]] && path.length > 0) {
     NSArray *bundle = [self bundleAtPath:path];
     if(bundle) {
@@ -90,7 +89,7 @@ static dispatch_once_t onceToken = nil;
 
 + (NSArray *)bundleAtPath:(NSString *)path {
   if(path) {
-    if([path rangeOfString:fileBaseString].location != NSNotFound) {
+    if([path rangeOfString:kFileBaseString].location != NSNotFound) {
       NSArray *bundle = [NSKeyedUnarchiver unarchiveObjectWithFile:path];
       if(bundle) {
         [self deleteBundleAtPath:path];
@@ -102,7 +101,7 @@ static dispatch_once_t onceToken = nil;
 }
 
 + (void)deleteBundleAtPath:(NSString *)path {
-  if([path rangeOfString:fileBaseString].location != NSNotFound) {
+  if([path rangeOfString:kFileBaseString].location != NSNotFound) {
     NSError *error = nil;
     [[NSFileManager defaultManager] removeItemAtPath:path error:&error];
     if(error) {
@@ -117,27 +116,27 @@ static dispatch_once_t onceToken = nil;
   }
 }
 
-+ (NSString *)newFileURLForPriority:(MSAIPersistencePriority)priority {
++ (NSString *)newFileURLForPriority:(MSAIPersistenceType)priority {
   NSString *documentFolder = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
   //TODO use something else than timestamp
   NSString *timestamp = [NSString stringWithFormat:@"%f", [[NSDate date] timeIntervalSince1970] * 1000];
-  NSString *fileName = [NSString stringWithFormat:@"%@%@", fileBaseString, timestamp];
+  NSString *fileName = [NSString stringWithFormat:@"%@%@", kFileBaseString, timestamp];
   NSString *filePath;
 
   switch(priority) {
-    case MSAIPersistencePriorityHigh: {
-      [self createFolderAtPathIfNeeded:[documentFolder stringByAppendingPathComponent:highPrioString]];
-      filePath = [[documentFolder stringByAppendingPathComponent:highPrioString] stringByAppendingPathComponent:fileName];
+    case MSAIPersistenceTypeHighPriority: {
+      [self createFolderAtPathIfNeeded:[documentFolder stringByAppendingPathComponent:kHighPrioString]];
+      filePath = [[documentFolder stringByAppendingPathComponent:kHighPrioString] stringByAppendingPathComponent:fileName];
       break;
     };
-    case MSAIPersistencePriorityFakeCrash: {
-      [self createFolderAtPathIfNeeded:[documentFolder stringByAppendingPathComponent:fakeCrashString]];
-      filePath = [[documentFolder stringByAppendingPathComponent:fakeCrashString] stringByAppendingPathComponent:fileName];
+    case MSAIPersistenceTypeFakeCrash: {
+      [self createFolderAtPathIfNeeded:[documentFolder stringByAppendingPathComponent:kFakeCrashString]];
+      filePath = [[documentFolder stringByAppendingPathComponent:kFakeCrashString] stringByAppendingPathComponent:fileName];
       break;
     };
     default: {
-      [self createFolderAtPathIfNeeded:[documentFolder stringByAppendingPathComponent:regularPrioString]];
-      filePath = [[documentFolder stringByAppendingPathComponent:regularPrioString] stringByAppendingPathComponent:fileName];
+      [self createFolderAtPathIfNeeded:[documentFolder stringByAppendingPathComponent:kRegularPrioString]];
+      filePath = [[documentFolder stringByAppendingPathComponent:kRegularPrioString] stringByAppendingPathComponent:fileName];
       break;
     };
   }
@@ -146,7 +145,7 @@ static dispatch_once_t onceToken = nil;
 }
 
 + (void)createFolderAtPathIfNeeded:(NSString *)path {
-  if (path && ![[NSFileManager defaultManager] fileExistsAtPath:path]) {
+  if(path && ![[NSFileManager defaultManager] fileExistsAtPath:path]) {
     NSError *error = nil;
     [[NSFileManager defaultManager] createDirectoryAtPath:path withIntermediateDirectories:NO attributes:nil error:&error];
     if(error) {
@@ -155,21 +154,21 @@ static dispatch_once_t onceToken = nil;
   }
 }
 
-+ (NSString *)nextURLWithPriority:(MSAIPersistencePriority)priority {
++ (NSString *)nextURLWithPriority:(MSAIPersistenceType)priority {
   NSString *documentFolder = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
   NSString *subfolderPath;
 
   switch(priority) {
-    case MSAIPersistencePriorityHigh: {
-      subfolderPath = highPrioString;
+    case MSAIPersistenceTypeHighPriority: {
+      subfolderPath = kHighPrioString;
       break;
     };
-    case MSAIPersistencePriorityFakeCrash: {
-      subfolderPath = fakeCrashString;
+    case MSAIPersistenceTypeFakeCrash: {
+      subfolderPath = kFakeCrashString;
       break;
     };
     default: {
-      subfolderPath = regularPrioString;
+      subfolderPath = kRegularPrioString;
       break;
     }
   }
@@ -186,7 +185,7 @@ static dispatch_once_t onceToken = nil;
 }
 
 + (void)sendBundleSavedNotification {
-  dispatch_async(dispatch_get_main_queue(),^{
+  dispatch_async(dispatch_get_main_queue(), ^{
     [[NSNotificationCenter defaultCenter] postNotificationName:kMSAIPersistenceSuccessNotification
                                                         object:nil
                                                       userInfo:nil];

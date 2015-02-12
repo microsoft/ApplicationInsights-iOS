@@ -65,7 +65,7 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
         // Max batch count has been reached, so write queue to disk and delete all items.
         [strongSelf invalidateTimer];
         NSArray *bundle = [NSArray arrayWithArray:strongSelf->_dataItemQueue];
-        [MSAIPersistence persistBundle:bundle withPriority:MSAIPersistencePriorityRegular withCompletionBlock:nil];
+        [MSAIPersistence persistBundle:bundle ofType:MSAIPersistenceTypeRegular withCompletionBlock:nil];
         [strongSelf->_dataItemQueue removeAllObjects];
       } else if([strongSelf->_dataItemQueue count] == 1) {
         
@@ -77,8 +77,8 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
 }
 
 - (void)processEnvelope:(MSAIEnvelope *)envelope withCompletionBlock: (void (^)(BOOL success)) completionBlock{
-    [MSAIPersistence persistBundle:[NSArray arrayWithObject:envelope]
-                      withPriority:MSAIPersistencePriorityHigh withCompletionBlock:completionBlock];
+  [MSAIPersistence persistBundle:[NSArray arrayWithObject:envelope]
+                          ofType:MSAIPersistenceTypeHighPriority withCompletionBlock:completionBlock];
 }
 
 - (NSMutableArray *)dataItemQueue {
@@ -122,7 +122,7 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
 - (void)persistQueue {
   //TODO this doesn't seem to work properly!
   NSArray *bundle = [NSArray arrayWithArray:_dataItemQueue];
-  [MSAIPersistence persistBundle:bundle withPriority:MSAIPersistencePriorityRegular withCompletionBlock:nil];
+  [MSAIPersistence persistBundle:bundle ofType:MSAIPersistenceTypeRegular withCompletionBlock:nil];
   [_dataItemQueue removeAllObjects];
 }
 

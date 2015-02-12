@@ -13,10 +13,10 @@ FOUNDATION_EXPORT NSString *const kMSAIPersistenceSuccessNotification;
 * Priority for a bundle
 */
 
-typedef NS_ENUM(NSInteger, MSAIPersistencePriority) {
-  MSAIPersistencePriorityHigh = 0,
-  MSAIPersistencePriorityRegular = 1,
-  MSAIPersistencePriorityFakeCrash = 2
+typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
+  MSAIPersistenceTypeHighPriority = 0,
+  MSAIPersistenceTypeRegular = 1,
+  MSAIPersistenceTypeFakeCrash = 2
 };
 
 ///-----------------------------------------------------------------------------
@@ -26,11 +26,11 @@ typedef NS_ENUM(NSInteger, MSAIPersistencePriority) {
 /**
 * Saves the bundle and sends out a kMSAIPersistenceSuccessNotification in case of success
 * @param bundle a bundle of tracked events (telemetry, crashes, ...) that will be serialized and saved.
-* @param priority The priority of the bundle we want to save.
+* @param type The type of the bundle we want to save.
 * @param completionBlock A block that will be executed after we have tried to save the bundle.
 * @warning: The data within the array needs to implement NSCoding.
 */
-+ (void)persistBundle:(NSArray *)bundle withPriority:(MSAIPersistencePriority)priority withCompletionBlock: (void (^)(BOOL success)) completionBlock;
++ (void)persistBundle:(NSArray *)bundle ofType:(MSAIPersistenceType)type withCompletionBlock: (void (^)(BOOL success)) completionBlock;
 
 ///-----------------------------------------------------------------------------
 /// @name Get a bundle of saved data
