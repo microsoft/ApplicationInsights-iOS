@@ -994,6 +994,8 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
   MSAIEnvelope *fakeCrashEnvelope = [[MSAIEnvelopeManager sharedManager] envelope];
   fakeCrashEnvelope.data = data;
   
+  fakeCrashEnvelope.name = crashData.envelopeTypeName;
+  
   [MSAIPersistence persistFakeReportBundle:[NSArray arrayWithObject:fakeCrashEnvelope]];
 }
 
