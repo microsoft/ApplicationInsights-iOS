@@ -3,10 +3,9 @@
 #import "MSAITelemetryData.h"
 #import "MSAIDomain.h"
 
-@interface MSAICrashDataThread : MSAIObject
+@interface MSAICrashDataThread : MSAIObject <NSCoding>
 
 @property (nonatomic, strong) NSNumber *crashDataThreadId;
 @property (nonatomic, strong) NSMutableArray *frames;
-
 
 @end

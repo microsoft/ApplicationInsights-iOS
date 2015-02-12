@@ -29,4 +29,25 @@
     return dict;
 }
 
+#pragma mark - NSCoding
+
+- (id)initWithCoder:(NSCoder *)coder {
+  self = [super initWithCoder:coder];
+  if(self) {
+    self.address = [coder decodeObjectForKey:@"self.address"];
+    self.symbol = [coder decodeObjectForKey:@"self.symbol"];
+    self.registers = [coder decodeObjectForKey:@"self.registers"];
+  }
+
+  return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+  [super encodeWithCoder:coder];
+  [coder encodeObject:self.address forKey:@"self.address"];
+  [coder encodeObject:self.symbol forKey:@"self.symbol"];
+  [coder encodeObject:self.registers forKey:@"self.registers"];
+}
+
+
 @end

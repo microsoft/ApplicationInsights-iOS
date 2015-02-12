@@ -2,7 +2,7 @@
 #import "MSAITelemetryData.h"
 #import "MSAIDomain.h"
 
-@interface MSAICrashDataHeaders : MSAIObject
+@interface MSAICrashDataHeaders : MSAIObject <NSCoding>
 
 @property (nonatomic, strong) NSString *crashDataHeadersId;
 @property (nonatomic, strong) NSString *process;
@@ -17,6 +17,5 @@
 @property (nonatomic, strong) NSString *exceptionCode;
 @property (nonatomic, strong) NSString *exceptionAddress;
 @property (nonatomic, strong) NSString *exceptionReason;
-
 
 @end

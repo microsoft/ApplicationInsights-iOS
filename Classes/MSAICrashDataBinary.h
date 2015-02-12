@@ -2,7 +2,7 @@
 #import "MSAITelemetryData.h"
 #import "MSAIDomain.h"
 
-@interface MSAICrashDataBinary : MSAIObject
+@interface MSAICrashDataBinary : MSAIObject <NSCoding>
 
 @property (nonatomic, strong) NSString *startAddress;
 @property (nonatomic, strong) NSString *endAddress;
@@ -11,6 +11,5 @@
 @property (nonatomic, strong) NSNumber *cpuSubType;
 @property (nonatomic, strong) NSString *uuid;
 @property (nonatomic, strong) NSString *path;
-
 
 @end
