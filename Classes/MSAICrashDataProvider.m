@@ -52,6 +52,7 @@
 #import "MSAICrashDataThreadFrame.h"
 #import "MSAIHelper.h"
 #import "MSAIEnvelope.h"
+#import "MSAIData.h"
 
 /*
  * XXX: The ARM64 CPU type, and ARM_V7S and ARM_V8 Mach-O CPU subtypes are not
@@ -538,6 +539,12 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
   }
   
   crashData.binaries = binaries;
+  
+  MSAIData *data = [MSAIData new];
+  data.baseData = crashData;
+  data.baseType = crashData.dataTypeName;
+  
+  envelope.data = data;
   
   return envelope;
 }
