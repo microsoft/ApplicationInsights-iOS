@@ -140,6 +140,7 @@
   
   [[MSAIEnvelopeManager sharedManager] configureWithTelemetryContext:[self telemetryContext]];
   [[MSAISender sharedSender] configureWithAppClient:[self appClient] endpointPath:[[self telemetryContext] endpointPath]];
+  [[MSAISender sharedSender] sendSavedData];
 #if MSAI_FEATURE_CRASH_REPORTER
   // start CrashManager
   if (![self isCrashManagerDisabled]) {
