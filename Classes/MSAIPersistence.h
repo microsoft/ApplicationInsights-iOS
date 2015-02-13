@@ -30,6 +30,7 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
 
 /**
 * Saves the bundle and sends out a kMSAIPersistenceSuccessNotification in case of success
+* for all types except MSAIPersistenceTypeFakeCrash
 * @param bundle a bundle of tracked events (telemetry, crashes, ...) that will be serialized and saved.
 * @param type The type of the bundle we want to save.
 * @param completionBlock An optional block that will be executed after we have tried to save the bundle.
@@ -53,7 +54,7 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
 + (NSArray *)nextBundle;
 
 ///-----------------------------------------------------------------------------
-/// @name Handling of FakeReport
+/// @name Handling of a "fake" CrashReport
 ///-----------------------------------------------------------------------------
 
 /**

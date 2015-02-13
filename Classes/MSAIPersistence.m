@@ -18,6 +18,7 @@ static dispatch_once_t onceToken = nil;
 
 /**
 * Creates a serial background queue that saves the Bundle using NSKeyedArchiver and NSData's writeToFile:atomically
+* In case MSAIPersistenceTypeFakeCrash, we don't send out a kMSAIPersistenceSuccessNotification, for other types, we do.
 * The optional bundle is optional.
 */
 + (void)persistBundle:(NSArray *)bundle ofType:(MSAIPersistenceType)type withCompletionBlock:(void (^)(BOOL success))completionBlock {
@@ -36,7 +37,9 @@ static dispatch_once_t onceToken = nil;
         BOOL success = [data writeToFile:fileURL atomically:YES];
         if(success) {
           NSLog(@"Wrote %@", fileURL);
-          [strongSelf sendBundleSavedNotification];
+          if(type != MSAIPersistenceTypeFakeCrash) {
+            [strongSelf sendBundleSavedNotification];
+          }
         }
         if(completionBlock) {
           completionBlock(success);
@@ -58,8 +61,13 @@ static dispatch_once_t onceToken = nil;
 * @returns the next available bundle or nil
 */
 + (NSArray *)nextBundle {
+  dispatch_once(&onceToken, ^{
+    persistenceQueue = dispatch_queue_create(kPersistenceQueueString, DISPATCH_QUEUE_SERIAL);
+  });
+  
   __weak typeof(self) weakSelf = self;
   __block NSArray *bundle = nil;
+
   dispatch_sync(persistenceQueue, ^(){
     typeof(self) strongSelf = weakSelf;
     NSString *path = [strongSelf nextURLWithPriority:MSAIPersistenceTypeHighPriority];
