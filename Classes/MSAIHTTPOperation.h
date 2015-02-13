@@ -1,7 +1,16 @@
 #import <Foundation/Foundation.h>
 
 @class MSAIHTTPOperation;
+
+
+/**
+ * A typedefed block that can be used for MSAIHTTPOperation
+ */
 typedef void (^MSAINetworkCompletionBlock)(MSAIHTTPOperation * operation, NSData* data, NSError* error);
+
+/**
+* Subclass of NSOperation that is used for communication with the server.
+*/
 
 @interface MSAIHTTPOperation : NSOperation
 
@@ -9,7 +18,9 @@ typedef void (^MSAINetworkCompletionBlock)(MSAIHTTPOperation * operation, NSData
 
 @property (nonatomic, readonly) NSURLRequest *URLRequest;
 
-//the completion is only called if the operation wasn't cancelled
+/**
+* @param completionBlock block of type MSAINetworkCompletionBlock that will be called in case the MSAIHTTPOperation is not cancelled
+*/
 - (void) setCompletion:(MSAINetworkCompletionBlock) completionBlock;
 
 @property (nonatomic, readonly) NSHTTPURLResponse *response;

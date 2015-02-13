@@ -92,8 +92,8 @@
 
  @param manager The `MSAITelemetryManager` manager instance invoking this delegate
  @param componentManager The `MSAIBaseManager` component instance invoking this delegate, can be `MSAICrashManager` or `MSAIFeedbackManager`
- @see userIDForManager:componentManager:
- @see userEmailForManager:componentManager:
+ @see userIDForTelemetryManager:componentManager:
+ @see userEmailForTelemetryManager:componentManager:
  @see [MSAITelemetryManager userName]
  */
 - (NSString *)userNameForTelemetryManager:(MSAITelemetryManager *)telemetryManager componentManager:(MSAIBaseManager *)componentManager;
@@ -128,9 +128,9 @@
 
  @param manager The `MSAITelemetryManager` manager instance invoking this delegate
  @param componentManager The `MSAIBaseManager` component instance invoking this delegate, can be `MSAICrashManager` or `MSAIFeedbackManager`
- @see userIDForManager:componentManager:
- @see userNameForManager:componentManager:
- @see [MSAITelemetryManager userEmail]
+ @see userIDForTelemetryManager:componentManager:
+ @see userNameForTelemetryManager:componentManager:
+ @see [MSAITelemetryTelemetryManager userEmail]
  */
 - (NSString *)userEmailForTelemetryManager:(MSAITelemetryManager *)telemetryManager componentManager:(MSAIBaseManager *)componentManager;
 

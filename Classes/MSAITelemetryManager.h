@@ -7,13 +7,14 @@
 @class MSAIBaseManager;
 @class MSAICrashManager;
 @class MSAIMetricsManager;
+
 /** 
- The AppInsightsSDK manager. Responsible for setup and management of all components
+ The MSAITelemetryManager is responsible for setup and management of all components
  
  This is the principal SDK class. It represents the entry point for the AppInsightsSDK. The main promises of the class are initializing the SDK modules, providing access to global properties and to all modules. Initialization is divided into several distinct phases:
- 
+
  1. Setup the [AppInsights](http://hockeyapp.net/) app identifier and the optional delegate: This is the least required information on setting up the SDK and using it. It does some simple validation of the app identifier and checks if the app is running from the App Store or not.
- 2. Provides access to the SDK modules `MSAICrashManager`, `MSAIUpdateManager`, and `MSAIFeedbackManager`. This way all modules can be further configured to personal needs, if the defaults don't fit the requirements.
+ 2. Provides access to the SDK module `MSAICrashManager`, (and eventually to the other modules). This way all modules can be further configured to personal needs, if the defaults don't fit the requirements.
  3. Configure each module.
  4. Start up all modules.
  
@@ -54,15 +55,12 @@
 
 
 /**
- Initializes the manager with a particular app identifier
- 
  Initialize the manager with a AppInsights app identifier.
  
     [[MSAITelemetryManager sharedMSAIManager]
       configureWithInstrumentationKey:@"<instrumentationKeyFromApplicationInsights>"];
  
  @see configureWithInstrumentationKey:delegate:
- @see configureWithBetaIdentifier:liveIdentifier:delegate:
  @see startManager
  @param instrumentationKey The app identifier that should be used.
  */
@@ -81,12 +79,9 @@
                      delegate:nil];
 
  @see configureWithInstrumentationKey:
- @see configureWithBetaIdentifier:liveIdentifier:delegate:
  @see startManager
  @see MSAITelemetryManagerDelegate
  @see MSAICrashManagerDelegate
- @see MSAIUpdateManagerDelegate
- @see MSAIFeedbackManagerDelegate
  @param instrumentationKey The app identifier that should be used.
  @param delegate `nil` or the class implementing the option protocols
  */
@@ -99,7 +94,6 @@
  Call this after configuring the manager and setting up all modules.
  
  @see configureWithInstrumentationKey:delegate:
- @see configureWithBetaIdentifier:liveIdentifier:delegate:
  */
 - (void)startManager;
 
@@ -123,8 +117,6 @@
  
  @see MSAITelemetryManagerDelegate
  @see MSAICrashManagerDelegate
- @see MSAIUpdateManagerDelegate
- @see MSAIFeedbackManagerDelegate
  */
 @property (nonatomic, weak) id<MSAITelemetryManagerDelegate> delegate;
 
@@ -175,7 +167,7 @@
  not be collected and send.
  
  *Default*: _NO_
- @see metricsManager
+ @see MSAIMetricsManager
  */
 @property (nonatomic, getter = isMetricsManagerDisabled) BOOL disableMetricsManager;
 
@@ -268,7 +260,7 @@
 
  @see userName
  @see userEmail
- @see `[MSAITelemetryManagerDelegate userIDForManager:componentManager:]`
+ @see `[MSAITelemetryManagerDelegate userIDForTelemetryManager:componentManager:]`
  */
 @property (nonatomic, retain) NSString *userID;
 
@@ -293,7 +285,7 @@
 
  @see userID
  @see userEmail
- @see `[MSAITelemetryManagerDelegate userNameForManager:componentManager:]`
+ @see `[MSAITelemetryManagerDelegate userNameForTelemetryManager:componentManager:]`
  */
 @property (nonatomic, retain) NSString *userName;
 
@@ -318,7 +310,7 @@
 
  @see userID
  @see userName
- @see `[MSAITelemetryManagerDelegate userEmailForManager:componentManager:]`
+ @see `[MSAITelemetryManagerDelegate userEmailForTelemetryManager:componentManager:]`
  */
 @property (nonatomic, retain) NSString *userEmail;
 

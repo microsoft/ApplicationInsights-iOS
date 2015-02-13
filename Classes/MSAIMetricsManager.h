@@ -3,6 +3,12 @@
 @class MSAIContext;
 @class MSAIAppClient;
 
+/**
+* MSAIMetricsManager is the component of the Application Insights SDK for iOS that is responsible for all things
+* that are related to metrics and tracking.
+* It provides methods to track custom events, traces, metrics, pageviews and exceptions.
+*/
+
 @interface MSAIMetricsManager : NSObject
 
 ///-----------------------------------------------------------------------------
