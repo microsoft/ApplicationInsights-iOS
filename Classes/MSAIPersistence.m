@@ -53,24 +53,26 @@ static dispatch_once_t onceToken = nil;
   }
 }
 
+/**
+* Uses the persistenceQueue to retrieve the next bundle synchronously.
+* @returns the next available bundle or nil
+*/
 + (NSArray *)nextBundle {
-  NSString *path = [self nextURLWithPriority:MSAIPersistenceTypeHighPriority];
-  if(!path) {
-    path = [self nextURLWithPriority:MSAIPersistenceTypeRegular];
-  }
+  __weak typeof(self) weakSelf = self;
+  __block NSArray *bundle = nil;
+  dispatch_sync(persistenceQueue, ^(){
+    typeof(self) strongSelf = weakSelf;
+    NSString *path = [strongSelf nextURLWithPriority:MSAIPersistenceTypeHighPriority];
+    if(!path) {
+      path = [strongSelf nextURLWithPriority:MSAIPersistenceTypeRegular];
+    }
 
-  if(path) {
-    NSArray *bundle = [self bundleAtPath:path];
-    if(bundle) {
-      return bundle;
+    if(path) {
+      bundle = [strongSelf bundleAtPath:path];
     }
-    else {
-      return nil;
-    }
-  }
-  else {
-    return nil;
-  }
+  });
+
+  return bundle;
 }
 
 /**
@@ -121,7 +123,7 @@ static dispatch_once_t onceToken = nil;
 + (void)deleteBundleAtPath:(NSString *)path {
   if([path rangeOfString:kFileBaseString].location != NSNotFound) {
     NSError *error = nil;
-    [[NSFileManager defaultManager] removeItemAtPath:path error:&error];
+    [[NSFileManager new] removeItemAtPath:path error:&error];
     if(error) {
       NSLog(@"Error deleting file at path %@", path);
     }

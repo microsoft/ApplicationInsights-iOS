@@ -42,7 +42,9 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
 ///-----------------------------------------------------------------------------
 
 /**
-* Get a bundle of previously saved data from disk and deletes it. It will return bundles of MSAIPersistenceType first.
+* Get a bundle of previously saved data from disk and deletes it using dispatch_sync.
+* @warning Make sure nextBundle is not called from the main thread.
+* It will return bundles of MSAIPersistenceType first.
 * Between bundles of the same MSAIPersistenceType, the order is arbitrary.
 * Returns 'nil' if no bundle is available
 * @return a bundle of AppInsightsData that's ready to be sent to the server
