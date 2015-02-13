@@ -7,10 +7,13 @@
 @interface MSAISender ()
 
 @property (nonatomic, strong) NSArray *currentBundle;
+@property (getter=isSending) BOOL sending;
 
 @end
 
 @implementation MSAISender
+
+@synthesize sending = _sending;
 
 #pragma mark - Initialize & configure shared instance
 
@@ -45,12 +48,20 @@
                       // If something was persisted, we have to send it to the server.
                       [strongSelf sendSavedData];
                     });
-  }];
+                  }];
 }
 
 #pragma mark - Sending
 
 - (void)sendSavedData {
+  
+  @synchronized(self){
+    if(_sending)
+      return;
+    else
+      _sending = YES;
+  }
+  
   NSArray *bundle = [MSAIPersistence nextBundle];
   if(bundle && bundle.count > 0 && !self.currentBundle) {
     self.currentBundle = bundle;
@@ -63,9 +74,10 @@
     else {
       NSLog(@"Error creating JSON from bundle array, saving bundle back to disk");
       [MSAIPersistence persistBundle:bundle ofType:MSAIPersistenceTypeRegular withCompletionBlock:nil];
-        //TODO: more error handling!
+      self.sending = NO;
     }
   }
+  
 }
 
 - (void)sendRequest:(NSURLRequest *)request {
@@ -78,18 +90,19 @@
                                     typeof(self) strongSelf = weakSelf;
                                     NSInteger statusCode = [operation.response statusCode];
                                     self.currentBundle = nil;
+                                    self.sending = NO;
                                     if(statusCode >= 200 && statusCode < 400) {
                                       
-                                        NSLog(@"Sent data with status code: %ld", (long) statusCode);
-                                        NSLog(@"Response data:\n%@", [NSJSONSerialization JSONObjectWithData:responseData options:0 error:nil]);
-                                        
-                                        [strongSelf sendSavedData];
+                                      NSLog(@"Sent data with status code: %ld", (long) statusCode);
+                                      NSLog(@"Response data:\n%@", [NSJSONSerialization JSONObjectWithData:responseData options:0 error:nil]);
+                                      
+                                      [strongSelf sendSavedData];
                                       
                                     } else {
                                       NSLog(@"Sending failed");
+                                    
                                       //[MSAIPersistence persistBundle:self.currentBundle];
-                                      
-                                        //TODO trigger sending again -> later and somewhere else?!
+                                      //TODO trigger sending again -> later and somewhere else?!
                                     }
                                   }];
   
@@ -123,6 +136,20 @@
   NSString *contentType = @"application/json";
   [request setValue:contentType forHTTPHeaderField:@"Content-type"];
   return request;
+}
+
+#pragma mark - Getter/Setter
+
+- (BOOL)isSending {
+  @synchronized(self){
+    return _sending;
+  }
+}
+
+- (void)setSending:(BOOL)sending {
+  @synchronized(self){
+    _sending = sending;
+  }
 }
 
 @end
