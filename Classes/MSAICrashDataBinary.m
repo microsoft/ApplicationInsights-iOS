@@ -39,4 +39,33 @@
     return dict;
 }
 
+#pragma mark - NSCoding
+
+- (id)initWithCoder:(NSCoder *)coder {
+  self = [super initWithCoder:coder];
+  if(self) {
+    self.startAddress = [coder decodeObjectForKey:@"self.startAddress"];
+    self.endAddress = [coder decodeObjectForKey:@"self.endAddress"];
+    self.name = [coder decodeObjectForKey:@"self.name"];
+    self.cpuType = [coder decodeObjectForKey:@"self.cpuType"];
+    self.cpuSubType = [coder decodeObjectForKey:@"self.cpuSubType"];
+    self.uuid = [coder decodeObjectForKey:@"self.uuid"];
+    self.path = [coder decodeObjectForKey:@"self.path"];
+  }
+
+  return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+  [super encodeWithCoder:coder];
+  [coder encodeObject:self.startAddress forKey:@"self.startAddress"];
+  [coder encodeObject:self.endAddress forKey:@"self.endAddress"];
+  [coder encodeObject:self.name forKey:@"self.name"];
+  [coder encodeObject:self.cpuType forKey:@"self.cpuType"];
+  [coder encodeObject:self.cpuSubType forKey:@"self.cpuSubType"];
+  [coder encodeObject:self.uuid forKey:@"self.uuid"];
+  [coder encodeObject:self.path forKey:@"self.path"];
+}
+
+
 @end

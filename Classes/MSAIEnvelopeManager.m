@@ -6,8 +6,11 @@
 #import "MSAITelemetryContext.h"
 #import "MSAITelemetryContextPrivate.h"
 #import "MSAIHelper.h"
+#import "MSAICrashDataProvider.h"
 
 @implementation MSAIEnvelopeManager
+
+#pragma mark - Initialize and configure singleton instance
 
 - (void)configureWithTelemetryContext:(MSAITelemetryContext *)telemetryContext{
 
@@ -16,8 +19,9 @@
   }
 }
 
-+ (id)sharedChannel {
++ (id)sharedManager {
   static MSAIEnvelopeManager *sharedManager = nil;
+  
   static dispatch_once_t onceToken;
   dispatch_once(&onceToken, ^{
     sharedManager = [self new];
@@ -25,20 +29,22 @@
   return sharedManager;
 }
 
-- (MSAIEnvelope *)envelopeForTelemetryData:(MSAITelemetryData *)telemetryData{
-  [telemetryData setVersion:@(2)];
-  
-  MSAIData *data = [MSAIData new];
-  data.baseData = telemetryData;
-  data.baseType = telemetryData.dataTypeName;
-  
+#pragma mark - Update context
+
+- (void)createNewSession{
+  @synchronized(self) {
+    [_telemetryContext createNewSession];
+  }
+}
+
+#pragma mark - Create envelope objects
+
+- (MSAIEnvelope *)envelope{
   MSAIEnvelope *envelope = [MSAIEnvelope new];
   envelope.appId = msai_mainBundleIdentifier();
   envelope.appVer = _telemetryContext.application.version;
   envelope.Time = [self dateStringForDate:[NSDate date]];
   envelope.iKey = _telemetryContext.instrumentationKey;
-  envelope.data = data;
-  envelope.name = telemetryData.envelopeTypeName;
   
   MSAIDevice *deviceContext = _telemetryContext.device;
   if (deviceContext.deviceId) {
@@ -55,10 +61,35 @@
   return envelope;
 }
 
+- (MSAIEnvelope *)envelopeForTelemetryData:(MSAITelemetryData *)telemetryData{
+  [telemetryData setVersion:@(2)];
+  
+  MSAIData *data = [MSAIData new];
+  data.baseData = telemetryData;
+  data.baseType = telemetryData.dataTypeName;
+  
+  MSAIEnvelope *envelope = [self envelope];
+  envelope.data = data;
+  envelope.name = telemetryData.envelopeTypeName;
+  
+  return envelope;
+}
+
+- (MSAIEnvelope *)envelopeForCrashReport:(MSAIPLCrashReport *)report{
+  return [self envelopeForCrashReport:report exception:nil];
+}
+
+- (MSAIEnvelope *)envelopeForCrashReport:(MSAIPLCrashReport *)report exception:(NSException *)exception{
+  return [MSAICrashDataProvider crashDataForCrashReport:(PLCrashReport *)report handledException:exception];
+}
+
+#pragma mark - Helper
+
 - (NSString *)dateStringForDate:(NSDate *)date {
   NSDateFormatter *dateFormatter = [NSDateFormatter new];
   dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
   NSString *dateString = [dateFormatter stringFromDate:date];
+  
   return dateString;
 }
 

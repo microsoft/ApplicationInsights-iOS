@@ -33,51 +33,8 @@
 - (void)configureWithAppClient:(MSAIAppClient *)appClient endpointPath:(NSString *)endpointPath;
 
 ///-----------------------------------------------------------------------------
-/// @name Queue management
+/// @name Sending data
 ///-----------------------------------------------------------------------------
-
-/**
- *  A queue which makes array operations thread safe.
- */
-@property (nonatomic, strong) dispatch_queue_t dataItemsOperations;
-
-/**
- *  An array for collecting data, which should be sent to the telemetry server.
- */
-@property(nonatomic, strong) NSMutableArray *dataItemQueue;
-
-/**
- *  Add metrics data to sender queue.
- *
- *  @param dataDict data which should be sent
- */
-- (void)enqueueDataDict:(NSDictionary *)dataDict;
-
-- (void)enqueueCrashDict:(NSDictionary *)crashDict withCompletionBlock:(MSAINetworkCompletionBlock)completion;
-
-///-----------------------------------------------------------------------------
-/// @name Batching
-///-----------------------------------------------------------------------------
-
-/**
- *  A timer source which is used to flush the queue after a cretain time.
- */
-@property (nonatomic, strong) dispatch_source_t timerSource;
-
-/**
- *  Starts the timer.
- */
-- (void)startTimer;
-
-/**
- *  Stops the timer if currently running.
- */
-- (void)invalidateTimer;
-
-/**
- *  Sends all enqueued events.
- */
-- (void)persistQueue;
 
 /**
  *  Creates a HTTP operation and puts it to the queue.
@@ -95,10 +52,18 @@
  *
  *  @param data the data which should be sent
  *
- *  @return a request which contains the given data.
+ *  @return a request which contains the given data
  */
 - (NSURLRequest *)requestForData:(NSData *)data;
 
+/**
+ *  Convert a collection of envelope objects to array of dictionaries.
+ *
+ *  @param envelopeArray array of envelope objects
+ *
+ *  @return a json array of envelope objects
+ */
+- (NSArray *)jsonArrayFromArray:(NSArray *)envelopeArray;
 
 
 @end

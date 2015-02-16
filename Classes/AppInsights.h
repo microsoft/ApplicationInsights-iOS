@@ -2,7 +2,6 @@
 #define MSAI_h
 
 #import "AppInsightsFeatureConfig.h"
-
 #import "MSAITelemetryManager.h"
 #import "MSAITelemetryManagerDelegate.h"
 
@@ -14,6 +13,7 @@
 #endif /* MSAI_FEATURE_CRASH_REPORTER */
 
 #if MSAI_FEATURE_METRICS
+#import "MSAICategoryContainer.h"
 #import "MSAIMetricsManager.h"
 #endif /* MSAI_FEATURE_METRICS */
 

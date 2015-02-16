@@ -9,7 +9,6 @@
 #import "MSAIAppClient.h"
 #import "MSAISender.h"
 #import "MSAISenderPrivate.h"
-#import "MSAITelemetryContext.h"
 #import "MSAIEnvelope.h"
 
 @interface MSAISenderTests : XCTestCase
@@ -40,7 +39,6 @@
   assertThat(_sut, notNilValue());
   assertThat([_sut endpointPath], nilValue());
   assertThat([_sut appClient], nilValue());
-  assertThat([_sut dataItemQueue], notNilValue());
 }
 
 - (void)testConfiguredPropertiesNotNil {
@@ -66,15 +64,6 @@
 
   assertThat(testRequest, notNilValue());
   assertThat([testRequest HTTPBody], equalTo(expectedBodyData));
-}
-
-- (void)testDataGetsEnqueued {
-   assertThatInt((int)[[_sut dataItemQueue] count], equalToInt(0));
-  
-  [_sut enqueueDataDict:[NSDictionary new]];
-  [_sut enqueueDataDict:[NSDictionary new]];
-  
-  assertThatInt((int)[[_sut dataItemQueue] count], equalToInt(2));
 }
 
 - (void)testEnqueueRequest {

@@ -9,9 +9,13 @@
 #import "MSAIContextPrivate.h"
 #import "MSAICategoryContainer.h"
 #import "MSAIChannel.h"
+#import "MSAISender.h"
+#import "MSAISenderPrivate.h"
 #import "MSAIChannelPrivate.h"
 #import "MSAITelemetryContext.h"
 #import "MSAITelemetryContextPrivate.h"
+#import "MSAIEnvelopeManager.h"
+#import "MSAIEnvelopeManagerPrivate.h"
 #include <stdint.h>
 
 
@@ -37,6 +41,8 @@
   MSAIAppClient *_appClient;
   
   MSAIContext *_appContext;
+  
+  MSAITelemetryContext *_telemetryContext;
 }
 
 #pragma mark - Private Class Methods
@@ -132,7 +138,9 @@
   MSAILog(@"INFO: Starting MSAITelemetryManager");
   _startManagerIsInvoked = YES;
   
-  [[MSAIChannel sharedChannel]configureWithAppClient:[self appClient] telemetryContext: [self telemetryContext]];
+  [[MSAIEnvelopeManager sharedManager] configureWithTelemetryContext:[self telemetryContext]];
+  [[MSAISender sharedSender] configureWithAppClient:[self appClient] endpointPath:[[self telemetryContext] endpointPath]];
+  [[MSAISender sharedSender] sendSavedData];
 #if MSAI_FEATURE_CRASH_REPORTER
   // start CrashManager
   if (![self isCrashManagerDisabled]) {
@@ -269,6 +277,11 @@
 #pragma mark - Private Instance Methods
 
 - (MSAITelemetryContext *)telemetryContext{
+  
+  if(_telemetryContext){
+    return _telemetryContext;
+  }
+  
   MSAIDevice *deviceContext = [MSAIDevice new];
   [deviceContext setModel: [_appContext deviceModel]];
   [deviceContext setType:[_appContext deviceType]];

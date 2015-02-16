@@ -149,7 +149,7 @@ typedef NS_ENUM(NSUInteger, MSAICrashManagerUserInput) {
  `MSAICrashManagerStatus`.
  
  @see MSAICrashManagerStatus
- @see alertViewHandler
+ @see MSAICustomAlertViewHandler
  */
 @property (nonatomic, assign) MSAICrashManagerStatus crashManagerStatus;
 

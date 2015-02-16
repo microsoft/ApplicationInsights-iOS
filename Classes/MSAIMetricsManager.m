@@ -19,13 +19,12 @@
 #import "MSAIPageViewData.h"
 #import "MSAIDataPoint.h"
 #import "MSAIEnums.h"
-#import "MSAIExceptionFormatter.h"
+#import "MSAICrashDataProvider.h"
 #import "MSAICrashData.h"
 #import <pthread.h>
 #import <CrashReporter/CrashReporter.h>
-
-#if MSAI_FEATURE_CRASH_REPORTER
-#endif
+#import "MSAIEnvelopeManager.h"
+#import "MSAIEnvelopeManagerPrivate.h"
 
 NSString *const kMSAIApplicationWasLaunched = @"MSAIApplicationWasLaunched";
 static NSString *const kMSAIApplicationDidEnterBackgroundTime = @"MSAIApplicationDidEnterBackgroundTime";
@@ -80,11 +79,11 @@ static id appWillTerminateObserver;
   __weak typeof(self) weakSelf = self;
   dispatch_async(metricEventQueue, ^{
     typeof(self) strongSelf = weakSelf;
+    
     MSAIEventData *eventData = [MSAIEventData new];
     [eventData setName:eventName];
     [eventData setProperties:properties];
     [eventData setMeasurements:measurements];
-    
     [strongSelf trackDataItem:eventData];
   });
 }
@@ -99,10 +98,10 @@ static id appWillTerminateObserver;
   __weak typeof(self) weakSelf = self;
   dispatch_async(metricEventQueue, ^{
     typeof(self) strongSelf = weakSelf;
+    
     MSAIMessageData *messageData = [MSAIMessageData new];
     [messageData setMessage:message];
     [messageData setProperties:properties];
-    
     [strongSelf trackDataItem:messageData];
   });
 }
@@ -117,6 +116,7 @@ static id appWillTerminateObserver;
   __weak typeof(self) weakSelf = self;
   dispatch_async(metricEventQueue, ^{
     typeof(self) strongSelf = weakSelf;
+    
     MSAIMetricData *metricData = [MSAIMetricData new];
     MSAIDataPoint *data = [MSAIDataPoint new];
     [data setCount:@(1)];
@@ -132,29 +132,19 @@ static id appWillTerminateObserver;
 }
 
 + (void)trackException:(NSException *)exception{
-  
-  
-  
   PLCrashReporterSignalHandlerType signalHandlerType = PLCrashReporterSignalHandlerTypeBSD;
-  
   PLCrashReporterSymbolicationStrategy symbolicationStrategy = PLCrashReporterSymbolicationStrategyAll;
-  
   MSAIPLCrashReporterConfig *config = [[MSAIPLCrashReporterConfig alloc] initWithSignalHandlerType: signalHandlerType
-                                                                             symbolicationStrategy: symbolicationStrategy];
-  NSError *error = NULL;
+                                                                              symbolicationStrategy: symbolicationStrategy];
   MSAIPLCrashReporter *cm = [[MSAIPLCrashReporter alloc] initWithConfiguration:config];
   NSData *data = [cm generateLiveReportWithThread:pthread_mach_thread_np(pthread_self())];
-  MSAIPLCrashReport *report = [[MSAIPLCrashReport alloc] initWithData:data error:&error];
+  MSAIPLCrashReport *report = [[MSAIPLCrashReport alloc] initWithData:data error:nil];
   
-  __weak typeof(self) weakSelf = self;
   dispatch_async(metricEventQueue, ^{
-    typeof(self) strongSelf = weakSelf;
-    MSAICrashData *exceptionData = [MSAIExceptionFormatter crashDataForCrashReport:report crashReporterKey:nil handledException:exception];
-    [strongSelf trackDataItem:exceptionData];
+    MSAIEnvelope *envelope = [[MSAIEnvelopeManager sharedManager] envelopeForCrashReport:(PLCrashReport *)report exception:exception];
+    [[MSAIChannel sharedChannel] enqueueEnvelope:envelope];
   });
 }
-
-#pragma mark - PageView
 
 + (void)trackPageView:(NSString *)pageName {
   [self trackPageView:pageName duration:nil];
@@ -170,12 +160,11 @@ static id appWillTerminateObserver;
   __weak typeof(self) weakSelf = self;
   dispatch_async(metricEventQueue, ^{
     typeof(self) strongSelf = weakSelf;
-    MSAIPageViewData *pageViewData = [MSAIPageViewData new];
     
+    MSAIPageViewData *pageViewData = [MSAIPageViewData new];
     pageViewData.name = pageName;
     pageViewData.duration = [NSString stringWithFormat:@"%ld", duration];
     pageViewData.properties = properties;
-    
     [strongSelf trackDataItem:pageViewData];
   });
 }
@@ -184,7 +173,9 @@ static id appWillTerminateObserver;
 
 + (void)trackDataItem:(MSAITelemetryData *)dataItem{
   if(disableMetricsManager || !managerInitialised) return;
-  [[MSAIChannel sharedChannel] sendDataItem:dataItem];
+  
+  MSAIEnvelope *envelope = [[MSAIEnvelopeManager sharedManager] envelopeForTelemetryData:dataItem];
+  [[MSAIChannel sharedChannel] enqueueEnvelope:envelope];
 }
 
 #pragma mark - Session update
@@ -240,7 +231,7 @@ static id appWillTerminateObserver;
   double appDidEnterBackgroundTime = [[NSUserDefaults standardUserDefaults] doubleForKey:kMSAIApplicationDidEnterBackgroundTime];
   double timeSinceLastBackground = [[NSDate date] timeIntervalSince1970] - appDidEnterBackgroundTime;
   if (timeSinceLastBackground > defaultSessionExpirationTime) {
-    [[[MSAIChannel sharedChannel] telemetryContext] createNewSession];
+    [[MSAIEnvelopeManager sharedManager] createNewSession];
     [self trackEventWithName:@"Session Start Event"];
     [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kMSAIApplicationWasLaunched];
   }

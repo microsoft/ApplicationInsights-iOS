@@ -44,4 +44,23 @@
     return dict;
 }
 
+- (id)initWithCoder:(NSCoder *)coder {
+  self = [super initWithCoder:coder];
+  if(self) {
+    self.headers = [coder decodeObjectForKey:@"self.headers"];
+    self.threads = [coder decodeObjectForKey:@"self.threads"];
+    self.binaries = [coder decodeObjectForKey:@"self.binaries"];
+  }
+
+  return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+  [super encodeWithCoder:coder];
+  [coder encodeObject:self.headers forKey:@"self.headers"];
+  [coder encodeObject:self.threads forKey:@"self.threads"];
+  [coder encodeObject:self.binaries forKey:@"self.binaries"];
+}
+
+
 @end

@@ -10,78 +10,120 @@
 #import "MSAISender.h"
 #import "MSAISenderPrivate.h"
 #import "MSAIHelper.h"
+#import "MSAIPersistence.h"
+
+#ifdef DEBUG
+static NSInteger const defaultMaxBatchCount = 5;
+static NSInteger const defaultBatchInterval = 15;
+#else
+static NSInteger const defaultMaxBatchCount = 5;
+static NSInteger const defaultBatchInterval = 15;
+#endif
+
+static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.senderQueue";
 
 @implementation MSAIChannel
 
 #pragma mark - Initialisation
 
-- (instancetype)configureWithAppClient:(MSAIAppClient *) appClient telemetryContext:(MSAITelemetryContext *)telemetryContext {
-  
-    _telemetryContext = telemetryContext;
-    _sender = [MSAISender sharedSender];
-    [_sender configureWithAppClient:appClient endpointPath:[_telemetryContext endpointPath]];
-
-  return self;
-}
-
 + (id)sharedChannel {
   static MSAIChannel *sharedChannel = nil;
+  
   static dispatch_once_t onceToken;
   dispatch_once(&onceToken, ^{
     sharedChannel = [self new];
+    dispatch_queue_t serialQueue = dispatch_queue_create(MSAIDataItemsOperationsQueue, DISPATCH_QUEUE_SERIAL);
+    [sharedChannel setDataItemsOperations:serialQueue];
   });
+  
   return sharedChannel;
 }
 
-#pragma mark - Enqueue data
-
-- (void)sendDataItem:(MSAITelemetryData *)dataItem {
-  NSDictionary *dataDict = [self dictionaryFromDataItem:dataItem];
-  [_sender enqueueDataDict:dataDict];
+- (instancetype)init {
+  if(self = [super init]) {
+    self.dataItemQueue = [NSMutableArray array];
+    self.senderBatchSize = defaultMaxBatchCount;
+    self.senderInterval = defaultBatchInterval;
+  }
+  return self;
 }
 
-- (void)sendCrashItem:(MSAICrashData *)crashItem withCompletionBlock:(MSAINetworkCompletionBlock) completion{
-  NSDictionary *crashDict = [self dictionaryFromDataItem:crashItem];
-  [_sender enqueueCrashDict:crashDict withCompletionBlock:completion];
+#pragma mark - Queue management
+
+- (void)enqueueEnvelope:(MSAIEnvelope *)envelope{
+  if(envelope) {
+    
+    __weak typeof(self) weakSelf = self;
+    dispatch_async(self.dataItemsOperations, ^{
+      typeof(self) strongSelf = weakSelf;
+      
+      // Enqueue item
+      [strongSelf->_dataItemQueue addObject:envelope];
+      
+      if([strongSelf->_dataItemQueue count] >= strongSelf.senderBatchSize) {
+        
+        // Max batch count has been reached, so write queue to disk and delete all items.
+        [strongSelf invalidateTimer];
+        NSArray *bundle = [NSArray arrayWithArray:strongSelf->_dataItemQueue];
+        [MSAIPersistence persistBundle:bundle ofType:MSAIPersistenceTypeRegular withCompletionBlock:nil];
+        [strongSelf->_dataItemQueue removeAllObjects];
+      } else if([strongSelf->_dataItemQueue count] == 1) {
+        
+        // It is the first item, let's start the timer
+        [strongSelf startTimer];
+      }
+    });
+  }
 }
 
-#pragma mark - Helper
-
-- (NSDictionary *)dictionaryFromDataItem:(MSAITelemetryData *)dataItem{
-  [dataItem setVersion:@(2)];
-  
-  MSAIData *data = [MSAIData new];
-  [data setBaseData:dataItem];
-  [data setBaseType:[dataItem dataTypeName]];
-  
-  MSAIEnvelope *envelope = [MSAIEnvelope new];
-  envelope.appId = msai_mainBundleIdentifier();
-  envelope.appVer = msai_appVersion();
-  [envelope setTime:[self dateStringForDate:[NSDate date]]];
-  [envelope setIKey:[_telemetryContext instrumentationKey]];
-  [envelope setData:data];
-  [envelope setName:[dataItem envelopeTypeName]];
-  
-  MSAIDevice *deviceContext = _telemetryContext.device;
-  if (deviceContext.deviceId) {
-    envelope.deviceId = deviceContext.deviceId;
-  }
-  if (deviceContext.os) {
-    envelope.os = deviceContext.os;
-  }
-  if (deviceContext.osVersion) {
-    envelope.osVer = deviceContext.osVersion;
-  }
-  
-  [envelope setTags:[_telemetryContext  contextDictionary]];
-  return [envelope serializeToDictionary];
+- (void)processEnvelope:(MSAIEnvelope *)envelope withCompletionBlock: (void (^)(BOOL success)) completionBlock{
+  [MSAIPersistence persistBundle:[NSArray arrayWithObject:envelope]
+                          ofType:MSAIPersistenceTypeHighPriority withCompletionBlock:completionBlock];
 }
 
-- (NSString *)dateStringForDate:(NSDate *)date {
-  NSDateFormatter *dateFormatter = [NSDateFormatter new];
-  dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
-  NSString *dateString = [dateFormatter stringFromDate:date];
-  return dateString;
+- (NSMutableArray *)dataItemQueue {
+  __block NSMutableArray *queue = nil;
+  __weak typeof(self) weakSelf = self;
+  dispatch_sync(self.dataItemsOperations, ^{
+    typeof(self) strongSelf = weakSelf;
+    
+    queue = [NSMutableArray arrayWithArray:strongSelf->_dataItemQueue];
+  });
+  return queue;
+}
+
+#pragma mark - Batching
+
+- (void)invalidateTimer {
+  if(self.timerSource) {
+    dispatch_source_cancel(self.timerSource);
+    self.timerSource = nil;
+  }
+}
+
+- (void)startTimer {
+
+  // Reset timer, if it is already running
+  if(self.timerSource) {
+    [self invalidateTimer];
+  }
+
+  self.timerSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, self.dataItemsOperations);
+  dispatch_source_set_timer(self.timerSource, dispatch_walltime(NULL, NSEC_PER_SEC * self.senderInterval), 1ull * NSEC_PER_SEC, 1ull * NSEC_PER_SEC);
+  dispatch_source_set_event_handler(self.timerSource, ^{
+    
+    // On completion: Reset timer and persist items
+    [self invalidateTimer];
+    [self persistQueue];
+  });
+  dispatch_resume(self.timerSource);
+}
+
+- (void)persistQueue {
+  //TODO this doesn't seem to work properly!
+  NSArray *bundle = [NSArray arrayWithArray:_dataItemQueue];
+  [MSAIPersistence persistBundle:bundle ofType:MSAIPersistenceTypeRegular withCompletionBlock:nil];
+  [_dataItemQueue removeAllObjects];
 }
 
 @end
