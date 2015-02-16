@@ -94,8 +94,8 @@
 #pragma mark - Helper
 
 - (void)testUserIDForCrashReport {
-  MSAITelemetryManager *tm = [MSAITelemetryManager sharedMSAIManager];
-  id delegateMock = mockProtocol(@protocol(MSAITelemetryManagerDelegate));
+  MSAIManager *tm = [MSAIManager sharedMSAIManager];
+  id delegateMock = mockProtocol(@protocol(MSAIManagerDelegate));
   tm.delegate = delegateMock;
   _sut.delegate = delegateMock;
   
@@ -107,8 +107,8 @@
 }
 
 - (void)testUserNameForCrashReport {
-  MSAITelemetryManager *hm = [MSAITelemetryManager sharedMSAIManager];
-  id delegateMock = mockProtocol(@protocol(MSAITelemetryManagerDelegate));
+  MSAIManager *hm = [MSAIManager sharedMSAIManager];
+  id delegateMock = mockProtocol(@protocol(MSAIManagerDelegate));
   hm.delegate = delegateMock;
   _sut.delegate = delegateMock;
   
@@ -120,8 +120,8 @@
 }
 
 - (void)testUserEmailForCrashReport {
-  MSAITelemetryManager *hm = [MSAITelemetryManager sharedMSAIManager];
-  id delegateMock = mockProtocol(@protocol(MSAITelemetryManagerDelegate));
+  MSAIManager *hm = [MSAIManager sharedMSAIManager];
+  id delegateMock = mockProtocol(@protocol(MSAIManagerDelegate));
   hm.delegate = delegateMock;
   _sut.delegate = delegateMock;
   

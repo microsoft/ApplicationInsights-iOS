@@ -28,7 +28,7 @@
 #endif /* MSAI_FEATURE_METRICS */
 
 
-@implementation MSAITelemetryManager {
+@implementation MSAIManager {
   
   BOOL _validInstrumentationKey;
   
@@ -68,12 +68,12 @@
 
 #pragma mark - Public Class Methods
 
-+ (MSAITelemetryManager *)sharedMSAIManager {
-  static MSAITelemetryManager *sharedInstance = nil;
++ (MSAIManager *)sharedMSAIManager {
+  static MSAIManager *sharedInstance = nil;
   static dispatch_once_t pred;
   
   dispatch_once(&pred, ^{
-    sharedInstance = [MSAITelemetryManager alloc];
+    sharedInstance = [MSAIManager alloc];
     sharedInstance = [sharedInstance init];
   });
   
@@ -119,7 +119,7 @@
   [self initializeModules];
 }
 
-- (void)configureWithInstrumentationKey:(NSString *)instrumentationKey delegate:(id <MSAITelemetryManagerDelegate>)delegate {
+- (void)configureWithInstrumentationKey:(NSString *)instrumentationKey delegate:(id <MSAIManagerDelegate>)delegate {
   _delegate = delegate;
   _appContext = [[MSAIContext alloc] initWithInstrumentationKey:instrumentationKey isAppStoreEnvironment:_appStoreEnvironment];
   
@@ -135,7 +135,7 @@
   
   if (![self isSetUpOnMainThread]) return;
   
-  MSAILog(@"INFO: Starting MSAITelemetryManager");
+  MSAILog(@"INFO: Starting MSAIManager");
   _startManagerIsInvoked = YES;
   
   [[MSAIEnvelopeManager sharedManager] configureWithTelemetryContext:[self telemetryContext]];
@@ -186,10 +186,10 @@
 }
 
 
-- (void)setDelegate:(id<MSAITelemetryManagerDelegate>)delegate {
+- (void)setDelegate:(id<MSAIManagerDelegate>)delegate {
   if (![self isAppStoreEnvironment]) {
     if (_startManagerIsInvoked) {
-      NSLog(@"[MSAI] ERROR: The `delegate` property has to be set before calling [[MSAITelemetryManager sharedManager] startManager] !");
+      NSLog(@"[MSAI] ERROR: The `delegate` property has to be set before calling [[MSAIManager sharedManager] startManager] !");
     }
   }
   
@@ -388,7 +388,7 @@
 - (void)validateStartManagerIsInvoked {
   if (_validInstrumentationKey && !_appStoreEnvironment) {
     if (!_startManagerIsInvoked) {
-      NSLog(@"[AppInsightsSDK] ERROR: You did not call [[MSAITelemetryManager sharedManager] startManager] to startup the AppInsightsSDK! Please do so after setting up all properties. The SDK is NOT running.");
+      NSLog(@"[AppInsightsSDK] ERROR: You did not call [[MSAIManager sharedManager] startManager] to startup the AppInsightsSDK! Please do so after setting up all properties. The SDK is NOT running.");
     }
   }
 }

@@ -93,7 +93,7 @@ typedef NS_ENUM(NSUInteger, MSAICrashManagerUserInput) {
  the reports to the AppInsights servers and more.
  
  It also provides options to add additional meta information to each crash report, like `userName`, `userEmail`
- via `MSAITelemetryManagerDelegate` protocol, and additional textual log information via `MSAICrashManagerDelegate`
+ via `MSAIManagerDelegate` protocol, and additional textual log information via `MSAICrashManagerDelegate`
  protocol and a way to detect startup crashes so you can adjust your startup process to get these crash reports
  too and delay your app initialization.
  
@@ -268,7 +268,7 @@ typedef NS_ENUM(NSUInteger, MSAICrashManagerUserInput) {
  previously. You can use this also to disable specific events, like asking
  the user to rate your app.
  
- @warning This property only has a correct value, once `[MSAITelemetryManager startManager]` was
+ @warning This property only has a correct value, once `[MSAIManager startManager]` was
  invoked!
  
  @see lastSessionCrashDetails
@@ -312,7 +312,7 @@ typedef NS_ENUM(NSUInteger, MSAICrashManagerUserInput) {
  
  @warning Block needs to call the `[MSAICrashManager handleUserInput:withUserProvidedMetaData:]` method!
  
- @warning This needs to be set before calling `[MSAITelemetryManager startManager]`!
+ @warning This needs to be set before calling `[MSAIManager startManager]`!
  */
 - (void)setAlertViewHandler:(MSAICustomAlertViewHandler)alertViewHandler;
 
@@ -329,7 +329,7 @@ typedef NS_ENUM(NSUInteger, MSAICrashManagerUserInput) {
  Also the app could have received a low memory warning, but the reason for being killed was
  actually different.
  
- @warning This property only has a correct value, once `[MSAITelemetryManager startManager]` was
+ @warning This property only has a correct value, once `[MSAIManager startManager]` was
  invoked!
  
  @see enableAppNotTerminatingCleanlyDetection

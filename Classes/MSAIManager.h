@@ -2,14 +2,14 @@
 
 
 
-@protocol MSAITelemetryManagerDelegate;
+@protocol MSAIManagerDelegate;
 
 @class MSAIBaseManager;
 @class MSAICrashManager;
 @class MSAIMetricsManager;
 
 /** 
- The MSAITelemetryManager is responsible for setup and management of all components
+ The MSAIManager is responsible for setup and management of all components
  
  This is the principal SDK class. It represents the entry point for the AppInsightsSDK. The main promises of the class are initializing the SDK modules, providing access to global properties and to all modules. Initialization is divided into several distinct phases:
 
@@ -27,10 +27,10 @@
  
  Example:
  
-    [[MSAITelemetryManager sharedManager]
+    [[MSAIManager sharedManager]
       configureWithInstrumentationKey:@"<InstrumentationKeyFromAppInsights>"
                      delegate:nil];
-    [[MSAITelemetryManager sharedManager] startManager];
+    [[MSAIManager sharedManager] startManager];
  
  @warning The SDK is **NOT** thread safe and has to be set up on the main thread!
  
@@ -38,7 +38,7 @@
 
  */
 
-@interface MSAITelemetryManager : NSObject
+@interface MSAIManager : NSObject
 
 #pragma mark - Public Methods
 
@@ -47,17 +47,17 @@
 ///-----------------------------------------------------------------------------
 
 /**
- Returns a shared MSAITelemetryManager object
+ Returns a shared MSAIManager object
  
- @return A singleton MSAITelemetryManager instance ready use
+ @return A singleton MSAIManager instance ready use
  */
-+ (MSAITelemetryManager *)sharedMSAIManager;
++ (MSAIManager *)sharedMSAIManager;
 
 
 /**
  Initialize the manager with a AppInsights app identifier.
  
-    [[MSAITelemetryManager sharedMSAIManager]
+    [[MSAIManager sharedMSAIManager]
       configureWithInstrumentationKey:@"<instrumentationKeyFromApplicationInsights>"];
  
  @see configureWithInstrumentationKey:delegate:
@@ -71,21 +71,21 @@
  Initializes the manager with a particular app identifier and delegate
  
  Initialize the manager with a AppInsights app identifier and assign the class that
- implements the optional protocols `MSAITelemetryManagerDelegate`, `MSAICrashManagerDelegate` or
+ implements the optional protocols `MSAIManagerDelegate`, `MSAICrashManagerDelegate` or
  `MSAIUpdateManagerDelegate`.
  
-    [[MSAITelemetryManager sharedManager]
+    [[MSAIManager sharedManager]
       configureWithIdentifier:@"<InstrumentationKeyFromAppInsights>"
                      delegate:nil];
 
  @see configureWithInstrumentationKey:
  @see startManager
- @see MSAITelemetryManagerDelegate
+ @see MSAIManagerDelegate
  @see MSAICrashManagerDelegate
  @param instrumentationKey The app identifier that should be used.
  @param delegate `nil` or the class implementing the option protocols
  */
-- (void)configureWithInstrumentationKey:(NSString *)instrumentationKey delegate:(id<MSAITelemetryManagerDelegate>)delegate;
+- (void)configureWithInstrumentationKey:(NSString *)instrumentationKey delegate:(id<MSAIManagerDelegate>)delegate;
 
 
 /**
@@ -108,17 +108,17 @@
 /**
  Set the delegate
  
- Defines the class that implements the optional protocol `MSAITelemetryManagerDelegate`.
+ Defines the class that implements the optional protocol `MSAIManagerDelegate`.
  
  The delegate will automatically be propagated to all components. There is no need to set the delegate
  for each component individually.
  
  @warning This property needs to be set before calling `startManager`
  
- @see MSAITelemetryManagerDelegate
+ @see MSAIManagerDelegate
  @see MSAICrashManagerDelegate
  */
-@property (nonatomic, weak) id<MSAITelemetryManagerDelegate> delegate;
+@property (nonatomic, weak) id<MSAIManagerDelegate> delegate;
 
 
 /**
@@ -135,7 +135,7 @@
 /**
  Reference to the initialized MSAICrashManager module
 
- Returns the MSAICrashManager instance initialized by MSAITelemetryManager
+ Returns the MSAICrashManager instance initialized by MSAIManager
  
  @see configureWithInstrumentationKey:delegate:
  @see startManager
@@ -260,7 +260,7 @@
 
  @see userName
  @see userEmail
- @see `[MSAITelemetryManagerDelegate userIDForTelemetryManager:componentManager:]`
+ @see `[MSAIManagerDelegate userIDForTelemetryManager:componentManager:]`
  */
 @property (nonatomic, retain) NSString *userID;
 
@@ -285,7 +285,7 @@
 
  @see userID
  @see userEmail
- @see `[MSAITelemetryManagerDelegate userNameForTelemetryManager:componentManager:]`
+ @see `[MSAIManagerDelegate userNameForTelemetryManager:componentManager:]`
  */
 @property (nonatomic, retain) NSString *userName;
 
@@ -310,7 +310,7 @@
 
  @see userID
  @see userName
- @see `[MSAITelemetryManagerDelegate userEmailForTelemetryManager:componentManager:]`
+ @see `[MSAIManagerDelegate userEmailForTelemetryManager:componentManager:]`
  */
 @property (nonatomic, retain) NSString *userEmail;
 
