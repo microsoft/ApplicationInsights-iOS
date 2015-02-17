@@ -2,7 +2,6 @@
 #import "MSAIReachability.h"
 
 @interface MSAIReachabilityTests : XCTestCase
-
 @end
 
 NSString *const testHostName = @"www.google.com";
