@@ -5,7 +5,6 @@
 #import "AppInsightsPrivate.h"
 #import "MSAIHelper.h"
 
-#import "MSAIBaseManagerPrivate.h"
 #import "MSAIMetricsManagerPrivate.h"
 #import "MSAIChannel.h"
 #import "MSAIChannelPrivate.h"

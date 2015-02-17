@@ -6,7 +6,7 @@
 #endif
 
 @class MSAIManager;
-@class MSAIBaseManager;
+@class MSAICrashManager;
 
 /**
  The `MSAIManagerDelegate` formal protocol defines methods further configuring
@@ -37,7 +37,7 @@
  
  You can find out the component requesting the userID like this:
  
-    - (NSString *)userIDForManager:(MSAIManager *)Manager componentManager:(MSAIBaseManager *)componentManager {
+    - (NSString *)userIDForManager:(MSAIManager *)Manager componentManager:(MSAICrashManager *)componentManager {
       if (componentManager == manager.feedbackManager) {
         return UserIDForFeedback;
       } else if (componentManager == manager.crashManager) {
@@ -55,12 +55,12 @@
  are not anonymous any more and the crash alerts will not show the word "anonymous"!
  
  @param manager The `MSAIManager` manager instance invoking this delegate
- @param componentManager The `MSAIBaseManager` component instance invoking this delegate, can be `MSAICrashManager` or `MSAIFeedbackManager`
+ @param componentManager The `MSAICrashManager` component instance invoking this delegate
  @see userNameForManager:componentManager:
  @see userEmailForManager:componentManager:
  @see [MSAIManager userID]
  */
-- (NSString *)userIDForTelemetryManager:(MSAIManager *)telemetryManager componentManager:(MSAIBaseManager *)componentManager;
+- (NSString *)userIDForTelemetryManager:(MSAIManager *)telemetryManager componentManager:(MSAICrashManager *)componentManager;
 
 
 /** Return the user name that should used in the SDK components
@@ -73,7 +73,7 @@
  
  You can find out the component requesting the user name like this:
  
-    - (NSString *)userNameForManager:(MSAIManager *)Manager componentManager:(MSAIBaseManager *)componentManager {
+    - (NSString *)userNameForManager:(MSAIManager *)Manager componentManager:(MSAICrashManager *)componentManager {
       if (componentManager == manager.feedbackManager) {
         return UserNameForFeedback;
       } else if (componentManager == manager.crashManager) {
@@ -91,12 +91,12 @@
  are not anonymous any more and the crash alerts will not show the word "anonymous"!
 
  @param manager The `MSAIManager` manager instance invoking this delegate
- @param componentManager The `MSAIBaseManager` component instance invoking this delegate, can be `MSAICrashManager` or `MSAIFeedbackManager`
+ @param componentManager The `MSAICrashManager` component instance invoking this delegate, can be `MSAICrashManager` or `MSAIFeedbackManager`
  @see userIDForTelemetryManager:componentManager:
  @see userEmailForTelemetryManager:componentManager:
  @see [MSAIManager userName]
  */
-- (NSString *)userNameForTelemetryManager:(MSAIManager *)telemetryManager componentManager:(MSAIBaseManager *)componentManager;
+- (NSString *)userNameForTelemetryManager:(MSAIManager *)telemetryManager componentManager:(MSAICrashManager *)componentManager;
 
 
 /** Return the users email address that should used in the SDK components
@@ -109,7 +109,7 @@
  
  You can find out the component requesting the user email like this:
  
-    - (NSString *)userEmailForManager:(MSAIManager *)Manager componentManager:(MSAIBaseManager *)componentManager {
+    - (NSString *)userEmailForManager:(MSAIManager *)Manager componentManager:(MSAICrashManager *)componentManager {
       if (componentManager == manager.feedbackManager) {
         return UserEmailForFeedback;
       } else if (componentManager == manager.crashManager) {
@@ -127,11 +127,11 @@
  are not anonymous any more and the crash alerts will not show the word "anonymous"!
 
  @param manager The `MSAIManager` manager instance invoking this delegate
- @param componentManager The `MSAIBaseManager` component instance invoking this delegate, can be `MSAICrashManager` or `MSAIFeedbackManager`
+ @param componentManager The `MSAICrashManager` component instance invoking this delegate, can be `MSAICrashManager` or `MSAIFeedbackManager`
  @see userIDForTelemetryManager:componentManager:
  @see userNameForTelemetryManager:componentManager:
  @see [MSAITelemetryTelemetryManager userEmail]
  */
-- (NSString *)userEmailForTelemetryManager:(MSAIManager *)telemetryManager componentManager:(MSAIBaseManager *)componentManager;
+- (NSString *)userEmailForTelemetryManager:(MSAIManager *)telemetryManager componentManager:(MSAICrashManager *)componentManager;
 
 @end

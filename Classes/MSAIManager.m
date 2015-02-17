@@ -1,7 +1,6 @@
 #import "AppInsights.h"
 #import "AppInsightsPrivate.h"
 
-#import "MSAIBaseManagerPrivate.h"
 #import "MSAIHelper.h"
 #import "MSAIAppClient.h"
 #import "MSAIKeychainUtils.h"

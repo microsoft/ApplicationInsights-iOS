@@ -1,7 +1,5 @@
 #import <Foundation/Foundation.h>
 
-#import "MSAIBaseManager.h"
-
 @class MSAICrashDetails;
 @class MSAICrashMetaData;
 
@@ -124,7 +122,7 @@ typedef NS_ENUM(NSUInteger, MSAICrashManagerUserInput) {
  @warning If you start the app with the Xcode debugger attached, detecting crashes will _NOT_ be enabled!
  */
 
-@interface MSAICrashManager : MSAIBaseManager
+@interface MSAICrashManager : NSObject
 
 
 ///-----------------------------------------------------------------------------
@@ -357,6 +355,16 @@ typedef NS_ENUM(NSUInteger, MSAICrashManagerUserInput) {
  @see MSAICrashManagerDelegate
  */
 @property (nonatomic, readonly) NSTimeInterval timeintervalCrashInLastSessionOccured;
+
+
+/**
+Defines the server URL to send data to or request data from
+
+By default this is set to the AppInsights servers and there rarely should be a
+need to modify that.
+*/
+@property (nonatomic, copy) NSString *serverURL;
+
 
 
 ///-----------------------------------------------------------------------------

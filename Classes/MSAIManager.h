@@ -4,7 +4,6 @@
 
 @protocol MSAIManagerDelegate;
 
-@class MSAIBaseManager;
 @class MSAICrashManager;
 @class MSAIMetricsManager;
 
