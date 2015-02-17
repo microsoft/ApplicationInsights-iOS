@@ -1,5 +1,7 @@
 #import <Foundation/Foundation.h>
-#import "MSAIReachability.h"
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_7_0
+#import <CoreTelephony/CTTelephonyNetworkInfo.h>
+#endif
 
 /**
  *  Enum for representing different network statuses.
@@ -12,11 +14,15 @@ typedef NS_ENUM(NSInteger, MSAIReachabilityType){
   /**
    *  Type used for WiFi connnection.
    */
-  MSAIReachabilityTypeWifi,
+  MSAIReachabilityTypeWIFI,
   /**
    *  Type for Edge, 3G, LTE etc.
    */
-  MSAIReachabilityTypeWwan
+  MSAIReachabilityTypeWWAN,
+  MSAIReachabilityTypeGPRS,
+  MSAIReachabilityTypeEDGE,
+  MSAIReachabilityType3G,
+  MSAIReachabilityTypeLTE
 };
 
 extern NSString *kMSAIReachabilityTypeChangedNotification;
@@ -29,13 +35,13 @@ extern NSString *kMSAIReachabilityTypeChangedNotification;
 @interface MSAIReachability()
 
 ///-----------------------------------------------------------------------------
-/// @name Initialization & Configuration
+/// @name Initialization
 ///-----------------------------------------------------------------------------
 
 /**
- *  The host, which is used to determien the current network status. 
+ *  A queue to make calls to the singleton thread safe.
  */
-@property (nonatomic, strong) NSString *hostName;
+@property (nonatomic, strong) dispatch_queue_t singletonQueue;
 
 /**
  *  Returns a shared MSAIReachability object
@@ -44,16 +50,21 @@ extern NSString *kMSAIReachabilityTypeChangedNotification;
  */
 + (instancetype)sharedInstance;
 
-/**
- *  Configure singleton instance.
- *
- *  @param hostName the host name, which should be used to determine the network connection.
- */
-- (void)configureWithHost:(NSString *)hostName;
-
 ///-----------------------------------------------------------------------------
 /// @name Register for network changes
 ///-----------------------------------------------------------------------------
+
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_7_0
+/**
+ *  Object to determine current radio type.
+ */
+@property (nonatomic, strong) CTTelephonyNetworkInfo *radioInfo;
+#endif
+
+/**
+ *  A queue for dispatching reachability operations.
+ */
+@property (nonatomic, strong) dispatch_queue_t networkQueue;
 
 /**
  *  Register for network status notifications.
@@ -66,6 +77,15 @@ extern NSString *kMSAIReachabilityTypeChangedNotification;
 - (void)stopNetworkStatusTracking;
 
 ///-----------------------------------------------------------------------------
+/// @name Broadcast network changes
+///-----------------------------------------------------------------------------
+
+/**
+ *  Updates and broadcasts network changes.
+ */
+- (void)notify;
+
+///-----------------------------------------------------------------------------
 /// @name Get network status
 ///-----------------------------------------------------------------------------
 
@@ -75,5 +95,18 @@ extern NSString *kMSAIReachabilityTypeChangedNotification;
  *  @return the connection type currently used.
  */
 - (MSAIReachabilityType)activeReachabilityType;
+
+///-----------------------------------------------------------------------------
+/// @name Helper
+///-----------------------------------------------------------------------------
+
+/**
+ *  Returns a MSAIReachabilityType for a given radio technology name.
+ *
+ *  @param technology name of the active radio technology
+ *
+ *  @return reachability Type, which expresses the WWAN connection
+ */
+- (MSAIReachabilityType)wwanTypeForRadioAccessTechnology:(NSString *)technology;
 
 @end
