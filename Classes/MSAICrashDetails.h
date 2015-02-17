@@ -69,7 +69,7 @@
  
  See `[MSAICrashManager enableAppNotTerminatingCleanlyDetection]` for more details about which kind of kills can be detected.
  
- @warning This property only has a correct value, once `[MSAITelemetryManager startManager]` was
+ @warning This property only has a correct value, once `[MSAIManager startManager]` was
  invoked! In addition, it is automatically disabled while a debugger session is active!
  
  @see `[MSAICrashManager enableAppNotTerminatingCleanlyDetection]`

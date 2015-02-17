@@ -17,10 +17,10 @@
 /**
  Sets the optional `MSAICrashManagerDelegate` delegate.
  
- The delegate is automatically set by using `[MSAITelemetryManager setDelegate:]`. You
+ The delegate is automatically set by using `[MSAIManager setDelegate:]`. You
  should not need to set this delegate individually.
  
- @see `[MSAITelemetryManager setDelegate:]`
+ @see `[MSAIManager setDelegate:]`
  */
 @property (nonatomic, weak) id delegate;
 

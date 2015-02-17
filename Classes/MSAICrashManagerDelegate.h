@@ -33,7 +33,7 @@
  @see applicationLogForCrashManager:
  @see attachmentForCrashManager:
  @see userEmailForCrashManager:
- @deprecated Please use `MSAITelemetryManagerDelegate userNameForManager:componentManager:` instead
+ @deprecated Please use `MSAIManagerDelegate userNameForManager:componentManager:` instead
  @warning When returning a non nil value, crash reports are not anonymous any
  more and the alerts will not show the "anonymous" word!
  */
@@ -47,7 +47,7 @@
  @see applicationLogForCrashManager:
  @see attachmentForCrashManager:
  @see userNameForCrashManager:
- @deprecated Please use `MSAITelemetryManagerDelegate userEmailForManager:componentManager:` instead
+ @deprecated Please use `MSAIManagerDelegate userEmailForManager:componentManager:` instead
  @warning When returning a non nil value, crash reports are not anonymous any
  more and the alerts will not show the "anonymous" word!
  */

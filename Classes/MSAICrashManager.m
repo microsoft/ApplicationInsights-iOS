@@ -449,10 +449,10 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
   // first check the global keychain storage
   NSString *userID = [self stringValueFromKeychainForKey:kMSAIMetaUserID] ?: @"";
   
-  if ([MSAITelemetryManager sharedMSAIManager].delegate &&
-      [[MSAITelemetryManager sharedMSAIManager].delegate respondsToSelector:@selector(userIDForTelemetryManager:componentManager:)]) {
-    userID = [[MSAITelemetryManager sharedMSAIManager].delegate
-              userIDForTelemetryManager:[MSAITelemetryManager sharedMSAIManager]
+  if ([MSAIManager sharedMSAIManager].delegate &&
+      [[MSAIManager sharedMSAIManager].delegate respondsToSelector:@selector(userIDForTelemetryManager:componentManager:)]) {
+    userID = [[MSAIManager sharedMSAIManager].delegate
+              userIDForTelemetryManager:[MSAIManager sharedMSAIManager]
               componentManager:self] ?: @"";
   }
   
@@ -471,10 +471,10 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
   if (self.delegate && [self.delegate respondsToSelector:@selector(userNameForCrashManager:)]) {
     username = [self.delegate userNameForCrashManager:self] ?: @"";
   }
-  if ([MSAITelemetryManager sharedMSAIManager].delegate &&
-      [[MSAITelemetryManager sharedMSAIManager].delegate respondsToSelector:@selector(userNameForTelemetryManager:componentManager:)]) {
-    username = [[MSAITelemetryManager sharedMSAIManager].delegate
-                userNameForTelemetryManager:[MSAITelemetryManager sharedMSAIManager]
+  if ([MSAIManager sharedMSAIManager].delegate &&
+      [[MSAIManager sharedMSAIManager].delegate respondsToSelector:@selector(userNameForTelemetryManager:componentManager:)]) {
+    username = [[MSAIManager sharedMSAIManager].delegate
+                userNameForTelemetryManager:[MSAIManager sharedMSAIManager]
                 componentManager:self] ?: @"";
   }
   
@@ -493,10 +493,10 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
   if (self.delegate && [self.delegate respondsToSelector:@selector(userEmailForCrashManager:)]) {
     useremail = [self.delegate userEmailForCrashManager:self] ?: @"";
   }
-  if ([MSAITelemetryManager sharedMSAIManager].delegate &&
-      [[MSAITelemetryManager sharedMSAIManager].delegate respondsToSelector:@selector(userEmailForTelemetryManager:componentManager:)]) {
-    useremail = [[MSAITelemetryManager sharedMSAIManager].delegate
-                 userEmailForTelemetryManager:[MSAITelemetryManager sharedMSAIManager]
+  if ([MSAIManager sharedMSAIManager].delegate &&
+      [[MSAIManager sharedMSAIManager].delegate respondsToSelector:@selector(userEmailForTelemetryManager:componentManager:)]) {
+    useremail = [[MSAIManager sharedMSAIManager].delegate
+                 userEmailForTelemetryManager:[MSAIManager sharedMSAIManager]
                  componentManager:self] ?: @"";
   }
   
