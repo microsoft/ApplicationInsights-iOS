@@ -45,7 +45,7 @@
 		1B3C387F1A82213000700081 /* MSAICrashDataThreadFrame.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3C38751A82213000700081 /* MSAICrashDataThreadFrame.m */; };
 		1B3FB89E1A93756100D06311 /* MSAIReachability.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3FB89C1A93756100D06311 /* MSAIReachability.h */; };
 		1B3FB89F1A93756100D06311 /* MSAIReachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3FB89D1A93756100D06311 /* MSAIReachability.m */; };
-		1B3FB8A31A93762700D06311 /* MSAIReachabilityTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3FB8A21A93762700D06311 /* MSAIReachabilityTests.m */; };
+		1B3FB8A41A9382A200D06311 /* MSAIReachabilityTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3FB8A21A93762700D06311 /* MSAIReachabilityTests.m */; };
 		1B47E02E1A84D3DF000B4C3D /* MSAIEnvelopeManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B47E02C1A84D3DF000B4C3D /* MSAIEnvelopeManager.h */; };
 		1B47E02F1A84D3DF000B4C3D /* MSAIEnvelopeManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B47E02D1A84D3DF000B4C3D /* MSAIEnvelopeManager.m */; };
 		1B53FEBF1A6425240082F2E9 /* CrashReporter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B53FEBE1A6425240082F2E9 /* CrashReporter.framework */; };
@@ -983,7 +983,6 @@
 				807CFDA81A712974004EA1B6 /* MSAIData.m in Sources */,
 				1B3C387D1A82213000700081 /* MSAICrashDataThread.m in Sources */,
 				1B62F4D91A692A3200EB5AD0 /* MSAIContext.m in Sources */,
-				1B3FB8A31A93762700D06311 /* MSAIReachabilityTests.m in Sources */,
 				1E754E5D1621FBB70070AB92 /* MSAICrashManager.m in Sources */,
 				1E754E611621FBB70070AB92 /* MSAICrashDataProvider.m in Sources */,
 				807CFDA41A712974004EA1B6 /* MSAIApplication.m in Sources */,
@@ -1007,6 +1006,7 @@
 				808FB2481A7982230002872B /* MSAIDataTests.m in Sources */,
 				808FB2411A7982230002872B /* MSAIAppClientTests.m in Sources */,
 				808FB2551A7982230002872B /* MSAIMetricsManagerTests.m in Sources */,
+				1B3FB8A41A9382A200D06311 /* MSAIReachabilityTests.m in Sources */,
 				808FB24A1A7982230002872B /* MSAIDomainTests.m in Sources */,
 				808FB25A1A7982230002872B /* MSAIRequestDataTests.m in Sources */,
 				808FB2531A7982230002872B /* MSAIMessageDataTests.m in Sources */,

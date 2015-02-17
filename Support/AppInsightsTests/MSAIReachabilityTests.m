@@ -1,40 +1,31 @@
-//
-//  MSAIReachabilityTests.m
-//  AppInsights
-//
-//  Created by GrafZahl on 17/02/15.
-//
-//
-
-#import <Cocoa/Cocoa.h>
 #import <XCTest/XCTest.h>
+#import "MSAIReachability.h"
 
 @interface MSAIReachabilityTests : XCTestCase
 
 @end
 
-@implementation MSAIReachabilityTests
+NSString *const testHostName = @"www.google.com";
+
+@implementation MSAIReachabilityTests{
+  MSAIReachability *_sut;
+}
 
 - (void)setUp {
-    [super setUp];
-    // Put setup code here. This method is called before the invocation of each test method in the class.
+  [super setUp];
+  
+  _sut = [MSAIReachability sharedInstance];
+  [_sut configureWithAppClient:testHostName];
 }
 
 - (void)tearDown {
-    // Put teardown code here. This method is called after the invocation of each test method in the class.
-    [super tearDown];
+  _sut = nil;
+  
+  [super tearDown];
 }
 
-- (void)testExample {
-    // This is an example of a functional test case.
-    XCTAssert(YES, @"Pass");
-}
-
-- (void)testPerformanceExample {
-    // This is an example of a performance test case.
-    [self measureBlock:^{
-        // Put the code you want to measure the time of here.
-    }];
+- (void)testThatItInstantiates {
+  assertThat(_sut, notNilValue());
 }
 
 @end
