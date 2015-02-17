@@ -224,6 +224,7 @@
 		1B3FB89C1A93756100D06311 /* MSAIReachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAIReachability.h; sourceTree = "<group>"; };
 		1B3FB89D1A93756100D06311 /* MSAIReachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAIReachability.m; sourceTree = "<group>"; };
 		1B3FB8A21A93762700D06311 /* MSAIReachabilityTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIReachabilityTests.m; path = AppInsightsTests/MSAIReachabilityTests.m; sourceTree = SOURCE_ROOT; };
+		1B3FB8A51A9383C300D06311 /* MSAIReachabilityPrivate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MSAIReachabilityPrivate.h; sourceTree = "<group>"; };
 		1B47E02C1A84D3DF000B4C3D /* MSAIEnvelopeManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAIEnvelopeManager.h; sourceTree = "<group>"; };
 		1B47E02D1A84D3DF000B4C3D /* MSAIEnvelopeManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAIEnvelopeManager.m; sourceTree = "<group>"; };
 		1B47E0301A84D413000B4C3D /* MSAIEnvelopeManagerPrivate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MSAIEnvelopeManagerPrivate.h; sourceTree = "<group>"; };
@@ -726,6 +727,7 @@
 				1BE29B4A1A6FBAB50014A10F /* MSAISenderPrivate.h */,
 				1B3FB89C1A93756100D06311 /* MSAIReachability.h */,
 				1B3FB89D1A93756100D06311 /* MSAIReachability.m */,
+				1B3FB8A51A9383C300D06311 /* MSAIReachabilityPrivate.h */,
 			);
 			name = Network;
 			sourceTree = "<group>";
