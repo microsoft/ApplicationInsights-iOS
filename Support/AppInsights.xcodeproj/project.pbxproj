@@ -410,16 +410,21 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1BA913001A9357A500251386 /* Persistence */ = {
+			isa = PBXGroup;
+			children = (
+				594931F0F69C22CBB67A2AD9 /* MSAIPersistence.h */,
+				59493E91C1D38C3FC5F77D19 /* MSAIPersistence.m */,
+			);
+			name = Persistence;
+			sourceTree = "<group>";
+		};
 		1BBBCEC21A65927400253031 /* Channel */ = {
 			isa = PBXGroup;
 			children = (
-				1BBBCEC31A65927900253031 /* Contract */,
 				1BBBCF2E1A6594AE00253031 /* MSAIChannel.h */,
 				1BBBCF2F1A6594AE00253031 /* MSAIChannel.m */,
 				1B4D17E41A666EE30079D948 /* MSAIChannelPrivate.h */,
-				1BE29B461A6FB8C20014A10F /* MSAISender.h */,
-				1BE29B471A6FB8C20014A10F /* MSAISender.m */,
-				1BE29B4A1A6FBAB50014A10F /* MSAISenderPrivate.h */,
 				1BBBCF301A6594AE00253031 /* MSAITelemetryContext.h */,
 				1BBBCF311A6594AE00253031 /* MSAITelemetryContext.m */,
 				1BE129921A725797004D2AEE /* MSAITelemetryContextPrivate.h */,
@@ -430,7 +435,7 @@
 			name = Channel;
 			sourceTree = "<group>";
 		};
-		1BBBCEC31A65927900253031 /* Contract */ = {
+		1BBBCEC31A65927900253031 /* Contracts */ = {
 			isa = PBXGroup;
 			children = (
 				1B3C386C1A82213000700081 /* MSAICrashData.h */,
@@ -497,7 +502,7 @@
 				807CFDA11A712974004EA1B6 /* MSAIUser.h */,
 				807CFDA21A712974004EA1B6 /* MSAIUser.m */,
 			);
-			name = Contract;
+			name = Contracts;
 			sourceTree = "<group>";
 		};
 		1E5A459616F0DFC200B55C04 /* AppInsights Tests */ = {
@@ -585,8 +590,6 @@
 				1BC859691A7ACA820018FB6B /* MSAICategoryContainer.h */,
 				1BC8596A1A7ACA820018FB6B /* MSAICategoryContainer.m */,
 				1BC8596D1A7ACC040018FB6B /* PageViewLogging_UIViewController.h */,
-				594931F0F69C22CBB67A2AD9 /* MSAIPersistence.h */,
-				59493E91C1D38C3FC5F77D19 /* MSAIPersistence.m */,
 			);
 			name = Helper;
 			sourceTree = "<group>";
@@ -622,7 +625,6 @@
 		1EB2E4C318FD4CBC008BB1CF /* Metrics */ = {
 			isa = PBXGroup;
 			children = (
-				1BBBCEC21A65927400253031 /* Channel */,
 				1EB2E4C418FD4CEA008BB1CF /* MSAIMetricsManager.h */,
 				1EB2E4C518FD4CEA008BB1CF /* MSAIMetricsManager.m */,
 				1EB2E4C818FD4E90008BB1CF /* MSAIMetricsManagerPrivate.h */,
@@ -680,9 +682,12 @@
 		E41EB458148D7BF50015DEDC /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				1BBBCEC31A65927900253031 /* Contracts */,
 				1E754E551621FBAF0070AB92 /* CrashReports */,
 				1E754E441621F95E0070AB92 /* Helper */,
 				1EB2E4C318FD4CBC008BB1CF /* Metrics */,
+				1BA913001A9357A500251386 /* Persistence */,
+				1BBBCEC21A65927400253031 /* Channel */,
 				E48A3DE917B3ECF900924C3D /* Network */,
 				1E3A2B4C19645DC800D5BD66 /* AppInsights-Prefix.pch */,
 				1E71509A15B5C76F004E88FF /* AppInsights.h */,
@@ -709,6 +714,9 @@
 				E48A3DF017B408D800924C3D /* private */,
 				E40E0B0A17DA1AFF005E38C1 /* MSAIAppClient.h */,
 				E40E0B0B17DA1AFF005E38C1 /* MSAIAppClient.m */,
+				1BE29B461A6FB8C20014A10F /* MSAISender.h */,
+				1BE29B471A6FB8C20014A10F /* MSAISender.m */,
+				1BE29B4A1A6FBAB50014A10F /* MSAISenderPrivate.h */,
 			);
 			name = Network;
 			sourceTree = "<group>";
