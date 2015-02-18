@@ -76,6 +76,8 @@
       [MSAIPersistence persistBundle:bundle ofType:MSAIPersistenceTypeRegular withCompletionBlock:nil];
       self.sending = NO;
     }
+  }else{
+    self.sending = NO;
   }
   
 }
