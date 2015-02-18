@@ -33,6 +33,7 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		1B3B73081A94BC8E008DCADA /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B3B73071A94BC8E008DCADA /* CoreTelephony.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		1B3C38761A82213000700081 /* MSAICrashData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3C386C1A82213000700081 /* MSAICrashData.h */; };
 		1B3C38771A82213000700081 /* MSAICrashData.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3C386D1A82213000700081 /* MSAICrashData.m */; };
 		1B3C38781A82213000700081 /* MSAICrashDataBinary.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3C386E1A82213000700081 /* MSAICrashDataBinary.h */; };
@@ -211,6 +212,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1B3B73071A94BC8E008DCADA /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
 		1B3C386C1A82213000700081 /* MSAICrashData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAICrashData.h; sourceTree = "<group>"; };
 		1B3C386D1A82213000700081 /* MSAICrashData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAICrashData.m; sourceTree = "<group>"; };
 		1B3C386E1A82213000700081 /* MSAICrashDataBinary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAICrashDataBinary.h; sourceTree = "<group>"; };
@@ -405,6 +407,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1B3B73081A94BC8E008DCADA /* CoreTelephony.framework in Frameworks */,
 				1B53FEC01A6425240082F2E9 /* CrashReporter.framework in Frameworks */,
 				808FB2671A7982B50002872B /* OCHamcrestIOS.framework in Frameworks */,
 				808FB2681A7982B50002872B /* OCMockitoIOS.framework in Frameworks */,
@@ -667,6 +670,7 @@
 		E400561C148D79B500EB22B9 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1B3B73071A94BC8E008DCADA /* CoreTelephony.framework */,
 				1B85606E1A7A6A9D00A54FB7 /* UIKit.framework */,
 				1B53FEBE1A6425240082F2E9 /* CrashReporter.framework */,
 				1E67961619816B9200B6DA20 /* CFNetwork.framework */,

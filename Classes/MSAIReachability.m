@@ -215,7 +215,7 @@ static void MSAIReachabilityCallback(SCNetworkReachabilityRef target, SCNetworkR
     case MSAIReachabilityTypeLTE:
       return @"LTE";
     default:
-      return @"No connection";
+      return @"None";
   }
 }
 
