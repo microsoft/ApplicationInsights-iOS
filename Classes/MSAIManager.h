@@ -140,7 +140,7 @@
  @see startManager
  @see disableCrashManager
  */
-@property (nonatomic, strong, readonly) MSAICrashManager *crashManager;
+//@property (nonatomic, strong, readonly) MSAICrashManager *crashManager;
 
 
 /**

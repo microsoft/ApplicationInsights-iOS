@@ -60,7 +60,7 @@
  @see userEmailForManager:componentManager:
  @see [MSAIManager userID]
  */
-- (NSString *)userIDForTelemetryManager:(MSAIManager *)telemetryManager componentManager:(MSAICrashManager *)componentManager;
+- (NSString *)userIDForTelemetryManager:(MSAIManager *)telemetryManager;
 
 
 /** Return the user name that should used in the SDK components

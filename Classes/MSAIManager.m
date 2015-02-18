@@ -16,6 +16,7 @@
 #import "MSAIEnvelopeManager.h"
 #import "MSAIEnvelopeManagerPrivate.h"
 #include <stdint.h>
+#import "MSAICrashManager.h"
 
 
 #if MSAI_FEATURE_CRASH_REPORTER
@@ -144,7 +145,7 @@
   // start CrashManager
   if (![self isCrashManagerDisabled]) {
     MSAILog(@"INFO: Start CrashManager");
-    [_crashManager startManager];
+    [MSAICrashManager startManagerWithAppContext:_appContext];
   }
 #endif /* MSAI_FEATURE_CRASH_REPORTER */
   
@@ -196,9 +197,10 @@
     _delegate = delegate;
     
 #if MSAI_FEATURE_CRASH_REPORTER
-    if (_crashManager) {
-      _crashManager.delegate = _delegate;
-    }
+      //TODO init MSAICrashManager first?!
+//    if (_crashManager) {
+      [MSAICrashManager setDelegate:_delegate];
+//    }
 #endif /* MSAI_FEATURE_CRASH_REPORTER */
   }
 }
@@ -425,8 +427,9 @@
     
 #if MSAI_FEATURE_CRASH_REPORTER
     MSAILog(@"INFO: Setup CrashManager");
-    _crashManager = [[MSAICrashManager alloc]initWithAppContext:_appContext];
-    _crashManager.delegate = _delegate;
+      //TODO delegate and stuff
+    [MSAICrashManager startManagerWithAppContext:_appContext];
+    [MSAICrashManager setDelegate:_delegate];
 #endif /* MSAI_FEATURE_CRASH_REPORTER */
     
 #if MSAI_FEATURE_METRICS

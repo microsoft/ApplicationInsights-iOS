@@ -9,7 +9,6 @@
 @interface MSAICrashManager () {
 }
 
-
 ///-----------------------------------------------------------------------------
 /// @name Delegate
 ///-----------------------------------------------------------------------------
@@ -22,49 +21,75 @@
  
  @see `[MSAIManager setDelegate:]`
  */
-@property (nonatomic, weak) id delegate;
+//@property (nonatomic, weak) id delegate;
+
+
++ (void)setDelegate:(id)delegate;
++ (id)getDelegate;
 
 /**
  * must be set
  */
 
-@property (nonatomic) NSUncaughtExceptionHandler *exceptionHandler;
 
-@property (nonatomic, strong) NSFileManager *fileManager;
+  //TODO remove and/or move to setter methods!
 
-@property (nonatomic, strong) MSAIPLCrashReporter *plCrashReporter;
+//@property (nonatomic) NSUncaughtExceptionHandler *exceptionHandler;
 
-@property (nonatomic) NSString *lastCrashFilename;
++ (NSUncaughtExceptionHandler *)getExceptionHandler;
++ (void)setExceptionHandler:(NSUncaughtExceptionHandler*)exceptionHandler;
 
-@property (nonatomic, copy, setter = setAlertViewHandler:) MSAICustomAlertViewHandler alertViewHandler;
+//@property (nonatomic, strong) NSFileManager *fileManager;
 
-@property (nonatomic, strong) NSString *crashesDir;
++ (NSFileManager *)getFileManager;
++ (void)setFileManager:(NSFileManager *)fileManager;
 
-- (void)cleanCrashReports;
+//@property (nonatomic, strong) MSAIPLCrashReporter *plCrashReporter;
 
-- (NSString *)userIDForCrashReport;
-- (NSString *)userEmailForCrashReport;
-- (NSString *)userNameForCrashReport;
++ (MSAIPLCrashReporter *)getPLCrashReporter;
++ (void)setPLCrashReporter:(MSAIPLCrashReporter *)crashReporter;
 
-- (void)handleCrashReport;
-- (BOOL)hasPendingCrashReport;
-- (NSString *)firstNotApprovedCrashReport;
+//@property (nonatomic) NSString *lastCrashFilename;
 
-- (void)persistUserProvidedMetaData:(MSAICrashMetaData *)userProvidedMetaData;
++ (NSString *)getLastCrashFilename;
++ (void)setLastCrashFilename:(NSString *)lastCrashFilename;
 
-- (void)invokeDelayedProcessing;
-- (void)sendNextCrashReport;
+//@property (nonatomic, copy, setter = setAlertViewHandler:) MSAICustomAlertViewHandler alertViewHandler;
 
-- (void)setLastCrashFilename:(NSString *)lastCrashFilename;
++ (MSAICustomAlertViewHandler)getAlertViewHandler;
++ (void)setAlertViewHandler:(MSAICustomAlertViewHandler)alertViewHandler;
+
+//@property (nonatomic, strong) NSString *crashesDir;
+
++ (NSString *)getCrashesDir;
++ (void)setCrashesDir:(NSString *)crashesDir;
 
 
 
-@property(nonatomic, strong) MSAIContext *appContext;
++ (void)cleanCrashReports;
 
-- (instancetype)initWithAppContext:(MSAIContext *)appContext;
-- (void)startManager;
++ (NSString *)userIDForCrashReport;
++ (NSString *)userEmailForCrashReport;
++ (NSString *)userNameForCrashReport;
 
-- (NSString *)executableUUID;
++ (void)handleCrashReport;
++ (BOOL)hasPendingCrashReport;
++ (NSString *)firstNotApprovedCrashReport;
+
++ (void)persistUserProvidedMetaData:(MSAICrashMetaData *)userProvidedMetaData;
+
++ (void)invokeDelayedProcessing;
++ (void)sendNextCrashReport;
+
++ (void)setLastCrashFilename:(NSString *)lastCrashFilename;
+
+
+
+//@property(nonatomic, strong) MSAIContext *appContext;
+
+//- (instancetype)initWithAppContext:(MSAIContext *)appContext;
+
++ (NSString *)executableUUID;
 
 /**
 * by default, just logs the message
@@ -74,16 +99,17 @@
 *
 * @param error NSError
 */
-- (void)reportError:(NSError *)error;
++ (void)reportError:(NSError *)error;
 
 // Date helpers
-- (NSDate *)parseRFC3339Date:(NSString *)dateString;
+//- (NSDate *)parseRFC3339Date:(NSString *)dateString;
 
+  //TODO REMOVE
 // keychain helpers
-- (BOOL)addStringValueToKeychain:(NSString *)stringValue forKey:(NSString *)key;
-- (BOOL)addStringValueToKeychainForThisDeviceOnly:(NSString *)stringValue forKey:(NSString *)key;
-- (NSString *)stringValueFromKeychainForKey:(NSString *)key;
-- (BOOL)removeKeyFromKeychain:(NSString *)key;
+//+ (BOOL)addStringValueToKeychain:(NSString *)stringValue forKey:(NSString *)key;
+//+ (BOOL)addStringValueToKeychainForThisDeviceOnly:(NSString *)stringValue forKey:(NSString *)key;
+//+ (NSString *)stringValueFromKeychainForKey:(NSString *)key;
+//+ (BOOL)removeKeyFromKeychain:(NSString *)key;
 
 
 
