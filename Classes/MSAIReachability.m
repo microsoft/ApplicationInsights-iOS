@@ -175,6 +175,12 @@ static void MSAIReachabilityCallback(SCNetworkReachabilityRef target, SCNetworkR
   return reachabilityType;
 }
 
+- (NSString *)descriptionForActiveReachabilityType{
+  MSAIReachabilityType currentType = [self activeReachabilityType];
+  
+  return [self descriptionForReachabilityType:currentType];
+}
+
 #pragma mark - Helper
 
 - (MSAIReachabilityType)wwanTypeForRadioAccessTechnology:(NSString *)technology{

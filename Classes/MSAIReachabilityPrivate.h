@@ -96,6 +96,13 @@ extern NSString* const kMSAIReachabilityTypeChangedNotification;
  */
 - (MSAIReachabilityType)activeReachabilityType;
 
+/**
+ *  Get the current network type name.
+ *
+ *  @return a human readable name for the current reachability type.
+ */
+- (NSString *)descriptionForActiveReachabilityType;
+
 ///-----------------------------------------------------------------------------
 /// @name Helper
 ///-----------------------------------------------------------------------------
