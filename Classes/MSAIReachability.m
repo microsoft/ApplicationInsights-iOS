@@ -9,6 +9,7 @@
 #import <netdb.h>
 #import <sys/socket.h>
 
+NSString * const kMSAIReachabilityTypeChangedNotification = @"MSAIReachabilityTypeChangedNotification";
 static char *const MSAIReachabilitySingletonQueue = "com.microsoft.appInsights.singletonQueue";
 static char *const MSAIReacabilityNetworkQueue = "com.microsoft.appInsights.networkQueue";
 
@@ -131,13 +132,12 @@ static void MSAIReachabilityCallback(SCNetworkReachabilityRef target, SCNetworkR
     typeof(self) strongSelf = weakSelf;
     
     _reachabilityType = [strongSelf activeReachabilityType];
+    NSDictionary *notificationDict = @{@"name":[strongSelf descriptionForReachabilityType:strongSelf->_reachabilityType],
+                                       @"type":@(strongSelf->_reachabilityType)};
     dispatch_async(dispatch_get_main_queue(), ^{
-      [[NSNotificationCenter defaultCenter] postNotificationName: kMSAIReachabilityTypeChangedNotification object: @(strongSelf->_reachabilityType)];
+      [[NSNotificationCenter defaultCenter] postNotificationName:kMSAIReachabilityTypeChangedNotification object:nil userInfo:notificationDict];
     });
   });
-  
-  
-  
 }
 
 #pragma mark - Get network status
