@@ -200,4 +200,23 @@ static void MSAIReachabilityCallback(SCNetworkReachabilityRef target, SCNetworkR
   return radioType;
 }
 
+- (NSString *)descriptionForReachabilityType:(MSAIReachabilityType)reachabilityType{
+  switch(reachabilityType){
+    case MSAIReachabilityTypeWIFI:
+      return @"WIFI";
+    case MSAIReachabilityTypeWWAN:
+      return @"WWAN";
+    case MSAIReachabilityTypeGPRS:
+      return @"GPRS";
+    case MSAIReachabilityTypeEDGE:
+      return @"EDGE";
+    case MSAIReachabilityType3G:
+      return @"3G";
+    case MSAIReachabilityTypeLTE:
+      return @"LTE";
+    default:
+      return @"No connection";
+  }
+}
+
 @end

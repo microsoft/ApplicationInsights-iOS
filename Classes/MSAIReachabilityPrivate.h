@@ -25,7 +25,7 @@ typedef NS_ENUM(NSInteger, MSAIReachabilityType){
   MSAIReachabilityTypeLTE
 };
 
-extern NSString *kMSAIReachabilityTypeChangedNotification;
+extern NSString* const kMSAIReachabilityTypeChangedNotification;
 
 /**
  *  The MSAIReachability class is responsible for keep track of the network status currently used.
@@ -108,5 +108,14 @@ extern NSString *kMSAIReachabilityTypeChangedNotification;
  *  @return reachability Type, which expresses the WWAN connection
  */
 - (MSAIReachabilityType)wwanTypeForRadioAccessTechnology:(NSString *)technology;
+
+/**
+ *  Returns a human readable name for a given MSAIReachabilityType.
+ *
+ *  @param reachabilityType the reachability type to convert.
+ *
+ *  @return a human readable type name
+ */
+- (NSString *)descriptionForReachabilityType:(MSAIReachabilityType)reachabilityType;
 
 @end
