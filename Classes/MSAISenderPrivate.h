@@ -47,7 +47,15 @@
 /// @name Network status
 ///-----------------------------------------------------------------------------
 
+/**
+ *  The name of the current network type.
+ */
 @property(nonatomic, readonly)NSString *networkTypeName;
+
+/**
+ *  Get current network type and register for updates.
+ */
+- (void)configureNetworkStatusTracking;
 
 ///-----------------------------------------------------------------------------
 /// @name Helper
