@@ -3,6 +3,8 @@
 #import "MSAITelemetryContextPrivate.h"
 #import "MSAIMetricsManagerPrivate.h"
 #import "MSAIHelper.h"
+#import "MSAIReachability.h"
+#import "MSAIReachabilityPrivate.h"
 
 NSString *const kMSAITelemetrySessionId = @"MSAITelemetrySessionId";
 NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
@@ -32,8 +34,29 @@ NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
     _operation = operationContext;
     _session = sessionContext;
     [self createNewSession];
+    [self configureNetworkStatusTracking];
   }
   return self;
+}
+
+- (void)dealloc{
+  [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+#pragma mark - Network
+
+- (void)configureNetworkStatusTracking{
+  [[MSAIReachability sharedInstance] startNetworkStatusTracking];
+  _device.network = [[MSAIReachability sharedInstance] descriptionForActiveReachabilityType];
+  NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+  [center addObserver:self selector:@selector(updateNetworkType:) name:kMSAIReachabilityTypeChangedNotification object:nil];
+}
+
+-(void)updateNetworkType:(NSNotification *)notification{
+  
+  @synchronized(self){
+    _device.network = [[notification userInfo]objectForKey:kMSAIReachabilityUserInfoName];
+  }
 }
 
 #pragma mark - Session

@@ -27,6 +27,8 @@
   return sharedInstance;
 }
 
+#pragma mark - Network status
+
 - (void)configureWithAppClient:(MSAIAppClient *)appClient endpointPath:(NSString *)endpointPath {
   self.endpointPath = endpointPath;
   self.appClient = appClient;
@@ -76,8 +78,9 @@
       [MSAIPersistence persistBundle:bundle ofType:MSAIPersistenceTypeRegular withCompletionBlock:nil];
       self.sending = NO;
     }
+  }else{
+    self.sending = NO;
   }
-  
 }
 
 - (void)sendRequest:(NSURLRequest *)request {
