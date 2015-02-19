@@ -56,7 +56,6 @@
                                  @"ai.device.language":@"language",
                                  @"ai.device.locale":@"locale",
                                  @"ai.device.model":@"model",
-                                 @"ai.device.network":@"network",
                                  @"ai.device.oemName":@"oemName",
                                  @"ai.device.os":@"os",
                                  @"ai.device.osVersion":@"osVersion",
