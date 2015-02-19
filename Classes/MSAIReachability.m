@@ -173,7 +173,9 @@ static void MSAIReachabilityCallback(SCNetworkReachabilityRef target, SCNetworkR
     
     if ((flags & kSCNetworkReachabilityFlagsIsWWAN) == kSCNetworkReachabilityFlagsIsWWAN){
       reachabilityType = MSAIReachabilityTypeWWAN;
-      if ([CTTelephonyNetworkInfo class] && self.radioInfo) {
+      
+      // TODO: Radio info is nil after app returns to foreground, so set reachability type to wwan for now
+      if ([CTTelephonyNetworkInfo class] && self.radioInfo && self.radioInfo.currentRadioAccessTechnology) {
         reachabilityType = [self wwanTypeForRadioAccessTechnology:self.radioInfo.currentRadioAccessTechnology];
       }
     }
