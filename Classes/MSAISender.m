@@ -3,6 +3,7 @@
 #import "MSAISenderPrivate.h"
 #import "MSAIPersistence.h"
 #import "MSAIEnvelope.h"
+#import "AppInsightsPrivate.h"
 
 @interface MSAISender ()
 
@@ -70,7 +71,8 @@
     NSError *error = nil;
     NSData *json = [NSJSONSerialization dataWithJSONObject:[self jsonArrayFromArray:bundle] options:NSJSONWritingPrettyPrinted error:&error];
     if(!error) {
-      NSURLRequest *request = [self requestForData:json];
+      NSString *urlString = [[(MSAIEnvelope *)bundle[0] name] isEqualToString:@"Microsoft.ApplicationInsights.Crash"] ? MSAI_CRASH_DATA_URL : MSAI_EVENT_DATA_URL;
+      NSURLRequest *request = [self requestForData:json urlString:urlString];
       [self sendRequest:request];
     }
     else {
@@ -129,9 +131,9 @@
   return array;
 }
 
-- (NSURLRequest *)requestForData:(NSData *)data {
+- (NSURLRequest *)requestForData:(NSData *)data urlString:(NSString *)urlString {
   NSMutableURLRequest *request = [self.appClient requestWithMethod:@"POST"
-                                                              path:self.endpointPath
+                                                              path:urlString
                                                         parameters:nil];
   
   [request setHTTPBody:data];
