@@ -3,8 +3,6 @@
 #import "MSAISenderPrivate.h"
 #import "MSAIPersistence.h"
 #import "MSAIEnvelope.h"
-#import "MSAIReachability.h"
-#import "MSAIReachabilityPrivate.h"
 
 @interface MSAISender ()
 
@@ -16,7 +14,6 @@
 @implementation MSAISender
 
 @synthesize sending = _sending;
-@synthesize networkTypeName = _networkTypeName;
 
 #pragma mark - Initialize & configure shared instance
 
@@ -26,16 +23,8 @@
   
   dispatch_once(&onceToken, ^{
     sharedInstance = [MSAISender new];
-    [sharedInstance configureNetworkStatusTracking];
   });
   return sharedInstance;
-}
-
-- (void)configureNetworkStatusTracking{
-  [[MSAIReachability sharedInstance] startNetworkStatusTracking];
-  _networkTypeName = [[MSAIReachability sharedInstance] descriptionForActiveReachabilityType];
-  NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-  [center addObserver:self selector:@selector(updateNetworkType:) name:kMSAIReachabilityTypeChangedNotification object:nil];
 }
 
 #pragma mark - Network status
@@ -44,13 +33,6 @@
   self.endpointPath = endpointPath;
   self.appClient = appClient;
   [self registerObservers];
-}
-
--(void)updateNetworkType:(NSNotification *)notification{
-  
-  @synchronized(self.networkTypeName){
-    _networkTypeName = [[notification userInfo]objectForKey:kMSAIReachabilityUserInfoName];
-  }
 }
 
 #pragma mark - Handle persistence events
@@ -85,7 +67,6 @@
   NSArray *bundle = [MSAIPersistence nextBundle];
   if(bundle && bundle.count > 0 && !self.currentBundle) {
     self.currentBundle = bundle;
-    [self updateNetworkContextForBundle:self.currentBundle];
     NSError *error = nil;
     NSData *json = [NSJSONSerialization dataWithJSONObject:[self jsonArrayFromArray:bundle] options:NSJSONWritingPrettyPrinted error:&error];
     if(!error) {
@@ -99,17 +80,6 @@
     }
   }else{
     self.sending = NO;
-  }
-}
-
-- (void)updateNetworkContextForBundle:(NSArray *)bundle{
-  
-  @synchronized(self.networkTypeName){
-    for(MSAIEnvelope *envelope in bundle){
-      if(!envelope.tags[@"ai.device.network"]){
-        envelope.tags[@"ai.device.network"] = _networkTypeName;
-      }
-    }
   }
 }
 
