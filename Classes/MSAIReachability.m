@@ -96,6 +96,9 @@ static void MSAIReachabilityCallback(SCNetworkReachabilityRef target, SCNetworkR
   dispatch_async(self.singletonQueue, ^{
     typeof(self) strongSelf = weakSelf;
     
+    if(_running){
+      return;
+    }
     SCNetworkReachabilityContext context = {0, (__bridge void *)(self), NULL, NULL, NULL};
     context.info = (__bridge void *)self;
     if(SCNetworkReachabilitySetCallback(strongSelf->_reachability, MSAIReachabilityCallback, &context)){
@@ -123,6 +126,7 @@ static void MSAIReachabilityCallback(SCNetworkReachabilityRef target, SCNetworkR
     if (strongSelf->_reachability != NULL){
       SCNetworkReachabilitySetCallback(strongSelf->_reachability, NULL, NULL);
       SCNetworkReachabilitySetDispatchQueue(strongSelf->_reachability, NULL);
+      _running = NO;
     }
   });
 }
