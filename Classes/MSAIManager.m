@@ -27,6 +27,7 @@
 #import "MSAIMetricsManagerPrivate.h"
 #endif /* MSAI_FEATURE_METRICS */
 
+NSString *const kMSAIInstrumentationKey = @"Instrumentation Key";
 
 @implementation MSAIManager {
   
@@ -105,26 +106,16 @@
 #endif
     
     [self performSelector:@selector(validateStartManagerIsInvoked) withObject:nil afterDelay:0.0f];
+    
+    NSString *iKey = [[NSBundle mainBundle] objectForInfoDictionaryKey:kMSAIInstrumentationKey];
+    _appContext = [[MSAIContext alloc] initWithInstrumentationKey:iKey isAppStoreEnvironment:_appStoreEnvironment];
+    [self initializeModules];
   }
   return self;
 }
 
 
 #pragma mark - Public Instance Methods (Configuration)
-
-- (void)configureWithInstrumentationKey:(NSString *)instrumentationKey {
-  
-  _appContext = [[MSAIContext alloc] initWithInstrumentationKey:instrumentationKey isAppStoreEnvironment:_appStoreEnvironment];
-  
-  [self initializeModules];
-}
-
-- (void)configureWithInstrumentationKey:(NSString *)instrumentationKey delegate:(id <MSAIManagerDelegate>)delegate {
-  _delegate = delegate;
-  _appContext = [[MSAIContext alloc] initWithInstrumentationKey:instrumentationKey isAppStoreEnvironment:_appStoreEnvironment];
-  
-  [self initializeModules];
-}
 
 - (void)startManager {
   if (!_validInstrumentationKey) return;
