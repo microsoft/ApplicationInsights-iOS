@@ -53,6 +53,41 @@
  */
 + (MSAIManager *)sharedMSAIManager;
 
+
+/**
+ Initialize the manager with a AppInsights app identifier.
+ 
+    [[MSAIManager sharedMSAIManager]
+      configureWithInstrumentationKey:@"<instrumentationKeyFromApplicationInsights>"];
+ 
+ @see configureWithInstrumentationKey:delegate:
+ @see startManager
+ @param instrumentationKey The app identifier that should be used.
+ */
+- (void)configureWithInstrumentationKey:(NSString *)instrumentationKey;
+
+
+/**
+ Initializes the manager with a particular app identifier and delegate
+ 
+ Initialize the manager with a AppInsights app identifier and assign the class that
+ implements the optional protocols `MSAIManagerDelegate`, `MSAICrashManagerDelegate` or
+ `MSAIUpdateManagerDelegate`.
+ 
+    [[MSAIManager sharedManager]
+      configureWithIdentifier:@"<InstrumentationKeyFromAppInsights>"
+                     delegate:nil];
+
+ @see configureWithInstrumentationKey:
+ @see startManager
+ @see MSAIManagerDelegate
+ @see MSAICrashManagerDelegate
+ @param instrumentationKey The app identifier that should be used.
+ @param delegate `nil` or the class implementing the option protocols
+ */
+- (void)configureWithInstrumentationKey:(NSString *)instrumentationKey delegate:(id<MSAIManagerDelegate>)delegate;
+
+
 /**
  Starts the manager and runs all modules
  
