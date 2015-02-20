@@ -103,27 +103,28 @@
 }
 
 - (void)testIsFirstSession {
-  NSUserDefaults *mockUserDefaults = mock(NSUserDefaults.class);
-  _sut.userDefaults = mockUserDefaults;
+  NSUserDefaults *userDefaults = [NSUserDefaults new];
+  _sut.userDefaults = userDefaults;
   
-  [given([mockUserDefaults boolForKey:kMSAIApplicationWasLaunched]) willReturn:@NO];
+  [userDefaults setBool:NO forKey:kMSAIApplicationWasLaunched];
   assertThatBool([_sut isFirstSession], equalToBool(YES));
   
-  [given([mockUserDefaults boolForKey:kMSAIApplicationWasLaunched]) willReturn:@YES];
+  [userDefaults setBool:YES forKey:kMSAIApplicationWasLaunched];
   assertThatBool([_sut isFirstSession], equalToBool(NO));
 }
 
 - (void)testCreateNewSession {
-  NSUserDefaults *mockUserDefaults = mock(NSUserDefaults.class);
   MSAISession *session = _sut.session;
-  _sut.userDefaults = mockUserDefaults;
-  [given([mockUserDefaults boolForKey:kMSAIApplicationWasLaunched]) willReturn:@YES];
-  
+  NSUserDefaults *userDefaults = [NSUserDefaults new];
+  _sut.userDefaults = userDefaults;
+  [userDefaults setBool:YES forKey:kMSAIApplicationWasLaunched];
+
   [_sut createNewSession];
   XCTAssertTrue([session.isNew isEqualToString:@"true"]);
-  NSString *firstGUID = session.sessionId;
   XCTAssertTrue([session.isFirst isEqualToString:@"false"]);
   
+  NSString *firstGUID = session.sessionId;
+
   [_sut createNewSession];
   XCTAssertFalse([firstGUID isEqualToString:session.sessionId]);
 }
