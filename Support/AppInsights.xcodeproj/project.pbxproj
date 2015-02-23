@@ -33,6 +33,7 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		1B3B73081A94BC8E008DCADA /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B3B73071A94BC8E008DCADA /* CoreTelephony.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		1B3C38761A82213000700081 /* MSAICrashData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3C386C1A82213000700081 /* MSAICrashData.h */; };
 		1B3C38771A82213000700081 /* MSAICrashData.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3C386D1A82213000700081 /* MSAICrashData.m */; };
 		1B3C38781A82213000700081 /* MSAICrashDataBinary.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3C386E1A82213000700081 /* MSAICrashDataBinary.h */; };
@@ -43,6 +44,9 @@
 		1B3C387D1A82213000700081 /* MSAICrashDataThread.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3C38731A82213000700081 /* MSAICrashDataThread.m */; };
 		1B3C387E1A82213000700081 /* MSAICrashDataThreadFrame.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3C38741A82213000700081 /* MSAICrashDataThreadFrame.h */; };
 		1B3C387F1A82213000700081 /* MSAICrashDataThreadFrame.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3C38751A82213000700081 /* MSAICrashDataThreadFrame.m */; };
+		1B3FB89E1A93756100D06311 /* MSAIReachability.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3FB89C1A93756100D06311 /* MSAIReachability.h */; };
+		1B3FB89F1A93756100D06311 /* MSAIReachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3FB89D1A93756100D06311 /* MSAIReachability.m */; };
+		1B3FB8A41A9382A200D06311 /* MSAIReachabilityTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3FB8A21A93762700D06311 /* MSAIReachabilityTests.m */; };
 		1B47E02E1A84D3DF000B4C3D /* MSAIEnvelopeManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B47E02C1A84D3DF000B4C3D /* MSAIEnvelopeManager.h */; };
 		1B47E02F1A84D3DF000B4C3D /* MSAIEnvelopeManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B47E02D1A84D3DF000B4C3D /* MSAIEnvelopeManager.m */; };
 		1B53FEBF1A6425240082F2E9 /* CrashReporter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B53FEBE1A6425240082F2E9 /* CrashReporter.framework */; };
@@ -215,6 +219,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1B3B73071A94BC8E008DCADA /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
 		1B3C386C1A82213000700081 /* MSAICrashData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAICrashData.h; sourceTree = "<group>"; };
 		1B3C386D1A82213000700081 /* MSAICrashData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAICrashData.m; sourceTree = "<group>"; };
 		1B3C386E1A82213000700081 /* MSAICrashDataBinary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAICrashDataBinary.h; sourceTree = "<group>"; };
@@ -225,6 +230,10 @@
 		1B3C38731A82213000700081 /* MSAICrashDataThread.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAICrashDataThread.m; sourceTree = "<group>"; };
 		1B3C38741A82213000700081 /* MSAICrashDataThreadFrame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAICrashDataThreadFrame.h; sourceTree = "<group>"; };
 		1B3C38751A82213000700081 /* MSAICrashDataThreadFrame.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAICrashDataThreadFrame.m; sourceTree = "<group>"; };
+		1B3FB89C1A93756100D06311 /* MSAIReachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAIReachability.h; sourceTree = "<group>"; };
+		1B3FB89D1A93756100D06311 /* MSAIReachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAIReachability.m; sourceTree = "<group>"; };
+		1B3FB8A21A93762700D06311 /* MSAIReachabilityTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIReachabilityTests.m; path = AppInsightsTests/MSAIReachabilityTests.m; sourceTree = SOURCE_ROOT; };
+		1B3FB8A51A9383C300D06311 /* MSAIReachabilityPrivate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MSAIReachabilityPrivate.h; sourceTree = "<group>"; };
 		1B47E02C1A84D3DF000B4C3D /* MSAIEnvelopeManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAIEnvelopeManager.h; sourceTree = "<group>"; };
 		1B47E02D1A84D3DF000B4C3D /* MSAIEnvelopeManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAIEnvelopeManager.m; sourceTree = "<group>"; };
 		1B47E0301A84D413000B4C3D /* MSAIEnvelopeManagerPrivate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MSAIEnvelopeManagerPrivate.h; sourceTree = "<group>"; };
@@ -402,6 +411,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1B3B73081A94BC8E008DCADA /* CoreTelephony.framework in Frameworks */,
 				1B53FEC01A6425240082F2E9 /* CrashReporter.framework in Frameworks */,
 				808FB2671A7982B50002872B /* OCHamcrestIOS.framework in Frameworks */,
 				808FB2681A7982B50002872B /* OCMockitoIOS.framework in Frameworks */,
@@ -512,6 +522,7 @@
 		1E5A459616F0DFC200B55C04 /* AppInsights Tests */ = {
 			isa = PBXGroup;
 			children = (
+				1B3FB8A21A93762700D06311 /* MSAIReachabilityTests.m */,
 				808FB2211A7982230002872B /* MSAIAppClientTests.m */,
 				808FB2221A7982230002872B /* MSAIApplicationTests.m */,
 				808FB2231A7982230002872B /* MSAIBaseTests.m */,
@@ -660,6 +671,7 @@
 		E400561C148D79B500EB22B9 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1B3B73071A94BC8E008DCADA /* CoreTelephony.framework */,
 				1B85606E1A7A6A9D00A54FB7 /* UIKit.framework */,
 				1B53FEBE1A6425240082F2E9 /* CrashReporter.framework */,
 				1E67961619816B9200B6DA20 /* CFNetwork.framework */,
@@ -718,6 +730,9 @@
 				1BE29B461A6FB8C20014A10F /* MSAISender.h */,
 				1BE29B471A6FB8C20014A10F /* MSAISender.m */,
 				1BE29B4A1A6FBAB50014A10F /* MSAISenderPrivate.h */,
+				1B3FB89C1A93756100D06311 /* MSAIReachability.h */,
+				1B3FB89D1A93756100D06311 /* MSAIReachability.m */,
+				1B3FB8A51A9383C300D06311 /* MSAIReachabilityPrivate.h */,
 			);
 			name = Network;
 			sourceTree = "<group>";
@@ -771,6 +786,7 @@
 				807CFDBF1A712974004EA1B6 /* MSAIMessageData.h in Headers */,
 				1E90FD7318EDB86400CF0417 /* MSAICrashDetails.h in Headers */,
 				807CFDC71A712974004EA1B6 /* MSAIPageViewPerfData.h in Headers */,
+				1B3FB89E1A93756100D06311 /* MSAIReachability.h in Headers */,
 				807CFDCD1A712974004EA1B6 /* MSAISession.h in Headers */,
 				1EB2E4C618FD4CEA008BB1CF /* MSAIMetricsManager.h in Headers */,
 				807CFDC51A712974004EA1B6 /* MSAIPageViewData.h in Headers */,
@@ -956,6 +972,7 @@
 				E40E0B0D17DA1AFF005E38C1 /* MSAIAppClient.m in Sources */,
 				1ECA8F52192B6954006B9416 /* MSAICrashMetaData.m in Sources */,
 				807CFDA61A712974004EA1B6 /* MSAIBase.m in Sources */,
+				1B3FB89F1A93756100D06311 /* MSAIReachability.m in Sources */,
 				807CFDBA1A712974004EA1B6 /* MSAIExceptionDetails.m in Sources */,
 				1B3C387F1A82213000700081 /* MSAICrashDataThreadFrame.m in Sources */,
 				807CFDBC1A712974004EA1B6 /* MSAIInternal.m in Sources */,
@@ -1003,6 +1020,7 @@
 				808FB2481A7982230002872B /* MSAIDataTests.m in Sources */,
 				808FB2411A7982230002872B /* MSAIAppClientTests.m in Sources */,
 				808FB2551A7982230002872B /* MSAIMetricsManagerTests.m in Sources */,
+				1B3FB8A41A9382A200D06311 /* MSAIReachabilityTests.m in Sources */,
 				808FB24A1A7982230002872B /* MSAIDomainTests.m in Sources */,
 				808FB25A1A7982230002872B /* MSAIRequestDataTests.m in Sources */,
 				808FB2531A7982230002872B /* MSAIMessageDataTests.m in Sources */,

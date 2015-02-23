@@ -60,7 +60,7 @@
   [_sut configureWithAppClient:_appClient endpointPath:nil];
   MSAIEnvelope *testItem = [MSAIEnvelope new];
   NSData *expectedBodyData = [[testItem serializeToString] dataUsingEncoding:NSUTF8StringEncoding];
-  NSURLRequest *testRequest = [_sut requestForData:expectedBodyData];
+  NSURLRequest *testRequest = [_sut requestForData:expectedBodyData urlString:@"http://testurl.com"];
 
   assertThat(testRequest, notNilValue());
   assertThat([testRequest HTTPBody], equalTo(expectedBodyData));
