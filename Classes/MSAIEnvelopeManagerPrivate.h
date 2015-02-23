@@ -81,17 +81,4 @@
  */
 - (MSAIEnvelope *)envelopeForCrashReport:(MSAIPLCrashReport *)report exception:(NSException *)exception;
 
-///-----------------------------------------------------------------------------
-/// @name Helper
-///-----------------------------------------------------------------------------
-
-/**
- *  Returns the formatted string for a given date.
- *
- *  @param date the date to be converted to a string
- *
- *  @return the string representation for a given date
- */
-- (NSString *)dateStringForDate:(NSDate *)date;
-
 @end
