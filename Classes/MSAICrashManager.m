@@ -227,8 +227,8 @@ static NSString *_serverURL;
       BOOL considerReport = YES;
 
       if(_delegate &&
-          [_delegate respondsToSelector:@selector(considerAppNotTerminatedCleanlyReportForCrashManager:)]) {
-        considerReport = [_delegate considerAppNotTerminatedCleanlyReportForCrashManager:nil]; //TODO new delegate method?!
+          [_delegate respondsToSelector:@selector(considerAppNotTerminatedCleanlyReportForCrashManager)]) {
+        considerReport = [_delegate considerAppNotTerminatedCleanlyReportForCrashManager];
       }
 
       if(considerReport) {
@@ -617,8 +617,8 @@ static NSString *_serverURL;
   // first check the global keychain storage
   NSString *username = [self stringValueFromKeychainForKey:kMSAIMetaUserName] ?: @"";
 
-  if(_delegate && [_delegate respondsToSelector:@selector(userNameForCrashManager:)]) {
-    username = [_delegate userNameForCrashManager:nil] ?: @""; //TODO fix delegate callback
+  if(_delegate && [_delegate respondsToSelector:@selector(userNameForCrashManager)]) {
+    username = [_delegate userNameForCrashManager] ?: @"";
   }
   if([MSAIManager sharedMSAIManager].delegate &&
       [[MSAIManager sharedMSAIManager].delegate respondsToSelector:@selector(userNameForTelemetryManager:componentManager:)]) {
@@ -639,8 +639,8 @@ static NSString *_serverURL;
   // first check the global keychain storage
   NSString *useremail = [self stringValueFromKeychainForKey:kMSAIMetaUserEmail] ?: @"";
 
-  if(_delegate && [_delegate respondsToSelector:@selector(userEmailForCrashManager:)]) {
-    useremail = [_delegate userEmailForCrashManager:nil] ?: @""; //TODO fix delegate callback
+  if(_delegate && [_delegate respondsToSelector:@selector(userEmailForCrashManager)]) {
+    useremail = [_delegate userEmailForCrashManager] ?: @"";
   }
   if([MSAIManager sharedMSAIManager].delegate &&
       [[MSAIManager sharedMSAIManager].delegate respondsToSelector:@selector(userEmailForTelemetryManager:componentManager:)]) {
@@ -734,8 +734,8 @@ static NSString *_serverURL;
   [self addStringValueToKeychain:[self userEmailForCrashReport] forKey:[NSString stringWithFormat:@"%@.%@", filename, kMSAICrashMetaUserEmail]];
   [self addStringValueToKeychain:[self userIDForCrashReport] forKey:[NSString stringWithFormat:@"%@.%@", filename, kMSAICrashMetaUserID]];
 
-  if(_delegate != nil && [_delegate respondsToSelector:@selector(applicationLogForCrashManager:)]) {
-    applicationLog = [_delegate applicationLogForCrashManager:nil] ?: @""; //TODO fix delegate callback
+  if(_delegate != nil && [_delegate respondsToSelector:@selector(applicationLogForCrashManager)]) {
+    applicationLog = [_delegate applicationLogForCrashManager] ?: @""; //TODO fix delegate callback
   }
   metaDict[kMSAICrashMetaApplicationLog] = applicationLog;
 
@@ -753,8 +753,8 @@ static NSString *_serverURL;
 + (BOOL)handleUserInput:(MSAICrashManagerUserInput)userInput withUserProvidedMetaData:(MSAICrashMetaData *)userProvidedMetaData {
   switch(userInput) {
     case MSAICrashManagerUserInputDontSend:
-      if(_delegate != nil && [_delegate respondsToSelector:@selector(crashManagerWillCancelSendingCrashReport:)]) {
-        [_delegate crashManagerWillCancelSendingCrashReport:nil]; //TODO delegate methods
+      if(_delegate != nil && [_delegate respondsToSelector:@selector(crashManagerWillCancelSendingCrashReport)]) {
+        [_delegate crashManagerWillCancelSendingCrashReport];
       }
 
       if(_lastCrashFilename)
@@ -773,8 +773,8 @@ static NSString *_serverURL;
       _crashManagerStatus = MSAICrashManagerStatusAutoSend;
       [[NSUserDefaults standardUserDefaults] setInteger:_crashManagerStatus forKey:kMSAICrashManagerStatus];
       [[NSUserDefaults standardUserDefaults] synchronize];
-      if(_delegate != nil && [_delegate respondsToSelector:@selector(crashManagerWillSendCrashReportsAlways:)]) {
-        [_delegate crashManagerWillSendCrashReportsAlways:nil]; //TODO delegate methods
+      if(_delegate != nil && [_delegate respondsToSelector:@selector(crashManagerWillSendCrashReportsAlways)]) {
+        [_delegate crashManagerWillSendCrashReportsAlways];
       }
 
       if(userProvidedMetaData)
@@ -924,8 +924,8 @@ Get the filename of the first not approved crash report
     return YES;
   } else {
     if(_didCrashInLastSession) {
-      if(_delegate != nil && [_delegate respondsToSelector:@selector(crashManagerWillCancelSendingCrashReport:)]) {
-        [_delegate crashManagerWillCancelSendingCrashReport:nil];//TODO delegate
+      if(_delegate != nil && [_delegate respondsToSelector:@selector(crashManagerWillCancelSendingCrashReport)]) {
+        [_delegate crashManagerWillCancelSendingCrashReport];
       }
 
       _didCrashInLastSession = NO;
@@ -984,8 +984,8 @@ Get the filename of the first not approved crash report
       [self sendNextCrashReport];
     } else if(_alertViewHandler && _crashManagerStatus != MSAICrashManagerStatusAutoSend && notApprovedReportFilename) {
 
-      if(_delegate != nil && [_delegate respondsToSelector:@selector(crashManagerWillShowSubmitCrashReportAlert:)]) {
-        [_delegate crashManagerWillShowSubmitCrashReportAlert:nil]; //TODO fix delegate methods
+      if(_delegate != nil && [_delegate respondsToSelector:@selector(crashManagerWillShowSubmitCrashReportAlert)]) {
+        [_delegate crashManagerWillShowSubmitCrashReportAlert]; //TODO fix delegate methods
       }
 
       _alertViewHandler();
@@ -1125,8 +1125,8 @@ Get the filename of the first not approved crash report
     }
   }];
 
-  if(_delegate != nil && [_delegate respondsToSelector:@selector(crashManagerWillSendCrashReport:)]) {
-    [_delegate crashManagerWillSendCrashReport:nil]; //FIX delegation
+  if(_delegate != nil && [_delegate respondsToSelector:@selector(crashManagerWillSendCrashReport)]) {
+    [_delegate crashManagerWillSendCrashReport]; //FIX delegation
   }
 }
 

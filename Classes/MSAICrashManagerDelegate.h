@@ -23,7 +23,7 @@
  @see userNameForCrashManager:
  @see userEmailForCrashManager:
  */
--(NSString *)applicationLogForCrashManager:(MSAICrashManager *)crashManager;
+-(NSString *)applicationLogForCrashManager;
 
 
 
@@ -37,7 +37,7 @@
  @warning When returning a non nil value, crash reports are not anonymous any
  more and the alerts will not show the "anonymous" word!
  */
--(NSString *)userNameForCrashManager:(MSAICrashManager *)crashManager DEPRECATED_ATTRIBUTE;
+-(NSString *)userNameForCrashManager DEPRECATED_ATTRIBUTE;
 
 
 
@@ -51,7 +51,7 @@
  @warning When returning a non nil value, crash reports are not anonymous any
  more and the alerts will not show the "anonymous" word!
  */
--(NSString *)userEmailForCrashManager:(MSAICrashManager *)crashManager DEPRECATED_ATTRIBUTE;
+-(NSString *)userEmailForCrashManager DEPRECATED_ATTRIBUTE;
 
 
 
@@ -66,21 +66,21 @@
  
  @param crashManager The `MSAICrashManager` instance invoking this delegate
  */
--(void)crashManagerWillShowSubmitCrashReportAlert:(MSAICrashManager *)crashManager;
+-(void)crashManagerWillShowSubmitCrashReportAlert;
 
 
 /** Invoked after the user did choose _NOT_ to send a crash in the alert
  
  @param crashManager The `MSAICrashManager` instance invoking this delegate
  */
--(void)crashManagerWillCancelSendingCrashReport:(MSAICrashManager *)crashManager;
+-(void)crashManagerWillCancelSendingCrashReport;
 
 
 /** Invoked after the user did choose to send crashes always in the alert
  
  @param crashManager The `MSAICrashManager` instance invoking this delegate
  */
--(void)crashManagerWillSendCrashReportsAlways:(MSAICrashManager *)crashManager;
+-(void)crashManagerWillSendCrashReportsAlways;
 
 
 ///-----------------------------------------------------------------------------
@@ -91,7 +91,7 @@
  
  @param crashManager The `MSAICrashManager` instance invoking this delegate
  */
-- (void)crashManagerWillSendCrashReport:(MSAICrashManager *)crashManager;
+- (void)crashManagerWillSendCrashReport;
 
 /** Invoked after sending crash reports failed
  
@@ -99,13 +99,13 @@
  @param error The error returned from the NSURLConnection call or `kMSAICrashErrorDomain`
  with reason of type `MSAICrashErrorReason`.
  */
-- (void)crashManager:(MSAICrashManager *)crashManager didFailWithError:(NSError *)error;
+- (void)crashManagerDidFailWithError:(NSError *)error;
 
 /** Invoked after sending crash reports succeeded
  
  @param crashManager The `MSAICrashManager` instance invoking this delegate
  */
-- (void)crashManagerDidFinishSendingCrashReport:(MSAICrashManager *)crashManager;
+- (void)crashManagerDidFinishSendingCrashReport;
 
 ///-----------------------------------------------------------------------------
 /// @name Experimental
@@ -126,6 +126,6 @@
  @return `YES` if the heuristic based detected report should be reported, otherwise `NO`
  @see `[MSAICrashManager didReceiveMemoryWarningInLastSession]`
  */
--(BOOL)considerAppNotTerminatedCleanlyReportForCrashManager:(MSAICrashManager *)crashManager;
+-(BOOL)considerAppNotTerminatedCleanlyReportForCrashManager;
 
 @end
