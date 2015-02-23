@@ -9,6 +9,8 @@
 #import "MSAICrashDataProvider.h"
 #import "MSAIHelper.h"
 
+static NSInteger const schemaVersion = 2;
+
 @implementation MSAIEnvelopeManager
 
 #pragma mark - Initialize and configure singleton instance
@@ -63,7 +65,7 @@
 }
 
 - (MSAIEnvelope *)envelopeForTelemetryData:(MSAITelemetryData *)telemetryData{
-  [telemetryData setVersion:@(2)];
+  telemetryData.version = @(schemaVersion);
   
   MSAIData *data = [MSAIData new];
   data.baseData = telemetryData;
