@@ -67,8 +67,8 @@ The SDK runs on devices with iOS 6.0 or higher.
 
 4. Add the following lines (Replace `INSTRUMENTATION_KEY` with the app instrumentation key of your app):
 
-		[[MSAITelemetryManager sharedMSAIManager] configureWithInstrumentationKey:@"INSTRUMENTATION_KEY"];
-		[[MSAITelemetryManager sharedMSAIManager] startManager];
+		[[MSAIManager sharedMSAIManager] configureWithInstrumentationKey:@"INSTRUMENTATION_KEY"];
+		[[MSAIManager sharedMSAIManager] startManager];
 
 5. Send some data to the server:
 
@@ -107,8 +107,8 @@ The SDK runs on devices with iOS 6.0 or higher.
 
 4. Add the following lines (Replace `INSTRUMENTATION_KEY` with the app instrumentation key of your app):
 
-		MSAITelemetryManager.sharedMSAIManager().configureWithInstrumentationKey("INSTRUMENTATION_KEY");
-        MSAITelemetryManager.sharedMSAIManager().startManager();
+		MSAIManager.sharedMSAIManager().configureWithInstrumentationKey("INSTRUMENTATION_KEY");
+        MSAIManager.sharedMSAIManager().startManager();
 
 5. Send some data to the server:
 
@@ -151,8 +151,8 @@ The following points need to be considered to use AppInsights SDK iOS with iOS 8
         - (void)viewDidLoad {
           [super viewDidLoad];
           if (!self.didSetupAppInsightsSDK) {
-            [[MSAITelemetryManager sharedMSAIManager] configureWithInstrumentationKey:@"INSTRUMENTATION_KEY"];
-		[[MSAITelemetryManager sharedMSAIManager] startManager];
+            [[MSAIManager sharedMSAIManager] configureWithInstrumentationKey:@"INSTRUMENTATION_KEY"];
+		[[MSAIManager sharedMSAIManager] startManager];
             self.didSetupAppInsightsSDK = YES;
           }
         }
