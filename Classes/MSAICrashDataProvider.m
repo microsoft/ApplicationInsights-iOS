@@ -238,7 +238,10 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
     envelope.os = osName;
     envelope.time = [rfc3339Formatter stringFromDate:report.systemInfo.timestamp];
     envelope.appId = report.applicationInfo.applicationIdentifier;
-    envelope.appVer = report.applicationInfo.applicationVersion;
+    
+    NSString *marketingVersion = report.applicationInfo.applicationMarketingVersion;
+    NSString *appVersion = report.applicationInfo.applicationVersion;
+    envelope.appVer = marketingVersion ? [NSString stringWithFormat:@"%@ (%@)", marketingVersion, appVersion] : appVersion;
   }
   
   MSAICrashData *crashData = [MSAICrashData new];
