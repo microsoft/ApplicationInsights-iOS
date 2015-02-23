@@ -27,7 +27,7 @@
 #import "MSAIMetricsManagerPrivate.h"
 #endif /* MSAI_FEATURE_METRICS */
 
-NSString *const kMSAIInstrumentationKey = @"Instrumentation Key";
+NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 
 @implementation MSAIManager {
   
