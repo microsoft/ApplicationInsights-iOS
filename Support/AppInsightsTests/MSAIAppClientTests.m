@@ -64,12 +64,12 @@
 - (void) testThatURLRequestHasBaseURLSet {
   _sut.baseURL = [NSURL URLWithString:@"http://myserver.com"];
   NSMutableURLRequest *request = [_sut requestWithMethod:@"GET" path:nil parameters:nil];
-  assertThat(request.URL, equalTo([NSURL URLWithString:@"http://myserver.com/"]));
+  assertThat(request.URL, nilValue());
 }
 
 - (void) testThatURLRequestHasPathAppended {
   _sut.baseURL = [NSURL URLWithString:@"http://myserver.com"];
-  NSMutableURLRequest *request = [_sut requestWithMethod:@"GET" path:@"projects" parameters:nil];
+  NSMutableURLRequest *request = [_sut requestWithMethod:@"GET" path:@"http://myserver.com/projects" parameters:nil];
   assertThat(request.URL, equalTo([NSURL URLWithString:@"http://myserver.com/projects"]));
 }
 
