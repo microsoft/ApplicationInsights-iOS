@@ -10,6 +10,7 @@ NSString *msai_settingsDir(void);
 
 NSString *msai_keychainMSAIServiceName(void);
 
+NSString *msai_utcDateString(NSDate *date);
 NSString *msai_appVersion(void);
 NSString *msai_devicePlatform(void);
 NSString *msai_deviceLanguage(void);
