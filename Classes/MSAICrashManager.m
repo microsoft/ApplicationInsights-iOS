@@ -605,7 +605,7 @@ static NSString *_serverURL;
   NSString *userID = [self stringValueFromKeychainForKey:kMSAIMetaUserID] ?: @"";
 
   if([MSAIManager sharedMSAIManager].delegate &&
-      [[MSAIManager sharedMSAIManager].delegate respondsToSelector:@selector(userIDForTelemetryManager:componentManager:)]) {
+      [[MSAIManager sharedMSAIManager].delegate respondsToSelector:@selector(userIDForTelemetryManager:)]) {
     userID = [[MSAIManager sharedMSAIManager].delegate
         userIDForTelemetryManager:[MSAIManager sharedMSAIManager]] ?: @"";
   }
