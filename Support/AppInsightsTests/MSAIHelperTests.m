@@ -98,5 +98,11 @@
   assertThatInteger([resultString length], equalToInteger(36));
 }
 
+- (void)testUtcDateString{
+  NSDate *testDate = [NSDate dateWithTimeIntervalSince1970:0];
+  NSString *utcDateString = msai_utcDateString(testDate);
+  
+  assertThat(utcDateString, equalTo(@"1970-01-01T00:00:00.000Z"));
+}
 
 @end
