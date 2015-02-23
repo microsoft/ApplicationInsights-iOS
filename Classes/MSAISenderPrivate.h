@@ -51,10 +51,11 @@
  *  Returnes a request for sending data to the telemetry sender.
  *
  *  @param data the data which should be sent
+ *  @param urlString url depending on payload
  *
  *  @return a request which contains the given data
  */
-- (NSURLRequest *)requestForData:(NSData *)data;
+- (NSURLRequest *)requestForData:(NSData *)data urlString:(NSString *)urlString;
 
 /**
  *  Convert a collection of envelope objects to array of dictionaries.
