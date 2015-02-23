@@ -54,13 +54,12 @@
  @warning When returning a non nil value for the `MSAICrashManager` component, crash reports
  are not anonymous any more and the crash alerts will not show the word "anonymous"!
  
- @param manager The `MSAIManager` manager instance invoking this delegate
- @param componentManager The `MSAICrashManager` component instance invoking this delegate
- @see userNameForManager:componentManager:
- @see userEmailForManager:componentManager:
+ @param msaiManager The `MSAIManager` manager instance invoking this delegate
+ @see userNameForMSAIManager:
+ @see userEmailForMSAIManager:
  @see [MSAIManager userID]
  */
-- (NSString *)userIDForTelemetryManager:(MSAIManager *)telemetryManager;
+- (NSString *)userIDForMSAIManager:(MSAIManager *)msaiManager;
 
 
 /** Return the user name that should used in the SDK components
@@ -90,13 +89,12 @@
  @warning When returning a non nil value for the `MSAICrashManager` component, crash reports
  are not anonymous any more and the crash alerts will not show the word "anonymous"!
 
- @param manager The `MSAIManager` manager instance invoking this delegate
- @param componentManager The `MSAICrashManager` component instance invoking this delegate, can be `MSAICrashManager` or `MSAIFeedbackManager`
- @see userIDForTelemetryManager:componentManager:
- @see userEmailForTelemetryManager:componentManager:
+ @param msaiManager The `MSAIManager` manager instance invoking this delegate
+ @see userIDForMSAIManager:
+ @see userEmailForMSAIManager:
  @see [MSAIManager userName]
  */
-- (NSString *)userNameForTelemetryManager:(MSAIManager *)telemetryManager;
+- (NSString *)userNameForMSAIManager:(MSAIManager *)msaiManager;
 
 
 /** Return the users email address that should used in the SDK components
@@ -126,12 +124,11 @@
  @warning When returning a non nil value for the `MSAICrashManager` component, crash reports
  are not anonymous any more and the crash alerts will not show the word "anonymous"!
 
- @param manager The `MSAIManager` manager instance invoking this delegate
- @param componentManager The `MSAICrashManager` component instance invoking this delegate, can be `MSAICrashManager` or `MSAIFeedbackManager`
- @see userIDForTelemetryManager:componentManager:
- @see userNameForTelemetryManager:componentManager:
- @see [MSAITelemetryTelemetryManager userEmail]
+ @param msaiManager The `MSAIManager` manager instance invoking this delegate
+ @see userIDForMSAIManager:
+ @see userNameForMSAIManager:
+ @see [MSAIManager userEmail]
  */
-- (NSString *)userEmailForTelemetryManager:(MSAIManager *)telemetryManager;
+- (NSString *)userEmailForMSAIManager:(MSAIManager *)msaiManager;
 
 @end
