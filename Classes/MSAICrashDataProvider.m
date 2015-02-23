@@ -228,15 +228,9 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
       osBuild = report.systemInfo.operatingSystemBuild;
     }
     
-    NSLocale *enUSPOSIXLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
-    NSDateFormatter *rfc3339Formatter = [[NSDateFormatter alloc] init];
-    [rfc3339Formatter setLocale:enUSPOSIXLocale];
-    [rfc3339Formatter setDateFormat:@"yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'"];
-    [rfc3339Formatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
-    
     envelope.osVer = [NSString stringWithFormat:@"%@(%@)", report.systemInfo.operatingSystemVersion, osBuild];
     envelope.os = osName;
-    envelope.time = [rfc3339Formatter stringFromDate:report.systemInfo.timestamp];
+    envelope.time = msai_utcDateString(report.systemInfo.timestamp);
     envelope.appId = report.applicationInfo.applicationIdentifier;
     
     NSString *marketingVersion = report.applicationInfo.applicationMarketingVersion;
