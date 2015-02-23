@@ -306,11 +306,6 @@ static NSString *_serverURL;
 }
 
 
-- (void)setCrashManagerStatus:(MSAICrashManagerStatus)crashManagerStatus {
-  _crashManagerStatus = crashManagerStatus;
-
-  [[NSUserDefaults standardUserDefaults] setInteger:crashManagerStatus forKey:kMSAICrashManagerStatus];
-}
 
 
 #pragma mark - Private
@@ -1364,6 +1359,21 @@ Get the filename of the first not approved crash report
 + (void)setServerURL:(NSString *)serverURL {
   _serverURL = serverURL;
 }
+
++ (void)setCrashManagerStatus:(MSAICrashManagerStatus)crashManagerStatus {
+  _crashManagerStatus = crashManagerStatus;
+  
+  [[NSUserDefaults standardUserDefaults] setInteger:crashManagerStatus forKey:kMSAICrashManagerStatus];
+}
+
++ (MSAICrashManagerStatus)getCrashManagerStatus {
+  return _crashManagerStatus;
+}
+
++ (BOOL)didCrashInLastSession {
+  return _didCrashInLastSession;
+}
+
 @end
 
 #endif /* MSAI_FEATURE_CRASH_REPORTER */

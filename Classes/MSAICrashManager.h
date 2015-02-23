@@ -151,6 +151,8 @@ typedef NS_ENUM(NSUInteger, MSAICrashManagerUserInput) {
  @see MSAICustomAlertViewHandler
  */
 //@property (nonatomic, assign) MSAICrashManagerStatus crashManagerStatus;
++ (void)setCrashManagerStatus:(MSAICrashManagerStatus) crashManagerStatus;
++ (MSAICrashManagerStatus)getCrashManagerStatus;
 
 
 /**
@@ -281,13 +283,14 @@ typedef NS_ENUM(NSUInteger, MSAICrashManagerUserInput) {
  @see lastSessionCrashDetails
  */
 //@property (nonatomic, readonly) BOOL didCrashInLastSession;
++(BOOL)didCrashInLastSession;
 
 
 /**
  * Provides details about the crash that occured in the last app session
  */
 //@property (nonatomic, readonly) MSAICrashDetails *lastSessionCrashDetails;
-
++ (MSAICrashDetails *)getLastSessionCrashDetails;
 
 /**
  Provides an interface to pass user input from a custom alert to a crash report
