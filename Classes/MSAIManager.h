@@ -4,7 +4,6 @@
 
 @protocol MSAIManagerDelegate;
 
-@class MSAIBaseManager;
 @class MSAICrashManager;
 @class MSAIMetricsManager;
 
@@ -107,7 +106,7 @@
  @see startManager
  @see disableCrashManager
  */
-@property (nonatomic, strong, readonly) MSAICrashManager *crashManager;
+//@property (nonatomic, strong, readonly) MSAICrashManager *crashManager;
 
 
 /**

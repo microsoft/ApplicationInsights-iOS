@@ -11,8 +11,6 @@
 #import "MSAIAppClient.h"
 #import "MSAIMetricsManager.h"
 #import "MSAIMetricsManagerPrivate.h"
-#import "MSAIBaseManager.h"
-#import "MSAIBaseManagerPrivate.h"
 
 @interface MSAIMetricsManagerTests : XCTestCase
 

@@ -11,8 +11,6 @@
 #import "AppInsightsPrivate.h"
 #import "MSAICrashManager.h"
 #import "MSAICrashManagerPrivate.h"
-#import "MSAIBaseManager.h"
-#import "MSAIBaseManagerPrivate.h"
 #import "MSAIContextPrivate.h"
 
 #import "MSAITestHelper.h"

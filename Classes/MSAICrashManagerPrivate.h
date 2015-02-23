@@ -9,7 +9,6 @@
 @interface MSAICrashManager () {
 }
 
-
 ///-----------------------------------------------------------------------------
 /// @name Delegate
 ///-----------------------------------------------------------------------------
@@ -22,40 +21,69 @@
  
  @see `[MSAIManager setDelegate:]`
  */
-@property (nonatomic, weak) id delegate;
+//@property (nonatomic, weak) id delegate;
+
+
++ (void)setDelegate:(id)delegate;
++ (id)getDelegate;
 
 /**
  * must be set
  */
 
-@property (nonatomic) NSUncaughtExceptionHandler *exceptionHandler;
++ (NSUncaughtExceptionHandler *)getExceptionHandler;
++ (void)setExceptionHandler:(NSUncaughtExceptionHandler*)exceptionHandler;
 
-@property (nonatomic, strong) NSFileManager *fileManager;
++ (NSFileManager *)getFileManager;
++ (void)setFileManager:(NSFileManager *)fileManager;
 
-@property (nonatomic, strong) MSAIPLCrashReporter *plCrashReporter;
++ (MSAIPLCrashReporter *)getPLCrashReporter;
++ (void)setPLCrashReporter:(MSAIPLCrashReporter *)crashReporter;
 
-@property (nonatomic) NSString *lastCrashFilename;
++ (NSString *)getLastCrashFilename;
++ (void)setLastCrashFilename:(NSString *)lastCrashFilename;
 
-@property (nonatomic, copy, setter = setAlertViewHandler:) MSAICustomAlertViewHandler alertViewHandler;
 
-@property (nonatomic, strong) NSString *crashesDir;
++ (MSAICustomAlertViewHandler)getAlertViewHandler;
++ (void)setAlertViewHandler:(MSAICustomAlertViewHandler)alertViewHandler;
 
-- (void)cleanCrashReports;
 
-- (NSString *)userIDForCrashReport;
-- (NSString *)userEmailForCrashReport;
-- (NSString *)userNameForCrashReport;
++ (NSString *)getCrashesDir;
++ (void)setCrashesDir:(NSString *)crashesDir;
 
-- (void)handleCrashReport;
-- (BOOL)hasPendingCrashReport;
-- (NSString *)firstNotApprovedCrashReport;
 
-- (void)persistUserProvidedMetaData:(MSAICrashMetaData *)userProvidedMetaData;
 
-- (void)invokeDelayedProcessing;
-- (void)sendNextCrashReport;
++ (void)cleanCrashReports;
 
-- (void)setLastCrashFilename:(NSString *)lastCrashFilename;
++ (NSString *)userIDForCrashReport;
++ (NSString *)userEmailForCrashReport;
++ (NSString *)userNameForCrashReport;
+
++ (void)handleCrashReport;
++ (BOOL)hasPendingCrashReport;
++ (NSString *)firstNotApprovedCrashReport;
+
++ (void)persistUserProvidedMetaData:(MSAICrashMetaData *)userProvidedMetaData;
+
++ (void)invokeDelayedProcessing;
++ (void)sendNextCrashReport;
+
++ (void)setAppContext:(MSAIContext*)context;
++ (MSAIContext *)getAppContext;
+
+
++ (NSString *)executableUUID;
+
+/**
+* by default, just logs the message
+*
+* can be overriden by subclasses to do their own error handling,
+* e.g. to show UI
+*
+* @param error NSError
+*/
++ (void)reportError:(NSError *)error;
+
 
 @end
 

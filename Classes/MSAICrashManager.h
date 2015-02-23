@@ -1,9 +1,8 @@
 #import <Foundation/Foundation.h>
 
-#import "MSAIBaseManager.h"
-
 @class MSAICrashDetails;
 @class MSAICrashMetaData;
+@class MSAIContext;
 
 
 /**
@@ -124,7 +123,7 @@ typedef NS_ENUM(NSUInteger, MSAICrashManagerUserInput) {
  @warning If you start the app with the Xcode debugger attached, detecting crashes will _NOT_ be enabled!
  */
 
-@interface MSAICrashManager : MSAIBaseManager
+@interface MSAICrashManager : NSObject
 
 
 ///-----------------------------------------------------------------------------
@@ -151,7 +150,9 @@ typedef NS_ENUM(NSUInteger, MSAICrashManagerUserInput) {
  @see MSAICrashManagerStatus
  @see MSAICustomAlertViewHandler
  */
-@property (nonatomic, assign) MSAICrashManagerStatus crashManagerStatus;
+//@property (nonatomic, assign) MSAICrashManagerStatus crashManagerStatus;
++ (void)setCrashManagerStatus:(MSAICrashManagerStatus) crashManagerStatus;
++ (MSAICrashManagerStatus)getCrashManagerStatus;
 
 
 /**
@@ -172,8 +173,10 @@ typedef NS_ENUM(NSUInteger, MSAICrashManagerUserInput) {
  *  the debugger during runtime, this may cause issues the Mach exception handler is enabled!
  * @see isDebuggerAttached
  */
-@property (nonatomic, assign, getter=isMachExceptionHandlerEnabled) BOOL enableMachExceptionHandler;
+//@property (nonatomic, assign, getter=isMachExceptionHandlerEnabled) BOOL enableMachExceptionHandler;
 
++ (BOOL)isMachExceptionHandlerEnabled;
++ (void)setMachExceptionHandlerEnabled:(BOOL)enabled;
 
 /**
  *  Enable on device symbolication for system symbols
@@ -186,7 +189,11 @@ typedef NS_ENUM(NSUInteger, MSAICrashManagerUserInput) {
  *
  *  Default: _NO_
  */
-@property (nonatomic, assign, getter=isOnDeviceSymbolicationEnabled) BOOL enableOnDeviceSymbolication;
+//@property (nonatomic, assign, getter=isOnDeviceSymbolicationEnabled) BOOL enableOnDeviceSymbolication;
+
+
++ (BOOL)isOnDeviceSymbolicationEnabled;
++ (void)setOnDeviceSymbolicationEnabled:(BOOL)enabled;
 
 
 /**
@@ -226,8 +233,10 @@ typedef NS_ENUM(NSUInteger, MSAICrashManagerUserInput) {
  * @see [Apple Technical Note TN2151](https://developer.apple.com/library/ios/technotes/tn2151/_index.html)
  * @see [Apple Technical Q&A QA1693](https://developer.apple.com/library/ios/qa/qa1693/_index.html)
  */
-@property (nonatomic, assign, getter = isAppNotTerminatingCleanlyDetectionEnabled) BOOL enableAppNotTerminatingCleanlyDetection;
+//@property (nonatomic, assign, getter = isAppNotTerminatingCleanlyDetectionEnabled) BOOL enableAppNotTerminatingCleanlyDetection;
 
++ (BOOL)isAppNotTerminatingCleanlyDetectionEnabled;
++ (void)setEnableAppNotTerminatingCleanlyDetection:(BOOL)enableAppNotTerminatingCleanlyDetection;
 
 /**
  * Set the callbacks that will be executed prior to program termination after a crash has occurred
@@ -254,7 +263,7 @@ typedef NS_ENUM(NSUInteger, MSAICrashManagerUserInput) {
  *
  * @param callbacks A pointer to an initialized PLCrashReporterCallback structure, see https://www.plcrashreporter.org/documentation/api/v1.2-rc2/struct_p_l_crash_reporter_callbacks.html
  */
-- (void)setCrashCallbacks: (MSAICrashManagerCallbacks *) callbacks;
++ (void)setCrashCallbacks: (MSAICrashManagerCallbacks *) callbacks;
 
 
 ///-----------------------------------------------------------------------------
@@ -273,14 +282,15 @@ typedef NS_ENUM(NSUInteger, MSAICrashManagerUserInput) {
  
  @see lastSessionCrashDetails
  */
-@property (nonatomic, readonly) BOOL didCrashInLastSession;
+//@property (nonatomic, readonly) BOOL didCrashInLastSession;
++(BOOL)didCrashInLastSession;
 
 
 /**
  * Provides details about the crash that occured in the last app session
  */
-@property (nonatomic, readonly) MSAICrashDetails *lastSessionCrashDetails;
-
+//@property (nonatomic, readonly) MSAICrashDetails *lastSessionCrashDetails;
++ (MSAICrashDetails *)getLastSessionCrashDetails;
 
 /**
  Provides an interface to pass user input from a custom alert to a crash report
@@ -293,7 +303,7 @@ typedef NS_ENUM(NSUInteger, MSAICrashManagerUserInput) {
  @see MSAICrashManagerUserInput
  @see MSAICrashMetaData
  */
-- (BOOL)handleUserInput:(MSAICrashManagerUserInput)userInput withUserProvidedMetaData:(MSAICrashMetaData *)userProvidedMetaData;
++ (BOOL)handleUserInput:(MSAICrashManagerUserInput)userInput withUserProvidedMetaData:(MSAICrashMetaData *)userProvidedMetaData;
 
 
 /**
@@ -314,7 +324,7 @@ typedef NS_ENUM(NSUInteger, MSAICrashManagerUserInput) {
  
  @warning This needs to be set before calling `[MSAIManager startManager]`!
  */
-- (void)setAlertViewHandler:(MSAICustomAlertViewHandler)alertViewHandler;
++ (void)setAlertViewHandler:(MSAICustomAlertViewHandler)alertViewHandler;
 
 
 /**
@@ -335,8 +345,9 @@ typedef NS_ENUM(NSUInteger, MSAICrashManagerUserInput) {
  @see enableAppNotTerminatingCleanlyDetection
  @see lastSessionCrashDetails
  */
-@property (nonatomic, readonly) BOOL didReceiveMemoryWarningInLastSession;
+//@property (nonatomic, readonly) BOOL didReceiveMemoryWarningInLastSession;
 
++ (BOOL)didReveiveMemoryWarningInLastSession;
 
 /**
  Provides the time between startup and crash in seconds
@@ -356,8 +367,20 @@ typedef NS_ENUM(NSUInteger, MSAICrashManagerUserInput) {
  @see didCrashInLastSession
  @see MSAICrashManagerDelegate
  */
-@property (nonatomic, readonly) NSTimeInterval timeintervalCrashInLastSessionOccured;
+//@property (nonatomic, readonly) NSTimeInterval timeintervalCrashInLastSessionOccured;
 
++ (NSTimeInterval)getTimeIntervalCrashInLastSessionOccured;
+
+/**
+Defines the server URL to send data to or request data from
+
+By default this is set to the AppInsights servers and there rarely should be a
+need to modify that.
+*/
+//@property (nonatomic, copy) NSString *serverURL;
+
++ (NSString *)getServerURL;
++ (void)setServerURL:(NSString *)serverURL;
 
 ///-----------------------------------------------------------------------------
 /// @name Helper
@@ -371,7 +394,7 @@ typedef NS_ENUM(NSUInteger, MSAICrashManagerUserInput) {
  *
  *  @return BOOL if the debugger is attached on app startup
  */
-- (BOOL)isDebuggerAttached;
++ (BOOL)isDebuggerAttached;
 
 
 /**
@@ -387,6 +410,11 @@ typedef NS_ENUM(NSUInteger, MSAICrashManagerUserInput) {
  *
  * If the SDK detects an App Store environment, it will _NOT_ cause the app to crash!
  */
-- (void)generateTestCrash;
++ (void)generateTestCrash;
+
+/**
+ *  This method should be called after the manager has been configured in order to create and send data.
+ */
++ (void)startManagerWithAppContext:(MSAIContext *)appContext;
 
 @end
