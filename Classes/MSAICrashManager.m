@@ -2,14 +2,9 @@
 
 #if MSAI_FEATURE_CRASH_REPORTER
 
-#import <SystemConfiguration/SystemConfiguration.h>
-#import <UIKit/UIKit.h>
-
 #import "AppInsightsPrivate.h"
 #import "MSAIHelper.h"
-#import "MSAIAppClient.h"
 #import "MSAIContextPrivate.h"
-
 #import "MSAICrashManagerPrivate.h"
 #import "MSAICrashDataProvider.h"
 #import "MSAICrashDetailsPrivate.h"
@@ -18,15 +13,15 @@
 #import "MSAIChannelPrivate.h"
 #import "MSAIPersistence.h"
 #import "MSAIEnvelope.h"
-#import "MSAICrashData.h"
 #import "MSAIEnvelopeManager.h"
 #import "MSAIEnvelopeManagerPrivate.h"
 #import "MSAIData.h"
 #import "MSAIKeychainUtils.h"
 
-#include <sys/sysctl.h>
 #import <mach-o/loader.h>
 #import <mach-o/dyld.h>
+
+#include <sys/sysctl.h>
 
 // stores the set of crashreports that have been approved but aren't sent yet
 #define kMSAICrashApprovedReports @"MSAICrashApprovedReports"
@@ -406,33 +401,6 @@ static NSString *_serverURL;
     [self addStringValueToKeychain:userProvidedMetaData.userID forKey:[NSString stringWithFormat:@"%@.%@", _lastCrashFilename, kMSAICrashMetaUserID]];
 
   }
-}
-
-/**
-*	 Extract all app sepcific UUIDs from the crash reports
-*
-* This allows us to send the UUIDs in the XML construct to the server, so the server does not need to parse the crash report for this data.
-* The app specific UUIDs help to identify which dSYMs are needed to symbolicate this crash report.
-*
-*	@param	report The crash report from PLCrashReporter
-*
-*	@return XML structure with the app sepcific UUIDs
-*/
-- (NSString *)extractAppUUIDs:(MSAIPLCrashReport *)report {
-  NSMutableString *uuidString = [NSMutableString string];
-  NSArray *uuidArray = [MSAICrashDataProvider arrayOfAppUUIDsForCrashReport:report];
-
-  for(NSDictionary *element in uuidArray) {
-    if(element[kMSAIBinaryImageKeyUUID] && element[kMSAIBinaryImageKeyArch] && element[kMSAIBinaryImageKeyUUID]) {
-      [uuidString appendFormat:@"<uuid type=\"%@\" arch=\"%@\">%@</uuid>",
-                               element[kMSAIBinaryImageKeyType],
-                               element[kMSAIBinaryImageKeyArch],
-                               element[kMSAIBinaryImageKeyUUID]
-      ];
-    }
-  }
-
-  return uuidString;
 }
 
 + (void)registerObservers {
