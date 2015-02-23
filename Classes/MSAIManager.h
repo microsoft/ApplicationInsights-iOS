@@ -20,16 +20,16 @@
  The SDK is optimized to defer everything possible to a later time while making sure e.g. crashes on startup can also be caught and each module executes other code with a delay some seconds. This ensures that applicationDidFinishLaunching will process as fast as possible and the SDK will not block the startup sequence resulting in a possible kill by the watchdog process.
 
  All modules do **NOT** show any user interface if the module is not activated or not integrated.
- `MSAICrashManager`: Shows an alert on startup asking the user if he/she agrees on sending the crash report, if `[MSAICrashManager crashManagerStatus]` is set to `MSAICrashManagerStatusAlwaysAsk` (default)
+ `MSAICrashManager`: Shows an alert on startup asking the user if he/she agrees on sending the crash report, if `MSAICrashManager.crashManagerStatus` is set to `MSAICrashManagerStatusAlwaysAsk` (default)
  `MSAIUpdateManager`: Is automatically deactivated when the SDK detects it is running from a build distributed via the App Store. Otherwise if it is not deactivated manually, it will show an alert after startup informing the user about a pending update, if one is available. If the user then decides to view the update another screen is presented with further details and an option to install the update.
  `MSAIFeedbackManager`: If this module is deactivated or the user interface is nowhere added into the app, this module will not do anything. It will not fetch the server for data or show any user interface. If it is integrated, activated, and the user already used it to provide feedback, it will show an alert after startup if a new answer has been received from the server with the option to view it.
  
  Example:
  
-    [[MSAIManager sharedManager]
+    [[MSAIManager sharedMSAIManager]
       configureWithInstrumentationKey:@"<InstrumentationKeyFromAppInsights>"
                      delegate:nil];
-    [[MSAIManager sharedManager] startManager];
+    [[MSAIManager sharedMSAIManager] startManager];
  
  @warning The SDK is **NOT** thread safe and has to be set up on the main thread!
  
@@ -52,13 +52,17 @@
  */
 + (MSAIManager *)sharedMSAIManager;
 
+
+/**
+ Configure and initialize all modules
+ */
 - (void)configure;
 /**
  Starts the manager and runs all modules
  
  Call this after configuring the manager and setting up all modules.
  
- @see configureWithInstrumentationKey:delegate:
+ @see configure
  */
 - (void)startManager;
 
@@ -121,7 +125,6 @@
  @warning This property needs to be set before calling `startManager`
 
  *Default*: _NO_
- @see crashManager
  */
 @property (nonatomic, getter = isCrashManagerDisabled) BOOL disableCrashManager;
 
@@ -225,7 +228,7 @@
 
  @see userName
  @see userEmail
- @see `[MSAIManagerDelegate userIDForTelemetryManager:componentManager:]`
+ @see `[MSAIManagerDelegate userIDForMSAIManager:]`
  */
 @property (nonatomic, retain) NSString *userID;
 
@@ -250,7 +253,7 @@
 
  @see userID
  @see userEmail
- @see `[MSAIManagerDelegate userNameForTelemetryManager:componentManager:]`
+ @see `[MSAIManagerDelegate userNameForMSAIManager:]`
  */
 @property (nonatomic, retain) NSString *userName;
 
@@ -275,7 +278,7 @@
 
  @see userID
  @see userName
- @see `[MSAIManagerDelegate userEmailForTelemetryManager:componentManager:]`
+ @see `[MSAIManagerDelegate userEmailForMSAIManager:]`
  */
 @property (nonatomic, retain) NSString *userEmail;
 
