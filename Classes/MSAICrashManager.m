@@ -64,9 +64,6 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
     .handleSignal = plcr_post_crash_callback
 };
 
-// Refactor to be static
-
-static NSDateFormatter *_rfc3339Formatter;
 static NSFileManager *_fileManager;
 static NSMutableArray *_crashFiles;
 static NSMutableDictionary *_approvedCrashReports;
@@ -248,13 +245,6 @@ static NSString *_serverURL;
 
 + (void)initValues {
   _serverURL = MSAI_SDK_URL;
-
-  NSLocale *enUSPOSIXLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
-  _rfc3339Formatter = [[NSDateFormatter alloc] init];
-  [_rfc3339Formatter setLocale:enUSPOSIXLocale];
-  [_rfc3339Formatter setDateFormat:@"yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'"];
-  [_rfc3339Formatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
-
   _delegate = nil;
   _isSetup = NO;
 
@@ -304,8 +294,6 @@ static NSString *_serverURL;
 - (void)dealloc {
   [self unregisterObservers];
 }
-
-
 
 
 #pragma mark - Private
@@ -1168,20 +1156,6 @@ Get the filename of the first not approved crash report
   return @"";
 }
 
-#pragma mark - Manager Control
-
-#pragma mark - Helpers
-
-+ (NSDate *)parseRFC3339Date:(NSString *)dateString {
-  NSDate *date = nil;
-  NSError *error = nil;
-  if(![_rfc3339Formatter getObjectValue:&date forString:dateString range:nil error:&error]) {
-    MSAILog(@"INFO: Invalid date '%@' string: %@", dateString, error);
-  }
-
-  return date;
-}
-
 #pragma mark - Keychain
 
 + (BOOL)addStringValueToKeychain:(NSString *)stringValue forKey:(NSString *)key {
@@ -1360,7 +1334,7 @@ Get the filename of the first not approved crash report
 
 + (void)setCrashManagerStatus:(MSAICrashManagerStatus)crashManagerStatus {
   _crashManagerStatus = crashManagerStatus;
-  
+
   [[NSUserDefaults standardUserDefaults] setInteger:crashManagerStatus forKey:kMSAICrashManagerStatus];
 }
 
@@ -1370,6 +1344,10 @@ Get the filename of the first not approved crash report
 
 + (BOOL)didCrashInLastSession {
   return _didCrashInLastSession;
+}
+
++ (BOOL)isSetup {
+  return _isSetup;
 }
 
 @end

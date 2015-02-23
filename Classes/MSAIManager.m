@@ -191,10 +191,9 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
     _delegate = delegate;
     
 #if MSAI_FEATURE_CRASH_REPORTER
-      //TODO init MSAICrashManager first?!
-//    if (_crashManager) {
+    if([MSAICrashManager isSetup]) {
       [MSAICrashManager setDelegate:_delegate];
-//    }
+    }
 #endif /* MSAI_FEATURE_CRASH_REPORTER */
   }
 }
