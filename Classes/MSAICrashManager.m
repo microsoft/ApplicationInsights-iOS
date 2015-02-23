@@ -81,7 +81,6 @@ static BOOL _didLogLowMemoryWarning;
 static NSUncaughtExceptionHandler *_exceptionHandler;
 static NSString *_analyzerInProgressFile;
 static MSAIContext *_appContext;
-static MSAICustomAlertViewHandler _alertViewHandler;
 static BOOL _sendingInProgress;
 static NSTimeInterval _timeintervalCrashInLastSessionOccured;
 static MSAICrashDetails *_lastSessionCrashDetails;
@@ -246,7 +245,6 @@ static MSAICrashDetails *_lastSessionCrashDetails;
   _didLogLowMemoryWarning = NO;
 
   _approvedCrashReports = [[NSMutableDictionary alloc] init];
-  _alertViewHandler = nil;
 
   _fileManager = [[NSFileManager alloc] init];
   _crashFiles = [[NSMutableArray alloc] init];
@@ -359,57 +357,6 @@ static MSAICrashDetails *_lastSessionCrashDetails;
 
 + (BOOL)didReveiveMemoryWarningInLastSession {
   return _didReceiveMemoryWarningInLastSession;
-}
-
-#pragma mark - Custom Alert Configuration & Handling
-
-+ (BOOL)handleUserInput:(MSAICrashManagerUserInput)userInput withUserProvidedMetaData:(MSAICrashMetaData *)userProvidedMetaData {
-  switch(userInput) {
-    case MSAICrashManagerUserInputDontSend:
-      if(_delegate != nil && [_delegate respondsToSelector:@selector(crashManagerWillCancelSendingCrashReport)]) {
-        [_delegate crashManagerWillCancelSendingCrashReport];
-      }
-
-      if(_lastCrashFilename)
-        [self cleanCrashReportWithFilename:[_crashesDir stringByAppendingPathComponent:_lastCrashFilename]];
-
-      return YES;
-
-    case MSAICrashManagerUserInputSend:
-      if(userProvidedMetaData)
-        [self persistUserProvidedMetaData:userProvidedMetaData];
-
-      [self sendNextCrashReport];
-      return YES;
-
-    case MSAICrashManagerUserInputAlwaysSend:
-      _crashManagerStatus = MSAICrashManagerStatusAutoSend;
-      [[NSUserDefaults standardUserDefaults] setInteger:_crashManagerStatus forKey:kMSAICrashManagerStatus];
-      [[NSUserDefaults standardUserDefaults] synchronize];
-      if(_delegate != nil && [_delegate respondsToSelector:@selector(crashManagerWillSendCrashReportsAlways)]) {
-        [_delegate crashManagerWillSendCrashReportsAlways];
-      }
-
-      if(userProvidedMetaData)
-        [self persistUserProvidedMetaData:userProvidedMetaData];
-
-      [self sendNextCrashReport];
-      return YES;
-
-    default:
-      return NO;
-  }
-}
-
-+ (MSAICustomAlertViewHandler)getAlertViewHandler {
-  return _alertViewHandler;
-}
-
-
-+ (void)setAlertViewHandler:(MSAICustomAlertViewHandler)alertViewHandler {
-  if(alertViewHandler) {
-    _alertViewHandler = alertViewHandler;
-  }
 }
 
 #pragma mark - Debugging Helpers
@@ -895,13 +842,11 @@ Get the filename of the first not approved crash report
 
     if(msai_isRunningInAppExtension()) {
       [self sendNextCrashReport];
-    } else if(_alertViewHandler && _crashManagerStatus != MSAICrashManagerStatusAutoSend && notApprovedReportFilename) {
+    } else if(_crashManagerStatus != MSAICrashManagerStatusAutoSend && notApprovedReportFilename) {
 
       if(_delegate != nil && [_delegate respondsToSelector:@selector(crashManagerWillShowSubmitCrashReportAlert)]) {
-        [_delegate crashManagerWillShowSubmitCrashReportAlert]; //TODO fix delegate methods
+        [_delegate crashManagerWillShowSubmitCrashReportAlert];
       }
-
-      _alertViewHandler();
     } else {
       [self sendNextCrashReport];
     }
@@ -1149,25 +1094,6 @@ Get the filename of the first not approved crash report
 + (void)reportError:(NSError *)error {
   MSAILog(@"ERROR: %@", [error localizedDescription]);
 }
-
-#pragma mark - UIAlertView Delegate
-
-//TODO fix alerview delegation
-
-//- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
-//  switch (buttonIndex) {
-//    case 0:
-//      [self handleUserInput:MSAICrashManagerUserInputDontSend withUserProvidedMetaData:nil];
-//      break;
-//    case 1:
-//      [self handleUserInput:MSAICrashManagerUserInputSend withUserProvidedMetaData:nil];
-//      break;
-//    case 2:
-//      [self handleUserInput:MSAICrashManagerUserInputAlwaysSend withUserProvidedMetaData:nil];
-//      break;
-//  }
-//}
-
 
 #pragma mark - Keychain
 

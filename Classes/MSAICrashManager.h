@@ -355,45 +355,6 @@ invoked!
 + (BOOL)didReveiveMemoryWarningInLastSession;
 
 ///-----------------------------------------------------------------------------
-/// @name Custom Alert Configuration & Handling
-///-----------------------------------------------------------------------------
-
-/**
-Provides an interface to pass user input from a custom alert to a crash report
-
-@param userInput Defines the users action wether to send, always send, or not to send the crash report.
-@param userProvidedMetaData The content of this optional MSAICrashMetaData instance will be attached to the crash report and allows to ask the user for e.g. additional comments or info.
-
-@return Returns YES if the input is a valid option and successfully triggered further processing of the crash report
-
-@see MSAICrashManagerUserInput
-@see MSAICrashMetaData
-*/
-+ (BOOL)handleUserInput:(MSAICrashManagerUserInput)userInput withUserProvidedMetaData:(MSAICrashMetaData *)userProvidedMetaData;
-
-/**
-Lets you set a custom block which handles showing a custom UI and asking the user
-whether he wants to send the crash report.
-
-This replaces the default alert the SDK would show!
-
-You can use this to present any kind of user interface which asks the user for additional information,
-e.g. what they did in the app before the app crashed.
-
-In addition to this you should always ask your users if they agree to send crash reports, send them
-always or not and return the result when calling `handleUserInput:withUserProvidedCrashDescription`.
-
-@param alertViewHandler A block that is responsible for loading, presenting and and dismissing your custom user interface which prompts the user if he wants to send crash reports. The block is also responsible for triggering further processing of the crash reports.
-
-@warning Block needs to call the `[MSAICrashManager handleUserInput:withUserProvidedMetaData:]` method!
-
-@warning This needs to be set before calling `[MSAIManager startManager]`!
-*/
-+ (void)setAlertViewHandler:(MSAICustomAlertViewHandler)alertViewHandler;
-
-+ (MSAICustomAlertViewHandler)getAlertViewHandler;
-
-///-----------------------------------------------------------------------------
 /// @name Debugging Helpers
 ///-----------------------------------------------------------------------------
 
