@@ -28,10 +28,10 @@ msai_info_t applicationinsights_library_info __attribute__((section("__TEXT,__ms
 
 NSString *msai_URLEncodedString(NSString *inputString) {
   return CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault,
-                                                                    (__bridge CFStringRef)inputString,
-                                                                    NULL,
-                                                                    CFSTR("!*'();:@&=+$,/?%#[]"),
-                                                                    kCFStringEncodingUTF8)
+                                                                   (__bridge CFStringRef)inputString,
+                                                                   NULL,
+                                                                   CFSTR("!*'();:@&=+$,/?%#[]"),
+                                                                   kCFStringEncodingUTF8)
                            );
 }
 
@@ -41,6 +41,18 @@ NSString *msai_URLDecodedString(NSString *inputString) {
                                                                                    CFSTR(""),
                                                                                    kCFStringEncodingUTF8)
                            );
+}
+
+// Return ISO 8601 string representation of the date
+NSString *msai_utcDateString(NSDate *date){
+  NSLocale *enUSPOSIXLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
+  NSDateFormatter *dateFormatter = [NSDateFormatter new];
+  dateFormatter.locale = enUSPOSIXLocale;
+  dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+  dateFormatter.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
+  NSString *dateString = [dateFormatter stringFromDate:date];
+  
+  return dateString;
 }
 
 NSString *msai_base64String(NSData * data, unsigned long length) {
@@ -136,7 +148,7 @@ NSString *msai_deviceType(void){
 
 NSString *msai_screenSize(void){
   CGSize screenSize = [UIScreen mainScreen].bounds.size;
- return [NSString stringWithFormat:@"%dx%d",(int)screenSize.height, (int)screenSize.width];
+  return [NSString stringWithFormat:@"%dx%d",(int)screenSize.height, (int)screenSize.width];
 }
 
 NSString *msai_sdkVersion(void){
@@ -252,7 +264,7 @@ BOOL msai_isPreiOS8Environment(void) {
   dispatch_once(&checkOS8, ^{
     // NSFoundationVersionNumber_iOS_7_1 = 1047.25
     // We hardcode this, so compiling with iOS 7 is possible while still being able to detect the correct environment
-
+    
     // runtime check according to
     // https://developer.apple.com/library/prerelease/ios/documentation/UserExperience/Conceptual/TransitionGuide/SupportingEarlieriOS.html
     if (floor(NSFoundationVersionNumber) <= 1047.25) {

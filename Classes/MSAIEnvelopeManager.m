@@ -7,6 +7,7 @@
 #import "MSAITelemetryContextPrivate.h"
 #import "MSAIHelper.h"
 #import "MSAICrashDataProvider.h"
+#import "MSAIHelper.h"
 
 @implementation MSAIEnvelopeManager
 
@@ -43,7 +44,7 @@
   MSAIEnvelope *envelope = [MSAIEnvelope new];
   envelope.appId = msai_mainBundleIdentifier();
   envelope.appVer = _telemetryContext.application.version;
-  envelope.Time = [self dateStringForDate:[NSDate date]];
+  envelope.Time = msai_utcDateString([NSDate date]);
   envelope.iKey = _telemetryContext.instrumentationKey;
   
   MSAIDevice *deviceContext = _telemetryContext.device;
@@ -81,16 +82,6 @@
 
 - (MSAIEnvelope *)envelopeForCrashReport:(MSAIPLCrashReport *)report exception:(NSException *)exception{
   return [MSAICrashDataProvider crashDataForCrashReport:(PLCrashReport *)report handledException:exception];
-}
-
-#pragma mark - Helper
-
-- (NSString *)dateStringForDate:(NSDate *)date {
-  NSDateFormatter *dateFormatter = [NSDateFormatter new];
-  dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
-  NSString *dateString = [dateFormatter stringFromDate:date];
-  
-  return dateString;
 }
 
 @end
