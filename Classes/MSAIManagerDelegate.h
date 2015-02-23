@@ -96,7 +96,7 @@
  @see userEmailForTelemetryManager:componentManager:
  @see [MSAIManager userName]
  */
-- (NSString *)userNameForTelemetryManager:(MSAIManager *)telemetryManager componentManager:(MSAICrashManager *)componentManager;
+- (NSString *)userNameForTelemetryManager:(MSAIManager *)telemetryManager;
 
 
 /** Return the users email address that should used in the SDK components
@@ -132,6 +132,6 @@
  @see userNameForTelemetryManager:componentManager:
  @see [MSAITelemetryTelemetryManager userEmail]
  */
-- (NSString *)userEmailForTelemetryManager:(MSAIManager *)telemetryManager componentManager:(MSAICrashManager *)componentManager;
+- (NSString *)userEmailForTelemetryManager:(MSAIManager *)telemetryManager;
 
 @end

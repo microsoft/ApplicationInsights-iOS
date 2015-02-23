@@ -621,10 +621,9 @@ static NSString *_serverURL;
     username = [_delegate userNameForCrashManager] ?: @"";
   }
   if([MSAIManager sharedMSAIManager].delegate &&
-      [[MSAIManager sharedMSAIManager].delegate respondsToSelector:@selector(userNameForTelemetryManager:componentManager:)]) {
+      [[MSAIManager sharedMSAIManager].delegate respondsToSelector:@selector(userNameForTelemetryManager:)]) {
     username = [[MSAIManager sharedMSAIManager].delegate
-        userNameForTelemetryManager:[MSAIManager sharedMSAIManager]
-                   componentManager:nil] ?: @""; //TODO fix delegate callback
+        userNameForTelemetryManager:[MSAIManager sharedMSAIManager]] ?: @"";
   }
 
   return username;
@@ -643,10 +642,9 @@ static NSString *_serverURL;
     useremail = [_delegate userEmailForCrashManager] ?: @"";
   }
   if([MSAIManager sharedMSAIManager].delegate &&
-      [[MSAIManager sharedMSAIManager].delegate respondsToSelector:@selector(userEmailForTelemetryManager:componentManager:)]) {
+      [[MSAIManager sharedMSAIManager].delegate respondsToSelector:@selector(userEmailForTelemetryManager:)]) {
     useremail = [[MSAIManager sharedMSAIManager].delegate
-        userEmailForTelemetryManager:[MSAIManager sharedMSAIManager]
-                    componentManager:nil] ?: @""; //TODO new method for delegates?!
+        userEmailForTelemetryManager:[MSAIManager sharedMSAIManager]] ?: @""; //TODO new method for delegates?!
   }
 
   return useremail;
