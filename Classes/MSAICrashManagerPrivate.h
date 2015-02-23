@@ -14,63 +14,69 @@
 ///-----------------------------------------------------------------------------
 
 /**
- Sets the optional `MSAICrashManagerDelegate` delegate.
- 
- The delegate is automatically set by using `[MSAIManager setDelegate:]`. You
- should not need to set this delegate individually.
- 
- @see `[MSAIManager setDelegate:]`
- */
+Sets the optional `MSAICrashManagerDelegate` delegate.
+
+The delegate is automatically set by using `[MSAIManager setDelegate:]`. You
+should not need to set this delegate individually.
+
+@see `[MSAIManager setDelegate:]`
+*/
 //@property (nonatomic, weak) id delegate;
 
 
 + (void)setDelegate:(id)delegate;
+
 + (id)getDelegate;
 
+//TODO what does this mean?
 /**
- * must be set
- */
+* must be set
+*/
 
 + (NSUncaughtExceptionHandler *)getExceptionHandler;
-+ (void)setExceptionHandler:(NSUncaughtExceptionHandler*)exceptionHandler;
+
++ (void)setExceptionHandler:(NSUncaughtExceptionHandler *)exceptionHandler;
 
 + (NSFileManager *)getFileManager;
+
 + (void)setFileManager:(NSFileManager *)fileManager;
 
 + (MSAIPLCrashReporter *)getPLCrashReporter;
+
 + (void)setPLCrashReporter:(MSAIPLCrashReporter *)crashReporter;
 
 + (NSString *)getLastCrashFilename;
+
 + (void)setLastCrashFilename:(NSString *)lastCrashFilename;
 
 
-+ (MSAICustomAlertViewHandler)getAlertViewHandler;
-+ (void)setAlertViewHandler:(MSAICustomAlertViewHandler)alertViewHandler;
-
-
 + (NSString *)getCrashesDir;
+
 + (void)setCrashesDir:(NSString *)crashesDir;
-
-
 
 + (void)cleanCrashReports;
 
 + (NSString *)userIDForCrashReport;
+
 + (NSString *)userEmailForCrashReport;
+
 + (NSString *)userNameForCrashReport;
 
 + (void)handleCrashReport;
+
 + (BOOL)hasPendingCrashReport;
+
 + (NSString *)firstNotApprovedCrashReport;
 
 + (void)persistUserProvidedMetaData:(MSAICrashMetaData *)userProvidedMetaData;
 
 + (void)invokeDelayedProcessing;
+
 + (void)sendNextCrashReport;
 
-+ (void)setAppContext:(MSAIContext*)context;
-+ (MSAIContext *)getAppContext;
++ (void)setAppContext:(MSAIContext *)context;
 
++ (MSAIContext *)getAppContext;
 
 + (NSString *)executableUUID;
 
