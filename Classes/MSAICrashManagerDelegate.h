@@ -25,34 +25,6 @@ the behaviour of `MSAICrashManager`.
 */
 - (NSString *)applicationLogForCrashManager;
 
-//TODO remove deprecated properties!
-
-/** Return the user name or userid that should be send along each crash report
-
-@param crashManager The `MSAICrashManager` instance invoking this delegate
-@see applicationLogForCrashManager:
-@see attachmentForCrashManager:
-@see userEmailForCrashManager:
-@deprecated Please use `MSAIManagerDelegate userNameForManager:componentManager:` instead
-@warning When returning a non nil value, crash reports are not anonymous any
-more and the alerts will not show the "anonymous" word!
-*/
-- (NSString *)userNameForCrashManager DEPRECATED_ATTRIBUTE;
-
-
-/** Return the users email address that should be send along each crash report
-
-@param crashManager The `MSAICrashManager` instance invoking this delegate
-@see applicationLogForCrashManager:
-@see attachmentForCrashManager:
-@see userNameForCrashManager:
-@deprecated Please use `MSAIManagerDelegate userEmailForManager:componentManager:` instead
-@warning When returning a non nil value, crash reports are not anonymous any
-more and the alerts will not show the "anonymous" word!
-*/
-- (NSString *)userEmailForCrashManager DEPRECATED_ATTRIBUTE;
-
-
 ///-----------------------------------------------------------------------------
 /// @name Alert
 ///-----------------------------------------------------------------------------

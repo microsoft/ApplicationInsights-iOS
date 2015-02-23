@@ -37,10 +37,6 @@ NSString *const kMSAICrashManagerStatus = @"MSAICrashManagerStatus";
 
 NSString *const kMSAIAppWentIntoBackgroundSafely = @"MSAIAppWentIntoBackgroundSafely";
 NSString *const kMSAIAppDidReceiveLowMemoryNotification = @"MSAIAppDidReceiveLowMemoryNotification";
-NSString *const kMSAIAppVersion = @"MSAIAppVersion";
-NSString *const kMSAIAppOSVersion = @"MSAIAppOSVersion";
-NSString *const kMSAIAppOSBuild = @"MSAIAppOSBuild";
-NSString *const kMSAIAppUUIDs = @"MSAIAppUUIDs";
 
 static MSAICrashManagerCallbacks msaiCrashCallbacks = {
     .context = NULL,
@@ -89,7 +85,6 @@ static MSAICustomAlertViewHandler _alertViewHandler;
 static BOOL _sendingInProgress;
 static NSTimeInterval _timeintervalCrashInLastSessionOccured;
 static MSAICrashDetails *_lastSessionCrashDetails;
-static NSString *_serverURL;
 
 @interface MSAICrashManager ()
 
@@ -239,7 +234,6 @@ static NSString *_serverURL;
 
 
 + (void)initValues {
-  _serverURL = MSAI_SDK_URL;
   _delegate = nil;
   _isSetup = NO;
 
@@ -286,34 +280,345 @@ static NSString *_serverURL;
   _lastCrashFilename = nil;
 }
 
++ (BOOL)isSetup {
+  return _isSetup;
+}
+
+//leaving this here to avoid support requests asking for missing dealloc
 - (void)dealloc {
   [self unregisterObservers];
+}
+
+#pragma mark - Configuration
+
++ (void)setCrashManagerStatus:(MSAICrashManagerStatus)crashManagerStatus {
+  _crashManagerStatus = crashManagerStatus;
+
+  [[NSUserDefaults standardUserDefaults] setInteger:crashManagerStatus forKey:kMSAICrashManagerStatus];
+}
+
++ (MSAICrashManagerStatus)getCrashManagerStatus {
+  return _crashManagerStatus;
+}
+
++ (BOOL)isMachExceptionHandlerEnabled {
+  return _enableMachExceptionHandler;
+}
+
++ (void)setMachExceptionHandlerEnabled:(BOOL)enabled {
+  _enableMachExceptionHandler = enabled;
+}
+
++ (BOOL)isOnDeviceSymbolicationEnabled {
+  return _enableOnDeviceSymbolication;
+}
+
++ (void)setOnDeviceSymbolicationEnabled:(BOOL)enabled {
+  _enableOnDeviceSymbolication = enabled;
+}
+
++ (BOOL)isAppNotTerminatingCleanlyDetectionEnabled {
+  return _enableAppNotTerminatingCleanlyDetection;
+}
+
++ (void)setEnableAppNotTerminatingCleanlyDetection:(BOOL)enableAppNotTerminatingCleanlyDetection {
+  _enableAppNotTerminatingCleanlyDetection = enableAppNotTerminatingCleanlyDetection;
+}
+
+/**
+*  Set the callback for PLCrashReporter
+*
+*  @param callbacks MSAICrashManagerCallbacks instance
+*/
++ (void)setCrashCallbacks:(MSAICrashManagerCallbacks *)callbacks {
+  if(!callbacks) return;
+
+  // set our proxy callback struct
+  msaiCrashCallbacks.context = callbacks->context;
+  msaiCrashCallbacks.handleSignal = callbacks->handleSignal;
+
+  // set the PLCrashReporterCallbacks struct
+  plCrashCallbacks.context = callbacks->context;
+
+  _crashCallBacks = &plCrashCallbacks;
+}
+
+#pragma mark - Crash Meta Information
+
++ (BOOL)didCrashInLastSession {
+  return _didCrashInLastSession;
+}
+
++ (MSAICrashDetails *)getLastSessionCrashDetails {
+  return _lastSessionCrashDetails;
+}
+
++ (NSTimeInterval)getTimeIntervalCrashInLastSessionOccured {
+  return _timeintervalCrashInLastSessionOccured;
+}
+
++ (BOOL)didReveiveMemoryWarningInLastSession {
+  return _didReceiveMemoryWarningInLastSession;
+}
+
+#pragma mark - Custom Alert Configuration & Handling
+
++ (BOOL)handleUserInput:(MSAICrashManagerUserInput)userInput withUserProvidedMetaData:(MSAICrashMetaData *)userProvidedMetaData {
+  switch(userInput) {
+    case MSAICrashManagerUserInputDontSend:
+      if(_delegate != nil && [_delegate respondsToSelector:@selector(crashManagerWillCancelSendingCrashReport)]) {
+        [_delegate crashManagerWillCancelSendingCrashReport];
+      }
+
+      if(_lastCrashFilename)
+        [self cleanCrashReportWithFilename:[_crashesDir stringByAppendingPathComponent:_lastCrashFilename]];
+
+      return YES;
+
+    case MSAICrashManagerUserInputSend:
+      if(userProvidedMetaData)
+        [self persistUserProvidedMetaData:userProvidedMetaData];
+
+      [self sendNextCrashReport];
+      return YES;
+
+    case MSAICrashManagerUserInputAlwaysSend:
+      _crashManagerStatus = MSAICrashManagerStatusAutoSend;
+      [[NSUserDefaults standardUserDefaults] setInteger:_crashManagerStatus forKey:kMSAICrashManagerStatus];
+      [[NSUserDefaults standardUserDefaults] synchronize];
+      if(_delegate != nil && [_delegate respondsToSelector:@selector(crashManagerWillSendCrashReportsAlways)]) {
+        [_delegate crashManagerWillSendCrashReportsAlways];
+      }
+
+      if(userProvidedMetaData)
+        [self persistUserProvidedMetaData:userProvidedMetaData];
+
+      [self sendNextCrashReport];
+      return YES;
+
+    default:
+      return NO;
+  }
+}
+
++ (MSAICustomAlertViewHandler)getAlertViewHandler {
+  return _alertViewHandler;
+}
+
+
++ (void)setAlertViewHandler:(MSAICustomAlertViewHandler)alertViewHandler {
+  if(alertViewHandler) {
+    _alertViewHandler = alertViewHandler;
+  }
+}
+
+#pragma mark - Debugging Helpers
+
+
+/**
+* Check if the debugger is attached
+*
+* Taken from https://github.com/plausiblelabs/plcrashreporter/blob/2dd862ce049e6f43feb355308dfc710f3af54c4d/Source/Crash%20Demo/main.m#L96
+*
+* @return `YES` if the debugger is attached to the current process, `NO` otherwise
+*/
++ (BOOL)isDebuggerAttached {
+  static BOOL debuggerIsAttached = NO;
+
+  static dispatch_once_t debuggerPredicate;
+  dispatch_once(&debuggerPredicate, ^{
+    struct kinfo_proc info;
+    size_t info_size = sizeof(info);
+    int name[4];
+
+    name[0] = CTL_KERN;
+    name[1] = KERN_PROC;
+    name[2] = KERN_PROC_PID;
+    name[3] = getpid();
+
+    if(sysctl(name, 4, &info, &info_size, NULL, 0) == -1) {
+      NSLog(@"[AppInsightsSDK] ERROR: Checking for a running debugger via sysctl() failed: %s", strerror(errno));
+      debuggerIsAttached = false;
+    }
+
+    if(!debuggerIsAttached && (info.kp_proc.p_flag & P_TRACED) != 0)
+      debuggerIsAttached = true;
+  });
+
+  return debuggerIsAttached;
+}
+
++ (void)generateTestCrash {
+  if(![_appContext isAppStoreEnvironment]) {
+
+    if([self isDebuggerAttached]) {
+      NSLog(@"[AppInsightsSDK] WARNING: The debugger is attached. The following crash cannot be detected by the SDK!");
+    }
+
+    __builtin_trap();
+  }
+}
+
+#pragma mark - Private Header
+
+
++ (void)setDelegate:(id)delegate {
+  if(delegate) {
+    _delegate = delegate;
+  }
+}
+
++ (id)getDelegate {
+  return _delegate;
+}
+
++ (NSUncaughtExceptionHandler *)getExceptionHandler {
+  return _exceptionHandler;
+}
+
++ (void)setExceptionHandler:(NSUncaughtExceptionHandler *)exceptionHandler {
+  if(exceptionHandler) {
+    _exceptionHandler = exceptionHandler;
+  }
+}
+
++ (NSFileManager *)getFileManager {
+  return _fileManager;
+}
+
++ (void)setFileManager:(NSFileManager *)fileManager {
+  if(fileManager) {
+    _fileManager = fileManager;
+  }
+}
+
++ (MSAIPLCrashReporter *)getPLCrashReporter {
+  return _plCrashReporter;
+}
+
++ (void)setPLCrashReporter:(MSAIPLCrashReporter *)crashReporter {
+  if(crashReporter) {
+    _plCrashReporter = crashReporter;
+  }
+}
+
++ (NSString *)getLastCrashFilename {
+  return _lastCrashFilename;
+}
+
++ (void)setLastCrashFilename:(NSString *)lastCrashFilename {
+  if(lastCrashFilename) {
+    _lastCrashFilename = lastCrashFilename;
+  }
+}
+
++ (NSString *)getCrashesDir {
+  return _crashesDir;
+}
+
++ (void)setCrashesDir:(NSString *)crashesDir {
+  if(crashesDir) {
+    _crashesDir = crashesDir;
+  }
+}
+
++ (void)setAppContext:(MSAIContext *)context {
+  if(context) {
+    _appContext = context;
+  }
+}
+
++ (MSAIContext *)getAppContext {
+  return _appContext;
+}
+
+#pragma mark - (Un)register for Lifecycle Notifications
+
++ (void)registerObservers {
+  __weak typeof(self) weakSelf = self;
+
+  if(nil == _appDidBecomeActiveObserver) {
+    _appDidBecomeActiveObserver = [[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationDidBecomeActiveNotification
+                                                                                    object:nil
+                                                                                     queue:NSOperationQueue.mainQueue
+                                                                                usingBlock:^(NSNotification *note) {
+                                                                                  [self triggerDelayedProcessing];
+                                                                                }];
+  }
+
+  if(nil == _networkDidBecomeReachableObserver) {
+    _networkDidBecomeReachableObserver = [[NSNotificationCenter defaultCenter] addObserverForName:MSAINetworkDidBecomeReachableNotification
+                                                                                           object:nil
+                                                                                            queue:NSOperationQueue.mainQueue
+                                                                                       usingBlock:^(NSNotification *note) {
+                                                                                         [self triggerDelayedProcessing];
+                                                                                       }];
+  }
+
+  if(nil == _appWillTerminateObserver) {
+    _appWillTerminateObserver = [[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationWillTerminateNotification
+                                                                                  object:nil
+                                                                                   queue:NSOperationQueue.mainQueue
+                                                                              usingBlock:^(NSNotification *note) {
+                                                                                [self leavingAppSafely];
+                                                                              }];
+  }
+
+  if(nil == _appDidEnterBackgroundObserver) {
+    _appDidEnterBackgroundObserver = [[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationDidEnterBackgroundNotification
+                                                                                       object:nil
+                                                                                        queue:NSOperationQueue.mainQueue
+                                                                                   usingBlock:^(NSNotification *note) {
+                                                                                     [self leavingAppSafely];
+                                                                                   }];
+  }
+
+  if(nil == _appWillEnterForegroundObserver) {
+    _appWillEnterForegroundObserver = [[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationWillEnterForegroundNotification
+                                                                                        object:nil
+                                                                                         queue:NSOperationQueue.mainQueue
+                                                                                    usingBlock:^(NSNotification *note) {
+                                                                                      typeof(self) strongSelf = weakSelf;
+                                                                                      [strongSelf appEnteredForeground];
+                                                                                    }];
+  }
+
+  if(nil == _appDidReceiveLowMemoryWarningObserver) {
+    _appDidReceiveLowMemoryWarningObserver = [[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationDidReceiveMemoryWarningNotification
+                                                                                               object:nil
+                                                                                                queue:NSOperationQueue.mainQueue
+                                                                                           usingBlock:^(NSNotification *note) {
+                                                                                             // we only need to log this once
+                                                                                             if(!_didLogLowMemoryWarning) {
+                                                                                               [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kMSAIAppDidReceiveLowMemoryNotification];
+                                                                                               [[NSUserDefaults standardUserDefaults] synchronize];
+                                                                                               _didLogLowMemoryWarning = YES;
+                                                                                             }
+                                                                                           }];
+  }
+}
+
+- (void)unregisterObservers {
+  [self unregisterObserver:_appDidBecomeActiveObserver];
+  [self unregisterObserver:_appWillTerminateObserver];
+  [self unregisterObserver:_appDidEnterBackgroundObserver];
+  [self unregisterObserver:_appWillEnterForegroundObserver];
+  [self unregisterObserver:_appDidReceiveLowMemoryWarningObserver];
+
+  [self unregisterObserver:_networkDidBecomeReachableObserver];
+}
+
+- (void)unregisterObserver:(id)observer {
+  if(observer) {
+    [[NSNotificationCenter defaultCenter] removeObserver:observer];
+    observer = nil;
+  }
 }
 
 
 #pragma mark - Private
 
-/**
-* Save all settings
-*
-* This saves the list of approved crash reports
-*/
-+ (void)saveSettings {
-  NSError *error = nil;
 
-  NSMutableDictionary *rootObj = [NSMutableDictionary dictionaryWithCapacity:2];
-  if(_approvedCrashReports && [_approvedCrashReports count] > 0) {
-    rootObj[kMSAICrashApprovedReports] = _approvedCrashReports;
-  }
-
-  NSData *plist = [NSPropertyListSerialization dataWithPropertyList:(id) rootObj format:NSPropertyListBinaryFormat_v1_0 options:0 error:&error];
-
-  if(plist) {
-    [plist writeToFile:_settingsFile atomically:YES];
-  } else {
-    MSAILog(@"ERROR: Writing settings. %@", [error description]);
-  }
-}
 
 /**
 * Load all settings
@@ -403,86 +708,7 @@ static NSString *_serverURL;
   }
 }
 
-+ (void)registerObservers {
-  __weak typeof(self) weakSelf = self;
 
-  if(nil == _appDidBecomeActiveObserver) {
-    _appDidBecomeActiveObserver = [[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationDidBecomeActiveNotification
-                                                                                    object:nil
-                                                                                     queue:NSOperationQueue.mainQueue
-                                                                                usingBlock:^(NSNotification *note) {
-                                                                                  [self triggerDelayedProcessing];
-                                                                                }];
-  }
-
-  if(nil == _networkDidBecomeReachableObserver) {
-    _networkDidBecomeReachableObserver = [[NSNotificationCenter defaultCenter] addObserverForName:MSAINetworkDidBecomeReachableNotification
-                                                                                           object:nil
-                                                                                            queue:NSOperationQueue.mainQueue
-                                                                                       usingBlock:^(NSNotification *note) {
-                                                                                         [self triggerDelayedProcessing];
-                                                                                       }];
-  }
-
-  if(nil == _appWillTerminateObserver) {
-    _appWillTerminateObserver = [[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationWillTerminateNotification
-                                                                                  object:nil
-                                                                                   queue:NSOperationQueue.mainQueue
-                                                                              usingBlock:^(NSNotification *note) {
-                                                                                [self leavingAppSafely];
-                                                                              }];
-  }
-
-  if(nil == _appDidEnterBackgroundObserver) {
-    _appDidEnterBackgroundObserver = [[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationDidEnterBackgroundNotification
-                                                                                       object:nil
-                                                                                        queue:NSOperationQueue.mainQueue
-                                                                                   usingBlock:^(NSNotification *note) {
-                                                                                     [self leavingAppSafely];
-                                                                                   }];
-  }
-
-  if(nil == _appWillEnterForegroundObserver) {
-    _appWillEnterForegroundObserver = [[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationWillEnterForegroundNotification
-                                                                                        object:nil
-                                                                                         queue:NSOperationQueue.mainQueue
-                                                                                    usingBlock:^(NSNotification *note) {
-                                                                                      typeof(self) strongSelf = weakSelf;
-                                                                                      [strongSelf appEnteredForeground];
-                                                                                    }];
-  }
-
-  if(nil == _appDidReceiveLowMemoryWarningObserver) {
-    _appDidReceiveLowMemoryWarningObserver = [[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationDidReceiveMemoryWarningNotification
-                                                                                               object:nil
-                                                                                                queue:NSOperationQueue.mainQueue
-                                                                                           usingBlock:^(NSNotification *note) {
-                                                                                             // we only need to log this once
-                                                                                             if(!_didLogLowMemoryWarning) {
-                                                                                               [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kMSAIAppDidReceiveLowMemoryNotification];
-                                                                                               [[NSUserDefaults standardUserDefaults] synchronize];
-                                                                                               _didLogLowMemoryWarning = YES;
-                                                                                             }
-                                                                                           }];
-  }
-}
-
-- (void)unregisterObservers {
-  [self unregisterObserver:_appDidBecomeActiveObserver];
-  [self unregisterObserver:_appWillTerminateObserver];
-  [self unregisterObserver:_appDidEnterBackgroundObserver];
-  [self unregisterObserver:_appWillEnterForegroundObserver];
-  [self unregisterObserver:_appDidReceiveLowMemoryWarningObserver];
-
-  [self unregisterObserver:_networkDidBecomeReachableObserver];
-}
-
-- (void)unregisterObserver:(id)observer {
-  if(observer) {
-    [[NSNotificationCenter defaultCenter] removeObserver:observer];
-    observer = nil;
-  }
-}
 
 + (void)leavingAppSafely {
   if([self isAppNotTerminatingCleanlyDetectionEnabled])
@@ -495,184 +721,11 @@ static NSString *_serverURL;
     [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kMSAIAppWentIntoBackgroundSafely];
   } else if(self.isAppNotTerminatingCleanlyDetectionEnabled) {
     [[NSUserDefaults standardUserDefaults] setBool:NO forKey:kMSAIAppWentIntoBackgroundSafely];
-
-    static dispatch_once_t predAppData;
-
-    dispatch_once(&predAppData, ^{
-      id bundleVersion = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"];
-      if(bundleVersion && [bundleVersion isKindOfClass:[NSString class]])
-        [[NSUserDefaults standardUserDefaults] setObject:bundleVersion forKey:kMSAIAppVersion];
-      [[NSUserDefaults standardUserDefaults] setObject:[[UIDevice currentDevice] systemVersion] forKey:kMSAIAppOSVersion];
-      [[NSUserDefaults standardUserDefaults] setObject:[self osBuild] forKey:kMSAIAppOSBuild];
-
-      NSString *uuidString = [NSString stringWithFormat:@"<uuid type=\"app\" arch=\"%@\">%@</uuid>",
-                                                        [self deviceArchitecture],
-                                                        [self executableUUID]
-      ];
-
-      [[NSUserDefaults standardUserDefaults] setObject:uuidString forKey:kMSAIAppUUIDs];
-    });
   }
 }
 
-+ (NSString *)deviceArchitecture {
-  NSString *archName = @"???";
+#pragma mark - Private - Meta Data for Crash Report
 
-  size_t size;
-  cpu_type_t type;
-  cpu_subtype_t subtype;
-  size = sizeof(type);
-  if(sysctlbyname("hw.cputype", &type, &size, NULL, 0))
-    return archName;
-
-  size = sizeof(subtype);
-  if(sysctlbyname("hw.cpusubtype", &subtype, &size, NULL, 0))
-    return archName;
-
-  archName = [MSAICrashDataProvider msai_archNameFromCPUType:type subType:subtype] ?: @"???";
-
-  return archName;
-}
-
-+ (NSString *)osBuild {
-  size_t size;
-  sysctlbyname("kern.osversion", NULL, &size, NULL, 0);
-  char *answer = (char *) malloc(size);
-  if(answer == NULL)
-    return nil;
-  sysctlbyname("kern.osversion", answer, &size, NULL, 0);
-  NSString *osBuild = [NSString stringWithCString:answer encoding:NSUTF8StringEncoding];
-  free(answer);
-  return osBuild;
-}
-
-/**
-*	 Get the userID from the delegate which should be stored with the crash report
-*
-*	@return The userID value
-*/
-+ (NSString *)userIDForCrashReport {
-  // first check the global keychain storage
-  NSString *userID = [self stringValueFromKeychainForKey:kMSAIMetaUserID] ?: @"";
-
-  if([MSAIManager sharedMSAIManager].delegate &&
-      [[MSAIManager sharedMSAIManager].delegate respondsToSelector:@selector(userIDForTelemetryManager:)]) {
-    userID = [[MSAIManager sharedMSAIManager].delegate
-        userIDForTelemetryManager:[MSAIManager sharedMSAIManager]] ?: @"";
-  }
-
-  return userID;
-}
-
-/**
-*	 Get the userName from the delegate which should be stored with the crash report
-*
-*	@return The userName value
-*/
-+ (NSString *)userNameForCrashReport {
-  // first check the global keychain storage
-  NSString *username = [self stringValueFromKeychainForKey:kMSAIMetaUserName] ?: @"";
-
-  if(_delegate && [_delegate respondsToSelector:@selector(userNameForCrashManager)]) {
-    username = [_delegate userNameForCrashManager] ?: @"";
-  }
-  if([MSAIManager sharedMSAIManager].delegate &&
-      [[MSAIManager sharedMSAIManager].delegate respondsToSelector:@selector(userNameForTelemetryManager:)]) {
-    username = [[MSAIManager sharedMSAIManager].delegate
-        userNameForTelemetryManager:[MSAIManager sharedMSAIManager]] ?: @"";
-  }
-
-  return username;
-}
-
-/**
-*	 Get the userEmail from the delegate which should be stored with the crash report
-*
-*	@return The userEmail value
-*/
-+ (NSString *)userEmailForCrashReport {
-  // first check the global keychain storage
-  NSString *useremail = [self stringValueFromKeychainForKey:kMSAIMetaUserEmail] ?: @"";
-
-  if(_delegate && [_delegate respondsToSelector:@selector(userEmailForCrashManager)]) {
-    useremail = [_delegate userEmailForCrashManager] ?: @"";
-  }
-  if([MSAIManager sharedMSAIManager].delegate &&
-      [[MSAIManager sharedMSAIManager].delegate respondsToSelector:@selector(userEmailForTelemetryManager:)]) {
-    useremail = [[MSAIManager sharedMSAIManager].delegate
-        userEmailForTelemetryManager:[MSAIManager sharedMSAIManager]] ?: @""; //TODO new method for delegates?!
-  }
-
-  return useremail;
-}
-
-
-#pragma mark - Public
-
-
-/**
-*  Set the callback for PLCrashReporter
-*
-*  @param callbacks MSAICrashManagerCallbacks instance
-*/
-+ (void)setCrashCallbacks:(MSAICrashManagerCallbacks *)callbacks {
-  if(!callbacks) return;
-
-  // set our proxy callback struct
-  msaiCrashCallbacks.context = callbacks->context;
-  msaiCrashCallbacks.handleSignal = callbacks->handleSignal;
-
-  // set the PLCrashReporterCallbacks struct
-  plCrashCallbacks.context = callbacks->context;
-
-  _crashCallBacks = &plCrashCallbacks;
-}
-
-
-/**
-* Check if the debugger is attached
-*
-* Taken from https://github.com/plausiblelabs/plcrashreporter/blob/2dd862ce049e6f43feb355308dfc710f3af54c4d/Source/Crash%20Demo/main.m#L96
-*
-* @return `YES` if the debugger is attached to the current process, `NO` otherwise
-*/
-+ (BOOL)isDebuggerAttached {
-  static BOOL debuggerIsAttached = NO;
-
-  static dispatch_once_t debuggerPredicate;
-  dispatch_once(&debuggerPredicate, ^{
-    struct kinfo_proc info;
-    size_t info_size = sizeof(info);
-    int name[4];
-
-    name[0] = CTL_KERN;
-    name[1] = KERN_PROC;
-    name[2] = KERN_PROC_PID;
-    name[3] = getpid();
-
-    if(sysctl(name, 4, &info, &info_size, NULL, 0) == -1) {
-      NSLog(@"[AppInsightsSDK] ERROR: Checking for a running debugger via sysctl() failed: %s", strerror(errno));
-      debuggerIsAttached = false;
-    }
-
-    if(!debuggerIsAttached && (info.kp_proc.p_flag & P_TRACED) != 0)
-      debuggerIsAttached = true;
-  });
-
-  return debuggerIsAttached;
-}
-
-
-+ (void)generateTestCrash {
-  if(![_appContext isAppStoreEnvironment]) {
-
-    if([self isDebuggerAttached]) {
-      NSLog(@"[AppInsightsSDK] WARNING: The debugger is attached. The following crash cannot be detected by the SDK!");
-    }
-
-    __builtin_trap();
-  }
-}
 
 /**
 *  Write a meta file for a new crash report
@@ -704,43 +757,58 @@ static NSString *_serverURL;
   }
 }
 
-+ (BOOL)handleUserInput:(MSAICrashManagerUserInput)userInput withUserProvidedMetaData:(MSAICrashMetaData *)userProvidedMetaData {
-  switch(userInput) {
-    case MSAICrashManagerUserInputDontSend:
-      if(_delegate != nil && [_delegate respondsToSelector:@selector(crashManagerWillCancelSendingCrashReport)]) {
-        [_delegate crashManagerWillCancelSendingCrashReport];
-      }
+/**
+*	 Get the userID from the delegate which should be stored with the crash report
+*
+*	@return The userID value
+*/
++ (NSString *)userIDForCrashReport {
+  // first check the global keychain storage
+  NSString *userID = [self stringValueFromKeychainForKey:kMSAIMetaUserID] ?: @"";
 
-      if(_lastCrashFilename)
-        [self cleanCrashReportWithFilename:[_crashesDir stringByAppendingPathComponent:_lastCrashFilename]];
-
-      return YES;
-
-    case MSAICrashManagerUserInputSend:
-      if(userProvidedMetaData)
-        [self persistUserProvidedMetaData:userProvidedMetaData];
-
-      [self sendNextCrashReport];
-      return YES;
-
-    case MSAICrashManagerUserInputAlwaysSend:
-      _crashManagerStatus = MSAICrashManagerStatusAutoSend;
-      [[NSUserDefaults standardUserDefaults] setInteger:_crashManagerStatus forKey:kMSAICrashManagerStatus];
-      [[NSUserDefaults standardUserDefaults] synchronize];
-      if(_delegate != nil && [_delegate respondsToSelector:@selector(crashManagerWillSendCrashReportsAlways)]) {
-        [_delegate crashManagerWillSendCrashReportsAlways];
-      }
-
-      if(userProvidedMetaData)
-        [self persistUserProvidedMetaData:userProvidedMetaData];
-
-      [self sendNextCrashReport];
-      return YES;
-
-    default:
-      return NO;
+  if([MSAIManager sharedMSAIManager].delegate &&
+      [[MSAIManager sharedMSAIManager].delegate respondsToSelector:@selector(userIDForTelemetryManager:)]) {
+    userID = [[MSAIManager sharedMSAIManager].delegate
+        userIDForTelemetryManager:[MSAIManager sharedMSAIManager]] ?: @"";
   }
 
+  return userID;
+}
+
+/**
+*	 Get the userName from the delegate which should be stored with the crash report
+*
+*	@return The userName value
+*/
++ (NSString *)userNameForCrashReport {
+  // first check the global keychain storage
+  NSString *username = [self stringValueFromKeychainForKey:kMSAIMetaUserName] ?: @"";
+
+  if([MSAIManager sharedMSAIManager].delegate &&
+      [[MSAIManager sharedMSAIManager].delegate respondsToSelector:@selector(userNameForTelemetryManager:)]) {
+    username = [[MSAIManager sharedMSAIManager].delegate
+        userNameForTelemetryManager:[MSAIManager sharedMSAIManager]] ?: @"";
+  }
+
+  return username;
+}
+
+/**
+*	 Get the userEmail from the delegate which should be stored with the crash report
+*
+*	@return The userEmail value
+*/
++ (NSString *)userEmailForCrashReport {
+  // first check the global keychain storage
+  NSString *useremail = [self stringValueFromKeychainForKey:kMSAIMetaUserEmail] ?: @"";
+
+  if([MSAIManager sharedMSAIManager].delegate &&
+      [[MSAIManager sharedMSAIManager].delegate respondsToSelector:@selector(userEmailForTelemetryManager:)]) {
+    useremail = [[MSAIManager sharedMSAIManager].delegate
+        userEmailForTelemetryManager:[MSAIManager sharedMSAIManager]] ?: @"";
+  }
+
+  return useremail;
 }
 
 #pragma mark - PLCrashReporter
@@ -974,10 +1042,8 @@ Get the filename of the first not approved crash report
   [MSAIPersistence persistFakeReportBundle:@[fakeCrashEnvelope]];
 }
 
-/**
-*	 Send all approved crash reports
-*
-* Gathers all collected data and constructs the XML structure and starts the sending process
+/***
+* Gathers all collected data and constructs the XML structure and hands everything to the Channel
 */
 + (void)sendNextCrashReport {
   NSError *error = NULL;
@@ -1027,34 +1093,12 @@ Get the filename of the first not approved crash report
 
     [self saveSettings];
 
-    MSAILog(@"INFO: Sending crash reports:\n%@", [crashData description]);
     [self processCrashReportWithFilename:filename envelope:crashEnvelope];
   } else {
     // we cannot do anything with this report, so delete it
     [self cleanCrashReportWithFilename:filename];
   }
 }
-
-
-#pragma mark - UIAlertView Delegate
-
-//TODO fix alerview delegation
-
-//- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
-//  switch (buttonIndex) {
-//    case 0:
-//      [self handleUserInput:MSAICrashManagerUserInputDontSend withUserProvidedMetaData:nil];
-//      break;
-//    case 1:
-//      [self handleUserInput:MSAICrashManagerUserInputSend withUserProvidedMetaData:nil];
-//      break;
-//    case 2:
-//      [self handleUserInput:MSAICrashManagerUserInputAlwaysSend withUserProvidedMetaData:nil];
-//      break;
-//  }
-//}
-
-#pragma mark - Networking
 
 /**
 *	 Send the XML data to the server
@@ -1084,45 +1128,52 @@ Get the filename of the first not approved crash report
   }
 }
 
+#pragma mark - Helpers
 
-#pragma mark - Private
+/**
+* Save all settings
+*
+* This saves the list of approved crash reports
+*/
++ (void)saveSettings {
+  NSError *error = nil;
+
+  NSMutableDictionary *rootObj = [NSMutableDictionary dictionaryWithCapacity:2];
+  if(_approvedCrashReports && [_approvedCrashReports count] > 0) {
+    rootObj[kMSAICrashApprovedReports] = _approvedCrashReports;
+  }
+
+  NSData *plist = [NSPropertyListSerialization dataWithPropertyList:(id) rootObj format:NSPropertyListBinaryFormat_v1_0 options:0 error:&error];
+
+  if(plist) {
+    [plist writeToFile:_settingsFile atomically:YES];
+  } else {
+    MSAILog(@"ERROR: Writing settings. %@", [error description]);
+  }
+}
 
 + (void)reportError:(NSError *)error {
   MSAILog(@"ERROR: %@", [error localizedDescription]);
 }
 
-+ (NSString *)executableUUID {
-  const struct mach_header *executableHeader = NULL;
-  for(uint32_t i = 0; i < _dyld_image_count(); i++) {
-    const struct mach_header *header = _dyld_get_image_header(i);
-    if(header->filetype == MH_EXECUTE) {
-      executableHeader = header;
-      break;
-    }
-  }
+#pragma mark - UIAlertView Delegate
 
-  if(!executableHeader)
-    return @"";
+//TODO fix alerview delegation
 
-  BOOL is64bit = executableHeader->magic == MH_MAGIC_64 || executableHeader->magic == MH_CIGAM_64;
-  uintptr_t cursor = (uintptr_t) executableHeader + (is64bit ? sizeof(struct mach_header_64) : sizeof(struct mach_header));
-  const struct segment_command *segmentCommand = NULL;
-  for(uint32_t i = 0; i < executableHeader->ncmds; i++, cursor += segmentCommand->cmdsize) {
-    segmentCommand = (struct segment_command *) cursor;
-    if(segmentCommand->cmd == LC_UUID) {
-      const struct uuid_command *uuidCommand = (const struct uuid_command *) segmentCommand;
-      const uint8_t *uuid = uuidCommand->uuid;
-      return [[NSString stringWithFormat:@"%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X",
-                                         uuid[0], uuid[1], uuid[2], uuid[3],
-                                         uuid[4], uuid[5], uuid[6], uuid[7],
-                                         uuid[8], uuid[9], uuid[10], uuid[11],
-                                         uuid[12], uuid[13], uuid[14], uuid[15]]
-          lowercaseString];
-    }
-  }
+//- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+//  switch (buttonIndex) {
+//    case 0:
+//      [self handleUserInput:MSAICrashManagerUserInputDontSend withUserProvidedMetaData:nil];
+//      break;
+//    case 1:
+//      [self handleUserInput:MSAICrashManagerUserInputSend withUserProvidedMetaData:nil];
+//      break;
+//    case 2:
+//      [self handleUserInput:MSAICrashManagerUserInputAlwaysSend withUserProvidedMetaData:nil];
+//      break;
+//  }
+//}
 
-  return @"";
-}
 
 #pragma mark - Keychain
 
@@ -1166,156 +1217,6 @@ Get the filename of the first not approved crash report
   return [MSAIKeychainUtils deleteItemForUsername:key
                                    andServiceName:msai_keychainMSAIServiceName()
                                             error:&error];
-}
-
-
-+ (BOOL)isMachExceptionHandlerEnabled {
-  return _enableMachExceptionHandler;
-}
-
-+ (void)setMachExceptionHandlerEnabled:(BOOL)enabled {
-  _enableMachExceptionHandler = enabled;
-}
-
-+ (BOOL)isOnDeviceSymbolicationEnabled {
-  return _enableOnDeviceSymbolication;
-}
-
-+ (void)setOnDeviceSymbolicationEnabled:(BOOL)enabled {
-  _enableOnDeviceSymbolication = enabled;
-}
-
-+ (BOOL)isAppNotTerminatingCleanlyDetectionEnabled {
-  return _enableAppNotTerminatingCleanlyDetection;
-}
-
-+ (void)setEnableAppNotTerminatingCleanlyDetection:(BOOL)enableAppNotTerminatingCleanlyDetection {
-  _enableAppNotTerminatingCleanlyDetection = enableAppNotTerminatingCleanlyDetection;
-}
-
-
-+ (BOOL)didReceiveMemoryWarningInLastSession {
-  return _didReceiveMemoryWarningInLastSession;
-}
-
-
-+ (void)setDelegate:(id)delegate {
-  if(delegate) {
-    _delegate = delegate;
-  }
-}
-
-+ (id)getDelegate {
-  return _delegate;
-}
-
-+ (NSUncaughtExceptionHandler *)getExceptionHandler {
-  return _exceptionHandler;
-}
-
-+ (void)setExceptionHandler:(NSUncaughtExceptionHandler *)exceptionHandler {
-  if(exceptionHandler) {
-    _exceptionHandler = exceptionHandler;
-  }
-}
-
-+ (NSFileManager *)getFileManager {
-  return _fileManager;
-}
-
-+ (void)setFileManager:(NSFileManager *)fileManager {
-  if(fileManager) {
-    _fileManager = fileManager;
-  }
-}
-
-+ (MSAIPLCrashReporter *)getPLCrashReporter {
-  return _plCrashReporter;
-}
-
-+ (void)setPLCrashReporter:(MSAIPLCrashReporter *)crashReporter {
-  if(crashReporter) {
-    _plCrashReporter = crashReporter;
-  }
-}
-
-+ (NSString *)getLastCrashFilename {
-  return _lastCrashFilename;
-}
-
-+ (void)setLastCrashFilename:(NSString *)lastCrashFilename {
-  if(lastCrashFilename) {
-    _lastCrashFilename = lastCrashFilename;
-  }
-}
-
-+ (MSAICustomAlertViewHandler)getAlertViewHandler {
-  return _alertViewHandler;
-}
-
-
-+ (void)setAlertViewHandler:(MSAICustomAlertViewHandler)alertViewHandler {
-  if(alertViewHandler) {
-    _alertViewHandler = alertViewHandler;
-  }
-}
-
-+ (NSString *)getCrashesDir {
-  return _crashesDir;
-}
-
-+ (void)setCrashesDir:(NSString *)crashesDir {
-  if(crashesDir) {
-    _crashesDir = crashesDir;
-  }
-}
-
-+ (void)setAppContext:(MSAIContext *)context {
-  if(context) {
-    _appContext = context;
-  }
-}
-
-+ (MSAIContext *)getAppContext {
-  return _appContext;
-}
-
-+ (NSTimeInterval)getTimeIntervalCrashInLastSessionOccured {
-  return _timeintervalCrashInLastSessionOccured;
-}
-
-+ (MSAICrashDetails *)getLastSessionCrashDetails {
-  return _lastSessionCrashDetails;
-}
-
-+ (BOOL)didReveiveMemoryWarningInLastSession {
-  return _didReceiveMemoryWarningInLastSession;
-}
-
-+ (NSString *)getServerURL {
-  return _serverURL;
-}
-
-+ (void)setServerURL:(NSString *)serverURL {
-  _serverURL = serverURL;
-}
-
-+ (void)setCrashManagerStatus:(MSAICrashManagerStatus)crashManagerStatus {
-  _crashManagerStatus = crashManagerStatus;
-
-  [[NSUserDefaults standardUserDefaults] setInteger:crashManagerStatus forKey:kMSAICrashManagerStatus];
-}
-
-+ (MSAICrashManagerStatus)getCrashManagerStatus {
-  return _crashManagerStatus;
-}
-
-+ (BOOL)didCrashInLastSession {
-  return _didCrashInLastSession;
-}
-
-+ (BOOL)isSetup {
-  return _isSetup;
 }
 
 @end

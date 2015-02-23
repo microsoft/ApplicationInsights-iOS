@@ -78,8 +78,6 @@ should not need to set this delegate individually.
 
 + (MSAIContext *)getAppContext;
 
-+ (NSString *)executableUUID;
-
 /**
 * by default, just logs the message
 *
