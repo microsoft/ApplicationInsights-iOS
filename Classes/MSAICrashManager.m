@@ -615,115 +615,6 @@ static MSAICrashDetails *_lastSessionCrashDetails;
   }
 }
 
-
-#pragma mark - Private
-
-
-
-/**
-* Load all settings
-*
-* This contains the list of approved crash reports
-*/
-+ (void)loadSettings {
-  NSError *error = nil;
-  NSPropertyListFormat format;
-
-  if(![_fileManager fileExistsAtPath:_settingsFile])
-    return;
-
-  NSData *plist = [NSData dataWithContentsOfFile:_settingsFile];
-  if(plist) {
-    NSDictionary *rootObj = (NSDictionary *) [NSPropertyListSerialization
-        propertyListWithData:plist
-                     options:NSPropertyListMutableContainersAndLeaves
-                      format:&format
-                       error:&error];
-
-    if(rootObj[kMSAICrashApprovedReports])
-      [_approvedCrashReports setDictionary:rootObj[kMSAICrashApprovedReports]];
-  } else {
-    MSAILog(@"ERROR: Reading crash manager settings.");
-  }
-}
-
-
-/**
-* Remove a cached crash report
-*
-*  @param filename The base filename of the crash report
-*/
-+ (void)cleanCrashReportWithFilename:(NSString *)filename {
-  if(!filename) return;
-
-  NSError *error = NULL;
-
-  [_fileManager removeItemAtPath:filename error:&error];
-  [_fileManager removeItemAtPath:[filename stringByAppendingString:@".data"] error:&error];
-  [_fileManager removeItemAtPath:[filename stringByAppendingString:@".meta"] error:&error];
-  [_fileManager removeItemAtPath:[filename stringByAppendingString:@".desc"] error:&error];
-
-  NSString *cacheFilename = [filename lastPathComponent];
-  [self removeKeyFromKeychain:[NSString stringWithFormat:@"%@.%@", cacheFilename, kMSAICrashMetaUserName]];
-  [self removeKeyFromKeychain:[NSString stringWithFormat:@"%@.%@", cacheFilename, kMSAICrashMetaUserEmail]];
-  [self removeKeyFromKeychain:[NSString stringWithFormat:@"%@.%@", cacheFilename, kMSAICrashMetaUserID]];
-
-  [_crashFiles removeObject:filename];
-  [_approvedCrashReports removeObjectForKey:filename];
-
-  [self saveSettings];
-}
-
-/**
-*	 Remove all crash reports and stored meta data for each from the file system and keychain
-*
-* This is currently only used as a helper method for tests
-*/
-+ (void)cleanCrashReports {
-  for(NSUInteger i = 0; i < [_crashFiles count]; i++) {
-    [self cleanCrashReportWithFilename:_crashFiles[i]];
-  }
-}
-
-+ (void)persistUserProvidedMetaData:(MSAICrashMetaData *)userProvidedMetaData {
-  if(!userProvidedMetaData) return;
-
-  if(userProvidedMetaData.userDescription && [userProvidedMetaData.userDescription length] > 0) {
-    NSError *error;
-    [userProvidedMetaData.userDescription writeToFile:[NSString stringWithFormat:@"%@.desc", [_crashesDir stringByAppendingPathComponent:_lastCrashFilename]] atomically:YES encoding:NSUTF8StringEncoding error:&error];
-  }
-
-  if(userProvidedMetaData.userName && [userProvidedMetaData.userName length] > 0) {
-    [self addStringValueToKeychain:userProvidedMetaData.userName forKey:[NSString stringWithFormat:@"%@.%@", _lastCrashFilename, kMSAICrashMetaUserName]];
-
-  }
-
-  if(userProvidedMetaData.userEmail && [userProvidedMetaData.userEmail length] > 0) {
-    [self addStringValueToKeychain:userProvidedMetaData.userEmail forKey:[NSString stringWithFormat:@"%@.%@", _lastCrashFilename, kMSAICrashMetaUserEmail]];
-  }
-
-  if(userProvidedMetaData.userID && [userProvidedMetaData.userID length] > 0) {
-    [self addStringValueToKeychain:userProvidedMetaData.userID forKey:[NSString stringWithFormat:@"%@.%@", _lastCrashFilename, kMSAICrashMetaUserID]];
-
-  }
-}
-
-
-
-+ (void)leavingAppSafely {
-  if([self isAppNotTerminatingCleanlyDetectionEnabled])
-    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kMSAIAppWentIntoBackgroundSafely];
-}
-
-+ (void)appEnteredForeground {
-  // we disable kill detection while the debugger is running, since we'd get only false positives if the app is terminated by the user using the debugger
-  if(self.isDebuggerAttached) {
-    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kMSAIAppWentIntoBackgroundSafely];
-  } else if(self.isAppNotTerminatingCleanlyDetectionEnabled) {
-    [[NSUserDefaults standardUserDefaults] setBool:NO forKey:kMSAIAppWentIntoBackgroundSafely];
-  }
-}
-
 #pragma mark - Private - Meta Data for Crash Report
 
 
@@ -1149,6 +1040,109 @@ Get the filename of the first not approved crash report
     [plist writeToFile:_settingsFile atomically:YES];
   } else {
     MSAILog(@"ERROR: Writing settings. %@", [error description]);
+  }
+}
+
+
+/**
+* Load all settings
+*
+* This contains the list of approved crash reports
+*/
++ (void)loadSettings {
+  NSError *error = nil;
+  NSPropertyListFormat format;
+
+  if(![_fileManager fileExistsAtPath:_settingsFile])
+    return;
+
+  NSData *plist = [NSData dataWithContentsOfFile:_settingsFile];
+  if(plist) {
+    NSDictionary *rootObj = (NSDictionary *) [NSPropertyListSerialization
+        propertyListWithData:plist
+                     options:NSPropertyListMutableContainersAndLeaves
+                      format:&format
+                       error:&error];
+
+    if(rootObj[kMSAICrashApprovedReports])
+      [_approvedCrashReports setDictionary:rootObj[kMSAICrashApprovedReports]];
+  } else {
+    MSAILog(@"ERROR: Reading crash manager settings.");
+  }
+}
+
+
+/**
+* Remove a cached crash report
+*
+*  @param filename The base filename of the crash report
+*/
++ (void)cleanCrashReportWithFilename:(NSString *)filename {
+  if(!filename) return;
+
+  NSError *error = NULL;
+
+  [_fileManager removeItemAtPath:filename error:&error];
+  [_fileManager removeItemAtPath:[filename stringByAppendingString:@".data"] error:&error];
+  [_fileManager removeItemAtPath:[filename stringByAppendingString:@".meta"] error:&error];
+  [_fileManager removeItemAtPath:[filename stringByAppendingString:@".desc"] error:&error];
+
+  NSString *cacheFilename = [filename lastPathComponent];
+  [self removeKeyFromKeychain:[NSString stringWithFormat:@"%@.%@", cacheFilename, kMSAICrashMetaUserName]];
+  [self removeKeyFromKeychain:[NSString stringWithFormat:@"%@.%@", cacheFilename, kMSAICrashMetaUserEmail]];
+  [self removeKeyFromKeychain:[NSString stringWithFormat:@"%@.%@", cacheFilename, kMSAICrashMetaUserID]];
+
+  [_crashFiles removeObject:filename];
+  [_approvedCrashReports removeObjectForKey:filename];
+
+  [self saveSettings];
+}
+
+/**
+*	 Remove all crash reports and stored meta data for each from the file system and keychain
+*
+* This is currently only used as a helper method for tests
+*/
++ (void)cleanCrashReports {
+  for(NSUInteger i = 0; i < [_crashFiles count]; i++) {
+    [self cleanCrashReportWithFilename:_crashFiles[i]];
+  }
+}
+
++ (void)persistUserProvidedMetaData:(MSAICrashMetaData *)userProvidedMetaData {
+  if(!userProvidedMetaData) return;
+
+  if(userProvidedMetaData.userDescription && [userProvidedMetaData.userDescription length] > 0) {
+    NSError *error;
+    [userProvidedMetaData.userDescription writeToFile:[NSString stringWithFormat:@"%@.desc", [_crashesDir stringByAppendingPathComponent:_lastCrashFilename]] atomically:YES encoding:NSUTF8StringEncoding error:&error];
+  }
+
+  if(userProvidedMetaData.userName && [userProvidedMetaData.userName length] > 0) {
+    [self addStringValueToKeychain:userProvidedMetaData.userName forKey:[NSString stringWithFormat:@"%@.%@", _lastCrashFilename, kMSAICrashMetaUserName]];
+
+  }
+
+  if(userProvidedMetaData.userEmail && [userProvidedMetaData.userEmail length] > 0) {
+    [self addStringValueToKeychain:userProvidedMetaData.userEmail forKey:[NSString stringWithFormat:@"%@.%@", _lastCrashFilename, kMSAICrashMetaUserEmail]];
+  }
+
+  if(userProvidedMetaData.userID && [userProvidedMetaData.userID length] > 0) {
+    [self addStringValueToKeychain:userProvidedMetaData.userID forKey:[NSString stringWithFormat:@"%@.%@", _lastCrashFilename, kMSAICrashMetaUserID]];
+
+  }
+}
+
++ (void)leavingAppSafely {
+  if([self isAppNotTerminatingCleanlyDetectionEnabled])
+    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kMSAIAppWentIntoBackgroundSafely];
+}
+
++ (void)appEnteredForeground {
+  // we disable kill detection while the debugger is running, since we'd get only false positives if the app is terminated by the user using the debugger
+  if(self.isDebuggerAttached) {
+    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kMSAIAppWentIntoBackgroundSafely];
+  } else if(self.isAppNotTerminatingCleanlyDetectionEnabled) {
+    [[NSUserDefaults standardUserDefaults] setBool:NO forKey:kMSAIAppWentIntoBackgroundSafely];
   }
 }
 
