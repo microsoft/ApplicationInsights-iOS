@@ -233,6 +233,8 @@ typedef NS_ENUM(NSUInteger, MSAICrashManagerUserInput) {
  */
 //@property (nonatomic, assign, getter = isAppNotTerminatingCleanlyDetectionEnabled) BOOL enableAppNotTerminatingCleanlyDetection;
 
++ (BOOL)isAppNotTerminatingCleanlyDetectionEnabled;
++ (void)setEnableAppNotTerminatingCleanlyDetection:(BOOL)enableAppNotTerminatingCleanlyDetection;
 
 /**
  * Set the callbacks that will be executed prior to program termination after a crash has occurred
@@ -364,6 +366,7 @@ typedef NS_ENUM(NSUInteger, MSAICrashManagerUserInput) {
  */
 //@property (nonatomic, readonly) NSTimeInterval timeintervalCrashInLastSessionOccured;
 
++ (NSTimeInterval)getTimeIntervalCrashInLastSessionOccured;
 
 /**
 Defines the server URL to send data to or request data from
@@ -406,12 +409,9 @@ need to modify that.
  */
 + (void)generateTestCrash;
 
-
-  //TODO move to private header
 /**
  *  This method should be called after the manager has been configured in order to create and send data.
  */
 + (void)startManagerWithAppContext:(MSAIContext *)appContext;
-//+ (void)startManager;
 
 @end
