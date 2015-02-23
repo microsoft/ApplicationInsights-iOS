@@ -397,6 +397,8 @@ need to modify that.
 + (BOOL)isDebuggerAttached;
 
 
++ (BOOL)isSetup;
+
 /**
  * Lets the app crash for easy testing of the SDK
  *

@@ -2,14 +2,9 @@
 
 #if MSAI_FEATURE_CRASH_REPORTER
 
-#import <SystemConfiguration/SystemConfiguration.h>
-#import <UIKit/UIKit.h>
-
 #import "AppInsightsPrivate.h"
 #import "MSAIHelper.h"
-#import "MSAIAppClient.h"
 #import "MSAIContextPrivate.h"
-
 #import "MSAICrashManagerPrivate.h"
 #import "MSAICrashDataProvider.h"
 #import "MSAICrashDetailsPrivate.h"
@@ -18,15 +13,15 @@
 #import "MSAIChannelPrivate.h"
 #import "MSAIPersistence.h"
 #import "MSAIEnvelope.h"
-#import "MSAICrashData.h"
 #import "MSAIEnvelopeManager.h"
 #import "MSAIEnvelopeManagerPrivate.h"
 #import "MSAIData.h"
 #import "MSAIKeychainUtils.h"
 
-#include <sys/sysctl.h>
 #import <mach-o/loader.h>
 #import <mach-o/dyld.h>
+
+#include <sys/sysctl.h>
 
 // stores the set of crashreports that have been approved but aren't sent yet
 #define kMSAICrashApprovedReports @"MSAICrashApprovedReports"
@@ -64,9 +59,6 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
     .handleSignal = plcr_post_crash_callback
 };
 
-// Refactor to be static
-
-static NSDateFormatter *_rfc3339Formatter;
 static NSFileManager *_fileManager;
 static NSMutableArray *_crashFiles;
 static NSMutableDictionary *_approvedCrashReports;
@@ -227,8 +219,8 @@ static NSString *_serverURL;
       BOOL considerReport = YES;
 
       if(_delegate &&
-          [_delegate respondsToSelector:@selector(considerAppNotTerminatedCleanlyReportForCrashManager:)]) {
-        considerReport = [_delegate considerAppNotTerminatedCleanlyReportForCrashManager:nil]; //TODO new delegate method?!
+          [_delegate respondsToSelector:@selector(considerAppNotTerminatedCleanlyReportForCrashManager)]) {
+        considerReport = [_delegate considerAppNotTerminatedCleanlyReportForCrashManager];
       }
 
       if(considerReport) {
@@ -248,13 +240,6 @@ static NSString *_serverURL;
 
 + (void)initValues {
   _serverURL = MSAI_SDK_URL;
-
-  NSLocale *enUSPOSIXLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
-  _rfc3339Formatter = [[NSDateFormatter alloc] init];
-  [_rfc3339Formatter setLocale:enUSPOSIXLocale];
-  [_rfc3339Formatter setDateFormat:@"yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'"];
-  [_rfc3339Formatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
-
   _delegate = nil;
   _isSetup = NO;
 
@@ -304,8 +289,6 @@ static NSString *_serverURL;
 - (void)dealloc {
   [self unregisterObservers];
 }
-
-
 
 
 #pragma mark - Private
@@ -418,33 +401,6 @@ static NSString *_serverURL;
     [self addStringValueToKeychain:userProvidedMetaData.userID forKey:[NSString stringWithFormat:@"%@.%@", _lastCrashFilename, kMSAICrashMetaUserID]];
 
   }
-}
-
-/**
-*	 Extract all app sepcific UUIDs from the crash reports
-*
-* This allows us to send the UUIDs in the XML construct to the server, so the server does not need to parse the crash report for this data.
-* The app specific UUIDs help to identify which dSYMs are needed to symbolicate this crash report.
-*
-*	@param	report The crash report from PLCrashReporter
-*
-*	@return XML structure with the app sepcific UUIDs
-*/
-- (NSString *)extractAppUUIDs:(MSAIPLCrashReport *)report {
-  NSMutableString *uuidString = [NSMutableString string];
-  NSArray *uuidArray = [MSAICrashDataProvider arrayOfAppUUIDsForCrashReport:report];
-
-  for(NSDictionary *element in uuidArray) {
-    if(element[kMSAIBinaryImageKeyUUID] && element[kMSAIBinaryImageKeyArch] && element[kMSAIBinaryImageKeyUUID]) {
-      [uuidString appendFormat:@"<uuid type=\"%@\" arch=\"%@\">%@</uuid>",
-                               element[kMSAIBinaryImageKeyType],
-                               element[kMSAIBinaryImageKeyArch],
-                               element[kMSAIBinaryImageKeyUUID]
-      ];
-    }
-  }
-
-  return uuidString;
 }
 
 + (void)registerObservers {
@@ -617,14 +573,13 @@ static NSString *_serverURL;
   // first check the global keychain storage
   NSString *username = [self stringValueFromKeychainForKey:kMSAIMetaUserName] ?: @"";
 
-  if(_delegate && [_delegate respondsToSelector:@selector(userNameForCrashManager:)]) {
-    username = [_delegate userNameForCrashManager:nil] ?: @""; //TODO fix delegate callback
+  if(_delegate && [_delegate respondsToSelector:@selector(userNameForCrashManager)]) {
+    username = [_delegate userNameForCrashManager] ?: @"";
   }
   if([MSAIManager sharedMSAIManager].delegate &&
-      [[MSAIManager sharedMSAIManager].delegate respondsToSelector:@selector(userNameForTelemetryManager:componentManager:)]) {
+      [[MSAIManager sharedMSAIManager].delegate respondsToSelector:@selector(userNameForTelemetryManager:)]) {
     username = [[MSAIManager sharedMSAIManager].delegate
-        userNameForTelemetryManager:[MSAIManager sharedMSAIManager]
-                   componentManager:nil] ?: @""; //TODO fix delegate callback
+        userNameForTelemetryManager:[MSAIManager sharedMSAIManager]] ?: @"";
   }
 
   return username;
@@ -639,14 +594,13 @@ static NSString *_serverURL;
   // first check the global keychain storage
   NSString *useremail = [self stringValueFromKeychainForKey:kMSAIMetaUserEmail] ?: @"";
 
-  if(_delegate && [_delegate respondsToSelector:@selector(userEmailForCrashManager:)]) {
-    useremail = [_delegate userEmailForCrashManager:nil] ?: @""; //TODO fix delegate callback
+  if(_delegate && [_delegate respondsToSelector:@selector(userEmailForCrashManager)]) {
+    useremail = [_delegate userEmailForCrashManager] ?: @"";
   }
   if([MSAIManager sharedMSAIManager].delegate &&
-      [[MSAIManager sharedMSAIManager].delegate respondsToSelector:@selector(userEmailForTelemetryManager:componentManager:)]) {
+      [[MSAIManager sharedMSAIManager].delegate respondsToSelector:@selector(userEmailForTelemetryManager:)]) {
     useremail = [[MSAIManager sharedMSAIManager].delegate
-        userEmailForTelemetryManager:[MSAIManager sharedMSAIManager]
-                    componentManager:nil] ?: @""; //TODO new method for delegates?!
+        userEmailForTelemetryManager:[MSAIManager sharedMSAIManager]] ?: @""; //TODO new method for delegates?!
   }
 
   return useremail;
@@ -734,8 +688,8 @@ static NSString *_serverURL;
   [self addStringValueToKeychain:[self userEmailForCrashReport] forKey:[NSString stringWithFormat:@"%@.%@", filename, kMSAICrashMetaUserEmail]];
   [self addStringValueToKeychain:[self userIDForCrashReport] forKey:[NSString stringWithFormat:@"%@.%@", filename, kMSAICrashMetaUserID]];
 
-  if(_delegate != nil && [_delegate respondsToSelector:@selector(applicationLogForCrashManager:)]) {
-    applicationLog = [_delegate applicationLogForCrashManager:nil] ?: @""; //TODO fix delegate callback
+  if(_delegate != nil && [_delegate respondsToSelector:@selector(applicationLogForCrashManager)]) {
+    applicationLog = [_delegate applicationLogForCrashManager] ?: @""; //TODO fix delegate callback
   }
   metaDict[kMSAICrashMetaApplicationLog] = applicationLog;
 
@@ -753,8 +707,8 @@ static NSString *_serverURL;
 + (BOOL)handleUserInput:(MSAICrashManagerUserInput)userInput withUserProvidedMetaData:(MSAICrashMetaData *)userProvidedMetaData {
   switch(userInput) {
     case MSAICrashManagerUserInputDontSend:
-      if(_delegate != nil && [_delegate respondsToSelector:@selector(crashManagerWillCancelSendingCrashReport:)]) {
-        [_delegate crashManagerWillCancelSendingCrashReport:nil]; //TODO delegate methods
+      if(_delegate != nil && [_delegate respondsToSelector:@selector(crashManagerWillCancelSendingCrashReport)]) {
+        [_delegate crashManagerWillCancelSendingCrashReport];
       }
 
       if(_lastCrashFilename)
@@ -773,8 +727,8 @@ static NSString *_serverURL;
       _crashManagerStatus = MSAICrashManagerStatusAutoSend;
       [[NSUserDefaults standardUserDefaults] setInteger:_crashManagerStatus forKey:kMSAICrashManagerStatus];
       [[NSUserDefaults standardUserDefaults] synchronize];
-      if(_delegate != nil && [_delegate respondsToSelector:@selector(crashManagerWillSendCrashReportsAlways:)]) {
-        [_delegate crashManagerWillSendCrashReportsAlways:nil]; //TODO delegate methods
+      if(_delegate != nil && [_delegate respondsToSelector:@selector(crashManagerWillSendCrashReportsAlways)]) {
+        [_delegate crashManagerWillSendCrashReportsAlways];
       }
 
       if(userProvidedMetaData)
@@ -924,8 +878,8 @@ Get the filename of the first not approved crash report
     return YES;
   } else {
     if(_didCrashInLastSession) {
-      if(_delegate != nil && [_delegate respondsToSelector:@selector(crashManagerWillCancelSendingCrashReport:)]) {
-        [_delegate crashManagerWillCancelSendingCrashReport:nil];//TODO delegate
+      if(_delegate != nil && [_delegate respondsToSelector:@selector(crashManagerWillCancelSendingCrashReport)]) {
+        [_delegate crashManagerWillCancelSendingCrashReport];
       }
 
       _didCrashInLastSession = NO;
@@ -984,8 +938,8 @@ Get the filename of the first not approved crash report
       [self sendNextCrashReport];
     } else if(_alertViewHandler && _crashManagerStatus != MSAICrashManagerStatusAutoSend && notApprovedReportFilename) {
 
-      if(_delegate != nil && [_delegate respondsToSelector:@selector(crashManagerWillShowSubmitCrashReportAlert:)]) {
-        [_delegate crashManagerWillShowSubmitCrashReportAlert:nil]; //TODO fix delegate methods
+      if(_delegate != nil && [_delegate respondsToSelector:@selector(crashManagerWillShowSubmitCrashReportAlert)]) {
+        [_delegate crashManagerWillShowSubmitCrashReportAlert]; //TODO fix delegate methods
       }
 
       _alertViewHandler();
@@ -1125,8 +1079,8 @@ Get the filename of the first not approved crash report
     }
   }];
 
-  if(_delegate != nil && [_delegate respondsToSelector:@selector(crashManagerWillSendCrashReport:)]) {
-    [_delegate crashManagerWillSendCrashReport:nil]; //FIX delegation
+  if(_delegate != nil && [_delegate respondsToSelector:@selector(crashManagerWillSendCrashReport)]) {
+    [_delegate crashManagerWillSendCrashReport]; //FIX delegation
   }
 }
 
@@ -1168,20 +1122,6 @@ Get the filename of the first not approved crash report
   }
 
   return @"";
-}
-
-#pragma mark - Manager Control
-
-#pragma mark - Helpers
-
-+ (NSDate *)parseRFC3339Date:(NSString *)dateString {
-  NSDate *date = nil;
-  NSError *error = nil;
-  if(![_rfc3339Formatter getObjectValue:&date forString:dateString range:nil error:&error]) {
-    MSAILog(@"INFO: Invalid date '%@' string: %@", dateString, error);
-  }
-
-  return date;
 }
 
 #pragma mark - Keychain
@@ -1362,7 +1302,7 @@ Get the filename of the first not approved crash report
 
 + (void)setCrashManagerStatus:(MSAICrashManagerStatus)crashManagerStatus {
   _crashManagerStatus = crashManagerStatus;
-  
+
   [[NSUserDefaults standardUserDefaults] setInteger:crashManagerStatus forKey:kMSAICrashManagerStatus];
 }
 
@@ -1372,6 +1312,10 @@ Get the filename of the first not approved crash report
 
 + (BOOL)didCrashInLastSession {
   return _didCrashInLastSession;
+}
+
++ (BOOL)isSetup {
+  return _isSetup;
 }
 
 @end
