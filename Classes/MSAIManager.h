@@ -53,6 +53,7 @@
 + (MSAIManager *)sharedMSAIManager;
 
 - (void)configure;
+
 /**
  Starts the manager and runs all modules
  

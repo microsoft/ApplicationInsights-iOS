@@ -146,7 +146,7 @@
  *  @param message a message, which should be tracked.
  *  @param properties key value pairs with additional info about the trace.
  */
-+(void)trackTraceWithMessage:(NSString *)message properties:(NSDictionary *)properties;
+- (void)trackTraceWithMessage:(NSString *)message properties:(NSDictionary *)properties;
 
 /**
  *  Track metric by name and value.
