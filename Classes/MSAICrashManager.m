@@ -766,10 +766,15 @@ Get the filename of the first not approved crash report
     if(report) {
       crashEnvelope = [MSAICrashDataProvider crashDataForCrashReport:report];
       if([report.applicationInfo.applicationVersion compare:[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"]] == NSOrderedSame) {
+          //TODO raus?
+//        _crashIdenticalCurrentVersion = YES;
+
       }
     }
 
     if([report.applicationInfo.applicationVersion compare:[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"]] == NSOrderedSame) {
+        //TODO raus?
+        //        _crashIdenticalCurrentVersion = YES;
     }
 
     // store this crash report as user approved, so if it fails it will retry automatically
