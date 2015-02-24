@@ -32,40 +32,13 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 @implementation MSAIManager {
   
   BOOL _validInstrumentationKey;
-  
   BOOL _startManagerIsInvoked;
-  
   BOOL _startUpdateManagerIsInvoked;
-  
   BOOL _managersInitialized;
-  
   MSAIAppClient *_appClient;
-  
   MSAIContext *_appContext;
-  
   MSAITelemetryContext *_telemetryContext;
 }
-
-#pragma mark - Private Class Methods
-
-- (BOOL)checkValidityOfInstrumentationKey:(NSString *)instrumentationKey {
-  BOOL result = NO;
-  
-  if (instrumentationKey) {
-    NSCharacterSet *hexSet = [NSCharacterSet characterSetWithCharactersInString:@"0123456789abcdef-"];
-    NSCharacterSet *inStringSet = [NSCharacterSet characterSetWithCharactersInString:instrumentationKey];
-    result = ([instrumentationKey length] == 36) && ([hexSet isSupersetOfSet:inStringSet]);
-  }
-  
-  return result;
-}
-
-- (void)logInvalidIdentifier:(NSString *)environment {
-  if (!_appStoreEnvironment) {
-    NSLog(@"[AppInsightsSDK] ERROR: The %@ is invalid! Please use the AppInsights app identifier you find on the apps website on AppInsights! The SDK is disabled!", environment);
-  }
-}
-
 
 #pragma mark - Public Class Methods
 
@@ -81,21 +54,19 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
   return sharedInstance;
 }
 
+#pragma mark - Private Class Methods
+
 - (id) init {
   if ((self = [super init])) {
     _serverURL = nil;
     _delegate = nil;
     _managersInitialized = NO;
-    
     _appClient = nil;
-    
-    _disableCrashManager = NO;
-    _disableMetricsManager = NO;
-    
+    _crashManagerDisabled = NO;
+    _metricsManagerDisabled = NO;
     _appStoreEnvironment = NO;
     _startManagerIsInvoked = NO;
     _startUpdateManagerIsInvoked = NO;
-    
     _installString = msai_appAnonID();
     
 #if !TARGET_IPHONE_SIMULATOR
@@ -111,16 +82,19 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
   return self;
 }
 
+#pragma mark - Public Methods
 
-#pragma mark - Public Instance Methods (Configuration)
-
-- (void)configure{
+- (void)initialize{
   NSString *iKey = [[NSBundle mainBundle] objectForInfoDictionaryKey:kMSAIInstrumentationKey];
   _appContext = [[MSAIContext alloc] initWithInstrumentationKey:iKey isAppStoreEnvironment:_appStoreEnvironment];
   [self initializeModules];
 }
 
-- (void)startManager {
++ (void)initialize{
+  [[self sharedManager] initialize];
+}
+
+- (void)start{
   if (!_validInstrumentationKey) return;
   if (_startManagerIsInvoked) {
     NSLog(@"[AppInsightsSDK] Warning: startManager should only be invoked once! This call is ignored.");
@@ -156,22 +130,29 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
   }
 }
 
++ (void)startM {
+  [[self sharedManager] startManager];
+}
+
 #if MSAI_FEATURE_METRICS
-- (void)setDisableMetricsManager:(BOOL)disableMetricsManager {
-  [MSAIMetricsManager sharedManager].metricsManagerDisabled = disableMetricsManager;
-  _disableMetricsManager = disableMetricsManager;
+- (void)setMetricsManagerDisabled:(BOOL)metricsManagerDisabled {
+  [MSAIMetricsManager sharedManager].metricsManagerDisabled = metricsManagerDisabled;
+  _metricsManagerDisabled = metricsManagerDisabled;
+}
+
++ (void)setMetricsManagerDisabled:(BOOL)metricsManagerDisabled {
+  [[self sharedManager] setMetricsManagerDisabled:metricsManagerDisabled];
 }
 #endif /* MSAI_FEATURE_METRICS */
 
-
-- (void)setServerURL:(NSString *)aServerURL {
+- (void)setServerURL:(NSString *)serverURL {
   // ensure url ends with a trailing slash
-  if (![aServerURL hasSuffix:@"/"]) {
-    aServerURL = [NSString stringWithFormat:@"%@/", aServerURL];
+  if (![serverURL hasSuffix:@"/"]) {
+    serverURL = [NSString stringWithFormat:@"%@/", serverURL];
   }
   
-  if (_serverURL != aServerURL) {
-    _serverURL = [aServerURL copy];
+  if (_serverURL != serverURL) {
+    _serverURL = [serverURL copy];
     
     if (_appClient) {
       _appClient.baseURL = [NSURL URLWithString:_serverURL ? _serverURL : MSAI_SDK_URL];
@@ -179,6 +160,9 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
   }
 }
 
++ (void)setServerURL:(NSString *)serverURL {
+  [[self sharedManager] setServerURL:serverURL];
+}
 
 - (void)setDelegate:(id<MSAIManagerDelegate>)delegate {
   if (![self isAppStoreEnvironment]) {
@@ -198,33 +182,8 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
   }
 }
 
-- (void)modifyKeychainUserValue:(NSString *)value forKey:(NSString *)key {
-  NSError *error = nil;
-  BOOL success = YES;
-  NSString *updateType = @"update";
-  
-  if (value) {
-    success = [MSAIKeychainUtils storeUsername:key
-                                   andPassword:value
-                                forServiceName:msai_keychainMSAIServiceName()
-                                updateExisting:YES
-                                 accessibility:kSecAttrAccessibleWhenUnlockedThisDeviceOnly
-                                         error:&error];
-  } else {
-    updateType = @"delete";
-    if ([MSAIKeychainUtils getPasswordForUsername:key
-                                   andServiceName:msai_keychainMSAIServiceName()
-                                            error:&error]) {
-      success = [MSAIKeychainUtils deleteItemForUsername:key
-                                          andServiceName:msai_keychainMSAIServiceName()
-                                                   error:&error];
-    }
-  }
-  
-  if (!success) {
-    NSString *errorDescription = [error description] ?: @"";
-    MSAILog(@"ERROR: Couldn't %@ key %@ in the keychain. %@", updateType, key, errorDescription);
-  }
++ (void)setDelegate:(id<MSAIManagerDelegate>)delegate {
+  [[self sharedManager] setDelegate:delegate];
 }
 
 - (void)setUserID:(NSString *)userID {
@@ -258,17 +217,74 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
   [self pingServerForIntegrationStartWorkflowWithTimeString:timeString instrumentationKey:[_appContext instrumentationKey]];
 }
 
++ (void)testIdentifier {
+  [[self sharedManager] testIdentifier];
+}
 
 - (NSString *)version {
   return msai_sdkVersion();
+}
+
++ (NSString *)version {
+  return [[self sharedManager] version];
 }
 
 - (NSString *)build {
   return msai_sdkBuild();
 }
 
++ (NSString *)build {
+  return [[self sharedManager] build];
+}
 
 #pragma mark - Private Instance Methods
+
+- (BOOL)checkValidityOfInstrumentationKey:(NSString *)instrumentationKey {
+  BOOL result = NO;
+  
+  if (instrumentationKey) {
+    NSCharacterSet *hexSet = [NSCharacterSet characterSetWithCharactersInString:@"0123456789abcdef-"];
+    NSCharacterSet *inStringSet = [NSCharacterSet characterSetWithCharactersInString:instrumentationKey];
+    result = ([instrumentationKey length] == 36) && ([hexSet isSupersetOfSet:inStringSet]);
+  }
+  
+  return result;
+}
+
+- (void)logInvalidIdentifier:(NSString *)environment {
+  if (!_appStoreEnvironment) {
+    NSLog(@"[AppInsightsSDK] ERROR: The %@ is invalid! Please use the AppInsights app identifier you find on the apps website on AppInsights! The SDK is disabled!", environment);
+  }
+}
+
+- (void)modifyKeychainUserValue:(NSString *)value forKey:(NSString *)key {
+  NSError *error = nil;
+  BOOL success = YES;
+  NSString *updateType = @"update";
+  
+  if (value) {
+    success = [MSAIKeychainUtils storeUsername:key
+                                   andPassword:value
+                                forServiceName:msai_keychainMSAIServiceName()
+                                updateExisting:YES
+                                 accessibility:kSecAttrAccessibleWhenUnlockedThisDeviceOnly
+                                         error:&error];
+  } else {
+    updateType = @"delete";
+    if ([MSAIKeychainUtils getPasswordForUsername:key
+                                   andServiceName:msai_keychainMSAIServiceName()
+                                            error:&error]) {
+      success = [MSAIKeychainUtils deleteItemForUsername:key
+                                          andServiceName:msai_keychainMSAIServiceName()
+                                                   error:&error];
+    }
+  }
+  
+  if (!success) {
+    NSString *errorDescription = [error description] ?: @"";
+    MSAILog(@"ERROR: Couldn't %@ key %@ in the keychain. %@", updateType, key, errorDescription);
+  }
+}
 
 - (MSAITelemetryContext *)telemetryContext{
   
@@ -420,7 +436,7 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
     
 #if MSAI_FEATURE_CRASH_REPORTER
     MSAILog(@"INFO: Setup CrashManager");
-      //TODO delegate and stuff
+    //TODO delegate and stuff
     [MSAICrashManager startManagerWithAppContext:_appContext];
     [MSAICrashManager setDelegate:_delegate];
 #endif /* MSAI_FEATURE_CRASH_REPORTER */
