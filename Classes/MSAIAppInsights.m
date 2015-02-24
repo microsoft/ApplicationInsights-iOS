@@ -29,7 +29,7 @@
 
 NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 
-@implementation MSAIManager {
+@implementation MSAIAppInsights {
   
   BOOL _validInstrumentationKey;
   BOOL _startManagerIsInvoked;
@@ -42,12 +42,12 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 
 #pragma mark - Public Class Methods
 
-+ (MSAIManager *)sharedManager {
-  static MSAIManager *sharedInstance = nil;
++ (MSAIAppInsights *)sharedInstance {
+  static MSAIAppInsights *sharedInstance = nil;
   static dispatch_once_t pred;
   
   dispatch_once(&pred, ^{
-    sharedInstance = [MSAIManager alloc];
+    sharedInstance = [MSAIAppInsights alloc];
     sharedInstance = [sharedInstance init];
   });
   
@@ -91,7 +91,7 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 }
 
 + (void)initialize{
-  [[self sharedManager] initialize];
+  [[self sharedInstance] initialize];
 }
 
 - (void)start{
@@ -130,8 +130,8 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
   }
 }
 
-+ (void)startM {
-  [[self sharedManager] startManager];
++ (void)start {
+  [[self sharedInstance] start];
 }
 
 #if MSAI_FEATURE_METRICS
@@ -141,7 +141,7 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 }
 
 + (void)setMetricsManagerDisabled:(BOOL)metricsManagerDisabled {
-  [[self sharedManager] setMetricsManagerDisabled:metricsManagerDisabled];
+  [[self sharedInstance] setMetricsManagerDisabled:metricsManagerDisabled];
 }
 #endif /* MSAI_FEATURE_METRICS */
 
@@ -161,7 +161,7 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 }
 
 + (void)setServerURL:(NSString *)serverURL {
-  [[self sharedManager] setServerURL:serverURL];
+  [[self sharedInstance] setServerURL:serverURL];
 }
 
 - (void)setDelegate:(id<MSAIManagerDelegate>)delegate {
@@ -183,7 +183,7 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 }
 
 + (void)setDelegate:(id<MSAIManagerDelegate>)delegate {
-  [[self sharedManager] setDelegate:delegate];
+  [[self sharedInstance] setDelegate:delegate];
 }
 
 - (void)setUserID:(NSString *)userID {
@@ -218,7 +218,7 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 }
 
 + (void)testIdentifier {
-  [[self sharedManager] testIdentifier];
+  [[self sharedInstance] testIdentifier];
 }
 
 - (NSString *)version {
@@ -226,7 +226,7 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 }
 
 + (NSString *)version {
-  return [[self sharedManager] version];
+  return [[self sharedInstance] version];
 }
 
 - (NSString *)build {
@@ -234,7 +234,7 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 }
 
 + (NSString *)build {
-  return [[self sharedManager] build];
+  return [[self sharedInstance] build];
 }
 
 #pragma mark - Private Instance Methods

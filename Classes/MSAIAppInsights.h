@@ -32,7 +32,7 @@
 
  */
 
-@interface MSAIManager : NSObject
+@interface MSAIAppInsights : NSObject
 
 #pragma mark - Public Methods
 
@@ -45,7 +45,7 @@
  *
  * @return a singleton MSAIManager instance ready use
  */
-+ (MSAIManager *)sharedManager;
++ (MSAIAppInsights *)sharedInstance;
 
 /**
  * Configures the manager with the instrumentation key from the info.plist and
