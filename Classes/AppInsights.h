@@ -2,7 +2,7 @@
 #define MSAI_h
 
 #import "AppInsightsFeatureConfig.h"
-#import "MSAIManager.h"
+#import "MSAIAppInsights.h"
 #import "MSAIManagerDelegate.h"
 
 #if MSAI_FEATURE_CRASH_REPORTER
