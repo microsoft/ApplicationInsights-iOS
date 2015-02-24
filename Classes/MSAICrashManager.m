@@ -93,7 +93,7 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
 *	 Main startup sequence initializing PLCrashReporter if it wasn't disabled
 */
 - (void)startManager {
-  if(!self.disableCrashManager) return;
+  if(self.disableCrashManager) return;
   static dispatch_once_t plcrPredicate;
   dispatch_once(&plcrPredicate, ^{
     [self initValues];
@@ -218,7 +218,7 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
   self.fileManager = [NSFileManager new];
   self.crashFiles = [NSMutableArray new];
 
-  self.disableCrashManager = NO; //TODO enable Crashes by default?! check this!
+  //TODO crashManager is Enabled by default
 
   NSString *testValue = [[NSUserDefaults standardUserDefaults] stringForKey:kMSAICrashManagerIsDisabled];
   if(testValue) {
