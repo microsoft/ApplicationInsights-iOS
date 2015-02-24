@@ -107,7 +107,7 @@
                                       NSLog(@"Sending failed");
                                     
                                       //[MSAIPersistence persistBundle:self.currentBundle];
-                                      //TODO trigger sending again -> later and somewhere else?!
+                                      //TODO maybe trigger sending again or notify someone?
                                     }
                                   }];
   

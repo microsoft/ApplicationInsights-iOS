@@ -120,7 +120,6 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
 }
 
 - (void)persistQueue {
-  //TODO this doesn't seem to work properly!
   NSArray *bundle = [NSArray arrayWithArray:_dataItemQueue];
   [MSAIPersistence persistBundle:bundle ofType:MSAIPersistenceTypeRegular withCompletionBlock:nil];
   [_dataItemQueue removeAllObjects];

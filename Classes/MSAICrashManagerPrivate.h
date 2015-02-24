@@ -23,14 +23,15 @@ should not need to set this delegate individually.
 
 @see `[MSAIManager setDelegate:]`
 */
-@property (nonatomic, weak) id delegate; //TODO Do we need this at all
+@property (nonatomic, weak) id delegate; //TODO Will be removed eventually?
+
 @property (nonatomic, assign) PLCrashReporterCallbacks *crashCallBacks;
-@property (nonatomic, strong) NSFileManager *fileManager; //TODO shouldn't we no longer use this?!
+@property (nonatomic, strong) NSFileManager *fileManager; //TODO remove when we refactor the persistence stuff out of crashmanager
 @property (nonatomic, strong) MSAIContext *appContext;
-@property (nonatomic, strong) NSMutableArray *crashFiles; //TODO shouldn't we no longer use this?!
+@property (nonatomic, strong) NSMutableArray *crashFiles; //TODO remove when we refactor the persistence stuff out of crashmanager
 @property (nonatomic, strong) NSMutableDictionary *approvedCrashReports;
-@property (nonatomic, copy) NSString *settingsFile; //TODO shouldn't we move this to Persistence?
-@property (nonatomic, copy) NSString *crashesDir;
+@property (nonatomic, copy) NSString *settingsFile; //TODO remove when we refactor the persistence stuff out of crashmanager
+@property (nonatomic, copy) NSString *crashesDir; //TODO remove when we refactor the persistence stuff out of crashmanager
 @property (nonatomic, copy) NSString *lastCrashFilename;
 @property (nonatomic, strong) MSAIPLCrashReporter *plCrashReporter;
 @property (nonatomic, assign) BOOL didLogLowMemoryWarning;
@@ -79,8 +80,6 @@ should not need to set this delegate individually.
 
 - (void)appEnteredForeground;
 
-
-
 /**
 * by default, just logs the message
 *
@@ -90,24 +89,6 @@ should not need to set this delegate individually.
 * @param error NSError
 */
 - (void)reportError:(NSError *)error;
-
-
-
-//TODO what did this mean? likely to refer to Context object
-/**
-* must be set
-*/
-
-
-
-
-
-
-
-
-
-
-
 
 @end
 

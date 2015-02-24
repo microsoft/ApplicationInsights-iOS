@@ -40,7 +40,7 @@
                                        [self.class queryStringFromParameters:params withEncoding:NSUTF8StringEncoding]]];
       [request setURL:endpoint];
     } else {
-      //TODO: this is crap. Boundary must be the same as the one in appendData
+      //TODO: Boundary should be the same as the one in appendData
       //unify this!
       NSString *boundary = @"----FOO";
       NSString *contentType = [NSString stringWithFormat:@"multipart/form-data; boundary=%@", boundary];

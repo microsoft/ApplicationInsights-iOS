@@ -173,7 +173,7 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
     [MSAICrashManager sharedManager].crashManagerStatus = MSAICrashManagerStatusDisabled;
   }
   else {
-    [MSAICrashManager sharedManager].crashManagerStatus = MSAICrashManagerStatusAutoSend; //TODO what about AlwaysAsdk?
+    [MSAICrashManager sharedManager].crashManagerStatus = MSAICrashManagerStatusAutoSend; //TODO what about AlwaysAsdk? -> switch to boolean
   }
   _disableCrashManager = disableCrashManager;
 }

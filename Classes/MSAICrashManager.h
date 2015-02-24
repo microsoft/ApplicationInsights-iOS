@@ -5,11 +5,6 @@
 @class MSAIContext;
 
 /**
-* Custom block that handles the alert that prompts the user whether he wants to send crash reports
-*/
-typedef void(^MSAICustomAlertViewHandler)();
-
-/**
 * Crash Manager status
 */
 typedef NS_ENUM(NSUInteger, MSAICrashManagerStatus) {
@@ -20,13 +15,12 @@ typedef NS_ENUM(NSUInteger, MSAICrashManagerStatus) {
   /**
   *	User is asked each time before sending
   */
-      MSAICrashManagerStatusAlwaysAsk = 1,//TODO we don't need this, do we?!
+      MSAICrashManagerStatusAlwaysAsk = 1,//TODO Replace this with a boolean flag
   /**
   *	Each crash report is send automatically
   */
       MSAICrashManagerStatusAutoSend = 2
 };
-
 
 /**
 * Prototype of a callback function used to execute additional user code. Called upon completion of crash
@@ -107,9 +101,7 @@ safe crash reporting: [Reliable Crash Reporting](http://goo.gl/WvTBR)
 /// @name Initialization
 ///-----------------------------------------------------------------------------
 
-
-+ (instancetype)sharedManager;
-
++ (instancetype) sharedManager;
 
 /**
 *  This method is used to setup the CrashManager-Module of the Application Insights SDK.
@@ -118,7 +110,7 @@ safe crash reporting: [Reliable Crash Reporting](http://goo.gl/WvTBR)
 *
 *  @param context the MSAIContext object
 */
-+ (void)startWithContext:(MSAIContext *)context;
++ (void)startWithContext:(MSAIContext *)context; //TODO move this to the private header because users won't use it directly
 
 /**
 * Indicates if the MSAICrashManager is initialised correctly.
@@ -153,6 +145,9 @@ have to make sure the new value is stored in the UserDefaults with the key
 */
 
 @property (nonatomic, assign, setter=setCrashManagerStatus:) MSAICrashManagerStatus crashManagerStatus;
+
+
+//TODO: Maybe we don't want to expose the all the properties here
 
 /**
 *  Trap fatal signals via a Mach exception server.
@@ -273,7 +268,7 @@ invoked!
 @see lastSessionCrashDetails
 */
 
-@property (nonatomic, readonly, assign) BOOL didCrashInLastSession;
+@property (nonatomic, readonly) BOOL didCrashInLastSession;
 /**
 * Provides details about the crash that occured in the last app session
 */

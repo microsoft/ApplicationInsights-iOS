@@ -88,7 +88,6 @@ static dispatch_once_t onceToken = nil;
 * types under the hood.
 */
 + (void)persistFakeReportBundle:(NSArray *)bundle {
-  //TODO this will result in the SuccessNotification to be send. Do we want this?!
   [self persistBundle:bundle ofType:MSAIPersistenceTypeFakeCrash withCompletionBlock:nil];
 }
 

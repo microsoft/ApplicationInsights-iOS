@@ -38,7 +38,7 @@ NSString *const kMSAICrashManagerStatus = @"MSAICrashManagerStatus";
 NSString *const kMSAIAppWentIntoBackgroundSafely = @"MSAIAppWentIntoBackgroundSafely";
 NSString *const kMSAIAppDidReceiveLowMemoryNotification = @"MSAIAppDidReceiveLowMemoryNotification";
 
-//TODO: use property?!
+//TODO: don't use a class var?
 static MSAICrashManagerCallbacks msaiCrashCallbacks = {
     .context = NULL,
     .handleSignal = NULL
@@ -50,21 +50,12 @@ static void plcr_post_crash_callback(siginfo_t *info, ucontext_t *uap, void *con
     msaiCrashCallbacks.handleSignal(context);
 }
 
-//TODO: use property?!
+//TODO: don't use a class var?
 static PLCrashReporterCallbacks plCrashCallbacks = {
     .version = 0,
     .context = NULL,
     .handleSignal = plcr_post_crash_callback
 };
-
-
-@interface MSAICrashManager ()
-
-
-
-
-@end
-
 
 @implementation MSAICrashManager {
   id _appDidBecomeActiveObserver;
@@ -82,7 +73,6 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
   static dispatch_once_t onceToken;
   dispatch_once(&onceToken, ^{
     sharedManager = [self new];
-  //TODO mit Chris drüber reden ob wir hier ein "autostart" machen?!!!
   });
   return sharedManager;
 }
@@ -221,14 +211,14 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
 
 
 - (void)initValues {
-  _timeintervalCrashInLastSessionOccured = -1; //TODO remove?
+  _timeintervalCrashInLastSessionOccured = -1; //TODO use 0 as initial value?
 
   self.approvedCrashReports = [[NSMutableDictionary alloc] init];
 
   self.fileManager = [NSFileManager new];
   self.crashFiles = [NSMutableArray new];
 
-  self.crashManagerStatus = MSAICrashManagerStatusAutoSend; //TODO we set the status here. ha!
+  self.crashManagerStatus = MSAICrashManagerStatusAutoSend; //TODO we set the status here. ha! Per default an?!
 
   NSString *testValue = [[NSUserDefaults standardUserDefaults] stringForKey:kMSAICrashManagerStatus];
   if(testValue) {
@@ -254,6 +244,7 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
 
 #pragma mark - Configuration
 
+//TODO switch to bool enable
 - (void)setCrashManagerStatus:(MSAICrashManagerStatus)crashManagerStatus {
   _crashManagerStatus = crashManagerStatus;
 
@@ -336,7 +327,8 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
                                                                                     object:nil
                                                                                      queue:NSOperationQueue.mainQueue
                                                                                 usingBlock:^(NSNotification *note) {
-                                                                                  [self triggerDelayedProcessing];
+                                                                                  typeof(self) strongSelf = weakSelf;
+                                                                                  [strongSelf triggerDelayedProcessing];
                                                                                 }];
   }
 
@@ -345,7 +337,7 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
                                                                                            object:nil
                                                                                             queue:NSOperationQueue.mainQueue
                                                                                        usingBlock:^(NSNotification *note) {
-                                                                                         [self triggerDelayedProcessing];
+                                                                                         [weakSelf triggerDelayedProcessing];
                                                                                        }];
   }
 
@@ -354,7 +346,8 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
                                                                                   object:nil
                                                                                    queue:NSOperationQueue.mainQueue
                                                                               usingBlock:^(NSNotification *note) {
-                                                                                [self leavingAppSafely];
+                                                                                typeof(self) strongSelf = weakSelf;
+                                                                                [strongSelf leavingAppSafely];
                                                                               }];
   }
 
@@ -363,7 +356,8 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
                                                                                        object:nil
                                                                                         queue:NSOperationQueue.mainQueue
                                                                                    usingBlock:^(NSNotification *note) {
-                                                                                     [self leavingAppSafely];
+                                                                                     typeof(self) strongSelf = weakSelf;
+                                                                                     [strongSelf leavingAppSafely];
                                                                                    }];
   }
 
@@ -382,11 +376,12 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
                                                                                                object:nil
                                                                                                 queue:NSOperationQueue.mainQueue
                                                                                            usingBlock:^(NSNotification *note) {
+                                                                                             typeof(self) strongSelf = weakSelf;
                                                                                              // we only need to log this once
-                                                                                             if(!self.didLogLowMemoryWarning) {
+                                                                                             if(!strongSelf.didLogLowMemoryWarning) {
                                                                                                [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kMSAIAppDidReceiveLowMemoryNotification];
                                                                                                [[NSUserDefaults standardUserDefaults] synchronize];
-                                                                                               self.didLogLowMemoryWarning = YES;
+                                                                                               strongSelf.didLogLowMemoryWarning = YES;
                                                                                              }
                                                                                            }];
   }
@@ -397,6 +392,7 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
   [self unregisterObserver:_appWillTerminateObserver];
   [self unregisterObserver:_appDidEnterBackgroundObserver];
   [self unregisterObserver:_appWillEnterForegroundObserver];
+
   [self unregisterObserver:_appDidReceiveLowMemoryWarningObserver];
 
   [self unregisterObserver:_networkDidBecomeReachableObserver];
@@ -409,8 +405,9 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
   }
 }
 
-#pragma mark - Private - Meta Data for Crash Report
+#pragma mark - Meta Data for Crash Report
 
+//TODO move the whole persistence to MSAIPersistence
 
 /**
 *  Write a meta file for a new crash report
@@ -427,7 +424,7 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
   [self addStringValueToKeychain:[self userIDForCrashReport] forKey:[NSString stringWithFormat:@"%@.%@", filename, kMSAICrashMetaUserID]];
 
   if(self.delegate != nil && [self.delegate respondsToSelector:@selector(applicationLogForCrashManager)]) {
-    applicationLog = [self.delegate applicationLogForCrashManager] ?: @""; //TODO fix delegate callback
+    applicationLog = [self.delegate applicationLogForCrashManager] ?: @"";
   }
   metaDict[kMSAICrashMetaApplicationLog] = applicationLog;
 
@@ -729,7 +726,7 @@ Get the filename of the first not approved crash report
 /***
 * Gathers all collected data and constructs the XML structure and hands everything to the Channel
 */
-- (void)sendNextCrashReport {
+- (void)sendNextCrashReport { //TODO rename this!
   NSError *error = NULL;
 
   if([self.crashFiles count] == 0)
@@ -766,19 +763,19 @@ Get the filename of the first not approved crash report
     if(report) {
       crashEnvelope = [MSAICrashDataProvider crashDataForCrashReport:report];
       if([report.applicationInfo.applicationVersion compare:[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"]] == NSOrderedSame) {
-          //TODO raus?
+          //TODO Check if this has to be added again
 //        _crashIdenticalCurrentVersion = YES;
 
       }
     }
 
     if([report.applicationInfo.applicationVersion compare:[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"]] == NSOrderedSame) {
-        //TODO raus?
+      //TODO Check if this has to be added again
         //        _crashIdenticalCurrentVersion = YES;
     }
 
     // store this crash report as user approved, so if it fails it will retry automatically
-    self.approvedCrashReports[filename] = @YES;
+    self.approvedCrashReports[filename] = @YES; //TODO there is no more "approve"-thingies
 
     [self saveSettings];
 
@@ -805,7 +802,7 @@ Get the filename of the first not approved crash report
     typeof(self) strongSelf = weakSelf;
 
     self.sendingInProgress = NO;
-    //TODO: Inform delegate <- what is meant by that
+    //TODO: sending is done in persistence layer --> notify user that crashes are available to be sent?!
     if(success) {
       [strongSelf cleanCrashReportWithFilename:filename];
       [strongSelf sendNextCrashReport];
@@ -813,7 +810,7 @@ Get the filename of the first not approved crash report
   }];
 
   if(self.delegate != nil && [self.delegate respondsToSelector:@selector(crashManagerWillSendCrashReport)]) {
-    [self.delegate crashManagerWillSendCrashReport]; //FIX delegation
+    [self.delegate crashManagerWillSendCrashReport];
   }
 }
 
