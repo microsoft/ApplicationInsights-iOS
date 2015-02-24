@@ -33,7 +33,7 @@
 #define kMSAICrashMetaApplicationLog @"MSAICrashMetaApplicationLog"
 
 // internal keys
-NSString *const kMSAICrashManagerStatus = @"MSAICrashManagerStatus";
+NSString *const kMSAICrashManagerIsDisabled = @"MSAICrashManagerIsDisabled";
 
 NSString *const kMSAIAppWentIntoBackgroundSafely = @"MSAIAppWentIntoBackgroundSafely";
 NSString *const kMSAIAppDidReceiveLowMemoryNotification = @"MSAIAppDidReceiveLowMemoryNotification";
@@ -93,7 +93,7 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
 *	 Main startup sequence initializing PLCrashReporter if it wasn't disabled
 */
 - (void)startManager {
-  if(_crashManagerStatus == MSAICrashManagerStatusDisabled) return;
+  if(!self.disableCrashManager) return;
   static dispatch_once_t plcrPredicate;
   dispatch_once(&plcrPredicate, ^{
     [self initValues];
@@ -218,13 +218,13 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
   self.fileManager = [NSFileManager new];
   self.crashFiles = [NSMutableArray new];
 
-  self.crashManagerStatus = MSAICrashManagerStatusAutoSend; //TODO we set the status here. ha! Per default an?!
+  self.disableCrashManager = NO; //TODO enable Crashes by default?! check this!
 
-  NSString *testValue = [[NSUserDefaults standardUserDefaults] stringForKey:kMSAICrashManagerStatus];
+  NSString *testValue = [[NSUserDefaults standardUserDefaults] stringForKey:kMSAICrashManagerIsDisabled];
   if(testValue) {
-    self.crashManagerStatus = (MSAICrashManagerStatus) [[NSUserDefaults standardUserDefaults] integerForKey:kMSAICrashManagerStatus];
+    self.disableCrashManager = [[NSUserDefaults standardUserDefaults] boolForKey:kMSAICrashManagerIsDisabled];
   } else {
-    [[NSUserDefaults standardUserDefaults] setInteger:self.crashManagerStatus forKey:kMSAICrashManagerStatus];
+    [[NSUserDefaults standardUserDefaults] setInteger:self.disableCrashManager forKey:kMSAICrashManagerIsDisabled];
   }
 
   self.crashesDir = msai_settingsDir();
@@ -244,11 +244,9 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
 
 #pragma mark - Configuration
 
-//TODO switch to bool enable
-- (void)setCrashManagerStatus:(MSAICrashManagerStatus)crashManagerStatus {
-  _crashManagerStatus = crashManagerStatus;
-
-  [[NSUserDefaults standardUserDefaults] setInteger:crashManagerStatus forKey:kMSAICrashManagerStatus];
+- (void)setCrashManagerDisabled:(BOOL)disableCrashManager {
+  _disableCrashManager = disableCrashManager;
+  [[NSUserDefaults standardUserDefaults] setBool:disableCrashManager forKey:kMSAICrashManagerIsDisabled];
 }
 
 
@@ -599,7 +597,7 @@ Get the filename of the first not approved crash report
 *	@return	`YES` if there is at least one new crash report found, `NO` otherwise
 */
 - (BOOL)hasPendingCrashReport {
-  if(self.crashManagerStatus == MSAICrashManagerStatusDisabled) return NO;
+  if(self.disableCrashManager) return NO;
 
   if([self.fileManager fileExistsAtPath:self.crashesDir]) {
     NSError *error = NULL;
@@ -687,7 +685,7 @@ Get the filename of the first not approved crash report
 
     if(msai_isRunningInAppExtension()) {
       [self sendNextCrashReport];
-    } else if(self.crashManagerStatus != MSAICrashManagerStatusAutoSend && notApprovedReportFilename) {
+    } else if(!self.disableCrashManager && notApprovedReportFilename) {
 
       if(self.delegate != nil && [self.delegate respondsToSelector:@selector(crashManagerWillShowSubmitCrashReportAlert)]) {
         [self.delegate crashManagerWillShowSubmitCrashReportAlert];

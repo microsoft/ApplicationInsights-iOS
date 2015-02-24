@@ -4,23 +4,6 @@
 @class MSAICrashMetaData;
 @class MSAIContext;
 
-/**
-* Crash Manager status
-*/
-typedef NS_ENUM(NSUInteger, MSAICrashManagerStatus) {
-  /**
-  *	Crash reporting is disabled
-  */
-      MSAICrashManagerStatusDisabled = 0,
-  /**
-  *	User is asked each time before sending
-  */
-      MSAICrashManagerStatusAlwaysAsk = 1,//TODO Replace this with a boolean flag
-  /**
-  *	Each crash report is send automatically
-  */
-      MSAICrashManagerStatusAutoSend = 2
-};
 
 /**
 * Prototype of a callback function used to execute additional user code. Called upon completion of crash
@@ -114,28 +97,7 @@ safe crash reporting: [Reliable Crash Reporting](http://goo.gl/WvTBR)
 /// @name Configuration
 ///-----------------------------------------------------------------------------
 
-/** Set the default status of the Crash Manager
-
-Defines if the crash reporting feature should be disabled, ask the user before
-sending each crash report or send crash reportings automatically without
-asking.
-
-The default value is `MSAICrashManagerStatusAutoSend`. Setting the value to
-`MSAICrashManagerStatusAlwaysAsk` requires you to implement `alertViewHandler`!
-
-The current value is always stored in User Defaults with the key
-`MSAICrashManagerStatus`.
-
-If you intend to implement a user setting to let them enable or disable
-crash reporting, this delegate should be used to return that value. You also
-have to make sure the new value is stored in the UserDefaults with the key
-`MSAICrashManagerStatus`.
-
-@see MSAICrashManagerStatus
-@see MSAICustomAlertViewHandler
-*/
-
-@property (nonatomic, assign, setter=setCrashManagerStatus:) MSAICrashManagerStatus crashManagerStatus;
+@property (nonatomic, assign, setter=setCrashManagerDisabled:) BOOL disableCrashManager;
 
 
 //TODO: Maybe we don't want to expose the all the properties here

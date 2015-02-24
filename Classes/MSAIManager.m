@@ -139,7 +139,7 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
   // start CrashManager
   if (![self isCrashManagerDisabled]) {
     MSAILog(@"INFO: Start CrashManager");
-    [MSAICrashManager sharedManager].crashManagerStatus = MSAICrashManagerStatusAutoSend;
+    [MSAICrashManager sharedManager].disableCrashManager = self.isCrashManagerDisabled;
       //this will init the crash manager
       //if we haven't set the crashManagerStatus it won't do anything!!!
     [MSAICrashManager startWithContext:_appContext];
@@ -169,13 +169,8 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 
 #if MSAI_FEATURE_CRASH_REPORTER
 - (void)setDisableCrashManager:(BOOL)disableCrashManager {
-  if(disableCrashManager) {
-    [MSAICrashManager sharedManager].crashManagerStatus = MSAICrashManagerStatusDisabled;
-  }
-  else {
-    [MSAICrashManager sharedManager].crashManagerStatus = MSAICrashManagerStatusAutoSend; //TODO what about AlwaysAsdk? -> switch to boolean
-  }
   _disableCrashManager = disableCrashManager;
+  [MSAICrashManager sharedManager].disableCrashManager = disableCrashManager;
 }
 #endif
 
