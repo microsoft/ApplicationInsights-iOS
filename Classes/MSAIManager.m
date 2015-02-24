@@ -191,8 +191,9 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
     _delegate = delegate;
     
 #if MSAI_FEATURE_CRASH_REPORTER
-    if([[MSAICrashManager sharedManager] isSetup]) {
-      [MSAICrashManager setDelegate:_delegate];
+    if([[MSAICrashManager sharedManager] isSetupCorrectly]) {
+        //TODO init if not init before? what kind of behavior do we want to support?
+      [MSAICrashManager sharedManager].delegate = _delegate;
     }
 #endif /* MSAI_FEATURE_CRASH_REPORTER */
   }
@@ -422,7 +423,7 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
     MSAILog(@"INFO: Setup CrashManager");
       //TODO delegate and stuff
     [MSAICrashManager startWithContext:_appContext];
-    [MSAICrashManager setDelegate:_delegate];
+    [MSAICrashManager sharedManager].delegate = _delegate;
 #endif /* MSAI_FEATURE_CRASH_REPORTER */
     
 #if MSAI_FEATURE_METRICS
