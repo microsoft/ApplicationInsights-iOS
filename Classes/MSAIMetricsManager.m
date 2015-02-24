@@ -26,6 +26,7 @@
 #import "MSAIEnvelopeManagerPrivate.h"
 
 NSString *const kMSAIApplicationWasLaunched = @"MSAIApplicationWasLaunched";
+static char *const MSAIMetricEventQueue = "com.microsoft.appInsights.metricEventQueue";
 static NSString *const kMSAIApplicationDidEnterBackgroundTime = @"MSAIApplicationDidEnterBackgroundTime";
 static NSInteger const defaultSessionExpirationTime = 20;
 
@@ -50,7 +51,7 @@ static NSInteger const defaultSessionExpirationTime = 20;
 
 - (instancetype)init {
   if ((self = [super init])) {
-    _metricEventQueue = dispatch_queue_create("com.microsoft.appInsights.metricEventQueue",DISPATCH_QUEUE_CONCURRENT);
+    _metricEventQueue = dispatch_queue_create(MSAIMetricEventQueue,DISPATCH_QUEUE_CONCURRENT);
   }
   return self;
 }
