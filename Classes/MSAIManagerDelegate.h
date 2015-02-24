@@ -5,7 +5,7 @@
 #import "MSAICrashManagerDelegate.h"
 #endif
 
-@class MSAIManager;
+@class MSAIAppInsights;
 @class MSAICrashManager;
 
 /**
@@ -60,7 +60,7 @@
  @see userEmailForManager:componentManager:
  @see [MSAIManager userID]
  */
-- (NSString *)userIDForTelemetryManager:(MSAIManager *)telemetryManager;
+- (NSString *)userIDForTelemetryManager:(MSAIAppInsights *)telemetryManager;
 
 
 /** Return the user name that should used in the SDK components
@@ -96,7 +96,7 @@
  @see userEmailForTelemetryManager:componentManager:
  @see [MSAIManager userName]
  */
-- (NSString *)userNameForTelemetryManager:(MSAIManager *)telemetryManager;
+- (NSString *)userNameForTelemetryManager:(MSAIAppInsights *)telemetryManager;
 
 
 /** Return the users email address that should used in the SDK components
@@ -132,6 +132,6 @@
  @see userNameForTelemetryManager:componentManager:
  @see [MSAITelemetryTelemetryManager userEmail]
  */
-- (NSString *)userEmailForTelemetryManager:(MSAIManager *)telemetryManager;
+- (NSString *)userEmailForTelemetryManager:(MSAIAppInsights *)telemetryManager;
 
 @end

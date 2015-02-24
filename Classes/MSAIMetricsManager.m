@@ -40,7 +40,7 @@ static NSInteger const defaultSessionExpirationTime = 20;
 
 #pragma mark - Configure manager
 
-+ (id)sharedManager {
++ (instancetype)sharedManager {
   static MSAIMetricsManager *sharedManager = nil;
   static dispatch_once_t onceToken;
   dispatch_once(&onceToken, ^{
