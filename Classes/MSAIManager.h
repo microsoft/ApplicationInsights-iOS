@@ -65,7 +65,7 @@
  *
  * @see initialize;
  */
-+ (void)startManager;
++ (void)start;
 
 /**
  * Starts the manager and runs all modules. Call this after initializing the manager
@@ -73,7 +73,7 @@
  *
  * @see initialize;
  */
-- (void)startManager;
+- (void)start;
 
 ///-----------------------------------------------------------------------------
 /// @name Modules
@@ -92,20 +92,6 @@
 @property (nonatomic, weak) id<MSAIManagerDelegate> delegate;
 
 /**
- * Set the delegate: The delegate will automatically be propagated to all components.
- * There is no need to set the delegate for each component individually.
- *
- * @param delegate defines the class that implements the optional protocol `MSAIManagerDelegate`
- *
- * @warning This property needs to be set before calling `start`
- *
- * @see MSAIManagerDelegate
- * @see MSAICrashManagerDelegate
- */
-
-+ (void)setDelegate:(id<MSAIManagerDelegate>)delegate;
-
-/**
  * Defines the server URL to send data to or request data from. By default this is set 
  * to the AppInsights servers and there rarely should be a need to modify that.
  *
@@ -113,17 +99,6 @@
  * Since there are several endpoints for different data types, you should not set it for now.
  */
 @property (nonatomic, strong) NSString *serverURL;
-
-/**
- * Sets the server URL to send data to or request data from. By default this is set
- * to the AppInsights servers and there rarely should be a need to modify that.
- *
- * @param serverURL the URL to the AppInsights instance.
- *
- * @warning This property needs to be set before calling `startManager`.
- * Since there are several endpoints for different data types, you should not set it for now.
- */
-+ (void)setServerURL:(NSString *)serverURL;
 
 /**
  * Flag the determines whether the Crash Manager should be disabled. If this flag is 
@@ -134,29 +109,6 @@
  * @warning This property needs to be set before calling `start`
  */
 @property (nonatomic, getter = isCrashManagerDisabled) BOOL crashManagerDisabled;
-
-/**
- * Flag the determines whether the Crash Manager should be disabled. If this flag is
- * enabled, then crash reporting is disabled and no crashes will be send.
- * 
- * @return YES, if manager is disabled
- * 
- * @default NO
- * @warning This property needs to be set before calling `start`
- */
-+ (BOOL)isCrashManagerDisabled;
-
-/**
- * Set whether the Crash Manager should be disabled. If this flag is enabled, then crash 
- * reporting is disabled and no crashes will be send. 
- * Please note that the Crash Manager instance will be initialized anyway, but crash report
- * handling (signal and uncaught exception handlers) will **not** be registered.
- *
- * @param crashManagerDisable a flag which determines, if the manager should be disabled or not.
- *
- * @warning This property needs to be set before calling `start`
- */
-+ (void)setCrashManagerDisabled:(BOOL)crashManagerDisabled;
 
 /**
  * Flag the determines whether the Metrics Manager should be disabled. 
@@ -171,27 +123,6 @@
  */
 @property (nonatomic, getter = isMetricsManagerDisabled) BOOL metricsManagerDisabled;
 
-/**
- * Flag the determines whether the Crash Manager should be disabled. If this flag is enabled, 
- * then metrics collection is disabled and metrics data will not be collected and send.
- *
- * @return YES, if manager is disabled
- *
- * @default NO
- * @warning This property needs to be set before calling `start`
- */
-+ (BOOL)isMetricsManagerDisabled;
-
-/**
- * Set whether the Metrics Manager should be disabled. If this flag is enabled, then metrics 
- * collection is disabled and metrics data will not be collected and send.
- *
- * @param crashManagerDisable a flag which determines, if the manager should be disabled or not.
- *
- * @warning This property needs to be set before calling `start`
- */
-+ (void)setMetricsManagerDisabled;
-
 ///-----------------------------------------------------------------------------
 /// @name Environment
 ///-----------------------------------------------------------------------------
@@ -205,14 +136,6 @@
 @property (nonatomic, readonly, getter=isAppStoreEnvironment) BOOL appStoreEnvironment;
 
 /**
- * Set whether the application is installed and running from an App Store installation.
- *
- * @return the app is installed and running from the App Store (YES) or via debug, ad-hoc 
- * or enterprise distribution (NO)
- */
-+ (BOOL)isAppStoreEnvironment;
-
-/**
  * Returns the app installation specific anonymous UUID.
  * The value returned by this method is unique and persisted per app installation
  * in the keychain.  It is also being used in crash reports as `CrashReporter Key`
@@ -221,19 +144,6 @@
  * the `[UIDevice identifierForVendor]`!
  */
 @property (nonatomic, readonly) NSString *installString;
-
-/**
- * Returns the app installation specific anonymous UUID.
- * The value returned by this method is unique and persisted per app installation
- * in the keychain.  It is also being used in crash reports as `CrashReporter Key`
- * and internally when sending crash reports and feedback messages.
- * This is not identical to the `[ASIdentifierManager advertisingIdentifier]` or
- * the `[UIDevice identifierForVendor]`!
- *
- * @return the app installation specific anonymous UUID
- */
-+ (NSString *)installString;
-
 
 ///-----------------------------------------------------------------------------
 /// @name Debug Logging
@@ -247,16 +157,6 @@
  * @warning This property needs to be set before calling `startManager`
  */
 @property (nonatomic, assign, getter=isDebugLogEnabled) BOOL debugLogEnabled;
-
-/**
- * Set whether additional logging output should be generated by the manager
- * and all modules. This is ignored if the app is running in the App Store and 
- * reverts to the default value in that case.
- *
- * @warning This property needs to be set before calling `startManager`
- * @param debugLogEnabled determines whether additional logging output should be generated
- */
-+ (void)setDebugLogEnabled:(BOOL)debugLogEnabled;
 
 ///-----------------------------------------------------------------------------
 /// @name Integration test
@@ -281,7 +181,6 @@
  * This call is ignored if the app is running in the App Store!.
  */
 - (void)testIdentifier;
-
 
 ///-----------------------------------------------------------------------------
 /// @name Additional meta data
