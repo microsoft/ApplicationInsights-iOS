@@ -97,7 +97,7 @@ safe crash reporting: [Reliable Crash Reporting](http://goo.gl/WvTBR)
 /// @name Configuration
 ///-----------------------------------------------------------------------------
 
-@property (nonatomic, assign, setter=setCrashManagerDisabled:) BOOL disableCrashManager;
+@property (nonatomic, assign, setter=setCrashManagerDisabled:) BOOL isCrashManagerDisabled;
 
 
 //TODO: Maybe we don't want to expose the all the properties here

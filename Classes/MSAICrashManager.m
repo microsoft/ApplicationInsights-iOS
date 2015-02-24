@@ -93,7 +93,7 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
 *	 Main startup sequence initializing PLCrashReporter if it wasn't disabled
 */
 - (void)startManager {
-  if(self.disableCrashManager) return;
+  if(self.isCrashManagerDisabled) return;
   static dispatch_once_t plcrPredicate;
   dispatch_once(&plcrPredicate, ^{
     [self initValues];
@@ -222,9 +222,9 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
 
   NSString *testValue = [[NSUserDefaults standardUserDefaults] stringForKey:kMSAICrashManagerIsDisabled];
   if(testValue) {
-    self.disableCrashManager = [[NSUserDefaults standardUserDefaults] boolForKey:kMSAICrashManagerIsDisabled];
+    self.isCrashManagerDisabled = [[NSUserDefaults standardUserDefaults] boolForKey:kMSAICrashManagerIsDisabled];
   } else {
-    [[NSUserDefaults standardUserDefaults] setInteger:self.disableCrashManager forKey:kMSAICrashManagerIsDisabled];
+    [[NSUserDefaults standardUserDefaults] setInteger:self.isCrashManagerDisabled forKey:kMSAICrashManagerIsDisabled];
   }
 
   self.crashesDir = msai_settingsDir();
@@ -245,7 +245,7 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
 #pragma mark - Configuration
 
 - (void)setCrashManagerDisabled:(BOOL)disableCrashManager {
-  _disableCrashManager = disableCrashManager;
+  _isCrashManagerDisabled = disableCrashManager;
   [[NSUserDefaults standardUserDefaults] setBool:disableCrashManager forKey:kMSAICrashManagerIsDisabled];
 }
 
@@ -597,7 +597,7 @@ Get the filename of the first not approved crash report
 *	@return	`YES` if there is at least one new crash report found, `NO` otherwise
 */
 - (BOOL)hasPendingCrashReport {
-  if(self.disableCrashManager) return NO;
+  if(self.isCrashManagerDisabled) return NO;
 
   if([self.fileManager fileExistsAtPath:self.crashesDir]) {
     NSError *error = NULL;
@@ -685,7 +685,7 @@ Get the filename of the first not approved crash report
 
     if(msai_isRunningInAppExtension()) {
       [self sendNextCrashReport];
-    } else if(self.disableCrashManager && notApprovedReportFilename) {
+    } else if(self.isCrashManagerDisabled && notApprovedReportFilename) {
       if(self.delegate != nil && [self.delegate respondsToSelector:@selector(crashManagerWillShowSubmitCrashReportAlert)]) {
         [self.delegate crashManagerWillShowSubmitCrashReportAlert];
       }
