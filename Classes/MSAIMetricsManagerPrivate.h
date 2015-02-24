@@ -44,6 +44,11 @@ extern NSString *const kMSAIApplicationWasLaunched;
  */
 - (void)trackDataItem:(MSAITelemetryData *)dataItem;
 
+/**
+ * Registers the manager for all notifications that are necessary for automatic session tracking
+ */
+- (void)registerObservers;
+
 @end
 
 #endif

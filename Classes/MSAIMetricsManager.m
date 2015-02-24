@@ -219,7 +219,7 @@ static NSInteger const defaultSessionExpirationTime = 20;
 
 #pragma mark - Session update
 
-- (void) registerObservers {
+- (void)registerObservers {
   NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
   
   __weak typeof(self) weakSelf = self;
