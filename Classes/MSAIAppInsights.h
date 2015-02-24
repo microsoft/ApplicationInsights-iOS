@@ -101,7 +101,7 @@
 @property (nonatomic, strong) NSString *serverURL;
 
 /**
- * Flag the determines whether the Crash Manager should be disabled. If this flag is 
+ * Flag which determines whether the Crash Manager should be disabled. If this flag is
  * enabled, then crash reporting is disabled and no crashes will be send. Please note 
  * that the Crash Manager instance will be initialized anyway, but crash report
  * handling (signal and uncaught exception handlers) will **not** be registered.
@@ -109,6 +109,13 @@
  * @warning This property needs to be set before calling `start`
  */
 @property (nonatomic, getter = isCrashManagerDisabled) BOOL crashManagerDisabled;
+
+/**
+ *  Enable (NO) or disable (YES) the crash manager. This should be called before `start`.
+ *
+ *  @param crashManagerDisabled Flag which determines whether the Crash Manager should be disabled
+ */
++ (void)setCrashManagerDisabled:(BOOL)crashManagerDisabled;
 
 /**
  * Flag the determines whether the Metrics Manager should be disabled. 
@@ -122,6 +129,13 @@
  * @warning This property needs to be set before calling `start`
  */
 @property (nonatomic, getter = isMetricsManagerDisabled) BOOL metricsManagerDisabled;
+
+/**
+ *  Enable (NO) or disable (YES) the metrics manager. This should be called before `start`.
+ *
+ *  @param metricsManagerDisabled Flag which determines whether the Metrics Manager should be disabled
+ */
++ (void)setMetricsManagerDisabled:(BOOL)crashMetricsManagerDisabled;
 
 ///-----------------------------------------------------------------------------
 /// @name Environment

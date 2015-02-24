@@ -150,15 +150,20 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 
 
 #if MSAI_FEATURE_CRASH_REPORTER
-- (void)setDisableCrashManager:(BOOL)disableCrashManager {
-  if(disableCrashManager) {
+- (void)setCrashManagerDisabled:(BOOL)crashManagerDisabled {
+  if(crashManagerDisabled) {
     [MSAICrashManager sharedManager].crashManagerStatus = MSAICrashManagerStatusDisabled;
   }
   else {
     [MSAICrashManager sharedManager].crashManagerStatus = MSAICrashManagerStatusAutoSend; //TODO what about AlwaysAsdk? -> switch to boolean
   }
-  _disableCrashManager = disableCrashManager;
+  _crashManagerDisabled = crashManagerDisabled;
 }
+
++ (void)setCrashManagerDisabled:(BOOL)crashManagerDisabled{
+  [[self sharedInstance]setCrashManagerDisabled:crashManagerDisabled];
+}
+
 #endif
 
 - (void)setServerURL:(NSString *)serverURL {
