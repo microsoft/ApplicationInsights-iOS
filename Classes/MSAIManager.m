@@ -139,7 +139,7 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
   // start CrashManager
   if (![self isCrashManagerDisabled]) {
     MSAILog(@"INFO: Start CrashManager");
-    [MSAICrashManager startManagerWithAppContext:_appContext];
+    [MSAICrashManager startWithContext:_appContext];
   }
 #endif /* MSAI_FEATURE_CRASH_REPORTER */
   
@@ -191,7 +191,7 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
     _delegate = delegate;
     
 #if MSAI_FEATURE_CRASH_REPORTER
-    if([MSAICrashManager isSetup]) {
+    if([[MSAICrashManager sharedManager] isSetup]) {
       [MSAICrashManager setDelegate:_delegate];
     }
 #endif /* MSAI_FEATURE_CRASH_REPORTER */
@@ -421,7 +421,7 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 #if MSAI_FEATURE_CRASH_REPORTER
     MSAILog(@"INFO: Setup CrashManager");
       //TODO delegate and stuff
-    [MSAICrashManager startManagerWithAppContext:_appContext];
+    [MSAICrashManager startWithContext:_appContext];
     [MSAICrashManager setDelegate:_delegate];
 #endif /* MSAI_FEATURE_CRASH_REPORTER */
     

@@ -219,6 +219,7 @@ static NSInteger const defaultSessionExpirationTime = 20;
 
 #pragma mark - Session update
 
+//TODO unregister Obeservers?!
 - (void) registerObservers {
   NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
   
