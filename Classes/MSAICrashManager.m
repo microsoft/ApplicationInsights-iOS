@@ -237,7 +237,6 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
   }
 }
 
-//leaving this here to avoid support requests asking for missing dealloc
 - (void)dealloc {
   [self unregisterObservers];
 }
