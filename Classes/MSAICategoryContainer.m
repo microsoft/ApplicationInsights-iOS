@@ -6,7 +6,6 @@
 @implementation MSAICategoryContainer
 
 + (void)activateCategory{
-  
 }
 
 @end
@@ -33,10 +32,8 @@
 - (void)msai_viewWillAppear:(BOOL)animated {
   [self msai_viewWillAppear:animated];
   
-  if([MSAIMetricsManager isMangerAvailable]){
-    NSString *pageViewName = [NSString stringWithFormat:@"%@ %@", NSStringFromClass([self class]), self.title];
-    [MSAIMetricsManager trackPageView:pageViewName];
-  }
+  NSString *pageViewName = [NSString stringWithFormat:@"%@ %@", NSStringFromClass([self class]), self.title];
+  [MSAIMetricsManager trackPageView:pageViewName];
 }
 
 @end

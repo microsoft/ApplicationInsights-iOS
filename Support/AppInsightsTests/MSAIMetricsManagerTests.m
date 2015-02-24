@@ -21,8 +21,8 @@
 
 - (void)setUp {
   [super setUp];
-  
-  [MSAIMetricsManager startManager];
 }
+
+// TODO: Write tests
 
 @end
