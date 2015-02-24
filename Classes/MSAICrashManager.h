@@ -56,26 +56,6 @@ typedef struct MSAICrashManagerCallbacks {
   MSAICrashManagerPostCrashSignalCallback handleSignal;
 } MSAICrashManagerCallbacks;
 
-/**
-* Crash Manager alert user input
-*/
-typedef NS_ENUM(NSUInteger, MSAICrashManagerUserInput) {
-  /**
-  *  User chose not to send the crash report
-  */
-      MSAICrashManagerUserInputDontSend = 0,
-  /**
-  *  User wants the crash report to be sent
-  */
-      MSAICrashManagerUserInputSend = 1,
-  /**
-  *  User chose to always send crash reports
-  */
-      MSAICrashManagerUserInputAlwaysSend = 2
-
-};
-
-
 @protocol MSAICrashManagerDelegate;
 
 /**
@@ -143,9 +123,9 @@ safe crash reporting: [Reliable Crash Reporting](http://goo.gl/WvTBR)
 /**
 * Indicates if the MSAICrashManager is initialised correctly.
 *
-* @return BOOL isSetup
+* @return BOOL isSetupCorrectly
 */
-@property (nonatomic, assign) BOOL isSetup;
+@property (nonatomic, assign) BOOL isSetupCorrectly;
 
 ///-----------------------------------------------------------------------------
 /// @name Configuration
