@@ -139,6 +139,9 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
   // start CrashManager
   if (![self isCrashManagerDisabled]) {
     MSAILog(@"INFO: Start CrashManager");
+    [MSAICrashManager sharedManager].crashManagerStatus = MSAICrashManagerStatusAutoSend;
+      //this will init the crash manager
+      //if we haven't set the crashManagerStatus it won't do anything!!!
     [MSAICrashManager startWithContext:_appContext];
   }
 #endif /* MSAI_FEATURE_CRASH_REPORTER */
@@ -163,6 +166,18 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 }
 #endif /* MSAI_FEATURE_METRICS */
 
+
+#if MSAI_FEATURE_CRASH_REPORTER
+- (void)setDisableCrashManager:(BOOL)disableCrashManager {
+  if(disableCrashManager) {
+    [MSAICrashManager sharedManager].crashManagerStatus = MSAICrashManagerStatusDisabled;
+  }
+  else {
+    [MSAICrashManager sharedManager].crashManagerStatus = MSAICrashManagerStatusAutoSend; //TODO what about AlwaysAsdk?
+  }
+  _disableCrashManager = disableCrashManager;
+}
+#endif
 
 - (void)setServerURL:(NSString *)aServerURL {
   // ensure url ends with a trailing slash
@@ -191,7 +206,7 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
     _delegate = delegate;
     
 #if MSAI_FEATURE_CRASH_REPORTER
-    if([[MSAICrashManager sharedManager] isSetupCorrectly]) {
+    if([MSAICrashManager sharedManager].isSetupCorrectly) {
         //TODO init if not init before? what kind of behavior do we want to support?
       [MSAICrashManager sharedManager].delegate = _delegate;
     }
@@ -421,9 +436,11 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
     
 #if MSAI_FEATURE_CRASH_REPORTER
     MSAILog(@"INFO: Setup CrashManager");
-      //TODO delegate and stuff
-    [MSAICrashManager startWithContext:_appContext];
+      //TODO how to we want to start crash manager?!
+      //inits the crash manager but doesn't start it
+      // it also doesn't init the values and isSetup will be FALSE!
     [MSAICrashManager sharedManager].delegate = _delegate;
+    
 #endif /* MSAI_FEATURE_CRASH_REPORTER */
     
 #if MSAI_FEATURE_METRICS
