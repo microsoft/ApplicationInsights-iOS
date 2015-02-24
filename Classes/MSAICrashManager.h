@@ -104,15 +104,6 @@ safe crash reporting: [Reliable Crash Reporting](http://goo.gl/WvTBR)
 + (instancetype) sharedManager;
 
 /**
-*  This method is used to setup the CrashManager-Module of the Application Insights SDK.
-*  This method is called by MSAIManager during it's initialization, so calling this by hand
-*  shouldn't be necessary in most cases.
-*
-*  @param context the MSAIContext object
-*/
-+ (void)startWithContext:(MSAIContext *)context; //TODO move this to the private header because users won't use it directly
-
-/**
 * Indicates if the MSAICrashManager is initialised correctly.
 *
 * @return BOOL isSetupCorrectly

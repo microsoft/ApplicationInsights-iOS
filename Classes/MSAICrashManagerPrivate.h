@@ -39,6 +39,14 @@ should not need to set this delegate individually.
 @property (nonatomic, copy) NSString *analyzerInProgressFile;
 @property (nonatomic, assign) NSUncaughtExceptionHandler *exceptionHandler;
 
+/**
+*  This method is used to setup the CrashManager-Module of the Application Insights SDK.
+*  This method is called by MSAIManager during it's initialization, so calling this by hand
+*  shouldn't be necessary in most cases.
+*
+*  @param context the MSAIContext object
+*/
++ (void)startWithContext:(MSAIContext *)context;
 
 - (void)startManager;
 
