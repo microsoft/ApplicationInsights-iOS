@@ -604,10 +604,10 @@ static MSAICrashDetails *_lastSessionCrashDetails;
   // first check the global keychain storage
   NSString *userID = [self stringValueFromKeychainForKey:kMSAIMetaUserID] ?: @"";
 
-  if([MSAIManager sharedMSAIManager].delegate &&
-      [[MSAIManager sharedMSAIManager].delegate respondsToSelector:@selector(userIDForTelemetryManager:)]) {
-    userID = [[MSAIManager sharedMSAIManager].delegate
-        userIDForTelemetryManager:[MSAIManager sharedMSAIManager]] ?: @"";
+  if([MSAIManager sharedManager].delegate &&
+      [[MSAIManager sharedManager].delegate respondsToSelector:@selector(userIDForTelemetryManager:)]) {
+    userID = [[MSAIManager sharedManager].delegate
+        userIDForTelemetryManager:[MSAIManager sharedManager]] ?: @"";
   }
 
   return userID;
@@ -622,10 +622,10 @@ static MSAICrashDetails *_lastSessionCrashDetails;
   // first check the global keychain storage
   NSString *username = [self stringValueFromKeychainForKey:kMSAIMetaUserName] ?: @"";
 
-  if([MSAIManager sharedMSAIManager].delegate &&
-      [[MSAIManager sharedMSAIManager].delegate respondsToSelector:@selector(userNameForTelemetryManager:)]) {
-    username = [[MSAIManager sharedMSAIManager].delegate
-        userNameForTelemetryManager:[MSAIManager sharedMSAIManager]] ?: @"";
+  if([MSAIManager sharedManager].delegate &&
+      [[MSAIManager sharedManager].delegate respondsToSelector:@selector(userNameForTelemetryManager:)]) {
+    username = [[MSAIManager sharedManager].delegate
+        userNameForTelemetryManager:[MSAIManager sharedManager]] ?: @"";
   }
 
   return username;
@@ -640,10 +640,10 @@ static MSAICrashDetails *_lastSessionCrashDetails;
   // first check the global keychain storage
   NSString *useremail = [self stringValueFromKeychainForKey:kMSAIMetaUserEmail] ?: @"";
 
-  if([MSAIManager sharedMSAIManager].delegate &&
-      [[MSAIManager sharedMSAIManager].delegate respondsToSelector:@selector(userEmailForTelemetryManager:)]) {
-    useremail = [[MSAIManager sharedMSAIManager].delegate
-        userEmailForTelemetryManager:[MSAIManager sharedMSAIManager]] ?: @"";
+  if([MSAIManager sharedManager].delegate &&
+      [[MSAIManager sharedManager].delegate respondsToSelector:@selector(userEmailForTelemetryManager:)]) {
+    useremail = [[MSAIManager sharedManager].delegate
+        userEmailForTelemetryManager:[MSAIManager sharedManager]] ?: @"";
   }
 
   return useremail;

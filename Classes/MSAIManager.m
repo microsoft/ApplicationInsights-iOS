@@ -69,7 +69,7 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 
 #pragma mark - Public Class Methods
 
-+ (MSAIManager *)sharedMSAIManager {
++ (MSAIManager *)sharedManager {
   static MSAIManager *sharedInstance = nil;
   static dispatch_once_t pred;
   
