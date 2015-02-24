@@ -53,7 +53,6 @@
 		1B53FEC01A6425240082F2E9 /* CrashReporter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B53FEBE1A6425240082F2E9 /* CrashReporter.framework */; };
 		1B62F4D81A692A3200EB5AD0 /* MSAIContext.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B62F4D61A692A3200EB5AD0 /* MSAIContext.h */; };
 		1B62F4D91A692A3200EB5AD0 /* MSAIContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B62F4D71A692A3200EB5AD0 /* MSAIContext.m */; };
-		1B74E8EF1A9B69B30036F6C9 /* AppInsightsTests in Sources */ = {isa = PBXBuildFile; fileRef = 1B74E8EE1A9B69B30036F6C9 /* AppInsightsTests */; };
 		1B74E8F21A9B6A070036F6C9 /* MSAIEnvelopeManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B74E8F01A9B69F90036F6C9 /* MSAIEnvelopeManagerTests.m */; };
 		1B85606F1A7A6A9D00A54FB7 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B85606E1A7A6A9D00A54FB7 /* UIKit.framework */; };
 		1B8688D51A6D852E0008CEE9 /* AppInsights-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1EDA60CF15C2C1450032D10B /* AppInsights-Info.plist */; };
@@ -244,7 +243,6 @@
 		1B62F4D61A692A3200EB5AD0 /* MSAIContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAIContext.h; sourceTree = "<group>"; };
 		1B62F4D71A692A3200EB5AD0 /* MSAIContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAIContext.m; sourceTree = "<group>"; };
 		1B62F4DA1A692A6F00EB5AD0 /* MSAIContextPrivate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MSAIContextPrivate.h; sourceTree = "<group>"; };
-		1B74E8EE1A9B69B30036F6C9 /* AppInsightsTests */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = folder; path = AppInsightsTests; sourceTree = SOURCE_ROOT; };
 		1B74E8F01A9B69F90036F6C9 /* MSAIEnvelopeManagerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIEnvelopeManagerTests.m; path = AppInsightsTests/MSAIEnvelopeManagerTests.m; sourceTree = SOURCE_ROOT; };
 		1B85606E1A7A6A9D00A54FB7 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		1BBBCF2E1A6594AE00253031 /* MSAIChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAIChannel.h; sourceTree = "<group>"; };
@@ -561,7 +559,6 @@
 				808FB23F1A7982230002872B /* MSAITestHelper.m */,
 				1B74E8F01A9B69F90036F6C9 /* MSAIEnvelopeManagerTests.m */,
 				808FB2401A7982230002872B /* MSAIUserTests.m */,
-				1B74E8EE1A9B69B30036F6C9 /* AppInsightsTests */,
 				1EA1170216F53B49001C015C /* Fixtures */,
 				1E5A459716F0DFC200B55C04 /* Supporting Files */,
 			);
@@ -1038,7 +1035,6 @@
 				808FB2591A7982230002872B /* MSAIRemoteDependencyDataTests.m in Sources */,
 				808FB2521A7982230002872B /* MSAILocationTests.m in Sources */,
 				808FB2431A7982230002872B /* MSAIBaseTests.m in Sources */,
-				1B74E8EF1A9B69B30036F6C9 /* AppInsightsTests in Sources */,
 				808FB2501A7982230002872B /* MSAIInternalTests.m in Sources */,
 				808FB2441A7982230002872B /* MSAIChannelTests.m in Sources */,
 				808FB2571A7982230002872B /* MSAIPageViewDataTests.m in Sources */,
