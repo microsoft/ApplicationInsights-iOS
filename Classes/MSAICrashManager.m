@@ -685,8 +685,7 @@ Get the filename of the first not approved crash report
 
     if(msai_isRunningInAppExtension()) {
       [self sendNextCrashReport];
-    } else if(!self.disableCrashManager && notApprovedReportFilename) {
-
+    } else if(self.disableCrashManager && notApprovedReportFilename) {
       if(self.delegate != nil && [self.delegate respondsToSelector:@selector(crashManagerWillShowSubmitCrashReportAlert)]) {
         [self.delegate crashManagerWillShowSubmitCrashReportAlert];
       }
