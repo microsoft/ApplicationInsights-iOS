@@ -51,7 +51,6 @@ static NSInteger const defaultSessionExpirationTime = 20;
 - (instancetype)init {
   if ((self = [super init])) {
     _metricEventQueue = dispatch_queue_create("com.microsoft.appInsights.metricEventQueue",DISPATCH_QUEUE_CONCURRENT);
-    [self registerObservers];
   }
   return self;
 }
