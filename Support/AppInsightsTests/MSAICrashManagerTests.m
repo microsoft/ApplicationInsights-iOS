@@ -12,7 +12,9 @@
 #import "MSAICrashManager.h"
 #import "MSAICrashManagerPrivate.h"
 #import "MSAIContextPrivate.h"
-
+#import "MSAIPersistence.h"
+#import "MSAIEnvelope.h"
+#import "MSAICrashData.h"
 #import "MSAITestHelper.h"
 
 #define kMSAICrashMetaAttachment @"MSAICrashMetaAttachment"
@@ -85,7 +87,7 @@
 }
 
 
-#pragma mark - Helper
+#pragma mark - Internals
 
 - (void)testHasPendingCrashReportWithNoFiles {
   _sut.isCrashManagerDisabled = NO;
@@ -96,6 +98,23 @@
   _sut.isCrashManagerDisabled = NO;
   assertThat([_sut firstNotApprovedCrashReport], equalTo(nil));
 }
+
+- (void)testCreateCrashReportForAppKill {
+  //handle app kill (FakeCrashReport
+  [_sut createCrashReportForAppKill]; //just creates a fake crash report and hands it over to MSAIPersistence
+  
+  NSArray *bundle = [MSAIPersistence nextBundle];
+  XCTAssertNil(bundle);
+  
+  if(bundle && ([bundle count] > 0)) {
+    id envelope = [bundle firstObject];
+    if(envelope && [envelope isKindOfClass:[MSAIEnvelope class]]) {
+      assertThatBool([((MSAIEnvelope *) envelope).data isKindOfClass:[MSAICrashData class]], equalToBool(YES));
+    }
+  }
+
+}
+
 
 
 #pragma mark - StartManager
@@ -153,10 +172,6 @@
   assertThatBool([_sut hasPendingCrashReport], equalToBool(YES));
   assertThat([_sut firstNotApprovedCrashReport], notNilValue());
   
-  // this is currently sending blindly, needs refactoring to test properly
-  [_sut createCrashReport];
-    //TODO test this
-  
   [_sut cleanCrashReports];
 
   // handle a new signal crash report
@@ -169,7 +184,8 @@
   assertThat([_sut firstNotApprovedCrashReport], notNilValue());
   
   [_sut cleanCrashReports];
-}
+  
+  }
 
 @end
 #endif
