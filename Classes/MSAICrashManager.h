@@ -4,29 +4,6 @@
 @class MSAICrashMetaData;
 @class MSAIContext;
 
-/**
-* Custom block that handles the alert that prompts the user whether he wants to send crash reports
-*/
-typedef void(^MSAICustomAlertViewHandler)();
-
-/**
-* Crash Manager status
-*/
-typedef NS_ENUM(NSUInteger, MSAICrashManagerStatus) {
-  /**
-  *	Crash reporting is disabled
-  */
-      MSAICrashManagerStatusDisabled = 0,
-  /**
-  *	User is asked each time before sending
-  */
-      MSAICrashManagerStatusAlwaysAsk = 1,
-  /**
-  *	Each crash report is send automatically
-  */
-      MSAICrashManagerStatusAutoSend = 2
-};
-
 
 /**
 * Prototype of a callback function used to execute additional user code. Called upon completion of crash
@@ -55,26 +32,6 @@ typedef struct MSAICrashManagerCallbacks {
   */
   MSAICrashManagerPostCrashSignalCallback handleSignal;
 } MSAICrashManagerCallbacks;
-
-/**
-* Crash Manager alert user input
-*/
-typedef NS_ENUM(NSUInteger, MSAICrashManagerUserInput) {
-  /**
-  *  User chose not to send the crash report
-  */
-      MSAICrashManagerUserInputDontSend = 0,
-  /**
-  *  User wants the crash report to be sent
-  */
-      MSAICrashManagerUserInputSend = 1,
-  /**
-  *  User chose to always send crash reports
-  */
-      MSAICrashManagerUserInputAlwaysSend = 2
-
-};
-
 
 @protocol MSAICrashManagerDelegate;
 
@@ -127,56 +84,23 @@ safe crash reporting: [Reliable Crash Reporting](http://goo.gl/WvTBR)
 /// @name Initialization
 ///-----------------------------------------------------------------------------
 
-/**
-*  This method is used to setup the CrashManager-Module of the Application Insights SDK.
-*  This method is called by MSAIManager during it's initialization, so calling this by hand
-*  shouldn't be necessary in most cases.
-*
-*  @param appContext the MSAIContext object
-*/
-+ (void)startManagerWithAppContext:(MSAIContext *)appContext;
++ (instancetype) sharedManager;
 
 /**
 * Indicates if the MSAICrashManager is initialised correctly.
 *
-* @return BOOL isSetup
+* @return BOOL isSetupCorrectly
 */
-+ (BOOL)isSetup;
+@property (nonatomic, assign) BOOL isSetupCorrectly;
 
 ///-----------------------------------------------------------------------------
 /// @name Configuration
 ///-----------------------------------------------------------------------------
 
-/** Set the default status of the Crash Manager
-
-Defines if the crash reporting feature should be disabled, ask the user before
-sending each crash report or send crash reportings automatically without
-asking.
-
-The default value is `MSAICrashManagerStatusAutoSend`. Setting the value to
-`MSAICrashManagerStatusAlwaysAsk` requires you to implement `alertViewHandler`!
-
-The current value is always stored in User Defaults with the key
-`MSAICrashManagerStatus`.
-
-If you intend to implement a user setting to let them enable or disable
-crash reporting, this delegate should be used to return that value. You also
-have to make sure the new value is stored in the UserDefaults with the key
-`MSAICrashManagerStatus`.
-
-@see MSAICrashManagerStatus
-@see MSAICustomAlertViewHandler
-*/
-+ (void)setCrashManagerStatus:(MSAICrashManagerStatus)crashManagerStatus;
+@property (nonatomic, assign, setter=setCrashManagerDisabled:) BOOL isCrashManagerDisabled;
 
 
-/**
-* Return the status of the the Crash Manager set in `setChrashManagerStatus:
-*
-* @return MSAICrashManagerStatus the status of the CrashManager
-*/
-+ (MSAICrashManagerStatus)getCrashManagerStatus;
-
+//TODO: Maybe we don't want to expose the all the properties here
 
 /**
 *  Trap fatal signals via a Mach exception server.
@@ -194,12 +118,10 @@ have to make sure the new value is stored in the UserDefaults with the key
 *  Mach-based handling should _NOT_ be used when a debugger is attached. The SDK will not
 *  enabled catching exceptions if the app is started with the debugger running. If you attach
 *  the debugger during runtime, this may cause issues the Mach exception handler is enabled!
-* @see isDebuggerAttached
+* @see debuggerIsAttached
 */
 
-+ (BOOL)isMachExceptionHandlerEnabled;
-
-+ (void)setMachExceptionHandlerEnabled:(BOOL)enabled;
+@property (nonatomic, assign) BOOL machExceptionHandlerEnabled;
 
 /**
 *  Enable on device symbolication for system symbols
@@ -212,10 +134,7 @@ have to make sure the new value is stored in the UserDefaults with the key
 *
 *  Default: _NO_
 */
-
-+ (BOOL)isOnDeviceSymbolicationEnabled;
-
-+ (void)setOnDeviceSymbolicationEnabled:(BOOL)enabled;
+@property (nonatomic, assign) BOOL onDeviceSymbolicationEnabled;
 
 
 /**
@@ -255,10 +174,7 @@ have to make sure the new value is stored in the UserDefaults with the key
 * @see [Apple Technical Note TN2151](https://developer.apple.com/library/ios/technotes/tn2151/_index.html)
 * @see [Apple Technical Q&A QA1693](https://developer.apple.com/library/ios/qa/qa1693/_index.html)
 */
-
-+ (BOOL)isAppNotTerminatingCleanlyDetectionEnabled;
-
-+ (void)setEnableAppNotTerminatingCleanlyDetection:(BOOL)enableAppNotTerminatingCleanlyDetection;
+@property (nonatomic, assign) BOOL appNotTerminatingCleanlyDetectionEnabled;
 
 /**
 * Set the callbacks that will be executed prior to program termination after a crash has occurred
@@ -285,7 +201,7 @@ have to make sure the new value is stored in the UserDefaults with the key
 *
 * @param callbacks A pointer to an initialized PLCrashReporterCallback structure, see https://www.plcrashreporter.org/documentation/api/v1.2-rc2/struct_p_l_crash_reporter_callbacks.html
 */
-+ (void)setCrashCallbacks:(MSAICrashManagerCallbacks *)callbacks;
+- (void)setCrashCallbacks:(MSAICrashManagerCallbacks *)callbacks;
 
 
 ///-----------------------------------------------------------------------------
@@ -304,12 +220,12 @@ invoked!
 
 @see lastSessionCrashDetails
 */
-+ (BOOL)didCrashInLastSession;
 
+@property (nonatomic, readonly) BOOL didCrashInLastSession;
 /**
 * Provides details about the crash that occured in the last app session
 */
-+ (MSAICrashDetails *)getLastSessionCrashDetails;
+@property (nonatomic, strong, readonly) MSAICrashDetails *lastSessionCrashDetails;
 
 /**
 Provides the time between startup and crash in seconds
@@ -329,9 +245,8 @@ a crash report was finished successfully, ended in error or was cancelled by the
 @see didCrashInLastSession
 @see MSAICrashManagerDelegate
 */
-//@property (nonatomic, readonly) NSTimeInterval timeintervalCrashInLastSessionOccured;
+@property (nonatomic, readonly) NSTimeInterval timeintervalCrashInLastSessionOccured;
 
-+ (NSTimeInterval)getTimeIntervalCrashInLastSessionOccured;
 
 /**
 Indicates if the app did receive a low memory warning in the last session
@@ -352,7 +267,7 @@ invoked!
 @see lastSessionCrashDetails
 */
 
-+ (BOOL)didReveiveMemoryWarningInLastSession;
+@property (nonatomic, readonly) BOOL didReceiveMemoryWarningInLastSession;
 
 ///-----------------------------------------------------------------------------
 /// @name Debugging Helpers
@@ -366,7 +281,8 @@ invoked!
 *
 *  @return BOOL if the debugger is attached on app startup
 */
-+ (BOOL)isDebuggerAttached;
+
+@property (nonatomic, readonly, getter=getIsDebuggerAttached) BOOL debuggerIsAttached;
 
 /**
 * Lets the app crash for easy testing of the SDK
@@ -381,7 +297,7 @@ invoked!
 *
 * If the SDK detects an App Store environment, it will _NOT_ cause the app to crash!
 */
-+ (void)generateTestCrash;
+- (void)generateTestCrash;
 
 
 @end

@@ -1,18 +1,13 @@
 #import <Foundation/Foundation.h>
 
-
-
 @protocol MSAIManagerDelegate;
-
-@class MSAICrashManager;
-@class MSAIMetricsManager;
 
 /** 
  The MSAIManager is responsible for setup and management of all components
  
  This is the principal SDK class. It represents the entry point for the AppInsightsSDK. The main promises of the class are initializing the SDK modules, providing access to global properties and to all modules. Initialization is divided into several distinct phases:
 
- 1. Setup the [AppInsights](http://hockeyapp.net/) app identifier and the optional delegate: This is the least required information on setting up the SDK and using it. It does some simple validation of the app identifier and checks if the app is running from the App Store or not.
+ 1. Setup the AppInsights instrumentation key and the optional delegate: This is the least required information on setting up the SDK and using it. It does some simple validation of the app identifier and checks if the app is running from the App Store or not.
  2. Provides access to the SDK module `MSAICrashManager`, (and eventually to the other modules). This way all modules can be further configured to personal needs, if the defaults don't fit the requirements.
  3. Configure each module.
  4. Start up all modules.
@@ -37,7 +32,7 @@
 
  */
 
-@interface MSAIManager : NSObject
+@interface MSAIAppInsights : NSObject
 
 #pragma mark - Public Methods
 
@@ -46,161 +41,160 @@
 ///-----------------------------------------------------------------------------
 
 /**
- Returns a shared MSAIManager object
- 
- @return A singleton MSAIManager instance ready use
+ * Returns a shared MSAIManager object.
+ *
+ * @return a singleton MSAIManager instance ready use
  */
-+ (MSAIManager *)sharedMSAIManager;
-
-- (void)configure;
++ (MSAIAppInsights *)sharedInstance;
 
 /**
- Starts the manager and runs all modules
- 
- Call this after configuring the manager and setting up all modules.
- 
- @see configureWithInstrumentationKey:delegate:
+ * Configures the manager with the instrumentation key from the info.plist and
+ * initializes all modules. This method should be called before calling `start`.
  */
-- (void)startManager;
++ (void)initialize;
 
+/**
+ * Configures the manager with the instrumentation key from the info.plist and
+ * initializes all modules. This method should be called before calling `start`.
+ */
+- (void)initialize;
 
-#pragma mark - Public Properties
+/**
+ * Starts the manager and runs all modules. Call this after initializing the manager 
+ * and setting up all modules.
+ *
+ * @see initialize;
+ */
++ (void)start;
+
+/**
+ * Starts the manager and runs all modules. Call this after initializing the manager
+ * and setting up all modules.
+ *
+ * @see initialize;
+ */
+- (void)start;
 
 ///-----------------------------------------------------------------------------
 /// @name Modules
 ///-----------------------------------------------------------------------------
 
-
 /**
- Set the delegate
- 
- Defines the class that implements the optional protocol `MSAIManagerDelegate`.
- 
- The delegate will automatically be propagated to all components. There is no need to set the delegate
- for each component individually.
- 
- @warning This property needs to be set before calling `startManager`
- 
- @see MSAIManagerDelegate
- @see MSAICrashManagerDelegate
+ * Set the delegate: Defines the class that implements the optional protocol 
+ * `MSAIManagerDelegate`. The delegate will automatically be propagated to all components. 
+ * There is no need to set the delegate for each component individually.
+ *
+ * @warning This property needs to be set before calling `start`
+ *
+ * @see MSAIManagerDelegate
+ * @see MSAICrashManagerDelegate
  */
 @property (nonatomic, weak) id<MSAIManagerDelegate> delegate;
 
-
 /**
- Defines the server URL to send data to or request data from
- 
- By default this is set to the AppInsights servers and there rarely should be a
- need to modify that.
- 
- @warning This property needs to be set before calling `startManager`
+ * Defines the server URL to send data to or request data from. By default this is set 
+ * to the AppInsights servers and there rarely should be a need to modify that.
+ *
+ * @warning This property needs to be set before calling `startManager`. 
+ * Since there are several endpoints for different data types, you should not set it for now.
  */
 @property (nonatomic, strong) NSString *serverURL;
 
+/**
+ * Flag which determines whether the Crash Manager should be disabled. If this flag is
+ * enabled, then crash reporting is disabled and no crashes will be send. Please note 
+ * that the Crash Manager instance will be initialized anyway, but crash report
+ * handling (signal and uncaught exception handlers) will **not** be registered.
+ *
+ * @warning This property needs to be set before calling `start`
+ */
+@property (nonatomic, getter = isCrashManagerDisabled) BOOL crashManagerDisabled;
 
 /**
- Reference to the initialized MSAICrashManager module
-
- Returns the MSAICrashManager instance initialized by MSAIManager
- 
- @see configureWithInstrumentationKey:delegate:
- @see startManager
- @see disableCrashManager
+ *  Enable (NO) or disable (YES) the crash manager. This should be called before `start`.
+ *
+ *  @param crashManagerDisabled Flag which determines whether the Crash Manager should be disabled
  */
-//@property (nonatomic, strong, readonly) MSAICrashManager *crashManager;
-
++ (void)setCrashManagerDisabled:(BOOL)crashManagerDisabled;
 
 /**
- Flag the determines whether the Crash Manager should be disabled
- 
- If this flag is enabled, then crash reporting is disabled and no crashes will
- be send.
- 
- Please note that the Crash Manager instance will be initialized anyway, but crash report
- handling (signal and uncaught exception handlers) will **not** be registered.
-
- @warning This property needs to be set before calling `startManager`
-
- *Default*: _NO_
- @see crashManager
+ * Flag the determines whether the Metrics Manager should be disabled. 
+ * If this flag is enabled, then metrics collection is disabled and metrics data will
+ * not be collected and send.
+ *
+ * @return YES, if manager is disabled
+ *
+ * @default NO
+ * @see MSAIMetricsManager
+ * @warning This property needs to be set before calling `start`
  */
-@property (nonatomic, getter = isCrashManagerDisabled) BOOL disableCrashManager;
+@property (nonatomic, getter = isMetricsManagerDisabled) BOOL metricsManagerDisabled;
 
 /**
- Flag the determines whether the Metrics Manager should be disabled
- 
- If this flag is enabled, then metrics collection is disabled and metrics data will
- not be collected and send.
- 
- *Default*: _NO_
- @see MSAIMetricsManager
+ *  Enable (NO) or disable (YES) the metrics manager. This should be called before `start`.
+ *
+ *  @param metricsManagerDisabled Flag which determines whether the Metrics Manager should be disabled
  */
-@property (nonatomic, getter = isMetricsManagerDisabled) BOOL disableMetricsManager;
-
++ (void)setMetricsManagerDisabled:(BOOL)crashMetricsManagerDisabled;
 
 ///-----------------------------------------------------------------------------
 /// @name Environment
 ///-----------------------------------------------------------------------------
 
 /**
- Flag that determines whether the application is installed and running
- from an App Store installation.
- 
- Returns _YES_ if the app is installed and running from the App Store
- Returns _NO_ if the app is installed via debug, ad-hoc or enterprise distribution
+ * Flag that determines whether the application is installed and running
+ * from an App Store installation. Returns _YES_ if the app is installed and running 
+ * from the App Store or _NO_ if the app is installed via debug, ad-hoc or enterprise 
+ * distribution
  */
 @property (nonatomic, readonly, getter=isAppStoreEnvironment) BOOL appStoreEnvironment;
 
-
 /**
- Returns the app installation specific anonymous UUID
- 
- The value returned by this method is unique and persisted per app installation
- in the keychain.  It is also being used in crash reports as `CrashReporter Key`
- and internally when sending crash reports and feedback messages.
- 
- This is not identical to the `[ASIdentifierManager advertisingIdentifier]` or
- the `[UIDevice identifierForVendor]`!
+ * Returns the app installation specific anonymous UUID.
+ * The value returned by this method is unique and persisted per app installation
+ * in the keychain.  It is also being used in crash reports as `CrashReporter Key`
+ * and internally when sending crash reports and feedback messages.
+ * This is not identical to the `[ASIdentifierManager advertisingIdentifier]` or
+ * the `[UIDevice identifierForVendor]`!
  */
 @property (nonatomic, readonly) NSString *installString;
-
 
 ///-----------------------------------------------------------------------------
 /// @name Debug Logging
 ///-----------------------------------------------------------------------------
 
 /**
- Flag that determines whether additional logging output should be generated
- by the manager and all modules.
- 
- This is ignored if the app is running in the App Store and reverts to the
- default value in that case.
- 
- @warning This property needs to be set before calling `startManager`
- 
- *Default*: _NO_
+ * Flag which determines additional logging output should be generated by the manager
+ * and all modules. This is ignored if the app is running in the App Store and
+ * reverts to the default value in that case. Default is NO.
+ *
+ * @warning This property needs to be set before calling `startManager`
  */
 @property (nonatomic, assign, getter=isDebugLogEnabled) BOOL debugLogEnabled;
-
 
 ///-----------------------------------------------------------------------------
 /// @name Integration test
 ///-----------------------------------------------------------------------------
 
 /**
- Pings the server with the AppInsights app identifiers used for initialization
- 
- Call this method once for debugging purposes to test if your SDK setup code
- reaches the server successfully.
- 
- Once invoked, check the apps page on AppInsights for a verification.
- 
- If you setup the SDK with a beta and live identifier, a call to both app IDs will be done.
+ * Pings the server with the AppInsights app identifiers used for initialization.
+ * Call this method once for debugging purposes to test if your SDK setup code
+ * reaches the server successfully.
+ * Once invoked, check the apps page on AppInsights for a verification.
+ * If you setup the SDK with a beta and live identifier, a call to both app IDs will be done.
+ * This call is ignored if the app is running in the App Store!.
+ */
++ (void)testIdentifier;
 
- This call is ignored if the app is running in the App Store!.
+/**
+ * Pings the server with the AppInsights app identifiers used for initialization.
+ * Call this method once for debugging purposes to test if your SDK setup code
+ * reaches the server successfully.
+ * Once invoked, check the apps page on AppInsights for a verification.
+ * If you setup the SDK with a beta and live identifier, a call to both app IDs will be done.
+ * This call is ignored if the app is running in the App Store!.
  */
 - (void)testIdentifier;
-
 
 ///-----------------------------------------------------------------------------
 /// @name Additional meta data
@@ -288,7 +282,17 @@
 /**
  Returns the SDK Version (CFBundleShortVersionString).
  */
++ (NSString *)version;
+
+/**
+ Returns the SDK Version (CFBundleShortVersionString).
+ */
 - (NSString *)version;
+
+/**
+ Returns the SDK Build (CFBundleVersion) as a string.
+ */
++ (NSString *)build;
 
 /**
  Returns the SDK Build (CFBundleVersion) as a string.

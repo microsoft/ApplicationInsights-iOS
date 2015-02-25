@@ -76,7 +76,7 @@
       [self sendRequest:request];
     }
     else {
-      NSLog(@"Error creating JSON from bundle array, saving bundle back to disk");
+      MSAILog(@"Error creating JSON from bundle array, saving bundle back to disk");
       [MSAIPersistence persistBundle:bundle ofType:MSAIPersistenceTypeRegular withCompletionBlock:nil];
       self.sending = NO;
     }
@@ -98,16 +98,16 @@
                                     self.sending = NO;
                                     if(statusCode >= 200 && statusCode < 400) {
                                       
-                                      NSLog(@"Sent data with status code: %ld", (long) statusCode);
-                                      NSLog(@"Response data:\n%@", [NSJSONSerialization JSONObjectWithData:responseData options:0 error:nil]);
+                                      MSAILog(@"Sent data with status code: %ld", (long) statusCode);
+                                      MSAILog(@"Response data:\n%@", [NSJSONSerialization JSONObjectWithData:responseData options:0 error:nil]);
                                       
                                       [strongSelf sendSavedData];
                                       
                                     } else {
-                                      NSLog(@"Sending failed");
+                                      MSAILog(@"Sending failed");
                                     
                                       //[MSAIPersistence persistBundle:self.currentBundle];
-                                      //TODO trigger sending again -> later and somewhere else?!
+                                      //TODO maybe trigger sending again or notify someone?
                                     }
                                   }];
   

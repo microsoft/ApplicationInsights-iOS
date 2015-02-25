@@ -171,7 +171,7 @@
  *  TODO: what to do if we do run this e.g. on Jenkins or Xcode bots ?
  */
 - (void)testIsDebuggerAttached {
-  assertThatBool([_sut isDebuggerAttached], equalToBool(YES));
+  assertThatBool([_sut debuggerIsAttached], equalToBool(YES));
 }
 
 
