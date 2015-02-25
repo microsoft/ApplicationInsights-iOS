@@ -96,7 +96,7 @@ The SDK runs on devices with iOS 6.0 or higher.
 	// Send custom metrics
 	[MSAIMetricsManager trackMetricWithName:@"Test metric" 
 									  value:42.2];
-	``
+	```
 
 *Note:* The SDK is optimized to defer everything possible to a later time while making sure e.g. crashes on startup can also be caught and each module executes other code with a delay some seconds. This ensures that applicationDidFinishLaunching will process as fast as possible and the SDK will not block the startup sequence resulting in a possible kill by the watchdog process.
 
