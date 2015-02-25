@@ -66,7 +66,7 @@ The SDK runs on devices with iOS 6.0 or higher.
 	[[MSAIAppInsights sharedInstance] setup];
 	// Do some additional configuration if needed here
 	...
-	[[MSAIAppInsights sharedInstance] startManager];
+	[[MSAIAppInsights sharedInstance] start];
 	```
 
 	You can also use the following shortcut:
