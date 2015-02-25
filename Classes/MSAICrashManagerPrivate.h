@@ -5,9 +5,11 @@
 #import <CrashReporter/CrashReporter.h>
 
 @class MSAIAppClient;
+@class MSAIEnvelope;
 
 @interface MSAICrashManager () {
 }
+
 
 ///-----------------------------------------------------------------------------
 /// @name Delegate
@@ -21,62 +23,60 @@ should not need to set this delegate individually.
 
 @see `[MSAIManager setDelegate:]`
 */
-//@property (nonatomic, weak) id delegate;
+@property (nonatomic, weak) id delegate; //TODO Will be removed eventually?
 
+@property (nonatomic, assign) PLCrashReporterCallbacks *crashCallBacks;
+@property (nonatomic, strong) NSFileManager *fileManager; //TODO remove when we refactor the persistence stuff out of crashmanager
+@property (nonatomic, strong) MSAIContext *appContext;
+@property (nonatomic, strong) NSMutableArray *crashFiles; //TODO remove when we refactor the persistence stuff out of crashmanager
+@property (nonatomic, strong) NSMutableDictionary *approvedCrashReports;
+@property (nonatomic, copy) NSString *settingsFile; //TODO remove when we refactor the persistence stuff out of crashmanager
+@property (nonatomic, copy) NSString *crashesDir; //TODO remove when we refactor the persistence stuff out of crashmanager
+@property (nonatomic, copy) NSString *lastCrashFilename;
+@property (nonatomic, strong) MSAIPLCrashReporter *plCrashReporter;
+@property (nonatomic, assign) BOOL didLogLowMemoryWarning;
+@property (nonatomic, assign) BOOL sendingInProgress;
+@property (nonatomic, copy) NSString *analyzerInProgressFile;
+@property (nonatomic, assign) NSUncaughtExceptionHandler *exceptionHandler;
 
-+ (void)setDelegate:(id)delegate;
-
-+ (id)getDelegate;
-
-//TODO what does this mean?
 /**
-* must be set
+*  This method is used to setup the CrashManager-Module of the Application Insights SDK.
+*  This method is called by MSAIManager during it's initialization, so calling this by hand
+*  shouldn't be necessary in most cases.
+*
+*  @param context the MSAIContext object
 */
++ (void)startWithContext:(MSAIContext *)context;
 
-+ (NSUncaughtExceptionHandler *)getExceptionHandler;
+- (void)startManager;
 
-+ (void)setExceptionHandler:(NSUncaughtExceptionHandler *)exceptionHandler;
+- (void)initValues;
 
-+ (NSFileManager *)getFileManager;
+- (void)handleCrashReport;
 
-+ (void)setFileManager:(NSFileManager *)fileManager;
+- (NSString *)firstNotApprovedCrashReport;
 
-+ (MSAIPLCrashReporter *)getPLCrashReporter;
+- (BOOL)hasPendingCrashReport;
 
-+ (void)setPLCrashReporter:(MSAIPLCrashReporter *)crashReporter;
+- (void)invokeDelayedProcessing;
 
-+ (NSString *)getLastCrashFilename;
+- (void)createCrashReportForAppKill;
 
-+ (void)setLastCrashFilename:(NSString *)lastCrashFilename;
+- (void)sendNextCrashReport;
 
+- (void)processCrashReportWithFilename:(NSString *)filename envelope:(MSAIEnvelope *)envelope;
 
-+ (NSString *)getCrashesDir;
+- (void)saveSettings;
 
-+ (void)setCrashesDir:(NSString *)crashesDir;
+- (void)loadSettings;
 
-+ (void)cleanCrashReports;
+- (void)cleanCrashReports;
 
-+ (NSString *)userIDForCrashReport;
+- (void)cleanCrashReportWithFilename:(NSString *)filename;
 
-+ (NSString *)userEmailForCrashReport;
+- (void)leavingAppSafely;
 
-+ (NSString *)userNameForCrashReport;
-
-+ (void)handleCrashReport;
-
-+ (BOOL)hasPendingCrashReport;
-
-+ (NSString *)firstNotApprovedCrashReport;
-
-+ (void)persistUserProvidedMetaData:(MSAICrashMetaData *)userProvidedMetaData;
-
-+ (void)invokeDelayedProcessing;
-
-+ (void)sendNextCrashReport;
-
-+ (void)setAppContext:(MSAIContext *)context;
-
-+ (MSAIContext *)getAppContext;
+- (void)appEnteredForeground;
 
 /**
 * by default, just logs the message
@@ -86,8 +86,7 @@ should not need to set this delegate individually.
 *
 * @param error NSError
 */
-+ (void)reportError:(NSError *)error;
-
+- (void)reportError:(NSError *)error;
 
 @end
 

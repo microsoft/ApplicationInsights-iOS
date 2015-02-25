@@ -1,4 +1,5 @@
 #import <Foundation/Foundation.h>
+#import "MSAIAppInsights.h"
 
 #ifndef MSAI_Private_h
 #define MSAI_Private_h
@@ -25,13 +26,10 @@ extern NSString *const __attribute__((unused)) kMSAIMetricsLastAppVersion;
 
 #define MSAI_INTEGRATIONFLOW_TIMESTAMP  @"MSAIIntegrationFlowStartTimestamp"
 
-//#define MSAI_SDK_URL          @"https://dc.services.visualstudio.com/"
-#define MSAI_CRASH_DATA_URL          @"https://deathray-int.trafficmanager.net/v2/track"
-#define MSAI_EVENT_DATA_URL       @"https://dc-int.services.visualstudio.com/v2/track"
-#define MSAI_SDK_URL              MSAI_EVENT_DATA_URL
+#define MSAI_SDK_URL          MSAI_EVENT_DATA_URL
 #define MSAI_TELEMETRY_PATH   @"v2/track"
 
-#define MSAILog(fmt, ...) do { if([MSAIManager sharedMSAIManager].isDebugLogEnabled && ![MSAIManager sharedMSAIManager].isAppStoreEnvironment) { NSLog((@"[MSAI] %s/%d " fmt), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__); }} while(0)
+#define MSAILog(fmt, ...) do { if([MSAIAppInsights sharedInstance].isDebugLogEnabled && ![MSAIAppInsights sharedInstance].isAppStoreEnvironment) { NSLog((@"[MSAI] %s/%d " fmt), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__); }} while(0)
 
 #ifndef __IPHONE_8_0
 #define __IPHONE_8_0     80000

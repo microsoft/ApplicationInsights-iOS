@@ -37,11 +37,6 @@
 }
 
 - (void)tearDown {
-# pragma clang diagnostic push
-# pragma clang diagnostic ignored "-Wimplicit"
-  __gcov_flush();
-# pragma clang diagnostic pop
-  
   [_sut cleanCrashReports];
   [super tearDown];
 }
@@ -176,7 +171,7 @@
  *  TODO: what to do if we do run this e.g. on Jenkins or Xcode bots ?
  */
 - (void)testIsDebuggerAttached {
-  assertThatBool([_sut isDebuggerAttached], equalToBool(YES));
+  assertThatBool([_sut debuggerIsAttached], equalToBool(YES));
 }
 
 

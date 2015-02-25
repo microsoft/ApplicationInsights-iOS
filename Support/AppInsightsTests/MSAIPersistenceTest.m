@@ -6,6 +6,7 @@
 #define MOCKITO_SHORTHAND
 #import <OCMockitoIOS/OCMockitoIOS.h>
 
+#import "AppInsights.h"
 #import "MSAIEnvelope.h"
 #import "MSAIPersistence.h"
 
@@ -21,8 +22,9 @@ typedef void (^MSAIPersistenceTestBlock)(BOOL);
 }
 
 - (void)setUp {
-    [super setUp];
-  
+  [super setUp];
+  [MSAIAppInsights initialize];
+  [MSAIAppInsights start];
 }
 
 - (void)tearDown {
