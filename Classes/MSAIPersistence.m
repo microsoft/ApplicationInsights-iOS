@@ -106,6 +106,12 @@ static dispatch_once_t onceToken = nil;
       bundle = [strongSelf bundleAtPath:path];
     }
   });
+  
+  //in some cases, bundle may be non-nil but empty
+  //setting it to nil to indicate that nothing's there.
+  if([bundle count] == 0) {
+    bundle = nil;
+  }
 
   return bundle;
 }
