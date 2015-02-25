@@ -99,13 +99,15 @@
                                     if(statusCode >= 200 && statusCode < 400) {
                                       MSAILog(@"Sent data with status code: %ld", (long) statusCode);
                                       MSAILog(@"Response data:\n%@", [NSJSONSerialization JSONObjectWithData:responseData options:0 error:nil]);
+                                      strongSelf.currentBundle = nil;
+                                      strongSelf.sending = NO;
                                       [strongSelf sendSavedData];
                                     } else {
                                       MSAILog(@"Sending MSAIAppInsights data failed");
                                       [MSAIPersistence persistAfterErrorWithBundle:weakSelf.currentBundle];
+                                      strongSelf.currentBundle = nil;
+                                      strongSelf.sending = NO;
                                     }
-                                    strongSelf.currentBundle = nil;
-                                    strongSelf.sending = NO;
                                   }];
   
   [self.appClient enqeueHTTPOperation:operation];
