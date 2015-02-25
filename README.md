@@ -59,10 +59,10 @@ The SDK runs on devices with iOS 6.0 or higher.
 	#import <AppInsights/AppInsights.h>
 	```
 4. Search for the method `application:didFinishLaunchingWithOptions:`
-5. Add the following lines to initialize and start the AppInsights SDK:
+5. Add the following lines to setup and start the AppInsights SDK:
 
 	```objectivec
-	[[MSAIAppInsights sharedInstance] initialize];
+	[[MSAIAppInsights sharedInstance] setup];
 	// Do some additional configuration if needed here
 	...
 	[[MSAIAppInsights sharedInstance] startManager];
@@ -71,7 +71,7 @@ The SDK runs on devices with iOS 6.0 or higher.
 	You can also use the following shortcut:
 
 	```objectivec
-	[MSAIAppInsights initialize];
+	[MSAIAppInsights setup];
 	[MSAIAppInsights start];
 	```
 
@@ -114,17 +114,17 @@ The SDK runs on devices with iOS 6.0 or higher.
 	```swift	
 	application(application: UIApplication, didFinishLaunchingWithOptions launchOptions:[NSObject: AnyObject]?) -> Bool`
 	```
-5. Add the following lines to initialize and start the AppInsights SDK:
+5. Add the following lines to setup and start the AppInsights SDK:
 	
 	```swift
-	MSAIAppInsights.sharedInstance().initialize();
+	MSAIAppInsights.sharedInstance().setup();
    MSAIAppInsights.sharedInstance().start();
 	```
 	
 	You can also use the following shortcut:
 
 	```swift
-	MSAIAppInsights.initialize();
+	MSAIAppInsights.setup();
    MSAIAppInsights.start();
 	```
 5. Send some data to the server:
@@ -184,7 +184,7 @@ The following points need to be considered to use AppInsights SDK iOS with iOS 8
 	- (void)viewDidLoad {
 		[super viewDidLoad];
 		if (!self.didSetupAppInsightsSDK) {
-			[MSAIAppInsights initialize];
+			[MSAIAppInsights setup];
 			[MSAIAppInsights start];
           self.didSetupAppInsightsSDK = YES;
        }
