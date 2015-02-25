@@ -36,7 +36,9 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
 * @param completionBlock An optional block that will be executed after we have tried to save the bundle.
 * @warning: The data within the array needs to implement NSCoding.
 */
-+ (void)persistBundle:(NSArray *)bundle ofType:(MSAIPersistenceType)type withCompletionBlock: (void (^)(BOOL success)) completionBlock;
++ (void)persistBundle:(NSArray *)bundle ofType:(MSAIPersistenceType)type withCompletionBlock:(void (^)(BOOL success))completionBlock;
+
++ (void)persistAfterErrorWithBundle:(NSArray *)bundle;
 
 ///-----------------------------------------------------------------------------
 /// @name Get a bundle of saved data

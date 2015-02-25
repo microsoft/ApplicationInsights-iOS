@@ -1,5 +1,8 @@
 #import "MSAIPersistence.h"
+#import "MSAIEnvelope.h"
+#import "MSAICrashData.h"
 #import "AppInsightsPrivate.h"
+#import "MSAIAppInsights.h"
 
 NSString *const kHighPrioString = @"highPrio";
 NSString *const kRegularPrioString = @"regularPrio";
@@ -12,17 +15,35 @@ char const *kPersistenceQueueString = "com.microsoft.appInsights.persistenceQueu
 static dispatch_queue_t persistenceQueue;
 static dispatch_once_t onceToken = nil;
 
-
 @implementation MSAIPersistence
 
 #pragma mark - Public
+
+//TODO remove the completion block and implement notification-handling in MSAICrashManager
++ (void)persistBundle:(NSArray *)bundle ofType:(MSAIPersistenceType)type withCompletionBlock:(void (^)(BOOL success))completionBlock {
+  [self persistBundle:bundle ofType:type  withCompletionBlock:completionBlock enableNotifications:YES];
+}
+
++ (void)persistAfterErrorWithBundle:(NSArray *)bundle {
+  if(bundle && ([bundle count] > 0)) {
+    id envelope = [bundle firstObject];
+    if(envelope && [envelope isKindOfClass:[MSAIEnvelope class]]) {
+      if([((MSAIEnvelope *) envelope).data isKindOfClass:[MSAICrashData class]]) {
+        [self persistBundle:bundle ofType:MSAIPersistenceTypeHighPriority  withCompletionBlock:nil enableNotifications:NO];
+      }
+      else {
+        [self persistBundle:bundle ofType:MSAIPersistenceTypeRegular  withCompletionBlock:nil enableNotifications:NO];
+      }
+    }
+  }
+}
 
 /**
 * Creates a serial background queue that saves the Bundle using NSKeyedArchiver and NSData's writeToFile:atomically
 * In case MSAIPersistenceTypeFakeCrash, we don't send out a kMSAIPersistenceSuccessNotification, for other types, we do.
 * The optional bundle is optional.
 */
-+ (void)persistBundle:(NSArray *)bundle ofType:(MSAIPersistenceType)type withCompletionBlock:(void (^)(BOOL success))completionBlock {
++ (void)persistBundle:(NSArray *)bundle ofType:(MSAIPersistenceType)type  withCompletionBlock:(void (^)(BOOL success))completionBlock enableNotifications:(BOOL)sendNotifications{
   dispatch_once(&onceToken, ^{
     persistenceQueue = dispatch_queue_create(kPersistenceQueueString, DISPATCH_QUEUE_SERIAL);
   });
@@ -38,10 +59,11 @@ static dispatch_once_t onceToken = nil;
         BOOL success = [data writeToFile:fileURL atomically:YES];
         if(success) {
           MSAILog(@"Wrote %@", fileURL);
-          if(type != MSAIPersistenceTypeFakeCrash) {
+          if(sendNotifications && type != MSAIPersistenceTypeFakeCrash) {
             [strongSelf sendBundleSavedNotification];
           }
         }
+
         if(completionBlock) {
           completionBlock(success);
         }
@@ -53,9 +75,11 @@ static dispatch_once_t onceToken = nil;
     }
     else {
       MSAILog(@"Unable to write %@", fileURL);
+      //TODO send out a fail notification?
     }
   }
 }
+
 
 /**
 * Uses the persistenceQueue to retrieve the next bundle synchronously.

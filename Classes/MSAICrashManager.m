@@ -16,7 +16,7 @@
 #import "MSAIEnvelopeManager.h"
 #import "MSAIEnvelopeManagerPrivate.h"
 #import "MSAIData.h"
-#import "MSAIKeychainUtils.h"
+
 
 #import <mach-o/loader.h>
 #import <mach-o/dyld.h>
@@ -26,19 +26,13 @@
 // stores the set of crashreports that have been approved but aren't sent yet
 #define kMSAICrashApprovedReports @"MSAICrashApprovedReports"
 
-// keys for meta information associated to each crash
-#define kMSAICrashMetaUserName @"MSAICrashMetaUserName"
-#define kMSAICrashMetaUserEmail @"MSAICrashMetaUserEmail"
-#define kMSAICrashMetaUserID @"MSAICrashMetaUserID"
-#define kMSAICrashMetaApplicationLog @"MSAICrashMetaApplicationLog"
-
 // internal keys
 NSString *const kMSAICrashManagerIsDisabled = @"MSAICrashManagerIsDisabled";
 
 NSString *const kMSAIAppWentIntoBackgroundSafely = @"MSAIAppWentIntoBackgroundSafely";
 NSString *const kMSAIAppDidReceiveLowMemoryNotification = @"MSAIAppDidReceiveLowMemoryNotification";
 
-//TODO: don't use a class var?
+//TODO: don't use a static
 static MSAICrashManagerCallbacks msaiCrashCallbacks = {
     .context = NULL,
     .handleSignal = NULL
@@ -50,7 +44,7 @@ static void plcr_post_crash_callback(siginfo_t *info, ucontext_t *uap, void *con
     msaiCrashCallbacks.handleSignal(context);
 }
 
-//TODO: don't use a class var?
+//TODO: don't use static
 static PLCrashReporterCallbacks plCrashCallbacks = {
     .version = 0,
     .context = NULL,
@@ -211,14 +205,12 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
 
 
 - (void)initValues {
-  _timeintervalCrashInLastSessionOccured = -1; //TODO use 0 as initial value?
+  _timeintervalCrashInLastSessionOccured = -1;
 
   self.approvedCrashReports = [[NSMutableDictionary alloc] init];
 
   self.fileManager = [NSFileManager new];
   self.crashFiles = [NSMutableArray new];
-
-  //TODO crashManager is Enabled by default
 
   NSString *testValue = [[NSUserDefaults standardUserDefaults] stringForKey:kMSAICrashManagerIsDisabled];
   if(testValue) {
@@ -402,93 +394,8 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
   }
 }
 
-#pragma mark - Meta Data for Crash Report
 
-//TODO move the whole persistence to MSAIPersistence
 
-/**
-*  Write a meta file for a new crash report
-*
-*  @param filename the crash reports temp filename
-*/
-- (void)storeMetaDataForCrashReportFilename:(NSString *)filename {
-  NSError *error = NULL;
-  NSMutableDictionary *metaDict = [NSMutableDictionary dictionaryWithCapacity:4];
-  NSString *applicationLog = @"";
-
-  [self addStringValueToKeychain:[self userNameForCrashReport] forKey:[NSString stringWithFormat:@"%@.%@", filename, kMSAICrashMetaUserName]];
-  [self addStringValueToKeychain:[self userEmailForCrashReport] forKey:[NSString stringWithFormat:@"%@.%@", filename, kMSAICrashMetaUserEmail]];
-  [self addStringValueToKeychain:[self userIDForCrashReport] forKey:[NSString stringWithFormat:@"%@.%@", filename, kMSAICrashMetaUserID]];
-
-  if(self.delegate != nil && [self.delegate respondsToSelector:@selector(applicationLogForCrashManager)]) {
-    applicationLog = [self.delegate applicationLogForCrashManager] ?: @"";
-  }
-  metaDict[kMSAICrashMetaApplicationLog] = applicationLog;
-
-  NSData *plist = [NSPropertyListSerialization dataWithPropertyList:(id) metaDict
-                                                             format:NSPropertyListBinaryFormat_v1_0
-                                                            options:0
-                                                              error:&error];
-  if(plist) {
-    [plist writeToFile:[self.crashesDir stringByAppendingPathComponent:[filename stringByAppendingPathExtension:@"meta"]] atomically:YES];
-  } else {
-    MSAILog(@"ERROR: Writing crash meta data failed. %@", error);
-  }
-}
-
-/**
-*	 Get the userID from the delegate which should be stored with the crash report
-*
-*	@return The userID value
-*/
-- (NSString *)userIDForCrashReport {
-  // first check the global keychain storage
-  NSString *userID = [self stringValueFromKeychainForKey:kMSAIMetaUserID] ?: @"";
-
-  if([MSAIAppInsights sharedInstance].delegate &&
-      [[MSAIAppInsights sharedInstance].delegate respondsToSelector:@selector(userIDForTelemetryManager:)]) {
-    userID = [[MSAIAppInsights sharedInstance].delegate
-        userIDForTelemetryManager:[MSAIAppInsights sharedInstance]] ?: @"";
-  }
-
-  return userID;
-}
-
-/**
-*	 Get the userName from the delegate which should be stored with the crash report
-*
-*	@return The userName value
-*/
-- (NSString *)userNameForCrashReport {
-  // first check the global keychain storage
-  NSString *username = [self stringValueFromKeychainForKey:kMSAIMetaUserName] ?: @"";
-
-  if([MSAIAppInsights sharedInstance].delegate &&
-      [[MSAIAppInsights sharedInstance].delegate respondsToSelector:@selector(userNameForTelemetryManager:)]) {
-    username = [[MSAIAppInsights sharedInstance].delegate
-        userNameForTelemetryManager:[MSAIAppInsights sharedInstance]] ?: @"";
-  }
-
-  return username;
-}
-
-/**
-*	 Get the userEmail from the delegate which should be stored with the crash report
-*
-*	@return The userEmail value
-*/
-- (NSString *)userEmailForCrashReport {
-  // first check the global keychain storage
-  NSString *useremail = [self stringValueFromKeychainForKey:kMSAIMetaUserEmail] ?: @"";
-
-  if([MSAIAppInsights sharedInstance].delegate &&
-      [[MSAIAppInsights sharedInstance].delegate respondsToSelector:@selector(userEmailForTelemetryManager:)]) {
-    useremail = [[MSAIAppInsights sharedInstance].delegate
-        userEmailForTelemetryManager:[MSAIAppInsights sharedInstance]] ?: @"";
-  }
-
-  return useremail;
-}
 
 #pragma mark - PLCrashReporter
 
@@ -535,8 +442,6 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
         }
 
         [crashData writeToFile:[self.crashesDir stringByAppendingPathComponent:cacheFilename] atomically:YES];
-
-        [self storeMetaDataForCrashReportFilename:cacheFilename];
 
         NSString *incidentIdentifier = @"???";
         if(report.uuidRef != NULL) {
@@ -624,11 +529,7 @@ Get the filename of the first not approved crash report
     MSAILog(@"INFO: %lu pending crash reports found.", (unsigned long) [self.crashFiles count]);
     return YES;
   } else {
-    if(self.didCrashInLastSession) {//TODO does this make sense at all?
-      if(self.delegate != nil && [self.delegate respondsToSelector:@selector(crashManagerWillCancelSendingCrashReport)]) {
-        [self.delegate crashManagerWillCancelSendingCrashReport];
-      }
-
+    if(self.didCrashInLastSession) {
       _didCrashInLastSession = NO;
     }
 
@@ -684,11 +585,8 @@ Get the filename of the first not approved crash report
 
     if(msai_isRunningInAppExtension()) {
       [self sendNextCrashReport];
-    } else if(self.isCrashManagerDisabled && notApprovedReportFilename) {
-      if(self.delegate != nil && [self.delegate respondsToSelector:@selector(crashManagerWillShowSubmitCrashReportAlert)]) {
-        [self.delegate crashManagerWillShowSubmitCrashReportAlert];
-      }
-    } else {
+    }
+    else {
       [self sendNextCrashReport];
     }
   }
@@ -767,11 +665,11 @@ Get the filename of the first not approved crash report
 
     if([report.applicationInfo.applicationVersion compare:[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"]] == NSOrderedSame) {
       //TODO Check if this has to be added again
-        //        _crashIdenticalCurrentVersion = YES;
+//        _crashIdenticalCurrentVersion = YES;
     }
 
     // store this crash report as user approved, so if it fails it will retry automatically
-    self.approvedCrashReports[filename] = @YES; //TODO there is no more "approve"-thingies
+    self.approvedCrashReports[filename] = @YES; //TODO this can be removed
 
     [self saveSettings];
 
@@ -874,6 +772,8 @@ Get the filename of the first not approved crash report
   }
 }
 
+//TODO move the whole persistence to MSAIPersistence
+
 /**
 * Remove a cached crash report
 *
@@ -889,40 +789,10 @@ Get the filename of the first not approved crash report
   [self.fileManager removeItemAtPath:[filename stringByAppendingString:@".meta"] error:&error];
   [self.fileManager removeItemAtPath:[filename stringByAppendingString:@".desc"] error:&error];
 
-  NSString *cacheFilename = [filename lastPathComponent];
-  [self removeKeyFromKeychain:[NSString stringWithFormat:@"%@.%@", cacheFilename, kMSAICrashMetaUserName]];
-  [self removeKeyFromKeychain:[NSString stringWithFormat:@"%@.%@", cacheFilename, kMSAICrashMetaUserEmail]];
-  [self removeKeyFromKeychain:[NSString stringWithFormat:@"%@.%@", cacheFilename, kMSAICrashMetaUserID]];
-
   [self.crashFiles removeObject:filename];
   [self.approvedCrashReports removeObjectForKey:filename];
 
   [self saveSettings];
-}
-
-
-
-- (void)persistUserProvidedMetaData:(MSAICrashMetaData *)userProvidedMetaData {
-  if(!userProvidedMetaData) return;
-
-  if(userProvidedMetaData.userDescription && [userProvidedMetaData.userDescription length] > 0) {
-    NSError *error;
-    [userProvidedMetaData.userDescription writeToFile:[NSString stringWithFormat:@"%@.desc", [self.crashesDir stringByAppendingPathComponent:self.lastCrashFilename]] atomically:YES encoding:NSUTF8StringEncoding error:&error];
-  }
-
-  if(userProvidedMetaData.userName && [userProvidedMetaData.userName length] > 0) {
-    [self addStringValueToKeychain:userProvidedMetaData.userName forKey:[NSString stringWithFormat:@"%@.%@", self.lastCrashFilename, kMSAICrashMetaUserName]];
-
-  }
-
-  if(userProvidedMetaData.userEmail && [userProvidedMetaData.userEmail length] > 0) {
-    [self addStringValueToKeychain:userProvidedMetaData.userEmail forKey:[NSString stringWithFormat:@"%@.%@", self.lastCrashFilename, kMSAICrashMetaUserEmail]];
-  }
-
-  if(userProvidedMetaData.userID && [userProvidedMetaData.userID length] > 0) {
-    [self addStringValueToKeychain:userProvidedMetaData.userID forKey:[NSString stringWithFormat:@"%@.%@", self.lastCrashFilename, kMSAICrashMetaUserID]];
-
-  }
 }
 
 - (void)leavingAppSafely {
@@ -941,37 +811,6 @@ Get the filename of the first not approved crash report
 
 - (void)reportError:(NSError *)error {
   MSAILog(@"ERROR: %@", [error localizedDescription]);
-}
-
-#pragma mark - Keychain
-
-- (BOOL)addStringValueToKeychain:(NSString *)stringValue forKey:(NSString *)key {
-  if(!key || !stringValue)
-    return NO;
-
-  NSError *error = nil;
-  return [MSAIKeychainUtils storeUsername:key
-                              andPassword:stringValue
-                           forServiceName:msai_keychainMSAIServiceName()
-                           updateExisting:YES
-                                    error:&error];
-}
-
-- (NSString *)stringValueFromKeychainForKey:(NSString *)key {
-  if(!key)
-    return nil;
-
-  NSError *error = nil;
-  return [MSAIKeychainUtils getPasswordForUsername:key
-                                    andServiceName:msai_keychainMSAIServiceName()
-                                             error:&error];
-}
-
-- (BOOL)removeKeyFromKeychain:(NSString *)key {
-  NSError *error = nil;
-  return [MSAIKeychainUtils deleteItemForUsername:key
-                                   andServiceName:msai_keychainMSAIServiceName()
-                                            error:&error];
 }
 
 @end
