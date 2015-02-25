@@ -574,13 +574,8 @@ Get the filename of the first not approved crash report
     if(notApprovedReportFilename && !self.lastCrashFilename) {
       self.lastCrashFilename = [notApprovedReportFilename lastPathComponent];
     }
-
-    if(msai_isRunningInAppExtension()) {
-      [self createCrashReport];
-    }
-    else {
-      [self createCrashReport];
-    }
+    
+    [self createCrashReport];
   }
 }
 
