@@ -155,16 +155,16 @@ The SDK runs on devices with iOS 6.0 or higher.
 ## Endpoints 
 
 At this point exceptions as well as other telemetry data are sent to different endpoints.
-By default the following endpoints are used to work with the [Azure-Test portal](https://current.onecloud.azure-test.net/):
+By default the following endpoints are used to work with the [Azure portal](https://portal.azure.com):
 
-* Exceptions: `https://deathray-int.trafficmanager.net/v2/track`
-* Telemetry Data: `https://dc-int.services.visualstudio.com/v2/track`
+* Exceptions: `https://dray-prod.aisvc.visualstudio.com/v2/track`
+* Telemetry Data: `https://dc.services.visualstudio.com/v2/track`
 
 To change those endpoints open the `AppInsights.h` file and change the following define statements:
 
 ```objectivec
-#define MSAI_CRASH_DATA_URL   @"https://deathray-int.trafficmanager.net/v2/track"
-#define MSAI_EVENT_DATA_URL   @"https://dc-int.services.visualstudio.com/v2/track"
+#define MSAI_CRASH_DATA_URL   @"https://dray-prod.aisvc.visualstudio.com/v2/track"
+#define MSAI_EVENT_DATA_URL   @"https://dc.services.visualstudio.com/v2/track"
 ```
 <a id="extensions"></a>
 ## iOS 8 Extensions
