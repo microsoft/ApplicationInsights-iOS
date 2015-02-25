@@ -17,7 +17,7 @@
 				1E754E431621F6290070AB92 /* PBXTargetDependency */,
 			);
 			name = "AppInsights Framework";
-			productName = "HockeySDK Framework";
+			productName = "AppInsights Framework";
 		};
 		1E8E66AD15BC3D7700632A2E /* AppInsights Documentation */ = {
 			isa = PBXAggregateTarget;
@@ -28,7 +28,7 @@
 			dependencies = (
 			);
 			name = "AppInsights Documentation";
-			productName = Documentation;
+			productName = "AppInsights Documentation";
 		};
 /* End PBXAggregateTarget section */
 
