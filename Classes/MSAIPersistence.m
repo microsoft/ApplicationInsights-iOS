@@ -2,6 +2,7 @@
 #import "MSAIEnvelope.h"
 #import "MSAICrashData.h"
 #import "AppInsightsPrivate.h"
+#import "MSAIHelper.h"
 #import "MSAIAppInsights.h"
 
 NSString *const kHighPrioString = @"highPrio";
@@ -177,9 +178,8 @@ static dispatch_once_t onceToken = nil;
   [self createApplicationSupportDirectoryIfNeeded];
 
   NSString *applicationSupportDir = [NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES) lastObject];
-  //TODO use something else than timestamp
-  NSString *timestamp = [NSString stringWithFormat:@"%f", [[NSDate date] timeIntervalSince1970] * 1000];
-  NSString *fileName = [NSString stringWithFormat:@"%@%@", kFileBaseString, timestamp];
+  NSString *uuid = msai_UUID();
+  NSString *fileName = [NSString stringWithFormat:@"%@%@", kFileBaseString, uuid];
   NSString *filePath;
 
   switch(type) {
