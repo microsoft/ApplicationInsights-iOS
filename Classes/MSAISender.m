@@ -3,6 +3,7 @@
 #import "MSAISenderPrivate.h"
 #import "MSAIPersistence.h"
 #import "MSAIEnvelope.h"
+#import "AppInsights.h"
 #import "AppInsightsPrivate.h"
 #import "MSAIAppInsights.h"
 
