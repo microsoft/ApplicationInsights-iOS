@@ -77,7 +77,6 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
     if(![MSAICrashManager sharedManager].isSetupCorrectly) {
       [MSAICrashManager sharedManager].appContext = context;
       [[self sharedManager] startManager];
-      [MSAICrashManager sharedManager].isSetupCorrectly = YES;
     }
   }
 }
@@ -198,6 +197,8 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
   [[NSUserDefaults standardUserDefaults] setBool:NO forKey:kMSAIAppDidReceiveLowMemoryNotification];
   [[NSUserDefaults standardUserDefaults] synchronize];
 
+  [MSAICrashManager sharedManager].isSetupCorrectly = YES;
+  
   [self triggerDelayedProcessing];
 }
 
