@@ -38,7 +38,7 @@ NSString *const kMSAICrashManagerIsDisabled = @"MSAICrashManagerIsDisabled";
 NSString *const kMSAIAppWentIntoBackgroundSafely = @"MSAIAppWentIntoBackgroundSafely";
 NSString *const kMSAIAppDidReceiveLowMemoryNotification = @"MSAIAppDidReceiveLowMemoryNotification";
 
-//TODO: don't use a class var?
+//TODO: don't use a static
 static MSAICrashManagerCallbacks msaiCrashCallbacks = {
     .context = NULL,
     .handleSignal = NULL
@@ -50,7 +50,7 @@ static void plcr_post_crash_callback(siginfo_t *info, ucontext_t *uap, void *con
     msaiCrashCallbacks.handleSignal(context);
 }
 
-//TODO: don't use a class var?
+//TODO: don't use static
 static PLCrashReporterCallbacks plCrashCallbacks = {
     .version = 0,
     .context = NULL,
@@ -211,14 +211,12 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
 
 
 - (void)initValues {
-  _timeintervalCrashInLastSessionOccured = -1; //TODO use 0 as initial value?
+  _timeintervalCrashInLastSessionOccured = -1;
 
   self.approvedCrashReports = [[NSMutableDictionary alloc] init];
 
   self.fileManager = [NSFileManager new];
   self.crashFiles = [NSMutableArray new];
-
-  //TODO crashManager is Enabled by default
 
   NSString *testValue = [[NSUserDefaults standardUserDefaults] stringForKey:kMSAICrashManagerIsDisabled];
   if(testValue) {
@@ -536,7 +534,7 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
 
         [crashData writeToFile:[self.crashesDir stringByAppendingPathComponent:cacheFilename] atomically:YES];
 
-        [self storeMetaDataForCrashReportFilename:cacheFilename];
+        [self storeMetaDataForCrashReportFilename:cacheFilename]; //TODO delete this
 
         NSString *incidentIdentifier = @"???";
         if(report.uuidRef != NULL) {
@@ -624,7 +622,7 @@ Get the filename of the first not approved crash report
     MSAILog(@"INFO: %lu pending crash reports found.", (unsigned long) [self.crashFiles count]);
     return YES;
   } else {
-    if(self.didCrashInLastSession) {//TODO does this make sense at all?
+    if(self.didCrashInLastSession) {
       if(self.delegate != nil && [self.delegate respondsToSelector:@selector(crashManagerWillCancelSendingCrashReport)]) {
         [self.delegate crashManagerWillCancelSendingCrashReport];
       }
@@ -767,11 +765,11 @@ Get the filename of the first not approved crash report
 
     if([report.applicationInfo.applicationVersion compare:[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"]] == NSOrderedSame) {
       //TODO Check if this has to be added again
-        //        _crashIdenticalCurrentVersion = YES;
+//        _crashIdenticalCurrentVersion = YES;
     }
 
     // store this crash report as user approved, so if it fails it will retry automatically
-    self.approvedCrashReports[filename] = @YES; //TODO there is no more "approve"-thingies
+    self.approvedCrashReports[filename] = @YES; //TODO this can be removed
 
     [self saveSettings];
 
