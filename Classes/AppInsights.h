@@ -19,6 +19,9 @@
 // Notification message which AppInsightsManager is listening to, to retry requesting updated from the server
 #define MSAINetworkDidBecomeReachableNotification @"MSAINetworkDidBecomeReachable"
 
+#define MSAI_CRASH_DATA_URL   @"https://deathray-int.trafficmanager.net/v2/track"
+#define MSAI_EVENT_DATA_URL   @"https://dc-int.services.visualstudio.com/v2/track"
+
 #if MSAI_FEATURE_CRASH_REPORTER
 /**
  *  MSAI Crash Reporter error domain

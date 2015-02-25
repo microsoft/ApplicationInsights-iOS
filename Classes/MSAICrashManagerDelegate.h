@@ -11,52 +11,17 @@ the behaviour of `MSAICrashManager`.
 
 @optional
 
-
-///-----------------------------------------------------------------------------
-/// @name Additional meta data
-///-----------------------------------------------------------------------------
-
-/** Return any log string based data the crash report being processed should contain
-
-@param crashManager The `MSAICrashManager` instance invoking this delegate
-@see attachmentForCrashManager:
-@see userNameForCrashManager:
-@see userEmailForCrashManager:
-*/
-- (NSString *)applicationLogForCrashManager;
-
-///-----------------------------------------------------------------------------
-/// @name Alert
-///-----------------------------------------------------------------------------
-
-/** Invoked before the user is asked to send a crash report, so you can do additional actions.
-E.g. to make sure not to ask the user for an app rating :)
-
-@param crashManager The `MSAICrashManager` instance invoking this delegate
-*/
-- (void)crashManagerWillShowSubmitCrashReportAlert;
-
-
-/** Invoked after the user did choose _NOT_ to send a crash in the alert
-@param crashManager The `MSAICrashManager` instance invoking this delegate
-*/
-- (void)crashManagerWillCancelSendingCrashReport;
-
-
-/** Invoked after the user did choose to send crashes always in the alert
-@param crashManager The `MSAICrashManager` instance invoking this delegate
-*/
-- (void)crashManagerWillSendCrashReportsAlways;
-
 ///-----------------------------------------------------------------------------
 /// @name Networking
 ///-----------------------------------------------------------------------------
+
+//Reason for this: http://support.hockeyapp.net/kb/client-integration-ios-mac-os-x/how-to-handle-crashes-during-startup-on-ios
 
 /** Invoked right before sending crash reports will start
 
 @param crashManager The `MSAICrashManager` instance invoking this delegate
 */
-- (void)crashManagerWillSendCrashReport;
+- (void)crashManagerWillSendCrashReport; //TODO this should be part of the MSAISenderDelegate
 
 /** Invoked after sending crash reports failed
 
@@ -91,5 +56,7 @@ received by the app to reduce to possibility of having false positives.
 @see `[MSAICrashManager didReceiveMemoryWarningInLastSession]`
 */
 - (BOOL)considerAppNotTerminatedCleanlyReportForCrashManager;
+//not implemented as property as users want to implement logic
+
 
 @end

@@ -52,14 +52,6 @@ should not need to set this delegate individually.
 
 - (void)initValues;
 
-- (void)storeMetaDataForCrashReportFilename:(NSString *)filename;
-
-- (NSString *)userIDForCrashReport;
-
-- (NSString *)userNameForCrashReport;
-
-- (NSString *)userEmailForCrashReport;
-
 - (void)handleCrashReport;
 
 - (NSString *)firstNotApprovedCrashReport;
@@ -81,8 +73,6 @@ should not need to set this delegate individually.
 - (void)cleanCrashReports;
 
 - (void)cleanCrashReportWithFilename:(NSString *)filename;
-
-- (void)persistUserProvidedMetaData:(MSAICrashMetaData *)userProvidedMetaData;
 
 - (void)leavingAppSafely;
 
