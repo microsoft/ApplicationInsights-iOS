@@ -18,12 +18,12 @@ typedef void (^MSAIPersistenceTestBlock)(BOOL);
 
 @implementation MSAIPersistenceTest {
   
-
+  
 }
 
 - (void)setUp {
   [super setUp];
-  [MSAIAppInsights initialize];
+  [MSAIAppInsights setup];
   [MSAIAppInsights start];
 }
 
@@ -74,7 +74,7 @@ typedef void (^MSAIPersistenceTestBlock)(BOOL);
   [MSAIPersistence persistBundle:@[env] ofType:MSAIPersistenceTypeRegular withCompletionBlock:^(BOOL success){
     XCTAssertTrue(success);
   }];
-
+  
   [MSAIPersistence nextBundle];
   XCTAssertNil([MSAIPersistence nextBundle]);
 }

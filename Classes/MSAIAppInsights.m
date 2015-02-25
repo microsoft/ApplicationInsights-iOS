@@ -83,20 +83,20 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 
 #pragma mark - Public Methods
 
-- (void)initialize{
+- (void)setup {
   NSString *iKey = [[NSBundle mainBundle] objectForInfoDictionaryKey:kMSAIInstrumentationKey];
   _appContext = [[MSAIContext alloc] initWithInstrumentationKey:iKey isAppStoreEnvironment:_appStoreEnvironment];
   [self initializeModules];
 }
 
-+ (void)initialize{
-  [[self sharedInstance] initialize];
++ (void)setup {
+    [[self sharedInstance] setup];
 }
 
-- (void)start{
+- (void)start {
   if (!_validInstrumentationKey) return;
   if (_startManagerIsInvoked) {
-    NSLog(@"[AppInsightsSDK] Warning: startManager should only be invoked once! This call is ignored.");
+    NSLog(@"[AppInsightsSDK] Warning: start should only be invoked once! This call is ignored.");
     return;
   }
   
@@ -111,7 +111,7 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 #if MSAI_FEATURE_CRASH_REPORTER
   // start CrashManager
   if (![self isCrashManagerDisabled]) {
-    MSAILog(@"INFO: Start CrashManager");
+    MSAILog(@"INFO: Starting MSAICrashManager");
     [MSAICrashManager sharedManager].isCrashManagerDisabled = self.isCrashManagerDisabled;
       //this will init the crash manager
       //if we haven't set the crashManagerStatus it won't do anything!!!
@@ -121,7 +121,7 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
   
 #if MSAI_FEATURE_METRICS
   if (![self isMetricsManagerDisabled]) {
-    MSAILog(@"INFO: Start MetricsManager");
+    MSAILog(@"INFO: Starting MSAIMetricsManager");
     [[MSAIMetricsManager sharedManager] startManager];
   }
 #endif /* MSAI_FEATURE_METRICS */
@@ -341,7 +341,7 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 - (void)validateStartManagerIsInvoked {
   if (_validInstrumentationKey && !_appStoreEnvironment) {
     if (!_startManagerIsInvoked) {
-      NSLog(@"[AppInsightsSDK] ERROR: You did not call [[MSAIManager sharedManager] startManager] to startup the AppInsightsSDK! Please do so after setting up all properties. The SDK is NOT running.");
+      NSLog(@"[AppInsightsSDK] ERROR: You did not call [MSAIAppInsights setup] to setup the AppInsightsSDK! Please do so after setting up all properties. The SDK is NOT running.");
     }
   }
 }

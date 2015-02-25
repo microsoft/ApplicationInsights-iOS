@@ -19,19 +19,19 @@
  * Configures the manager with the instrumentation key from the info.plist and
  * initializes all modules. This method should be called before calling `start`.
  */
-+ (void)initialize;
++ (void)setup;
 
 /**
  * Configures the manager with the instrumentation key from the info.plist and
  * initializes all modules. This method should be called before calling `start`.
  */
-- (void)initialize;
+- (void)setup;
 
 /**
  * Starts the manager and runs all modules. Call this after initializing the manager 
  * and setting up all modules.
  *
- * @see initialize;
+ * @see setup;
  */
 + (void)start;
 
@@ -39,7 +39,7 @@
  * Starts the manager and runs all modules. Call this after initializing the manager
  * and setting up all modules.
  *
- * @see initialize;
+ * @see setup;
  */
 - (void)start;
 
