@@ -11,43 +11,6 @@ the behaviour of `MSAICrashManager`.
 
 @optional
 
-
-///-----------------------------------------------------------------------------
-/// @name Additional meta data
-///-----------------------------------------------------------------------------
-
-/** Return any log string based data the crash report being processed should contain
-
-@param crashManager The `MSAICrashManager` instance invoking this delegate
-@see attachmentForCrashManager:
-@see userNameForCrashManager:
-@see userEmailForCrashManager:
-*/
-- (NSString *)applicationLogForCrashManager; //TODO löschen! + attachments
-
-///-----------------------------------------------------------------------------
-/// @name Alert
-///-----------------------------------------------------------------------------
-
-/** Invoked before the user is asked to send a crash report, so you can do additional actions.
-E.g. to make sure not to ask the user for an app rating :)
-
-@param crashManager The `MSAICrashManager` instance invoking this delegate
-*/
-- (void)crashManagerWillShowSubmitCrashReportAlert; //TODO löschen! + attachments
-
-
-/** Invoked after the user did choose _NOT_ to send a crash in the alert
-@param crashManager The `MSAICrashManager` instance invoking this delegate
-*/
-- (void)crashManagerWillCancelSendingCrashReport; //TODO löschen! + attachments
-
-
-/** Invoked after the user did choose to send crashes always in the alert
-@param crashManager The `MSAICrashManager` instance invoking this delegate
-*/
-- (void)crashManagerWillSendCrashReportsAlways; //TODO löschen! + attachments
-
 ///-----------------------------------------------------------------------------
 /// @name Networking
 ///-----------------------------------------------------------------------------

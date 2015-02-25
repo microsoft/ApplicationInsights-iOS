@@ -530,10 +530,6 @@ Get the filename of the first not approved crash report
     return YES;
   } else {
     if(self.didCrashInLastSession) {
-      if(self.delegate != nil && [self.delegate respondsToSelector:@selector(crashManagerWillCancelSendingCrashReport)]) {
-        [self.delegate crashManagerWillCancelSendingCrashReport];
-      }
-
       _didCrashInLastSession = NO;
     }
 
@@ -589,11 +585,8 @@ Get the filename of the first not approved crash report
 
     if(msai_isRunningInAppExtension()) {
       [self sendNextCrashReport];
-    } else if(self.isCrashManagerDisabled && notApprovedReportFilename) {
-      if(self.delegate != nil && [self.delegate respondsToSelector:@selector(crashManagerWillShowSubmitCrashReportAlert)]) {
-        [self.delegate crashManagerWillShowSubmitCrashReportAlert];
-      }
-    } else {
+    }
+    else {
       [self sendNextCrashReport];
     }
   }
