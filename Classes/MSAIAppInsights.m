@@ -59,7 +59,6 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 - (id) init {
   if ((self = [super init])) {
     _serverURL = nil;
-    _delegate = nil;
     _managersInitialized = NO;
     _appClient = nil;
     _crashManagerDisabled = NO;
@@ -180,50 +179,6 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
   [[self sharedInstance] setServerURL:serverURL];
 }
 
-- (void)setDelegate:(id<MSAIManagerDelegate>)delegate {
-  if (![self isAppStoreEnvironment]) {
-    if (_startManagerIsInvoked) {
-      NSLog(@"[MSAI] ERROR: The `delegate` property has to be set before calling [[MSAIManager sharedManager] startManager] !");
-    }
-  }
-  
-  if (_delegate != delegate) {
-    _delegate = delegate;
-    
-#if MSAI_FEATURE_CRASH_REPORTER
-    if([MSAICrashManager sharedManager].isSetupCorrectly) {
-        //TODO init if not init before? what kind of behavior do we want to support?
-      [MSAICrashManager sharedManager].delegate = _delegate;
-    }
-#endif /* MSAI_FEATURE_CRASH_REPORTER */
-  }
-}
-
-+ (void)setDelegate:(id<MSAIManagerDelegate>)delegate {
-  [[self sharedInstance] setDelegate:delegate];
-}
-
-- (void)setUserID:(NSString *)userID {
-  // always set it, since nil value will trigger removal of the keychain entry
-  _userID = userID;
-  
-  [self modifyKeychainUserValue:userID forKey:kMSAIMetaUserID];
-}
-
-- (void)setUserName:(NSString *)userName {
-  // always set it, since nil value will trigger removal of the keychain entry
-  _userName = userName;
-  
-  [self modifyKeychainUserValue:userName forKey:kMSAIMetaUserName];
-}
-
-- (void)setUserEmail:(NSString *)userEmail {
-  // always set it, since nil value will trigger removal of the keychain entry
-  _userEmail = userEmail;
-  
-  [self modifyKeychainUserValue:userEmail forKey:kMSAIMetaUserEmail];
-}
-
 - (void)testIdentifier {
   if (![_appContext instrumentationKey] || [_appContext isAppStoreEnvironment]) {
     return;
@@ -271,35 +226,6 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 - (void)logInvalidIdentifier:(NSString *)environment {
   if (!_appStoreEnvironment) {
     NSLog(@"[AppInsightsSDK] ERROR: The %@ is invalid! Please use the AppInsights app identifier you find on the apps website on AppInsights! The SDK is disabled!", environment);
-  }
-}
-
-- (void)modifyKeychainUserValue:(NSString *)value forKey:(NSString *)key {
-  NSError *error = nil;
-  BOOL success = YES;
-  NSString *updateType = @"update";
-  
-  if (value) {
-    success = [MSAIKeychainUtils storeUsername:key
-                                   andPassword:value
-                                forServiceName:msai_keychainMSAIServiceName()
-                                updateExisting:YES
-                                 accessibility:kSecAttrAccessibleWhenUnlockedThisDeviceOnly
-                                         error:&error];
-  } else {
-    updateType = @"delete";
-    if ([MSAIKeychainUtils getPasswordForUsername:key
-                                   andServiceName:msai_keychainMSAIServiceName()
-                                            error:&error]) {
-      success = [MSAIKeychainUtils deleteItemForUsername:key
-                                          andServiceName:msai_keychainMSAIServiceName()
-                                                   error:&error];
-    }
-  }
-  
-  if (!success) {
-    NSString *errorDescription = [error description] ?: @"";
-    MSAILog(@"ERROR: Couldn't %@ key %@ in the keychain. %@", updateType, key, errorDescription);
   }
 }
 
@@ -450,15 +376,6 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
   _startManagerIsInvoked = NO;
   
   if (_validInstrumentationKey) {
-    
-#if MSAI_FEATURE_CRASH_REPORTER
-    MSAILog(@"INFO: Setup CrashManager");
-      //TODO how to we want to start crash manager?!
-      //inits the crash manager but doesn't start it
-      // it also doesn't init the values and isSetup will be FALSE!
-    [MSAICrashManager sharedManager].delegate = _delegate;
-    
-#endif /* MSAI_FEATURE_CRASH_REPORTER */
     
 #if MSAI_FEATURE_METRICS
     MSAILog(@"INFO: Setup MetricsManager");
