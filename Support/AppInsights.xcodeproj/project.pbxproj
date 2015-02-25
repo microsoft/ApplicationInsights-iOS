@@ -196,7 +196,7 @@
 		808FB2671A7982B50002872B /* OCHamcrestIOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 808FB21F1A7982140002872B /* OCHamcrestIOS.framework */; };
 		808FB2681A7982B50002872B /* OCMockitoIOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 808FB2201A7982140002872B /* OCMockitoIOS.framework */; };
 		80F334B01A9C8A430098026F /* MSAIManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 80F334AF1A9C8A430098026F /* MSAIManagerTests.m */; };
-		80F334B21A9C93290098026F /* MSAIManagerPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 80F334B11A9C93290098026F /* MSAIManagerPrivate.h */; };
+		80F334B21A9C93290098026F /* MSAIAppInsightsPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 80F334B11A9C93290098026F /* MSAIAppInsightsPrivate.h */; };
 		B25912331A8D129C00C88800 /* MSAIPersistenceTest.m in Sources */ = {isa = PBXBuildFile; fileRef = B25912321A8D129C00C88800 /* MSAIPersistenceTest.m */; };
 		E40E0B0C17DA1AFF005E38C1 /* MSAIAppClient.h in Headers */ = {isa = PBXBuildFile; fileRef = E40E0B0A17DA1AFF005E38C1 /* MSAIAppClient.h */; };
 		E40E0B0D17DA1AFF005E38C1 /* MSAIAppClient.m in Sources */ = {isa = PBXBuildFile; fileRef = E40E0B0B17DA1AFF005E38C1 /* MSAIAppClient.m */; };
@@ -387,7 +387,7 @@
 		808FB2621A7982300002872B /* live_report_exception.plcrash */ = {isa = PBXFileReference; lastKnownFileType = file; name = live_report_exception.plcrash; path = AppInsightsTests/Fixtures/live_report_exception.plcrash; sourceTree = SOURCE_ROOT; };
 		808FB2631A7982300002872B /* live_report_signal.plcrash */ = {isa = PBXFileReference; lastKnownFileType = file; name = live_report_signal.plcrash; path = AppInsightsTests/Fixtures/live_report_signal.plcrash; sourceTree = SOURCE_ROOT; };
 		80F334AF1A9C8A430098026F /* MSAIManagerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIManagerTests.m; path = AppInsightsTests/MSAIManagerTests.m; sourceTree = SOURCE_ROOT; };
-		80F334B11A9C93290098026F /* MSAIManagerPrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAIManagerPrivate.h; sourceTree = "<group>"; };
+		80F334B11A9C93290098026F /* MSAIAppInsightsPrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAIAppInsightsPrivate.h; sourceTree = "<group>"; };
 		9760F6C318BB4D2D00959B93 /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
 		97BD9BD4191109730043FD59 /* QuickLook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickLook.framework; path = System/Library/Frameworks/QuickLook.framework; sourceTree = SDKROOT; };
 		97CC11F81917C0310028768F /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
@@ -714,7 +714,7 @@
 				1E71509A15B5C76F004E88FF /* AppInsights.h */,
 				1E84DB3317E0977C00AC83FD /* AppInsightsFeatureConfig.h */,
 				E41EB465148D7BF50015DEDC /* MSAIAppInsights.h */,
-				80F334B11A9C93290098026F /* MSAIManagerPrivate.h */,
+				80F334B11A9C93290098026F /* MSAIAppInsightsPrivate.h */,
 				E41EB466148D7BF50015DEDC /* MSAIAppInsights.m */,
 				1E5955FA15B7877A00A03429 /* MSAIManagerDelegate.h */,
 			);
@@ -820,7 +820,7 @@
 				807CFDD21A712974004EA1B6 /* MSAIUser.h in Headers */,
 				807CFDB21A712974004EA1B6 /* MSAIEnums.h in Headers */,
 				807CFDCF1A712974004EA1B6 /* MSAISeverityLevel.h in Headers */,
-				80F334B21A9C93290098026F /* MSAIManagerPrivate.h in Headers */,
+				80F334B21A9C93290098026F /* MSAIAppInsightsPrivate.h in Headers */,
 				807CFDBB1A712974004EA1B6 /* MSAIInternal.h in Headers */,
 				807CFDAC1A712974004EA1B6 /* MSAIDependencyKind.h in Headers */,
 				1E754E601621FBB70070AB92 /* MSAICrashDataProvider.h in Headers */,

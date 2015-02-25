@@ -1,6 +1,6 @@
 #import "AppInsights.h"
 
-@interface MSAIManager ()
+@interface MSAIAppInsights ()
 
 - (BOOL)checkValidityOfInstrumentationKey:(NSString *)instrumentationKey;
 
