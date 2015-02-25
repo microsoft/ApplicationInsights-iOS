@@ -82,20 +82,19 @@
 		1E754E5E1621FBB70070AB92 /* MSAICrashManagerDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E754E581621FBB70070AB92 /* MSAICrashManagerDelegate.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1E754E601621FBB70070AB92 /* MSAICrashDataProvider.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E754E5A1621FBB70070AB92 /* MSAICrashDataProvider.h */; };
 		1E754E611621FBB70070AB92 /* MSAICrashDataProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E754E5B1621FBB70070AB92 /* MSAICrashDataProvider.m */; };
-		1E84DB3417E099BA00AC83FD /* AppInsightsFeatureConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E84DB3317E0977C00AC83FD /* AppInsightsFeatureConfig.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1E84DB3417E099BA00AC83FD /* AppInsightsFeatureConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E84DB3317E0977C00AC83FD /* AppInsightsFeatureConfig.h */; };
 		1E90FD7318EDB86400CF0417 /* MSAICrashDetails.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E90FD7118EDB86400CF0417 /* MSAICrashDetails.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1E90FD7418EDB86400CF0417 /* MSAICrashDetails.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E90FD7218EDB86400CF0417 /* MSAICrashDetails.m */; };
 		1EA1170016F4D32C001C015C /* libAppInsights.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E5954F215B6F24A00A03429 /* libAppInsights.a */; };
 		1EB2E4C618FD4CEA008BB1CF /* MSAIMetricsManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 1EB2E4C418FD4CEA008BB1CF /* MSAIMetricsManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1EB2E4C718FD4CEA008BB1CF /* MSAIMetricsManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EB2E4C518FD4CEA008BB1CF /* MSAIMetricsManager.m */; };
-		1ECA8F4D192B5BD8006B9416 /* MSAICrashDetailsPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 1ECA8F4B192B5BD8006B9416 /* MSAICrashDetailsPrivate.h */; };
+		1ECA8F4D192B5BD8006B9416 /* MSAICrashDetailsPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 1ECA8F4B192B5BD8006B9416 /* MSAICrashDetailsPrivate.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		1ECA8F51192B6954006B9416 /* MSAICrashMetaData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1ECA8F4F192B6954006B9416 /* MSAICrashMetaData.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1ECA8F52192B6954006B9416 /* MSAICrashMetaData.m in Sources */ = {isa = PBXBuildFile; fileRef = 1ECA8F50192B6954006B9416 /* MSAICrashMetaData.m */; };
 		594931B3422F36B9D1DA449C /* MSAIPersistence.h in Headers */ = {isa = PBXBuildFile; fileRef = 594931F0F69C22CBB67A2AD9 /* MSAIPersistence.h */; };
 		59493E4E3899627127FA6760 /* MSAIPersistence.m in Sources */ = {isa = PBXBuildFile; fileRef = 59493E91C1D38C3FC5F77D19 /* MSAIPersistence.m */; };
 		803871BD1A94C0A600BF295F /* MSAIPageViewLogging_UIViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 1BC8596D1A7ACC040018FB6B /* MSAIPageViewLogging_UIViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		803871C01A94C26500BF295F /* MSAICrashManagerPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 1EFF03D717F20F8300A5F13C /* MSAICrashManagerPrivate.h */; settings = {ATTRIBUTES = (Private, ); }; };
-		803871C11A94C26500BF295F /* (null) in Headers */ = {isa = PBXBuildFile; settings = {ATTRIBUTES = (Private, ); }; };
 		803871C21A94C26500BF295F /* MSAIContextPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B62F4DA1A692A6F00EB5AD0 /* MSAIContextPrivate.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		803871C31A94C26500BF295F /* MSAIMetricsManagerPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 1EB2E4C818FD4E90008BB1CF /* MSAIMetricsManagerPrivate.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		803871C41A94C26500BF295F /* MSAIChannelPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B4D17E41A666EE30079D948 /* MSAIChannelPrivate.h */; settings = {ATTRIBUTES = (Private, ); }; };
@@ -195,7 +194,7 @@
 		808FB2671A7982B50002872B /* OCHamcrestIOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 808FB21F1A7982140002872B /* OCHamcrestIOS.framework */; };
 		808FB2681A7982B50002872B /* OCMockitoIOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 808FB2201A7982140002872B /* OCMockitoIOS.framework */; };
 		80F334B01A9C8A430098026F /* MSAIManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 80F334AF1A9C8A430098026F /* MSAIManagerTests.m */; };
-		80F334B21A9C93290098026F /* MSAIAppInsightsPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 80F334B11A9C93290098026F /* MSAIAppInsightsPrivate.h */; };
+		80F334B21A9C93290098026F /* MSAIAppInsightsPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 80F334B11A9C93290098026F /* MSAIAppInsightsPrivate.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		B25912331A8D129C00C88800 /* MSAIPersistenceTest.m in Sources */ = {isa = PBXBuildFile; fileRef = B25912321A8D129C00C88800 /* MSAIPersistenceTest.m */; };
 		E40E0B0C17DA1AFF005E38C1 /* MSAIAppClient.h in Headers */ = {isa = PBXBuildFile; fileRef = E40E0B0A17DA1AFF005E38C1 /* MSAIAppClient.h */; };
 		E40E0B0D17DA1AFF005E38C1 /* MSAIAppClient.m in Sources */ = {isa = PBXBuildFile; fileRef = E40E0B0B17DA1AFF005E38C1 /* MSAIAppClient.m */; };
@@ -772,9 +771,10 @@
 				1BC8596B1A7ACA820018FB6B /* MSAICategoryContainer.h in Headers */,
 				1E49A4D8161222D400463151 /* AppInsightsPrivate.h in Headers */,
 				803871C01A94C26500BF295F /* MSAICrashManagerPrivate.h in Headers */,
-				803871C11A94C26500BF295F /* (null) in Headers */,
 				803871C21A94C26500BF295F /* MSAIContextPrivate.h in Headers */,
 				803871C31A94C26500BF295F /* MSAIMetricsManagerPrivate.h in Headers */,
+				1ECA8F4D192B5BD8006B9416 /* MSAICrashDetailsPrivate.h in Headers */,
+				80F334B21A9C93290098026F /* MSAIAppInsightsPrivate.h in Headers */,
 				803871C41A94C26500BF295F /* MSAIChannelPrivate.h in Headers */,
 				803871C51A94C26500BF295F /* MSAITelemetryContextPrivate.h in Headers */,
 				803871C61A94C26500BF295F /* MSAIEnvelopeManagerPrivate.h in Headers */,
@@ -792,10 +792,10 @@
 				1E90FD7318EDB86400CF0417 /* MSAICrashDetails.h in Headers */,
 				807CFDC71A712974004EA1B6 /* MSAIPageViewPerfData.h in Headers */,
 				1B3FB89E1A93756100D06311 /* MSAIReachability.h in Headers */,
+				1E84DB3417E099BA00AC83FD /* AppInsightsFeatureConfig.h in Headers */,
 				807CFDCD1A712974004EA1B6 /* MSAISession.h in Headers */,
 				1EB2E4C618FD4CEA008BB1CF /* MSAIMetricsManager.h in Headers */,
 				807CFDC51A712974004EA1B6 /* MSAIPageViewData.h in Headers */,
-				1ECA8F4D192B5BD8006B9416 /* MSAICrashDetailsPrivate.h in Headers */,
 				807CFD701A712969004EA1B6 /* MSAITelemetryData.h in Headers */,
 				807CFD681A71294E004EA1B6 /* MSAIOrderedDictionary.h in Headers */,
 				807CFDB91A712974004EA1B6 /* MSAIExceptionDetails.h in Headers */,
@@ -816,12 +816,10 @@
 				807CFDD21A712974004EA1B6 /* MSAIUser.h in Headers */,
 				807CFDB21A712974004EA1B6 /* MSAIEnums.h in Headers */,
 				807CFDCF1A712974004EA1B6 /* MSAISeverityLevel.h in Headers */,
-				80F334B21A9C93290098026F /* MSAIAppInsightsPrivate.h in Headers */,
 				807CFDBB1A712974004EA1B6 /* MSAIInternal.h in Headers */,
 				807CFDAC1A712974004EA1B6 /* MSAIDependencyKind.h in Headers */,
 				1E754E601621FBB70070AB92 /* MSAICrashDataProvider.h in Headers */,
 				807CFDC11A712974004EA1B6 /* MSAIMetricData.h in Headers */,
-				1E84DB3417E099BA00AC83FD /* AppInsightsFeatureConfig.h in Headers */,
 				1B3C38761A82213000700081 /* MSAICrashData.h in Headers */,
 				807CFDBD1A712974004EA1B6 /* MSAILocation.h in Headers */,
 				1E0FEE28173BDB260061331F /* MSAIKeychainUtils.h in Headers */,
