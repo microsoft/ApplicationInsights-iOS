@@ -3,7 +3,6 @@
 
 #import "AppInsightsFeatureConfig.h"
 #import "MSAIAppInsights.h"
-#import "MSAIManagerDelegate.h"
 
 #if MSAI_FEATURE_CRASH_REPORTER
 #import "MSAICrashManager.h"

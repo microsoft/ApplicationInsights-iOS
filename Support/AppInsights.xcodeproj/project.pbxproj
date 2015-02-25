@@ -74,7 +74,6 @@
 		1E5954DC15B6F24A00A03429 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E400561D148D79B500EB22B9 /* Foundation.framework */; };
 		1E59559A15B6FDA500A03429 /* MSAIAppInsights.h in Headers */ = {isa = PBXBuildFile; fileRef = E41EB465148D7BF50015DEDC /* MSAIAppInsights.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1E59559B15B6FDA500A03429 /* AppInsights.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E71509A15B5C76F004E88FF /* AppInsights.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		1E5955FD15B7877B00A03429 /* MSAIManagerDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E5955FA15B7877A00A03429 /* MSAIManagerDelegate.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1E5A459516F0DFC200B55C04 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E400561D148D79B500EB22B9 /* Foundation.framework */; };
 		1E67961719816B9200B6DA20 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E67961619816B9200B6DA20 /* CFNetwork.framework */; };
 		1E67961819816B9A00B6DA20 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E67961619816B9200B6DA20 /* CFNetwork.framework */; };
@@ -264,7 +263,6 @@
 		1E49A4D4161222D400463151 /* AppInsightsPrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppInsightsPrivate.h; sourceTree = "<group>"; };
 		1E49A4D5161222D400463151 /* AppInsightsPrivate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppInsightsPrivate.m; sourceTree = "<group>"; };
 		1E5954F215B6F24A00A03429 /* libAppInsights.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libAppInsights.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		1E5955FA15B7877A00A03429 /* MSAIManagerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAIManagerDelegate.h; sourceTree = "<group>"; };
 		1E5A459016F0DFC200B55C04 /* AppInsightsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AppInsightsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1E66CA9115D4100500F35BED /* buildnumber.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = buildnumber.xcconfig; sourceTree = "<group>"; };
 		1E67961619816B9200B6DA20 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
@@ -710,7 +708,6 @@
 				1E84DB3317E0977C00AC83FD /* AppInsightsFeatureConfig.h */,
 				E41EB465148D7BF50015DEDC /* MSAIAppInsights.h */,
 				E41EB466148D7BF50015DEDC /* MSAIAppInsights.m */,
-				1E5955FA15B7877A00A03429 /* MSAIManagerDelegate.h */,
 			);
 			name = Classes;
 			path = ../Classes;
@@ -760,7 +757,6 @@
 				807CFDAB1A712974004EA1B6 /* MSAIDataPointType.h in Headers */,
 				1B47E02E1A84D3DF000B4C3D /* MSAIEnvelopeManager.h in Headers */,
 				1E59559A15B6FDA500A03429 /* MSAIAppInsights.h in Headers */,
-				1E5955FD15B7877B00A03429 /* MSAIManagerDelegate.h in Headers */,
 				807CFDA31A712974004EA1B6 /* MSAIApplication.h in Headers */,
 				807CFDA71A712974004EA1B6 /* MSAIData.h in Headers */,
 				1BBBCF341A6594AE00253031 /* MSAIChannel.h in Headers */,
