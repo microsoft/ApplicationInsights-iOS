@@ -1,4 +1,5 @@
 #import <Foundation/Foundation.h>
+#import "MSAIAppInsights.h"
 
 #ifndef MSAI_Private_h
 #define MSAI_Private_h

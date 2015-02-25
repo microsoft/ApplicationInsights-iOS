@@ -1,4 +1,5 @@
 #import "MSAIPersistence.h"
+#import "AppInsightsPrivate.h"
 
 NSString *const kHighPrioString = @"highPrio";
 NSString *const kRegularPrioString = @"regularPrio";
@@ -36,7 +37,7 @@ static dispatch_once_t onceToken = nil;
         typeof(self) strongSelf = weakSelf;
         BOOL success = [data writeToFile:fileURL atomically:YES];
         if(success) {
-          NSLog(@"Wrote %@", fileURL);
+          MSAILog(@"Wrote %@", fileURL);
           if(type != MSAIPersistenceTypeFakeCrash) {
             [strongSelf sendBundleSavedNotification];
           }
@@ -47,11 +48,11 @@ static dispatch_once_t onceToken = nil;
       });
     }
     else if(completionBlock != nil) {
-      NSLog(@"Unable to write %@", fileURL);
+      MSAILog(@"Unable to write %@", fileURL);
       completionBlock(NO);
     }
     else {
-      NSLog(@"Unable to write %@", fileURL);
+      MSAILog(@"Unable to write %@", fileURL);
     }
   }
 }
@@ -132,14 +133,14 @@ static dispatch_once_t onceToken = nil;
     NSError *error = nil;
     [[NSFileManager new] removeItemAtPath:path error:&error];
     if(error) {
-      NSLog(@"Error deleting file at path %@", path);
+      MSAILog(@"Error deleting file at path %@", path);
     }
     else {
-      NSLog(@"Successfully deleted file at path %@", path);
+      MSAILog(@"Successfully deleted file at path %@", path);
     }
   }
   else {
-    NSLog(@"Empty path, so nothing can be deleted");
+    MSAILog(@"Empty path, so nothing can be deleted");
   }
 }
 
@@ -186,7 +187,7 @@ static dispatch_once_t onceToken = nil;
     NSError *error = nil;
     [[NSFileManager defaultManager] createDirectoryAtPath:path withIntermediateDirectories:NO attributes:nil error:&error];
     if(error) {
-      NSLog(@"Error while creating folder at: %@, with error: %@", path, error);
+      MSAILog(@"Error while creating folder at: %@, with error: %@", path, error);
     }
   }
 }
@@ -199,7 +200,7 @@ static dispatch_once_t onceToken = nil;
   if (![[NSFileManager defaultManager] fileExistsAtPath:appplicationSupportDir isDirectory:NULL]) {
     NSError *error = nil;
     if (![[NSFileManager defaultManager] createDirectoryAtPath:appplicationSupportDir withIntermediateDirectories:YES attributes:nil error:&error]) {
-      NSLog(@"%@", error.localizedDescription);
+      MSAILog(@"%@", error.localizedDescription);
     }
     else {
       NSURL *url = [NSURL fileURLWithPath:appplicationSupportDir];
@@ -207,10 +208,10 @@ static dispatch_once_t onceToken = nil;
                           forKey:NSURLIsExcludedFromBackupKey
                            error:&error])
       {
-        NSLog(@"Error excluding %@ from backup %@", url.lastPathComponent, error.localizedDescription);
+        MSAILog(@"Error excluding %@ from backup %@", url.lastPathComponent, error.localizedDescription);
       }
       else {
-        NSLog(@"Exclude %@ from backup", url);
+        MSAILog(@"Exclude %@ from backup", url);
       }
     }
   }
