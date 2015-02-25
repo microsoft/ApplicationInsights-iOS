@@ -91,7 +91,7 @@
  *
  *  @param metricsManagerDisabled Flag which determines whether the Metrics Manager should be disabled
  */
-+ (void)setMetricsManagerDisabled:(BOOL)crashMetricsManagerDisabled;
++ (void)setMetricsManagerDisabled:(BOOL)metricsManagerDisabled;
 
 ///-----------------------------------------------------------------------------
 /// @name Environment
