@@ -225,7 +225,7 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 
 - (void)logInvalidIdentifier:(NSString *)environment {
   if (!_appStoreEnvironment) {
-    NSLog(@"[AppInsightsSDK] ERROR: The %@ is invalid! Please use the AppInsights app identifier you find on the apps website on AppInsights! The SDK is disabled!", environment);
+    NSLog(@"[AppInsightsSDK] ERROR: The %@ is invalid! Please use the AppInsights instrumentation key you find on the website! The SDK is disabled!", environment);
   }
 }
 
@@ -390,7 +390,7 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
     }
     _managersInitialized = YES;
   } else {
-    [self logInvalidIdentifier:@"app identifier"];
+    [self logInvalidIdentifier:@"instrumentation key"];
   }
 }
 
