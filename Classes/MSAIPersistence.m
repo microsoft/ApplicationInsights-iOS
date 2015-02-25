@@ -3,7 +3,6 @@
 #import "MSAICrashData.h"
 #import "AppInsightsPrivate.h"
 #import "MSAIHelper.h"
-#import "MSAIAppInsights.h"
 
 NSString *const kHighPrioString = @"highPrio";
 NSString *const kRegularPrioString = @"regularPrio";
@@ -22,7 +21,7 @@ static dispatch_once_t onceToken = nil;
 
 //TODO remove the completion block and implement notification-handling in MSAICrashManager
 + (void)persistBundle:(NSArray *)bundle ofType:(MSAIPersistenceType)type withCompletionBlock:(void (^)(BOOL success))completionBlock {
-  [self persistBundle:bundle ofType:type  withCompletionBlock:completionBlock enableNotifications:YES];
+  [self persistBundle:bundle ofType:type withCompletionBlock:completionBlock enableNotifications:YES];
 }
 
 + (void)persistAfterErrorWithBundle:(NSArray *)bundle {
@@ -30,10 +29,10 @@ static dispatch_once_t onceToken = nil;
     id envelope = [bundle firstObject];
     if(envelope && [envelope isKindOfClass:[MSAIEnvelope class]]) {
       if([((MSAIEnvelope *) envelope).data isKindOfClass:[MSAICrashData class]]) {
-        [self persistBundle:bundle ofType:MSAIPersistenceTypeHighPriority  withCompletionBlock:nil enableNotifications:NO];
+        [self persistBundle:bundle ofType:MSAIPersistenceTypeHighPriority withCompletionBlock:nil enableNotifications:NO];
       }
       else {
-        [self persistBundle:bundle ofType:MSAIPersistenceTypeRegular  withCompletionBlock:nil enableNotifications:NO];
+        [self persistBundle:bundle ofType:MSAIPersistenceTypeRegular withCompletionBlock:nil enableNotifications:NO];
       }
     }
   }
@@ -41,10 +40,11 @@ static dispatch_once_t onceToken = nil;
 
 /**
 * Creates a serial background queue that saves the Bundle using NSKeyedArchiver and NSData's writeToFile:atomically
-* In case MSAIPersistenceTypeFakeCrash, we don't send out a kMSAIPersistenceSuccessNotification, for other types, we do.
-* The optional bundle is optional.
+*
+* In case if type MSAIPersistenceTypeFakeCrash, we don't send out a kMSAIPersistenceSuccessNotification.
+*
 */
-+ (void)persistBundle:(NSArray *)bundle ofType:(MSAIPersistenceType)type  withCompletionBlock:(void (^)(BOOL success))completionBlock enableNotifications:(BOOL)sendNotifications{
++ (void)persistBundle:(NSArray *)bundle ofType:(MSAIPersistenceType)type withCompletionBlock:(void (^)(BOOL success))completionBlock enableNotifications:(BOOL)sendNotifications {
   dispatch_once(&onceToken, ^{
     persistenceQueue = dispatch_queue_create(kPersistenceQueueString, DISPATCH_QUEUE_SERIAL);
   });
@@ -84,17 +84,18 @@ static dispatch_once_t onceToken = nil;
 
 /**
 * Uses the persistenceQueue to retrieve the next bundle synchronously.
+*
 * @returns the next available bundle or nil
 */
 + (NSArray *)nextBundle {
   dispatch_once(&onceToken, ^{
     persistenceQueue = dispatch_queue_create(kPersistenceQueueString, DISPATCH_QUEUE_SERIAL);
   });
-  
+
   __weak typeof(self) weakSelf = self;
   __block NSArray *bundle = nil;
 
-  dispatch_sync(persistenceQueue, ^(){
+  dispatch_sync(persistenceQueue, ^() {
     typeof(self) strongSelf = weakSelf;
     NSString *path = [strongSelf nextURLWithPriority:MSAIPersistenceTypeHighPriority];
     if(!path) {
@@ -221,17 +222,16 @@ static dispatch_once_t onceToken = nil;
 */
 + (void)createApplicationSupportDirectoryIfNeeded {
   NSString *appplicationSupportDir = [NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES) lastObject];
-  if (![[NSFileManager defaultManager] fileExistsAtPath:appplicationSupportDir isDirectory:NULL]) {
+  if(![[NSFileManager defaultManager] fileExistsAtPath:appplicationSupportDir isDirectory:NULL]) {
     NSError *error = nil;
-    if (![[NSFileManager defaultManager] createDirectoryAtPath:appplicationSupportDir withIntermediateDirectories:YES attributes:nil error:&error]) {
+    if(![[NSFileManager defaultManager] createDirectoryAtPath:appplicationSupportDir withIntermediateDirectories:YES attributes:nil error:&error]) {
       MSAILog(@"%@", error.localizedDescription);
     }
     else {
       NSURL *url = [NSURL fileURLWithPath:appplicationSupportDir];
-      if (![url setResourceValue:@YES
-                          forKey:NSURLIsExcludedFromBackupKey
-                           error:&error])
-      {
+      if(![url setResourceValue:@YES
+                         forKey:NSURLIsExcludedFromBackupKey
+                          error:&error]) {
         MSAILog(@"Error excluding %@ from backup %@", url.lastPathComponent, error.localizedDescription);
       }
       else {
@@ -242,7 +242,7 @@ static dispatch_once_t onceToken = nil;
 }
 
 /**
-* @returns the URL to the next file depeneding for the specified type. If there's no file, return nil.
+* @returns the URL to the next file depending on the specified type. If there's no file, return nil.
 */
 + (NSString *)nextURLWithPriority:(MSAIPersistenceType)type {
   [self createApplicationSupportDirectoryIfNeeded];
@@ -277,9 +277,9 @@ static dispatch_once_t onceToken = nil;
 }
 
 /**
-* Send a kMSAIPersistenceSuccessNotification to the main thread to notify observers that we have successfully saved a file
-* This is typocally used to trigger sending.
-*/
+** Send a kMSAIPersistenceSuccessNotification to the main thread to notify observers that we have successfully saved a file
+** This is typocally used to trigger sending.
+**/
 + (void)sendBundleSavedNotification {
   dispatch_async(dispatch_get_main_queue(), ^{
     [[NSNotificationCenter defaultCenter] postNotificationName:kMSAIPersistenceSuccessNotification
