@@ -62,7 +62,7 @@ should not need to set this delegate individually.
 
 - (void)createCrashReportForAppKill;
 
-- (void)sendNextCrashReport;
+- (void)createCrashReport;
 
 - (void)processCrashReportWithFilename:(NSString *)filename envelope:(MSAIEnvelope *)envelope;
 

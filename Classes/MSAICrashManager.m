@@ -24,7 +24,7 @@
 #include <sys/sysctl.h>
 
 // stores the set of crashreports that have been approved but aren't sent yet
-#define kMSAICrashApprovedReports @"MSAICrashApprovedReports"
+#define kMSAICrashApprovedReports @"MSAICrashApprovedReports" //TODO remove this in next Sprint
 
 // internal keys
 NSString *const kMSAICrashManagerIsDisabled = @"MSAICrashManagerIsDisabled";
@@ -82,7 +82,6 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
   }
 }
 
-
 /**
 *	 Main startup sequence initializing PLCrashReporter if it wasn't disabled
 */
@@ -94,7 +93,6 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
 
     [self registerObservers];
     [self loadSettings];
-
 
     /* Configure our reporter */
 
@@ -203,7 +201,6 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
   [self triggerDelayedProcessing];
 }
 
-
 - (void)initValues {
   _timeintervalCrashInLastSessionOccured = -1;
 
@@ -234,12 +231,11 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
 }
 
 #pragma mark - Configuration
-
+// Enable/Disable the CrashManager and store the setting in standardUserDefaults
 - (void)setCrashManagerDisabled:(BOOL)disableCrashManager {
   _isCrashManagerDisabled = disableCrashManager;
   [[NSUserDefaults standardUserDefaults] setBool:disableCrashManager forKey:kMSAICrashManagerIsDisabled];
 }
-
 
 /**
 *  Set the callback for PLCrashReporter
@@ -260,7 +256,6 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
 }
 
 #pragma mark - Debugging Helpers
-
 
 /**
 * Check if the debugger is attached
@@ -393,8 +388,6 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
     observer = nil;
   }
 }
-
-
 
 
 #pragma mark - PLCrashReporter
@@ -537,7 +530,6 @@ Get the filename of the first not approved crash report
   }
 }
 
-
 #pragma mark - Crash Report Processing
 
 - (void)triggerDelayedProcessing {
@@ -548,8 +540,7 @@ Get the filename of the first not approved crash report
 /**
 * Delayed startup processing for everything that does not to be done in the app startup runloop
 *
-* - Checks if there is ano
-* ther exception handler installed that may block ours
+* - Checks if there is another exception handler installed that may block ours
 * - Present UI if the user has to approve new crash reports
 * - Send pending approved crash reports
 */
@@ -584,10 +575,10 @@ Get the filename of the first not approved crash report
     }
 
     if(msai_isRunningInAppExtension()) {
-      [self sendNextCrashReport];
+      [self createCrashReport];
     }
     else {
-      [self sendNextCrashReport];
+      [self createCrashReport];
     }
   }
 }
@@ -618,9 +609,9 @@ Get the filename of the first not approved crash report
 }
 
 /***
-* Gathers all collected data and constructs the XML structure and hands everything to the Channel
+* Gathers all collected data and constructs Crash into an Envelope for processing
 */
-- (void)sendNextCrashReport { //TODO rename this!
+- (void)createCrashReport { //TODO rename this!
   NSError *error = NULL;
 
   if([self.crashFiles count] == 0)
@@ -657,7 +648,7 @@ Get the filename of the first not approved crash report
     if(report) {
       crashEnvelope = [MSAICrashDataProvider crashDataForCrashReport:report];
       if([report.applicationInfo.applicationVersion compare:[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"]] == NSOrderedSame) {
-          //TODO Check if this has to be added again
+        //TODO Check if this has to be added again
 //        _crashIdenticalCurrentVersion = YES;
 
       }
@@ -681,11 +672,10 @@ Get the filename of the first not approved crash report
 }
 
 /**
-*	 Send the XML data to the server
+*	 Send the bundled up crash (in an envelope) over to the channel for persistence & sending
 *
-* Wraps the XML structure into a POST body and starts sending the data asynchronously
-*
-*	@param	xml	The XML data that needs to be send to the server
+*	@param	filename the file that contains the crashreport
+*	@param envelope the bundled up crash data
 */
 - (void)processCrashReportWithFilename:(NSString *)filename envelope:(MSAIEnvelope *)envelope {
 
@@ -699,7 +689,7 @@ Get the filename of the first not approved crash report
     //TODO: sending is done in persistence layer --> notify user that crashes are available to be sent?!
     if(success) {
       [strongSelf cleanCrashReportWithFilename:filename];
-      [strongSelf sendNextCrashReport];
+      [strongSelf createCrashReport];
     }
   }];
 
@@ -762,7 +752,7 @@ Get the filename of the first not approved crash report
 }
 
 /**
-*	 Remove all crash reports and stored meta data for each from the file system and keychain
+*	 Remove all crash reports for each from the file system
 *
 * This is currently only used as a helper method for tests
 */
@@ -771,8 +761,6 @@ Get the filename of the first not approved crash report
     [self cleanCrashReportWithFilename:self.crashFiles[i]];
   }
 }
-
-//TODO move the whole persistence to MSAIPersistence
 
 /**
 * Remove a cached crash report
@@ -795,10 +783,16 @@ Get the filename of the first not approved crash report
   [self saveSettings];
 }
 
+//Safe info about safe termination of the app to NSUserDefaults
 - (void)leavingAppSafely {
   if(self.appNotTerminatingCleanlyDetectionEnabled)
     [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kMSAIAppWentIntoBackgroundSafely];
 }
+
+/**
+* Stores info about didEnterBackground in NSUserDefaults.
+*
+*/
 
 - (void)appEnteredForeground {
   // we disable kill detection while the debugger is running, since we'd get only false positives if the app is terminated by the user using the debugger

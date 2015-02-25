@@ -4,7 +4,6 @@
 @class MSAICrashMetaData;
 @class MSAIContext;
 
-
 /**
 * Prototype of a callback function used to execute additional user code. Called upon completion of crash
 * handling, after the crash report has been written to disk.
@@ -43,17 +42,12 @@ As a foundation it is using the open source, reliable and async-safe crash repor
 [PLCrashReporter](https://code.google.com/p/plcrashreporter/).
 
 This module works as a wrapper around the underlying crash reporting framework and provides functionality to
-detect new crashes, queues them if networking is not available, present a user interface to approve sending
-the reports to the AppInsights servers and more.
+detect new crashes.
 
-It also provides options to add additional meta information to each crash report, like `userName`, `userEmail`
-via `MSAIManagerDelegate` protocol, and additional textual log information via `MSAICrashManagerDelegate`
-protocol and a way to detect startup crashes so you can adjust your startup process to get these crash reports
-too and delay your app initialization.
+It also provides options via `MSAICrashManagerDelegate` protocol and a way to detect startup crashes so you
+can adjust your startup process to get these crash reports too and delay your app initialization.
 
-Crashes are send the next time the app starts. If `crashManagerStatus` is set to `MSAICrashManagerStatusAutoSend`,
-crashes will be send without any user interaction, otherwise an alert will appear allowing the users to decide
-whether they want to send the report or not. This module is not sending the reports right when the crash happens
+Crashes are send the next time the app starts. This module is not sending the reports right when the crash happens
 deliberately, because if is not safe to implement such a mechanism while being async-safe (any Objective-C code
 is _NOT_ async-safe!) and not causing more danger like a deadlock of the device, than helping. We found that users
 do start the app again because most don't know what happened, and you will get by far most of the reports.
@@ -84,12 +78,10 @@ safe crash reporting: [Reliable Crash Reporting](http://goo.gl/WvTBR)
 /// @name Initialization
 ///-----------------------------------------------------------------------------
 
-+ (instancetype) sharedManager;
++ (instancetype)sharedManager;
 
 /**
-* Indicates if the MSAICrashManager is initialised correctly.
-*
-* @return BOOL isSetupCorrectly
+* Indicates if the MSAICrashManager is initialised correctly.*
 */
 @property (nonatomic, assign) BOOL isSetupCorrectly;
 
@@ -97,10 +89,17 @@ safe crash reporting: [Reliable Crash Reporting](http://goo.gl/WvTBR)
 /// @name Configuration
 ///-----------------------------------------------------------------------------
 
+/**
+* Indicates if the CrashManager has been disabled.
+* The CrashManager is enabled by default.
+* Set this after initialization (you can check the `isSetupCorrectly´property to find out) to disable the CrashManager.
+* Usually, this isn't done directly on MSAICrashManger but the interface provided by `MSAIAppInsights´
+* @default: NO
+* @see MSAIAppInsights
+*/
 @property (nonatomic, assign, setter=setCrashManagerDisabled:) BOOL isCrashManagerDisabled;
 
-
-//TODO: Maybe we don't want to expose the all the properties here
+//TODO move the properties to the private header to make sure developers don't use the MSAICrashmanager but MSAIAppInsights
 
 /**
 *  Trap fatal signals via a Mach exception server.
@@ -222,6 +221,7 @@ invoked!
 */
 
 @property (nonatomic, readonly) BOOL didCrashInLastSession;
+
 /**
 * Provides details about the crash that occured in the last app session
 */
@@ -298,6 +298,5 @@ invoked!
 * If the SDK detects an App Store environment, it will _NOT_ cause the app to crash!
 */
 - (void)generateTestCrash;
-
 
 @end
