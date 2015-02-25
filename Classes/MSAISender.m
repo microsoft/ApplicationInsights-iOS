@@ -4,6 +4,7 @@
 #import "MSAIPersistence.h"
 #import "MSAIEnvelope.h"
 #import "AppInsightsPrivate.h"
+#import "MSAIAppInsights.h"
 
 @interface MSAISender ()
 
@@ -76,8 +77,7 @@
       [self sendRequest:request];
     }
     else {
-      MSAILog(@"Error creating JSON from bundle array, saving bundle back to disk");
-      [MSAIPersistence persistBundle:bundle ofType:MSAIPersistenceTypeRegular withCompletionBlock:nil];
+      MSAILog(@"Error creating JSON from bundle array, don't save back to disk");
       self.sending = NO;
     }
   }else{
@@ -94,26 +94,23 @@
                                     
                                     typeof(self) strongSelf = weakSelf;
                                     NSInteger statusCode = [operation.response statusCode];
-                                    self.currentBundle = nil;
-                                    self.sending = NO;
+
                                     if(statusCode >= 200 && statusCode < 400) {
-                                      
                                       MSAILog(@"Sent data with status code: %ld", (long) statusCode);
                                       MSAILog(@"Response data:\n%@", [NSJSONSerialization JSONObjectWithData:responseData options:0 error:nil]);
-                                      
                                       [strongSelf sendSavedData];
-                                      
                                     } else {
-                                      MSAILog(@"Sending failed");
-                                    
-                                      //[MSAIPersistence persistBundle:self.currentBundle];
-                                      //TODO maybe trigger sending again or notify someone?
+                                      MSAILog(@"Sending MSAIAppInsights data failed");
+                                      [MSAIPersistence persistAfterErrorWithBundle:weakSelf.currentBundle];
                                     }
+                                    strongSelf.currentBundle = nil;
+                                    strongSelf.sending = NO;
                                   }];
   
   [self.appClient enqeueHTTPOperation:operation];
 }
 
+//TODO remove this because it is never used and it's not public?
 - (void)sendRequest:(NSURLRequest *)request withCompletionBlock:(MSAINetworkCompletionBlock)completion{
   MSAIHTTPOperation *operation = [_appClient
                                   operationWithURLRequest:request

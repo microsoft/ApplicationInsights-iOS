@@ -23,7 +23,7 @@ the behaviour of `MSAICrashManager`.
 @see userNameForCrashManager:
 @see userEmailForCrashManager:
 */
-- (NSString *)applicationLogForCrashManager;
+- (NSString *)applicationLogForCrashManager; //TODO löschen! + attachments
 
 ///-----------------------------------------------------------------------------
 /// @name Alert
@@ -34,29 +34,31 @@ E.g. to make sure not to ask the user for an app rating :)
 
 @param crashManager The `MSAICrashManager` instance invoking this delegate
 */
-- (void)crashManagerWillShowSubmitCrashReportAlert;
+- (void)crashManagerWillShowSubmitCrashReportAlert; //TODO löschen! + attachments
 
 
 /** Invoked after the user did choose _NOT_ to send a crash in the alert
 @param crashManager The `MSAICrashManager` instance invoking this delegate
 */
-- (void)crashManagerWillCancelSendingCrashReport;
+- (void)crashManagerWillCancelSendingCrashReport; //TODO löschen! + attachments
 
 
 /** Invoked after the user did choose to send crashes always in the alert
 @param crashManager The `MSAICrashManager` instance invoking this delegate
 */
-- (void)crashManagerWillSendCrashReportsAlways;
+- (void)crashManagerWillSendCrashReportsAlways; //TODO löschen! + attachments
 
 ///-----------------------------------------------------------------------------
 /// @name Networking
 ///-----------------------------------------------------------------------------
 
+//Reason for this: http://support.hockeyapp.net/kb/client-integration-ios-mac-os-x/how-to-handle-crashes-during-startup-on-ios
+
 /** Invoked right before sending crash reports will start
 
 @param crashManager The `MSAICrashManager` instance invoking this delegate
 */
-- (void)crashManagerWillSendCrashReport;
+- (void)crashManagerWillSendCrashReport; //TODO this should be part of the MSAISenderDelegate
 
 /** Invoked after sending crash reports failed
 
@@ -91,5 +93,7 @@ received by the app to reduce to possibility of having false positives.
 @see `[MSAICrashManager didReceiveMemoryWarningInLastSession]`
 */
 - (BOOL)considerAppNotTerminatedCleanlyReportForCrashManager;
+//not implemented as property as users want to implement logic
+
 
 @end
