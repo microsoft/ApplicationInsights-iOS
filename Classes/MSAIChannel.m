@@ -16,7 +16,7 @@
 static NSInteger const defaultMaxBatchCount = 5;
 static NSInteger const defaultBatchInterval = 15;
 #else
-static NSInteger const defaultMaxBatchCount = 5;
+static NSInteger const defaultMaxBatchCount = 50;
 static NSInteger const defaultBatchInterval = 15;
 #endif
 
