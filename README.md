@@ -22,7 +22,7 @@ The SDK runs on devices with iOS 6.0 or higher.
 <a id="download"></a> 
 ## Download & Extract
 
-1. Download the latest [AppInsights SDK for iOS](https://rink.hockeyapp.net/apps/19e2b445f2769757bd4d384e56f1fc3b) framework.
+1. Download the latest [AppInsights SDK for iOS](https://github.com/Microsoft/AppInsights-iOS/releases/download/v1.0-alpha.2/AppInsights-1.0-alpha.2.zip) framework.
 
 2. Unzip the file. A new folder `AppInsights` is created.
 
