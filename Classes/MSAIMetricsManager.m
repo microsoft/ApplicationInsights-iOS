@@ -172,7 +172,7 @@ static NSInteger const defaultSessionExpirationTime = 20;
   
   dispatch_async(_metricEventQueue, ^{
     MSAIEnvelope *envelope = [[MSAIEnvelopeManager sharedManager] envelopeForCrashReport:(PLCrashReport *)report exception:exception];
-    [[MSAIChannel sharedChannel] enqueueEnvelope:envelope];
+    [[MSAIChannel sharedChannel] processEnvelope:envelope withCompletionBlock:nil];
   });
 }
 
