@@ -39,10 +39,7 @@ The SDK runs on devices with iOS 6.0 or higher.
 6. Select the tab `Build Phases`.
 7. Expand `Link Binary With Libraries`.
 8. Add the following system frameworks, if they are missing:
-	- `AssetsLibrary`
 	- `Foundation`
-	- `MobileCoreServices`
-	- `Security`
 	- `SystemConfiguration`
 	- `UIKit`
 	- `CoreTelephony`(only required if iOS > 7.0)
