@@ -104,6 +104,7 @@
                                       [strongSelf sendSavedData];
                                     } else {
                                       MSAILog(@"Sending MSAIAppInsights data failed");
+                                      MSAILog(@"Response data:\n%@", [NSJSONSerialization JSONObjectWithData:responseData options:0 error:nil]);
                                       [MSAIPersistence persistAfterErrorWithBundle:weakSelf.currentBundle];
                                       strongSelf.currentBundle = nil;
                                       strongSelf.sending = NO;
