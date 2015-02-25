@@ -20,7 +20,11 @@ profile
 *.swp
 *~.nib
 profile
-idea/
+
+# App Code
+**/.idea/
+**/.idea/**
 
 documentation/
 Products/
+upload-to-hockey.sh

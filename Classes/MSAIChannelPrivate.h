@@ -1,4 +1,5 @@
 #import <Foundation/Foundation.h>
+#import "MSAIHTTPOperation.h"
 
 @class MSAIEnvelope;
 @class MSAITelemetryContext;
@@ -6,6 +7,7 @@
 @class MSAITelemetryContext;
 @class MSAITelemetryData;
 @class MSAISender;
+@class MSAICrashData;
 
 @interface MSAIChannel ()
 
@@ -13,57 +15,71 @@
 /// @name Initialisation
 ///-----------------------------------------------------------------------------
 
-/**
- *  The context object, which contains information about current session, the device, the user etc.
- */
-@property(nonatomic, strong, readonly)MSAITelemetryContext *telemetryContext;
-
-/**
- *  The sender instance.
- */
-@property(nonatomic, strong, readonly)MSAISender *sender;
-
-/**
- *  Initializes the telemetry channel.
- *
- *  @param appClient     the app client for sending data
- *  @param clientContext information about the client and the AI account
- *
- *  @return a channel instance.
- */
-- (instancetype)initWithAppClient:(MSAIAppClient *) appClient telemetryContext:(MSAITelemetryContext *)telemetryContext;
++ (instancetype)sharedChannel;
 
 ///-----------------------------------------------------------------------------
-/// @name Enqueue data
+/// @name Queue management
 ///-----------------------------------------------------------------------------
 
 /**
- *  Sends out telemetry data to the server.
- *
- *  @param dataItem the data object, which should be sent to the telemetry server
+ *  A queue which makes array operations thread safe.
  */
-- (void)sendDataItem:(MSAITelemetryData *)dataItem;
-
-///-----------------------------------------------------------------------------
-/// @name Helper
-///-----------------------------------------------------------------------------
+@property (nonatomic, strong) dispatch_queue_t dataItemsOperations;
 
 /**
- *  Creates a dictionary out of the given telemetry data and context information.
- *
- *  @param dataItem the telemetry data to send
- *
- *  @return return a dictionary which contains the telemetry data and context information
+ *  An array for collecting data, which should be sent to the telemetry server.
  */
-- (NSDictionary *)dictionaryFromDataItem:(MSAITelemetryData *)dataItem;
+@property(nonatomic, strong) NSMutableArray *dataItemQueue;
 
 /**
- *  Returns the formatted string for a given date.
+ *  Enqueue telemetry data (events, metrics, exceptions, traces) before processing it.
  *
- *  @param date the date to be converted to a string
- *
- *  @return the string representation for a given date
+ *  @param envelope the data object, which should be processed
  */
-- (NSString *)dateStringForDate:(NSDate *)date;
+- (void)enqueueEnvelope:(MSAIEnvelope *)envelope;
+
+/**
+ *  Directly process telemetry data (crashs) without enqueuing it first.
+ *
+ *  @param envelope        the envelope object to process.
+ *  @param completionBlock the block, which should be executed after the envelope has been persisted.
+ */
+- (void)processEnvelope:(MSAIEnvelope *)envelope withCompletionBlock: (void (^)(BOOL success)) completionBlock;
+
+///-----------------------------------------------------------------------------
+/// @name Batching
+///-----------------------------------------------------------------------------
+
+/*
+ * Interval for sending data to the server in seconds.
+ *
+ * Default: 15
+ */
+@property (nonatomic, assign) NSInteger senderInterval;
+
+/*
+ * Threshold for sending data to the server. Default batch size for debugging is 150, for release
+ * configuration, the batch size is 5.
+ *
+ * @warning: we advice to not set the batch size below 5 events.
+ *
+ * Default: 5
+ */
+@property (nonatomic, assign) NSInteger senderBatchSize;
+
+/**
+ *  A timer source which is used to flush the queue after a cretain time.
+ */
+@property (nonatomic, strong) dispatch_source_t timerSource;
+
+/**
+ *  Starts the timer.
+ */
+- (void)startTimer;
+
+/**
+ *  Stops the timer if currently running.
+ */
+- (void)invalidateTimer;
 
 @end

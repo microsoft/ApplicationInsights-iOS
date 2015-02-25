@@ -11,14 +11,20 @@
 #import "MSAIAppClient.h"
 #import "MSAIMetricsManager.h"
 #import "MSAIMetricsManagerPrivate.h"
-#import "MSAIBaseManager.h"
-#import "MSAIBaseManagerPrivate.h"
-#import "MSAIContextPrivate.h"
-#import "MSAIContext.h"
-#import "MSAITelemetryContext.h"
-#import "MSAITelemetryContextPrivate.h"
+
+static NSNotificationCenter *mockNotificationCenter = nil;
+
+@implementation NSNotificationCenter (UnitTests)
+
++(id)defaultCenter {
+  return mockNotificationCenter;
+}
+
+@end
 
 @interface MSAIMetricsManagerTests : XCTestCase
+
+@property (strong) MSAIMetricsManager *sut;
 
 @end
 
@@ -28,34 +34,53 @@
 - (void)setUp {
   [super setUp];
   
-  MSAIAppClient *appClient = mockClass([MSAIAppClient class]);
-  MSAIContext *appContext = [[MSAIContext alloc]initWithInstrumentationKey:@"245251431" isAppStoreEnvironment:NO];
-  [MSAIMetricsManager configureWithContext:appContext appClient:appClient];
-  [MSAIMetricsManager startManager];
+  self.sut = [MSAIMetricsManager new];
 }
 
-#pragma mark - Setup Tests
+#pragma mark - Singleton Tests
 
-- (void)testThatItInstantiates {
-  assertThat([MSAIMetricsManager context], notNilValue());
-  assertThat([MSAIMetricsManager channel], notNilValue());
-  assertThat([MSAIMetricsManager telemetryContext], notNilValue());
+- (void)testSharedManagerCreated {
+  XCTAssertNotNil([MSAIMetricsManager sharedManager]);
 }
 
-#pragma mark - Helper
+- (void)testUniqueInstanceCreated {
+  XCTAssertNotNil([MSAIMetricsManager new]);
+}
 
-- (void)testTelemetryChannel {
-  MSAITelemetryContext *testContext = [MSAIMetricsManager telemetryContext];
-  
-  assertThat([testContext instrumentationKey], notNilValue());
-  assertThat([testContext endpointPath], equalTo(MSAI_TELEMETRY_PATH));
-  assertThat([testContext application], notNilValue());
-  assertThat([testContext device], notNilValue());
-  assertThat([testContext location], notNilValue());
-  assertThat([testContext session], notNilValue());
-  assertThat([testContext user], notNilValue());
-  assertThat([testContext internal], notNilValue());
-  assertThat([testContext operation], notNilValue());
+- (void)testSingletonReturnsSameInstanceTwice {
+  MSAIMetricsManager *m1 = [MSAIMetricsManager sharedManager];
+  XCTAssertEqualObjects(m1, [MSAIMetricsManager sharedManager]);
+}
+
+- (void)testSingletonSeperateFromUniqueInstance {
+  XCTAssertNotEqualObjects([MSAIMetricsManager sharedManager], [MSAIMetricsManager new]);
+}
+
+- (void)testMetricsManagerReturnsSeperateUniqueInstances {
+  XCTAssertNotEqualObjects([MSAIMetricsManager new], [MSAIMetricsManager new]);
+}
+
+- (void)testMetricsEventQueueWasInitialised {
+  XCTAssertNotNil(self.sut.metricEventQueue);
+}
+
+- (void)testManagerIsInitialised {
+  XCTAssertFalse(self.sut.managerInitialised);
+  [self.sut startManager];
+  XCTAssertTrue(self.sut.managerInitialised);
+}
+
+- (void)testMetricsManagerDisabled {
+  XCTAssertFalse(self.sut.metricsManagerDisabled);
+  self.sut.metricsManagerDisabled = YES;
+  [self.sut startManager];
+  XCTAssertFalse(self.sut.managerInitialised);
+}
+
+- (void)testRegisterObservers {
+  mockNotificationCenter = mock(NSNotificationCenter.class);
+  [self.sut registerObservers];
+  [verifyCount(mockNotificationCenter, times(4)) addObserverForName:(id)anything() object:nil queue:NSOperationQueue.mainQueue usingBlock:(id)anything()];
 }
 
 @end

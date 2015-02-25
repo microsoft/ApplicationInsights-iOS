@@ -30,4 +30,27 @@
     return dict;
 }
 
+#pragma mark - NSCoding
+
+- (id)initWithCoder:(NSCoder *)coder {
+  self = [super initWithCoder:coder];
+  if(self) {
+    self.accountAcquisitionDate = [coder decodeObjectForKey:@"self.accountAcquisitionDate"];
+    self.accountId = [coder decodeObjectForKey:@"self.accountId"];
+    self.userAgent = [coder decodeObjectForKey:@"self.userAgent"];
+    self.userId = [coder decodeObjectForKey:@"self.userId"];
+  }
+
+  return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+  [super encodeWithCoder:coder];
+  [coder encodeObject:self.accountAcquisitionDate forKey:@"self.accountAcquisitionDate"];
+  [coder encodeObject:self.accountId forKey:@"self.accountId"];
+  [coder encodeObject:self.userAgent forKey:@"self.userAgent"];
+  [coder encodeObject:self.userId forKey:@"self.userId"];
+}
+
+
 @end

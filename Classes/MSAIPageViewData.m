@@ -28,4 +28,23 @@
     return dict;
 }
 
+#pragma mark - NSCoding
+
+- (id)initWithCoder:(NSCoder *)coder {
+  self = [super initWithCoder:coder];
+  if(self) {
+    self.url = [coder decodeObjectForKey:@"self.url"];
+    self.duration = [coder decodeObjectForKey:@"self.duration"];
+  }
+
+  return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+  [super encodeWithCoder:coder];
+  [coder encodeObject:self.url forKey:@"self.url"];
+  [coder encodeObject:self.duration forKey:@"self.duration"];
+}
+
+
 @end

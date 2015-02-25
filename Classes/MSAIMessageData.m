@@ -33,4 +33,23 @@
   return dict;
 }
 
+#pragma mark - NSCoding
+
+- (id)initWithCoder:(NSCoder *)coder {
+  self = [super initWithCoder:coder];
+  if(self) {
+    self.message = [coder decodeObjectForKey:@"self.message"];
+    self.severityLevel = (MSAISeverityLevel) [coder decodeIntForKey:@"self.severityLevel"];
+  }
+
+  return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+  [super encodeWithCoder:coder];
+  [coder encodeObject:self.message forKey:@"self.message"];
+  [coder encodeInt:self.severityLevel forKey:@"self.severityLevel"];
+}
+
+
 @end

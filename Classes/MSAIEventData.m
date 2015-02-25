@@ -36,4 +36,21 @@
   return dict;
 }
 
+#pragma mark - NSCoding
+
+- (id)initWithCoder:(NSCoder *)coder {
+  self = [super initWithCoder:coder];
+  if(self) {
+    self.measurements = [coder decodeObjectForKey:@"self.measurements"];
+  }
+
+  return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+  [super encodeWithCoder:coder];
+  [coder encodeObject:self.measurements forKey:@"self.measurements"];
+}
+
+
 @end

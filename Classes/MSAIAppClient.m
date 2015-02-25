@@ -18,12 +18,15 @@
 - (NSMutableURLRequest *) requestWithMethod:(NSString*) method
                                        path:(NSString *) path
                                  parameters:(NSDictionary *)params {
-  NSParameterAssert(self.baseURL);
+  
   NSParameterAssert(method);
   NSParameterAssert(params == nil || [method isEqualToString:@"POST"] || [method isEqualToString:@"GET"]);
-  path = path ? : @"";
-  
-  NSURL *endpoint = [self.baseURL URLByAppendingPathComponent:path];
+  // TODO: Since we are currently talking to two different endpoints, we have to pass the whole address rather than just the path
+  //  NSParameterAssert(self.baseURL);
+  //  path = path ? : @"";
+  //
+  //  NSURL *endpoint = [self.baseURL URLByAppendingPathComponent:path];
+  NSURL *endpoint = [NSURL URLWithString:path];
   NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:endpoint];
   request.HTTPMethod = method;
   
@@ -37,7 +40,7 @@
                                        [self.class queryStringFromParameters:params withEncoding:NSUTF8StringEncoding]]];
       [request setURL:endpoint];
     } else {
-      //TODO: this is crap. Boundary must be the same as the one in appendData
+      //TODO: Boundary should be the same as the one in appendData
       //unify this!
       NSString *boundary = @"----FOO";
       NSString *contentType = [NSString stringWithFormat:@"multipart/form-data; boundary=%@", boundary];

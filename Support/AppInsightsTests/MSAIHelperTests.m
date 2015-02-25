@@ -25,11 +25,6 @@
 
 - (void)tearDown {
   // Tear-down code here.
-# pragma clang diagnostic push
-# pragma clang diagnostic ignored "-Wimplicit"
-  __gcov_flush();
-# pragma clang diagnostic pop
-  
   [super tearDown];
 }
 
@@ -98,5 +93,11 @@
   assertThatInteger([resultString length], equalToInteger(36));
 }
 
+- (void)testUtcDateString{
+  NSDate *testDate = [NSDate dateWithTimeIntervalSince1970:0];
+  NSString *utcDateString = msai_utcDateString(testDate);
+  
+  assertThat(utcDateString, equalTo(@"1970-01-01T00:00:00.000Z"));
+}
 
 @end

@@ -2,6 +2,6 @@
 #import "MSAITelemetryData.h"
 #import "MSAIDomain.h"
 
-@interface MSAIDomain : MSAITelemetryData
+@interface MSAIDomain : MSAITelemetryData <NSCoding>
 
 @end

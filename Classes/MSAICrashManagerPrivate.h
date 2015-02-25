@@ -5,6 +5,7 @@
 #import <CrashReporter/CrashReporter.h>
 
 @class MSAIAppClient;
+@class MSAIEnvelope;
 
 @interface MSAICrashManager () {
 }
@@ -15,48 +16,77 @@
 ///-----------------------------------------------------------------------------
 
 /**
- Sets the optional `MSAICrashManagerDelegate` delegate.
- 
- The delegate is automatically set by using `[MSAITelemetryManager setDelegate:]`. You
- should not need to set this delegate individually.
- 
- @see `[MSAITelemetryManager setDelegate:]`
- */
-@property (nonatomic, weak) id delegate;
+Sets the optional `MSAICrashManagerDelegate` delegate.
+
+The delegate is automatically set by using `[MSAIManager setDelegate:]`. You
+should not need to set this delegate individually.
+
+@see `[MSAIManager setDelegate:]`
+*/
+@property (nonatomic, weak) id delegate; //TODO Will be removed eventually?
+
+@property (nonatomic, assign) PLCrashReporterCallbacks *crashCallBacks;
+@property (nonatomic, strong) NSFileManager *fileManager; //TODO remove when we refactor the persistence stuff out of crashmanager
+@property (nonatomic, strong) MSAIContext *appContext;
+@property (nonatomic, strong) NSMutableArray *crashFiles; //TODO remove when we refactor the persistence stuff out of crashmanager
+@property (nonatomic, strong) NSMutableDictionary *approvedCrashReports;
+@property (nonatomic, copy) NSString *settingsFile; //TODO remove when we refactor the persistence stuff out of crashmanager
+@property (nonatomic, copy) NSString *crashesDir; //TODO remove when we refactor the persistence stuff out of crashmanager
+@property (nonatomic, copy) NSString *lastCrashFilename;
+@property (nonatomic, strong) MSAIPLCrashReporter *plCrashReporter;
+@property (nonatomic, assign) BOOL didLogLowMemoryWarning;
+@property (nonatomic, assign) BOOL sendingInProgress;
+@property (nonatomic, copy) NSString *analyzerInProgressFile;
+@property (nonatomic, assign) NSUncaughtExceptionHandler *exceptionHandler;
 
 /**
- * must be set
- */
-@property (nonatomic, strong) MSAIAppClient *appClient;
+*  This method is used to setup the CrashManager-Module of the Application Insights SDK.
+*  This method is called by MSAIManager during it's initialization, so calling this by hand
+*  shouldn't be necessary in most cases.
+*
+*  @param context the MSAIContext object
+*/
++ (void)startWithContext:(MSAIContext *)context;
 
-@property (nonatomic) NSUncaughtExceptionHandler *exceptionHandler;
+- (void)startManager;
 
-@property (nonatomic, strong) NSFileManager *fileManager;
+- (void)initValues;
 
-@property (nonatomic, strong) MSAIPLCrashReporter *plCrashReporter;
+- (void)handleCrashReport;
 
-@property (nonatomic) NSString *lastCrashFilename;
+- (NSString *)firstNotApprovedCrashReport;
 
-@property (nonatomic, copy, setter = setAlertViewHandler:) MSAICustomAlertViewHandler alertViewHandler;
+- (BOOL)hasPendingCrashReport;
 
-@property (nonatomic, strong) NSString *crashesDir;
+- (void)invokeDelayedProcessing;
+
+- (void)createCrashReportForAppKill;
+
+- (void)createCrashReport;
+
+- (void)processCrashReportWithFilename:(NSString *)filename envelope:(MSAIEnvelope *)envelope;
+
+- (void)saveSettings;
+
+- (void)loadSettings;
 
 - (void)cleanCrashReports;
 
-- (NSString *)userIDForCrashReport;
-- (NSString *)userEmailForCrashReport;
-- (NSString *)userNameForCrashReport;
+- (void)cleanCrashReportWithFilename:(NSString *)filename;
 
-- (void)handleCrashReport;
-- (BOOL)hasPendingCrashReport;
-- (NSString *)firstNotApprovedCrashReport;
+- (void)leavingAppSafely;
 
-- (void)persistUserProvidedMetaData:(MSAICrashMetaData *)userProvidedMetaData;
+- (void)appEnteredForeground;
 
-- (void)invokeDelayedProcessing;
-- (void)sendNextCrashReport;
-
-- (void)setLastCrashFilename:(NSString *)lastCrashFilename;
+/**
+* by default, just logs the message
+*
+* can be overriden by subclasses to do their own error handling,
+* e.g. to show UI
+*
+* @param error NSError
+*/
+- (void)reportError:(NSError *)error;
 
 @end
 

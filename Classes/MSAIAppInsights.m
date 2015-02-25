@@ -1,15 +1,22 @@
 #import "AppInsights.h"
 #import "AppInsightsPrivate.h"
 
-#import "MSAIBaseManagerPrivate.h"
-
 #import "MSAIHelper.h"
 #import "MSAIAppClient.h"
 #import "MSAIKeychainUtils.h"
 #import "MSAIContext.h"
 #import "MSAIContextPrivate.h"
-
+#import "MSAICategoryContainer.h"
+#import "MSAIChannel.h"
+#import "MSAISender.h"
+#import "MSAISenderPrivate.h"
+#import "MSAIChannelPrivate.h"
+#import "MSAITelemetryContext.h"
+#import "MSAITelemetryContextPrivate.h"
+#import "MSAIEnvelopeManager.h"
+#import "MSAIEnvelopeManagerPrivate.h"
 #include <stdint.h>
+#import "MSAICrashManager.h"
 
 
 #if MSAI_FEATURE_CRASH_REPORTER
@@ -20,23 +27,189 @@
 #import "MSAIMetricsManagerPrivate.h"
 #endif /* MSAI_FEATURE_METRICS */
 
+NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 
-@implementation MSAITelemetryManager {
+@implementation MSAIAppInsights {
   
   BOOL _validInstrumentationKey;
-  
   BOOL _startManagerIsInvoked;
-  
   BOOL _startUpdateManagerIsInvoked;
-  
   BOOL _managersInitialized;
-  
   MSAIAppClient *_appClient;
-  
   MSAIContext *_appContext;
+  MSAITelemetryContext *_telemetryContext;
 }
 
-#pragma mark - Private Class Methods
+#pragma mark - Public Class Methods
+
++ (MSAIAppInsights *)sharedInstance {
+  static MSAIAppInsights *sharedInstance = nil;
+  static dispatch_once_t pred;
+  
+  dispatch_once(&pred, ^{
+    sharedInstance = [MSAIAppInsights alloc];
+    sharedInstance = [sharedInstance init];
+  });
+  
+  return sharedInstance;
+}
+
+#pragma mark - Init
+
+- (id) init {
+  if ((self = [super init])) {
+    _serverURL = nil;
+    _managersInitialized = NO;
+    _appClient = nil;
+    _crashManagerDisabled = NO;
+    _metricsManagerDisabled = NO;
+    _appStoreEnvironment = NO;
+    _startManagerIsInvoked = NO;
+    _startUpdateManagerIsInvoked = NO;
+    _installString = msai_appAnonID();
+    
+#if !TARGET_IPHONE_SIMULATOR
+    // check if we are really in an app store environment
+    if (![[NSBundle mainBundle] pathForResource:@"embedded" ofType:@"mobileprovision"]) {
+      _appStoreEnvironment = YES;
+    }
+#endif
+    
+    [self performSelector:@selector(validateStartManagerIsInvoked) withObject:nil afterDelay:0.0f];
+    
+  }
+  return self;
+}
+
+#pragma mark - Public Methods
+
+- (void)setup {
+  NSString *iKey = [[NSBundle mainBundle] objectForInfoDictionaryKey:kMSAIInstrumentationKey];
+  _appContext = [[MSAIContext alloc] initWithInstrumentationKey:iKey isAppStoreEnvironment:_appStoreEnvironment];
+  [self initializeModules];
+}
+
++ (void)setup {
+    [[self sharedInstance] setup];
+}
+
+- (void)start {
+  if (!_validInstrumentationKey) return;
+  if (_startManagerIsInvoked) {
+    NSLog(@"[AppInsightsSDK] Warning: start should only be invoked once! This call is ignored.");
+    return;
+  }
+  
+  if (![self isSetUpOnMainThread]) return;
+  
+  MSAILog(@"INFO: Starting MSAIManager");
+  _startManagerIsInvoked = YES;
+  
+  [[MSAIEnvelopeManager sharedManager] configureWithTelemetryContext:[self telemetryContext]];
+  [[MSAISender sharedSender] configureWithAppClient:[self appClient] endpointPath:[[self telemetryContext] endpointPath]];
+  [[MSAISender sharedSender] sendSavedData];
+#if MSAI_FEATURE_CRASH_REPORTER
+  // start CrashManager
+  if (![self isCrashManagerDisabled]) {
+    MSAILog(@"INFO: Starting MSAICrashManager");
+    [MSAICrashManager sharedManager].isCrashManagerDisabled = self.isCrashManagerDisabled;
+      //this will init the crash manager
+      //if we haven't set the crashManagerStatus it won't do anything!!!
+    [MSAICrashManager startWithContext:_appContext];
+  }
+#endif /* MSAI_FEATURE_CRASH_REPORTER */
+  
+#if MSAI_FEATURE_METRICS
+  if (![self isMetricsManagerDisabled]) {
+    MSAILog(@"INFO: Starting MSAIMetricsManager");
+    [[MSAIMetricsManager sharedManager] startManager];
+  }
+#endif /* MSAI_FEATURE_METRICS */
+  
+  // App Extensions can only use MSAICrashManager, so ignore all others automatically
+  if (msai_isRunningInAppExtension()) {
+    return;
+  }
+}
+
++ (void)start {
+  [[self sharedInstance] start];
+}
+
+#if MSAI_FEATURE_METRICS
+- (void)setMetricsManagerDisabled:(BOOL)metricsManagerDisabled {
+  [MSAIMetricsManager sharedManager].metricsManagerDisabled = metricsManagerDisabled;
+  _metricsManagerDisabled = metricsManagerDisabled;
+}
+
++ (void)setMetricsManagerDisabled:(BOOL)metricsManagerDisabled {
+  [[self sharedInstance] setMetricsManagerDisabled:metricsManagerDisabled];
+}
+#endif /* MSAI_FEATURE_METRICS */
+
+
+#if MSAI_FEATURE_CRASH_REPORTER
+- (void)setCrashManagerDisabled:(BOOL)crashManagerDisabled {
+  [MSAICrashManager sharedManager].isCrashManagerDisabled = crashManagerDisabled;
+  _crashManagerDisabled = crashManagerDisabled;
+}
+
++ (void)setCrashManagerDisabled:(BOOL)crashManagerDisabled{
+  [[self sharedInstance] setCrashManagerDisabled:crashManagerDisabled];
+}
+
+#endif
+
+- (void)setServerURL:(NSString *)serverURL {
+  // ensure url ends with a trailing slash
+  if (![serverURL hasSuffix:@"/"]) {
+    serverURL = [NSString stringWithFormat:@"%@/", serverURL];
+  }
+  
+  if (_serverURL != serverURL) {
+    _serverURL = [serverURL copy];
+    
+    if (_appClient) {
+      _appClient.baseURL = [NSURL URLWithString:_serverURL ? _serverURL : MSAI_SDK_URL];
+    }
+  }
+}
+
++ (void)setServerURL:(NSString *)serverURL {
+  [[self sharedInstance] setServerURL:serverURL];
+}
+
+- (void)testIdentifier {
+  if (![_appContext instrumentationKey] || [_appContext isAppStoreEnvironment]) {
+    return;
+  }
+  
+  NSDate *now = [NSDate date];
+  NSString *timeString = [NSString stringWithFormat:@"%.0f", [now timeIntervalSince1970]];
+  [self pingServerForIntegrationStartWorkflowWithTimeString:timeString instrumentationKey:[_appContext instrumentationKey]];
+}
+
++ (void)testIdentifier {
+  [[self sharedInstance] testIdentifier];
+}
+
+- (NSString *)version {
+  return msai_sdkVersion();
+}
+
++ (NSString *)version {
+  return [[self sharedInstance] version];
+}
+
+- (NSString *)build {
+  return msai_sdkBuild();
+}
+
++ (NSString *)build {
+  return [[self sharedInstance] build];
+}
+
+#pragma mark - Private Instance Methods
 
 - (BOOL)checkValidityOfInstrumentationKey:(NSString *)instrumentationKey {
   BOOL result = NO;
@@ -52,221 +225,51 @@
 
 - (void)logInvalidIdentifier:(NSString *)environment {
   if (!_appStoreEnvironment) {
-    NSLog(@"[AppInsightsSDK] ERROR: The %@ is invalid! Please use the AppInsights app identifier you find on the apps website on AppInsights! The SDK is disabled!", environment);
+    NSLog(@"[AppInsightsSDK] ERROR: The %@ is invalid! Please use the AppInsights instrumentation key you find on the website! The SDK is disabled!", environment);
   }
 }
 
-
-#pragma mark - Public Class Methods
-
-+ (MSAITelemetryManager *)sharedMSAIManager {
-  static MSAITelemetryManager *sharedInstance = nil;
-  static dispatch_once_t pred;
+- (MSAITelemetryContext *)telemetryContext{
   
-  dispatch_once(&pred, ^{
-    sharedInstance = [MSAITelemetryManager alloc];
-    sharedInstance = [sharedInstance init];
-  });
-  
-  return sharedInstance;
-}
-
-- (id) init {
-  if ((self = [super init])) {
-    _serverURL = nil;
-    _delegate = nil;
-    _managersInitialized = NO;
-    
-    _appClient = nil;
-    
-    _disableCrashManager = NO;
-    _disableMetricsManager = NO;
-    
-    _appStoreEnvironment = NO;
-    _startManagerIsInvoked = NO;
-    _startUpdateManagerIsInvoked = NO;
-    
-    _installString = msai_appAnonID();
-    
-#if !TARGET_IPHONE_SIMULATOR
-    // check if we are really in an app store environment
-    if (![[NSBundle mainBundle] pathForResource:@"embedded" ofType:@"mobileprovision"]) {
-      _appStoreEnvironment = YES;
-    }
-#endif
-    
-    [self performSelector:@selector(validateStartManagerIsInvoked) withObject:nil afterDelay:0.0f];
-  }
-  return self;
-}
-
-
-#pragma mark - Public Instance Methods (Configuration)
-
-- (void)configureWithInstrumentationKey:(NSString *)instrumentationKey {
-  
-  _appContext = [[MSAIContext alloc] initWithInstrumentationKey:instrumentationKey isAppStoreEnvironment:_appStoreEnvironment];
-  
-  [self initializeModules];
-}
-
-- (void)configureWithInstrumentationKey:(NSString *)instrumentationKey delegate:(id <MSAITelemetryManagerDelegate>)delegate {
-  _delegate = delegate;
-  _appContext = [[MSAIContext alloc] initWithInstrumentationKey:instrumentationKey isAppStoreEnvironment:_appStoreEnvironment];
-  
-  [self initializeModules];
-}
-
-- (void)startManager {
-  if (!_validInstrumentationKey) return;
-  if (_startManagerIsInvoked) {
-    NSLog(@"[AppInsightsSDK] Warning: startManager should only be invoked once! This call is ignored.");
-    return;
+  if(_telemetryContext){
+    return _telemetryContext;
   }
   
-  if (![self isSetUpOnMainThread]) return;
+  MSAIDevice *deviceContext = [MSAIDevice new];
+  [deviceContext setModel: [_appContext deviceModel]];
+  [deviceContext setType:[_appContext deviceType]];
+  [deviceContext setOsVersion:[_appContext osVersion]];
+  [deviceContext setOs:[_appContext osName]];
+  [deviceContext setDeviceId:msai_appAnonID()];
+  deviceContext.locale = msai_deviceLocale();
+  deviceContext.language = msai_deviceLanguage();
+  [deviceContext setOemName:@"Apple"];
+  deviceContext.screenResolution = msai_screenSize();
   
-  MSAILog(@"INFO: Starting MSAITelemetryManager");
-  _startManagerIsInvoked = YES;
+  MSAIInternal *internalContext = [MSAIInternal new];
+  [internalContext setSdkVersion: msai_sdkVersion()];
   
-#if MSAI_FEATURE_CRASH_REPORTER
-  // start CrashManager
-  if (![self isCrashManagerDisabled]) {
-    MSAILog(@"INFO: Start CrashManager");
-    if (_serverURL) {
-      [_crashManager setServerURL:_serverURL];
-    }
-    
-    [_crashManager startManager];
-  }
-#endif /* MSAI_FEATURE_CRASH_REPORTER */
+  MSAIApplication *applicationContext = [MSAIApplication new];
+  [applicationContext setVersion:[_appContext appVersion]];
   
-#if MSAI_FEATURE_METRICS
-  if (![self isMetricsManagerDisabled]) {
-    [MSAIMetricsManager startManager];
-  }
-#endif /* MSAI_FEATURE_METRICS */
+  MSAISession *sessionContext = [MSAISession new];
   
-  // App Extensions can only use MSAICrashManager, so ignore all others automatically
-  if (msai_isRunningInAppExtension()) {
-    return;
-  }
+  MSAIOperation *operationContext = [MSAIOperation new];
+  MSAIUser *userContext = [MSAIUser new];
+  MSAILocation *locationContext = [MSAILocation new];
+  
+  //TODO: Add additional context data
+  MSAITelemetryContext *telemetryContext = [[MSAITelemetryContext alloc]initWithInstrumentationKey:[_appContext instrumentationKey]
+                                                                                      endpointPath:MSAI_TELEMETRY_PATH
+                                                                                applicationContext:applicationContext
+                                                                                     deviceContext:deviceContext
+                                                                                   locationContext:locationContext
+                                                                                    sessionContext:sessionContext
+                                                                                       userContext:userContext
+                                                                                   internalContext:internalContext
+                                                                                  operationContext:operationContext];
+  return telemetryContext;
 }
-
-
-#if MSAI_FEATURE_METRICS
-- (void)setDisableMetricsManager:(BOOL)disableMetricsManager {
-  [MSAIMetricsManager setDisableMetricsManager:disableMetricsManager];
-  _disableMetricsManager = disableMetricsManager;
-}
-#endif /* MSAI_FEATURE_METRICS */
-
-
-- (void)setServerURL:(NSString *)aServerURL {
-  // ensure url ends with a trailing slash
-  if (![aServerURL hasSuffix:@"/"]) {
-    aServerURL = [NSString stringWithFormat:@"%@/", aServerURL];
-  }
-  
-  if (_serverURL != aServerURL) {
-    _serverURL = [aServerURL copy];
-    
-    if (_appClient) {
-      _appClient.baseURL = [NSURL URLWithString:_serverURL ? _serverURL : MSAI_SDK_URL];
-    }
-  }
-}
-
-
-- (void)setDelegate:(id<MSAITelemetryManagerDelegate>)delegate {
-  if (![self isAppStoreEnvironment]) {
-    if (_startManagerIsInvoked) {
-      NSLog(@"[MSAI] ERROR: The `delegate` property has to be set before calling [[MSAITelemetryManager sharedManager] startManager] !");
-    }
-  }
-  
-  if (_delegate != delegate) {
-    _delegate = delegate;
-    
-#if MSAI_FEATURE_CRASH_REPORTER
-    if (_crashManager) {
-      _crashManager.delegate = _delegate;
-    }
-#endif /* MSAI_FEATURE_CRASH_REPORTER */
-  }
-}
-
-- (void)modifyKeychainUserValue:(NSString *)value forKey:(NSString *)key {
-  NSError *error = nil;
-  BOOL success = YES;
-  NSString *updateType = @"update";
-  
-  if (value) {
-    success = [MSAIKeychainUtils storeUsername:key
-                                   andPassword:value
-                                forServiceName:msai_keychainMSAIServiceName()
-                                updateExisting:YES
-                                 accessibility:kSecAttrAccessibleWhenUnlockedThisDeviceOnly
-                                         error:&error];
-  } else {
-    updateType = @"delete";
-    if ([MSAIKeychainUtils getPasswordForUsername:key
-                                   andServiceName:msai_keychainMSAIServiceName()
-                                            error:&error]) {
-      success = [MSAIKeychainUtils deleteItemForUsername:key
-                                          andServiceName:msai_keychainMSAIServiceName()
-                                                   error:&error];
-    }
-  }
-  
-  if (!success) {
-    NSString *errorDescription = [error description] ?: @"";
-    MSAILog(@"ERROR: Couldn't %@ key %@ in the keychain. %@", updateType, key, errorDescription);
-  }
-}
-
-- (void)setUserID:(NSString *)userID {
-  // always set it, since nil value will trigger removal of the keychain entry
-  _userID = userID;
-  
-  [self modifyKeychainUserValue:userID forKey:kMSAIMetaUserID];
-}
-
-- (void)setUserName:(NSString *)userName {
-  // always set it, since nil value will trigger removal of the keychain entry
-  _userName = userName;
-  
-  [self modifyKeychainUserValue:userName forKey:kMSAIMetaUserName];
-}
-
-- (void)setUserEmail:(NSString *)userEmail {
-  // always set it, since nil value will trigger removal of the keychain entry
-  _userEmail = userEmail;
-  
-  [self modifyKeychainUserValue:userEmail forKey:kMSAIMetaUserEmail];
-}
-
-- (void)testIdentifier {
-  if (![_appContext instrumentationKey] || [_appContext isAppStoreEnvironment]) {
-    return;
-  }
-  
-  NSDate *now = [NSDate date];
-  NSString *timeString = [NSString stringWithFormat:@"%.0f", [now timeIntervalSince1970]];
-  [self pingServerForIntegrationStartWorkflowWithTimeString:timeString instrumentationKey:[_appContext instrumentationKey]];
-}
-
-
-- (NSString *)version {
-  return msai_sdkVersion();
-}
-
-- (NSString *)build {
-  return msai_sdkBuild();
-}
-
-
-#pragma mark - Private Instance Methods
 
 - (MSAIAppClient *)appClient {
   if (!_appClient) {
@@ -338,7 +341,7 @@
 - (void)validateStartManagerIsInvoked {
   if (_validInstrumentationKey && !_appStoreEnvironment) {
     if (!_startManagerIsInvoked) {
-      NSLog(@"[AppInsightsSDK] ERROR: You did not call [[MSAITelemetryManager sharedManager] startManager] to startup the AppInsightsSDK! Please do so after setting up all properties. The SDK is NOT running.");
+      NSLog(@"[AppInsightsSDK] ERROR: You did not call [MSAIAppInsights setup] to setup the AppInsightsSDK! Please do so after setting up all properties. The SDK is NOT running.");
     }
   }
 }
@@ -373,16 +376,10 @@
   _startManagerIsInvoked = NO;
   
   if (_validInstrumentationKey) {
-#if MSAI_FEATURE_CRASH_REPORTER
-    MSAILog(@"INFO: Setup CrashManager");
-    _crashManager = [[MSAICrashManager alloc] initWithAppContext:_appContext];
-    _crashManager.appClient = [self appClient];
-    _crashManager.delegate = _delegate;
-#endif /* MSAI_FEATURE_CRASH_REPORTER */
     
 #if MSAI_FEATURE_METRICS
     MSAILog(@"INFO: Setup MetricsManager");
-    [MSAIMetricsManager configureWithContext:_appContext appClient:[self appClient]];
+    [MSAICategoryContainer activateCategory];
 #endif /* MSAI_FEATURE_METRICS */
     
     if (![self isAppStoreEnvironment]) {
@@ -393,7 +390,7 @@
     }
     _managersInitialized = YES;
   } else {
-    [self logInvalidIdentifier:@"app identifier"];
+    [self logInvalidIdentifier:@"instrumentation key"];
   }
 }
 

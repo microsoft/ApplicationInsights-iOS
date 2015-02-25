@@ -1,5 +1,5 @@
 #import <XCTest/XCTest.h>
-#import "MSAICrashReportTextFormatter.h"
+#import "MSAICrashDataProvider.h"
 
 @interface MSAICrashReportTextFormatterTests : XCTestCase
 
@@ -12,12 +12,7 @@
   // Put setup code here. This method is called before the invocation of each test method in the class.
 }
 
-- (void)tearDown {
-# pragma clang diagnostic push
-# pragma clang diagnostic ignored "-Wimplicit"
-  __gcov_flush();
-# pragma clang diagnostic pop
-  
+- (void)tearDown { 
   [super tearDown];
 }
 
@@ -61,7 +56,7 @@
 #pragma mark - Test Helper
 
 - (void)testAppBinaryWithImagePath:(NSString *)imagePath processPath:(NSString *)processPath {
-  MSAIBinaryImageType imageType = [MSAICrashReportTextFormatter msai_imageTypeForImagePath:imagePath
+  MSAIBinaryImageType imageType = [MSAICrashDataProvider msai_imageTypeForImagePath:imagePath
                                                                                processPath:processPath];
   XCTAssert((imageType == MSAIBinaryImageTypeAppBinary), @"Test app %@ with process %@", imagePath, processPath);
 }
@@ -71,12 +66,12 @@
 
 - (void)testOSXAppFrameworkAtProcessPath:(NSString *)processPath appBundlePath:(NSString *)appBundlePath {
   NSString *frameworkPath = [appBundlePath stringByAppendingString:@"/Contents/Frameworks/MyFrameworkLib.framework/Versions/A/MyFrameworkLib"];
-  MSAIBinaryImageType imageType = [MSAICrashReportTextFormatter msai_imageTypeForImagePath:frameworkPath
+  MSAIBinaryImageType imageType = [MSAICrashDataProvider msai_imageTypeForImagePath:frameworkPath
                                                                                processPath:processPath];
   XCTAssert((imageType == MSAIBinaryImageTypeAppFramework), @"Test framework %@ with process %@", frameworkPath, processPath);
 
   frameworkPath = [appBundlePath stringByAppendingString:@"/Contents/Frameworks/libSwiftMyLib.framework/Versions/A/libSwiftMyLib"];
-  imageType = [MSAICrashReportTextFormatter msai_imageTypeForImagePath:frameworkPath
+  imageType = [MSAICrashDataProvider msai_imageTypeForImagePath:frameworkPath
                                                            processPath:processPath];
   XCTAssert((imageType == MSAIBinaryImageTypeAppFramework), @"Test framework %@ with process %@", frameworkPath, processPath);
 
@@ -90,7 +85,7 @@
   [swiftFrameworkPaths addObject:[appBundlePath stringByAppendingString:@"/Contents/Frameworks/libswiftCoreGraphics.dylib"]];
   
   for (NSString *imagePath in swiftFrameworkPaths) {
-    MSAIBinaryImageType imageType = [MSAICrashReportTextFormatter msai_imageTypeForImagePath:imagePath
+    MSAIBinaryImageType imageType = [MSAICrashDataProvider msai_imageTypeForImagePath:imagePath
                                                                                  processPath:processPath];
     XCTAssert((imageType == MSAIBinaryImageTypeOther), @"Test swift image %@ with process %@", imagePath, processPath);
   }
@@ -111,7 +106,7 @@
   [nonAppSpecificImagePaths addObject:@"/usr/lib/libbsm.0.dylib"];
   
   for (NSString *imagePath in nonAppSpecificImagePaths) {
-    MSAIBinaryImageType imageType = [MSAICrashReportTextFormatter msai_imageTypeForImagePath:imagePath
+    MSAIBinaryImageType imageType = [MSAICrashDataProvider msai_imageTypeForImagePath:imagePath
                                                                                  processPath:processPath];
     XCTAssert((imageType == MSAIBinaryImageTypeOther), @"Test other image %@ with process %@", imagePath, processPath);
   }
@@ -122,12 +117,12 @@
 
 - (void)testiOSAppFrameworkAtProcessPath:(NSString *)processPath appBundlePath:(NSString *)appBundlePath {
   NSString *frameworkPath = [appBundlePath stringByAppendingString:@"/Frameworks/MyFrameworkLib.framework/MyFrameworkLib"];
-  MSAIBinaryImageType imageType = [MSAICrashReportTextFormatter msai_imageTypeForImagePath:frameworkPath
+  MSAIBinaryImageType imageType = [MSAICrashDataProvider msai_imageTypeForImagePath:frameworkPath
                                                                                processPath:processPath];
   XCTAssert((imageType == MSAIBinaryImageTypeAppFramework), @"Test framework %@ with process %@", frameworkPath, processPath);
   
   frameworkPath = [appBundlePath stringByAppendingString:@"/Frameworks/libSwiftMyLib.framework/libSwiftMyLib"];
-  imageType = [MSAICrashReportTextFormatter msai_imageTypeForImagePath:frameworkPath
+  imageType = [MSAICrashDataProvider msai_imageTypeForImagePath:frameworkPath
                                                            processPath:processPath];
   XCTAssert((imageType == MSAIBinaryImageTypeAppFramework), @"Test framework %@ with process %@", frameworkPath, processPath);
 
@@ -141,7 +136,7 @@
   [swiftFrameworkPaths addObject:[appBundlePath stringByAppendingString:@"/Frameworks/libswiftCoreGraphics.dylib"]];
   
   for (NSString *imagePath in swiftFrameworkPaths) {
-    MSAIBinaryImageType imageType = [MSAICrashReportTextFormatter msai_imageTypeForImagePath:imagePath
+    MSAIBinaryImageType imageType = [MSAICrashDataProvider msai_imageTypeForImagePath:imagePath
                                                                                  processPath:processPath];
     XCTAssert((imageType == MSAIBinaryImageTypeOther), @"Test swift image %@ with process %@", imagePath, processPath);
   }
@@ -173,7 +168,7 @@
   [nonAppSpecificImagePaths addObject:@"/Library/MobileSubstrate/DynamicLibraries/WinterBoard.dylib"];
   
   for (NSString *imagePath in nonAppSpecificImagePaths) {
-    MSAIBinaryImageType imageType = [MSAICrashReportTextFormatter msai_imageTypeForImagePath:imagePath
+    MSAIBinaryImageType imageType = [MSAICrashDataProvider msai_imageTypeForImagePath:imagePath
                                                                                  processPath:processPath];
     XCTAssert((imageType == MSAIBinaryImageTypeOther), @"Test other image %@ with process %@", imagePath, processPath);
   }

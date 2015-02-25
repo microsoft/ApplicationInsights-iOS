@@ -2,11 +2,6 @@
 
 #if MSAI_FEATURE_METRICS
 
-#import "MSAITelemetryContext.h"
-
-@class MSAIContext;
-@class MSAIAppClient;
-@class MSAIChannel;
 @class MSAITelemetryData;
 
 extern NSString *const kMSAIApplicationWasLaunched;
@@ -14,40 +9,45 @@ extern NSString *const kMSAIApplicationWasLaunched;
 @interface MSAIMetricsManager ()
 
 ///-----------------------------------------------------------------------------
-/// @name Getters
+/// @name Start the manager
 ///-----------------------------------------------------------------------------
 
 /**
-*  Creates the context which is part of the payload based on the app context.
-*
-*  @return a context which is used by the channel for creating the payload
-*/
-+ (MSAITelemetryContext *)telemetryContext;
+ *  A flag which determines whether the manager has been enabled and started, yet.
+ */
+@property BOOL managerInitialised;
 
 /**
- *  Returns the channel.
- *
- *  @return the channel, which is used by the manager for sending out data
+ *  Flag which determines whether the manager is enabled or not. This can only be set before the
+ *  manager has been started.
  */
-+ (MSAIChannel *)channel;
+@property BOOL metricsManagerDisabled;
 
 /**
- *  Returns the context the manager has been configured with.
- *
- *  @return the context, which is used by the manager
+ *  This method should be called after the manager has been configured in order to create and send data.
  */
-+ (MSAIContext *)context;
+- (void)startManager;
 
 ///-----------------------------------------------------------------------------
 /// @name Forward data to channel
 ///-----------------------------------------------------------------------------
 
 /**
- * Forwards the tracked data to the channel in order to send it.
- *
- * @param telemetry the data which should be sent to the server
+ *  A concurrent queue which creates telemetry objects and forwards them to the channel.
  */
-+ (void)trackDataItem:(MSAITelemetryData *)dataItem;
+@property (nonatomic, strong)dispatch_queue_t metricEventQueue;
+
+/**
+ * Converts the tracked to an envelope object and forwards it to the channel.
+ *
+ * @param telemetry the data which should be forwareded by the channel
+ */
+- (void)trackDataItem:(MSAITelemetryData *)dataItem;
+
+/**
+ * Registers the manager for all notifications that are necessary for automatic session tracking
+ */
+- (void)registerObservers;
 
 @end
 

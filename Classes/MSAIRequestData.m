@@ -50,4 +50,35 @@
     return dict;
 }
 
+#pragma mark - NSCoding
+
+- (id)initWithCoder:(NSCoder *)coder {
+  self = [super initWithCoder:coder];
+  if(self) {
+    self.requestDataId = [coder decodeObjectForKey:@"self.requestDataId"];
+    self.startTime = [coder decodeObjectForKey:@"self.startTime"];
+    self.duration = [coder decodeObjectForKey:@"self.duration"];
+    self.responseCode = [coder decodeObjectForKey:@"self.responseCode"];
+    self.success = [coder decodeBoolForKey:@"self.success"];
+    self.httpMethod = [coder decodeObjectForKey:@"self.httpMethod"];
+    self.url = [coder decodeObjectForKey:@"self.url"];
+    self.measurements = [coder decodeObjectForKey:@"self.measurements"];
+  }
+
+  return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+  [super encodeWithCoder:coder];
+  [coder encodeObject:self.requestDataId forKey:@"self.requestDataId"];
+  [coder encodeObject:self.startTime forKey:@"self.startTime"];
+  [coder encodeObject:self.duration forKey:@"self.duration"];
+  [coder encodeObject:self.responseCode forKey:@"self.responseCode"];
+  [coder encodeBool:self.success forKey:@"self.success"];
+  [coder encodeObject:self.httpMethod forKey:@"self.httpMethod"];
+  [coder encodeObject:self.url forKey:@"self.url"];
+  [coder encodeObject:self.measurements forKey:@"self.measurements"];
+}
+
+
 @end

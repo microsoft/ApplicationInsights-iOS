@@ -1,5 +1,5 @@
-#if MSAI_FEATURE_CRASH_REPORTER
 #import <XCTest/XCTest.h>
+
 
 #define HC_SHORTHAND
 #import <OCHamcrestIOS/OCHamcrestIOS.h>
@@ -11,13 +11,15 @@
 #import "AppInsightsPrivate.h"
 #import "MSAICrashManager.h"
 #import "MSAICrashManagerPrivate.h"
-#import "MSAIBaseManager.h"
-#import "MSAIBaseManagerPrivate.h"
 #import "MSAIContextPrivate.h"
-
+#import "MSAIPersistence.h"
+#import "MSAIEnvelope.h"
+#import "MSAICrashData.h"
 #import "MSAITestHelper.h"
 
 #define kMSAICrashMetaAttachment @"MSAICrashMetaAttachment"
+
+#if MSAI_FEATURE_CRASH_REPORTER
 
 @interface MSAICrashManagerTests : XCTestCase
 
@@ -26,6 +28,7 @@
 
 @implementation MSAICrashManagerTests {
   MSAICrashManager *_sut;
+  MSAIContext *_context;
   BOOL _startManagerInitialized;
 }
 
@@ -34,16 +37,11 @@
   
   _startManagerInitialized = NO;
   
-  MSAIContext *appContext = [[MSAIContext alloc]initWithInstrumentationKey:nil isAppStoreEnvironment:NO];
-  _sut = [[MSAICrashManager alloc] initWithAppContext:appContext];
+  _context = [[MSAIContext alloc]initWithInstrumentationKey:nil isAppStoreEnvironment:NO];
+  _sut = [MSAICrashManager sharedManager];
 }
 
 - (void)tearDown {
-# pragma clang diagnostic push
-# pragma clang diagnostic ignored "-Wimplicit"
-  __gcov_flush();
-# pragma clang diagnostic pop
-  
   [_sut cleanCrashReports];
   [super tearDown];
 }
@@ -57,16 +55,11 @@
 }
 
 - (void)startManagerDisabled {
-  _sut.crashManagerStatus = MSAICrashManagerStatusDisabled;
+  _sut.isCrashManagerDisabled = YES;
   if (_startManagerInitialized) return;
   [self startManager];
 }
 
-- (void)startManagerAutoSend {
-  _sut.crashManagerStatus = MSAICrashManagerStatusAutoSend;
-  if (_startManagerInitialized) return;
-  [self startManager];
-}
 
 #pragma mark - Setup Tests
 
@@ -74,102 +67,14 @@
   XCTAssertNotNil(_sut, @"Should be there");
 }
 
-
-#pragma mark - Persistence tests
-
-- (void)testPersistUserProvidedMetaData {
-  NSString *tempCrashName = @"tempCrash";
-  [_sut setLastCrashFilename:tempCrashName];
-  
-  MSAICrashMetaData *metaData = [MSAICrashMetaData new];
-  [metaData setUserDescription:@"Test string"];
-  [_sut persistUserProvidedMetaData:metaData];
-  
-  NSError *error;
-  NSString *description = [NSString stringWithContentsOfFile:[NSString stringWithFormat:@"%@.desc", [[_sut crashesDir] stringByAppendingPathComponent: tempCrashName]] encoding:NSUTF8StringEncoding error:&error];
-  assertThat(description, equalTo(@"Test string"));
+- (void)testThatItIsSetup {
+  [self startManager];
+  XCTAssertTrue(_sut.isSetupCorrectly);
 }
 
 
 #pragma mark - Helper
 
-- (void)testUserIDForCrashReport {
-  MSAITelemetryManager *tm = [MSAITelemetryManager sharedMSAIManager];
-  id delegateMock = mockProtocol(@protocol(MSAITelemetryManagerDelegate));
-  tm.delegate = delegateMock;
-  _sut.delegate = delegateMock;
-  
-  NSString *result = [_sut userIDForCrashReport];
-  
-  assertThat(result, notNilValue());
-
-  [verifyCount(delegateMock, times(1)) userIDForTelemetryManager:tm componentManager:_sut];
-}
-
-- (void)testUserNameForCrashReport {
-  MSAITelemetryManager *hm = [MSAITelemetryManager sharedMSAIManager];
-  id delegateMock = mockProtocol(@protocol(MSAITelemetryManagerDelegate));
-  hm.delegate = delegateMock;
-  _sut.delegate = delegateMock;
-  
-  NSString *result = [_sut userNameForCrashReport];
-  
-  assertThat(result, notNilValue());
-  
-  [verifyCount(delegateMock, times(1)) userNameForTelemetryManager:hm componentManager:_sut];
-}
-
-- (void)testUserEmailForCrashReport {
-  MSAITelemetryManager *hm = [MSAITelemetryManager sharedMSAIManager];
-  id delegateMock = mockProtocol(@protocol(MSAITelemetryManagerDelegate));
-  hm.delegate = delegateMock;
-  _sut.delegate = delegateMock;
-  
-  NSString *result = [_sut userEmailForCrashReport];
-  
-  assertThat(result, notNilValue());
-  
-  [verifyCount(delegateMock, times(1)) userEmailForTelemetryManager:hm componentManager:_sut];
-}
-
-#pragma mark - Handle User Input
-
-- (void)testHandleUserInputDontSend {
-  id <MSAICrashManagerDelegate> delegateMock = mockProtocol(@protocol(MSAICrashManagerDelegate));
-  _sut.delegate = delegateMock;
-  
-  assertThatBool([_sut handleUserInput:MSAICrashManagerUserInputDontSend withUserProvidedMetaData:nil], equalToBool(YES));
-  
-  [verify(delegateMock) crashManagerWillCancelSendingCrashReport:_sut];
-  
-}
-
-- (void)testHandleUserInputSend {
-  assertThatBool([_sut handleUserInput:MSAICrashManagerUserInputSend withUserProvidedMetaData:nil], equalToBool(YES));
-}
-
-- (void)testHandleUserInputAlwaysSend {
-  id <MSAICrashManagerDelegate> delegateMock = mockProtocol(@protocol(MSAICrashManagerDelegate));
-  _sut.delegate = delegateMock;
-  NSUserDefaults *mockUserDefaults = mock([NSUserDefaults class]);
-  
-  //Test if CrashManagerStatus is unset
-  [given([mockUserDefaults integerForKey:@"MSAICrashManagerStatus"]) willReturn:nil];
-  
-  //Test if method runs through
-  assertThatBool([_sut handleUserInput:MSAICrashManagerUserInputAlwaysSend withUserProvidedMetaData:nil], equalToBool(YES));
-  
-  //Test if correct CrashManagerStatus is now set
-  [given([mockUserDefaults integerForKey:@"MSAICrashManagerStauts"]) willReturnInt:MSAICrashManagerStatusAutoSend];
-  
-  //Verify that delegate method has been called
-  [verify(delegateMock) crashManagerWillSendCrashReportsAlways:_sut];
-  
-}
-
-- (void)testHandleUserInputWithInvalidInput {
-  assertThatBool([_sut handleUserInput:3 withUserProvidedMetaData:nil], equalToBool(NO));
-}
 
 #pragma mark - Debugger
 
@@ -178,29 +83,45 @@
  *  TODO: what to do if we do run this e.g. on Jenkins or Xcode bots ?
  */
 - (void)testIsDebuggerAttached {
-  assertThatBool([_sut isDebuggerAttached], equalToBool(YES));
+  assertThatBool([_sut getIsDebuggerAttached], equalToBool(YES));
 }
 
 
-#pragma mark - Helper
+#pragma mark - Internals
 
 - (void)testHasPendingCrashReportWithNoFiles {
-  _sut.crashManagerStatus = MSAICrashManagerStatusAutoSend;
+  _sut.isCrashManagerDisabled = NO;
   assertThatBool([_sut hasPendingCrashReport], equalToBool(NO));
 }
 
 - (void)testFirstNotApprovedCrashReportWithNoFiles {
-  _sut.crashManagerStatus = MSAICrashManagerStatusAutoSend;
+  _sut.isCrashManagerDisabled = NO;
   assertThat([_sut firstNotApprovedCrashReport], equalTo(nil));
 }
+
+- (void)testCreateCrashReportForAppKill {
+  //handle app kill (FakeCrashReport
+  [_sut createCrashReportForAppKill]; //just creates a fake crash report and hands it over to MSAIPersistence
+  
+  NSArray *bundle = [MSAIPersistence nextBundle];
+  XCTAssertNil(bundle);
+  
+  if(bundle && ([bundle count] > 0)) {
+    id envelope = [bundle firstObject];
+    if(envelope && [envelope isKindOfClass:[MSAIEnvelope class]]) {
+      assertThatBool([((MSAIEnvelope *) envelope).data isKindOfClass:[MSAICrashData class]], equalToBool(YES));
+    }
+  }
+
+}
+
 
 
 #pragma mark - StartManager
 
 - (void)testStartManagerWithModuleDisabled {
   [self startManagerDisabled];
-  
-  assertThat(_sut.plCrashReporter, equalTo(nil));
+  assertThatBool(_sut.isCrashManagerDisabled, equalToBool(YES));
 }
 
 - (void)testStartManagerWithAutoSend {
@@ -214,7 +135,7 @@
   id delegateMock = mockProtocol(@protocol(MSAICrashManagerDelegate));
   _sut.delegate = delegateMock;
 
-  [self startManagerAutoSend];
+  [self startManager];
   
   assertThat(_sut.plCrashReporter, notNilValue());
   
@@ -247,15 +168,9 @@
   
   [_sut handleCrashReport];
   
-  [verifyCount(delegateMock, times(1)) applicationLogForCrashManager:_sut];
-  
   // we should have now 1 pending crash report
   assertThatBool([_sut hasPendingCrashReport], equalToBool(YES));
   assertThat([_sut firstNotApprovedCrashReport], notNilValue());
-  
-  // this is currently sending blindly, needs refactoring to test properly
-  [_sut sendNextCrashReport];
-  [verifyCount(delegateMock, times(1)) crashManagerWillSendCrashReport:_sut];
   
   [_sut cleanCrashReports];
 
@@ -269,7 +184,8 @@
   assertThat([_sut firstNotApprovedCrashReport], notNilValue());
   
   [_sut cleanCrashReports];
-}
+  
+  }
 
 @end
 #endif

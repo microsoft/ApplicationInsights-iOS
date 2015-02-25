@@ -3,9 +3,13 @@
 #import "MSAITelemetryData.h"
 #import "MSAIDomain.h"
 
-@interface MSAIData : MSAIBase
+@interface MSAIData : MSAIBase <NSCoding>
 
 @property (nonatomic, strong) MSAITelemetryData *baseData;
+
+- (id)initWithCoder:(NSCoder *)coder;
+
+- (void)encodeWithCoder:(NSCoder *)coder;
 
 
 @end

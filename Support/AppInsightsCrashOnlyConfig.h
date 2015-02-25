@@ -20,43 +20,13 @@
 
 
 /**
- * If true, include support for managing user feedback
+ * If true, include support for sending metrics data
  *
  * _Default_: Enabled
  */
-#ifndef APPINSIGHTS_FEATURE_FEEDBACK
-#    define APPINSIGHTS_FEATURE_FEEDBACK 0
-#endif /* APPINSIGHTS_FEATURE_FEEDBACK */
-
-
-/**
- * If true, include support for informing the user about new updates pending in the App Store
- *
- * _Default_: Enabled
- */
-#ifndef APPINSIGHTS_FEATURE_STORE_UPDATES
-#    define APPINSIGHTS_FEATURE_STORE_UPDATES 0
-#endif /* APPINSIGHTS_FEATURE_STORE_UPDATES */
-
-
-/**
- * If true, include support for authentication installations for Ad-Hoc and Enterprise builds
- *
- * _Default_: Enabled
- */
-#ifndef APPINSIGHTS_FEATURE_AUTHENTICATOR
-#    define APPINSIGHTS_FEATURE_AUTHENTICATOR 0
-#endif /* APPINSIGHTS_FEATURE_AUTHENTICATOR */
-
-
-/**
- * If true, include support for handling in-app udpates for Ad-Hoc and Enterprise builds
- *
- * _Default_: Enabled
- */
-#ifndef APPINSIGHTS_FEATURE_UPDATES
-#    define APPINSIGHTS_FEATURE_UPDATES 0
-#endif /* APPINSIGHTS_FEATURE_UPDATES */
+#ifndef MSAI_FEATURE_METRICS
+#    define MSAI_FEATURE_METRICS 0
+#endif /* MSAI_FEATURE_METRICS */
 
 
 #endif /* AppInsights_AppInsightsFeatureConfig_h */
