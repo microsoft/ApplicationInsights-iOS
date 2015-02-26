@@ -217,10 +217,7 @@ Instead of manually adding the missing frameworks, you can also use our bundled 
 	**Important note:** Check if you overwrite any of the build settings and add a missing `$(inherited)` entry on the projects build settings level, so the `AppInsights.xcconfig` settings will be passed through successfully.
 
 7. If you are getting build warnings, then the `.xcconfig` setting wasn't included successfully or its settings in `Other Linker Flags` get ignored because `$(inherited)` is missing on project or target level. Either add `$(inherited)` or link the following frameworks manually in `Link Binary With Libraries` under `Build Phases`:
-	- `AssetsLibrary`
 	- `Foundation`
-	- `MobileCoreServices`
-	- `Security`
 	- `SystemConfiguration`
 	- `UIKit`
 	- `CoreTelephony`(only required if iOS > 7.0)
