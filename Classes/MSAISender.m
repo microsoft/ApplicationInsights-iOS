@@ -9,7 +9,6 @@
 
 @interface MSAISender ()
 
-@property (nonatomic, strong) NSArray *currentBundle;
 @property (getter=isSending) BOOL sending;
 
 @end
@@ -17,6 +16,7 @@
 @implementation MSAISender
 
 @synthesize sending = _sending;
+
 
 #pragma mark - Initialize & configure shared instance
 
@@ -46,19 +46,33 @@
   [center addObserverForName:kMSAIPersistenceSuccessNotification
                       object:nil
                        queue:nil
-                  usingBlock:^(NSNotification *note) {
+                  usingBlock:^(NSNotification *notification) {
                     typeof(self) strongSelf = weakSelf;
                     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                      
+                      NSString *path = [notification.userInfo objectForKey:kUserInfoFilePath];
                       // If something was persisted, we have to send it to the server.
-                      [strongSelf sendSavedData];
+                      if(path){
+                        [strongSelf sendSavedDataWithPath:path];
+                      }else{
+                        MSAILog(@"A file is ready for sending, but the filename was nil");
+                      }
                     });
                   }];
 }
 
 #pragma mark - Sending
 
-- (void)sendSavedData {
+- (void)sendSavedDataWithPath:(NSString *)path {
+  NSArray *bundle = [MSAIPersistence bundleAtPath:path];
+  [self sendBundle:bundle withPath:path];
+}
+
+- (void)sendSavedData{
+  NSString *path = [MSAIPersistence nextPath];
+  [self sendSavedDataWithPath:path];
+}
+
+- (void)sendBundle:(NSArray *)bundle withPath:(NSString *)path{
   
   @synchronized(self){
     if(_sending)
@@ -67,17 +81,14 @@
       _sending = YES;
   }
   
-  NSArray *bundle = [MSAIPersistence nextBundle];
-  if(bundle && bundle.count > 0 && !self.currentBundle) {
-    self.currentBundle = bundle;
+  if(bundle && bundle.count > 0) {
     NSError *error = nil;
     NSData *json = [NSJSONSerialization dataWithJSONObject:[self jsonArrayFromArray:bundle] options:NSJSONWritingPrettyPrinted error:&error];
     if(!error) {
       NSString *urlString = [[(MSAIEnvelope *)bundle[0] name] isEqualToString:@"Microsoft.ApplicationInsights.Crash"] ? MSAI_CRASH_DATA_URL : MSAI_EVENT_DATA_URL;
       NSURLRequest *request = [self requestForData:json urlString:urlString];
-      [self sendRequest:request];
-    }
-    else {
+      [self sendRequest:request path:path];
+    }else {
       MSAILog(@"Error creating JSON from bundle array, don't save back to disk");
       self.sending = NO;
     }
@@ -86,36 +97,35 @@
   }
 }
 
-- (void)sendRequest:(NSURLRequest *)request {
-  __weak typeof(self) weakSelf = self;
-  
-  MSAIHTTPOperation *operation = [self.appClient
-                                  operationWithURLRequest:request
-                                  completion:^(MSAIHTTPOperation *operation, NSData *responseData, NSError *error) {
-                                    
-                                    typeof(self) strongSelf = weakSelf;
-                                    NSInteger statusCode = [operation.response statusCode];
 
-                                    if(statusCode >= 200 && statusCode < 400) {
-                                      MSAILog(@"Sent data with status code: %ld", (long) statusCode);
-                                      MSAILog(@"Response data:\n%@", [NSJSONSerialization JSONObjectWithData:responseData options:0 error:nil]);
-                                      strongSelf.currentBundle = nil;
-                                      strongSelf.sending = NO;
-                                      [strongSelf sendSavedData];
-                                    } else {
-                                      MSAILog(@"Sending MSAIAppInsights data failed");
-                                      MSAILog(@"Response data:\n%@", [NSJSONSerialization JSONObjectWithData:responseData options:0 error:nil]);
-                                      [MSAIPersistence persistAfterErrorWithBundle:weakSelf.currentBundle];
-                                      strongSelf.currentBundle = nil;
-                                      strongSelf.sending = NO;
-                                    }
-                                  }];
+- (void)sendRequest:(NSURLRequest *)request path:(NSString *)path{
   
+  if(!path || !request) return;
+  
+  __weak typeof(self) weakSelf = self;
+  MSAIHTTPOperation *operation = [self.appClient operationWithURLRequest:request completion:^(MSAIHTTPOperation *operation, NSData *responseData, NSError *error) {
+    typeof(self) strongSelf = weakSelf;
+    
+    NSInteger statusCode = [operation.response statusCode];
+    
+    if(statusCode >= 200 && statusCode < 400) {
+      MSAILog(@"Sent data with status code: %ld", (long) statusCode);
+      MSAILog(@"Response data:\n%@", [NSJSONSerialization JSONObjectWithData:responseData options:0 error:nil]);
+      
+      [MSAIPersistence deleteBundleAtPath:path];
+      strongSelf.sending = NO;
+      [strongSelf sendSavedData];
+    } else {
+      MSAILog(@"Sending MSAIAppInsights data failed");
+    }
+  }];
+
   [self.appClient enqeueHTTPOperation:operation];
 }
 
 //TODO remove this because it is never used and it's not public?
 - (void)sendRequest:(NSURLRequest *)request withCompletionBlock:(MSAINetworkCompletionBlock)completion{
+
   MSAIHTTPOperation *operation = [_appClient
                                   operationWithURLRequest:request
                                   completion:completion];

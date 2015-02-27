@@ -13,7 +13,7 @@
 #import "MSAIPersistence.h"
 
 #ifdef DEBUG
-static NSInteger const defaultMaxBatchCount = 5;
+static NSInteger const defaultMaxBatchCount = 50;
 static NSInteger const defaultBatchInterval = 15;
 #else
 static NSInteger const defaultMaxBatchCount = 50;
@@ -90,6 +90,10 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
     queue = [NSMutableArray arrayWithArray:strongSelf->_dataItemQueue];
   });
   return queue;
+}
+
+- (BOOL)isQueueBusy{
+  return ![MSAIPersistence isFreeSpaceAvailable];
 }
 
 #pragma mark - Batching

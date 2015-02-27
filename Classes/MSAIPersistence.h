@@ -11,6 +11,7 @@
 * This is typically used to trigger sending to the server.
 */
 FOUNDATION_EXPORT NSString *const kMSAIPersistenceSuccessNotification;
+FOUNDATION_EXPORT NSString *const kUserInfoFilePath;
 
 
 /**
@@ -39,21 +40,6 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
 */
 + (void)persistBundle:(NSArray *)bundle ofType:(MSAIPersistenceType)type withCompletionBlock:(void (^)(BOOL success))completionBlock;
 
-
-/**
-*  Convenience method for saving a bundle of data back to disk after an error (typically when sending a bundle to
-*  the server fails).
-*  This method will determine the priority of the bundle depending on it's content using reflection on the data within
-*  the bundle. It uses the same logic as `persistBundle:ofType:withCompletionBlock:´ internally.
-*  This method doesn't trigger kMSAIPersistenceSuccessNotification to avoid an endless cycle of saving & sending
-*  Bundles that are persisted with this method will be sent to the server during the next attempt to send events.
-*
-*  @param bundle a bundle of tracked events (telemetry, crashes, ...) that will be serialized and saved.
-*
-*  @warning: The data within the array needs to implement NSCoding. (which is typically the case)
-*/
-+ (void)persistAfterErrorWithBundle:(NSArray *)bundle;
-
 ///-----------------------------------------------------------------------------
 /// @name Get a bundle of saved data
 ///-----------------------------------------------------------------------------
@@ -70,8 +56,15 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
 * @return a bundle of AppInsightsData that's ready to be sent to the server
 */
 
-+ (NSArray *)nextBundle;
 
+
++ (NSString *)nextPath;
+
++ (NSArray *)bundleAtPath:(NSString *)path;
+
++ (void)deleteBundleAtPath:(NSString *)path ;
+
++ (BOOL)isFreeSpaceAvailable;
 ///-----------------------------------------------------------------------------
 /// @name Handling of a "fake" CrashReport
 ///-----------------------------------------------------------------------------
@@ -89,6 +82,5 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
 * @return a fake crash report, wrapped as a bundle
 */
 + (NSArray *)fakeReportBundle;
-
 
 @end
