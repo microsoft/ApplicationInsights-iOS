@@ -22,7 +22,7 @@ The SDK runs on devices with iOS 6.0 or higher.
 <a id="download"></a> 
 ## Download & Extract
 
-1. Download the latest [AppInsights SDK for iOS](https://rink.hockeyapp.net/apps/19e2b445f2769757bd4d384e56f1fc3b) framework.
+1. Download the latest [AppInsights SDK for iOS](https://github.com/Microsoft/AppInsights-iOS/releases/download/v1.0-alpha.2/AppInsights-1.0-alpha.2.zip) framework.
 
 2. Unzip the file. A new folder `AppInsights` is created.
 
@@ -57,19 +57,19 @@ The SDK runs on devices with iOS 6.0 or higher.
 #import <AppInsights/AppInsights.h>
 ```
 4. Search for the method `application:didFinishLaunchingWithOptions:`
-5. Add the following lines to initialize and start the AppInsights SDK:
+5. Add the following lines to setup and start the AppInsights SDK:
 
 ```objectivec
-[[MSAIAppInsights sharedInstance] initialize];
+[[MSAIAppInsights sharedInstance] setup];
 // Do some additional configuration if needed here
 ...
-[[MSAIAppInsights sharedInstance] startManager];
+[[MSAIAppInsights sharedInstance] start];
 ```
 
 You can also use the following shortcut:
 
 ```objectivec
-[MSAIAppInsights initialize];
+[MSAIAppInsights setup];
 [MSAIAppInsights start];
 ```
 
@@ -112,17 +112,17 @@ value:42.2];
 ```swift	
 application(application: UIApplication, didFinishLaunchingWithOptions launchOptions:[NSObject: AnyObject]?) -> Bool`
 ```
-5. Add the following lines to initialize and start the AppInsights SDK:
+5. Add the following lines to setup and start the AppInsights SDK:
 
 ```swift
-MSAIAppInsights.sharedInstance().initialize();
+MSAIAppInsights.sharedInstance().setup();
 MSAIAppInsights.sharedInstance().start();
 ```
 
 You can also use the following shortcut:
 
 ```swift
-MSAIAppInsights.initialize();
+MSAIAppInsights.setup();
 MSAIAppInsights.start();
 ```
 5. Send some data to the server:
@@ -153,16 +153,16 @@ value:42.2);
 ## Endpoints 
 
 At this point exceptions as well as other telemetry data are sent to different endpoints.
-By default the following endpoints are used to work with the [Azure-Test portal](https://current.onecloud.azure-test.net/):
+By default the following endpoints are used to work with the [Azure portal](https://portal.azure.com):
 
-* Exceptions: `https://deathray-int.trafficmanager.net/v2/track`
-* Telemetry Data: `https://dc-int.services.visualstudio.com/v2/track`
+* Exceptions: `https://dray-prod.aisvc.visualstudio.com/v2/track`
+* Telemetry Data: `https://dc.services.visualstudio.com/v2/track`
 
 To change those endpoints open the `AppInsights.h` file and change the following define statements:
 
 ```objectivec
-#define MSAI_CRASH_DATA_URL   @"https://deathray-int.trafficmanager.net/v2/track"
-#define MSAI_EVENT_DATA_URL   @"https://dc-int.services.visualstudio.com/v2/track"
+#define MSAI_CRASH_DATA_URL   @"https://dray-prod.aisvc.visualstudio.com/v2/track"
+#define MSAI_EVENT_DATA_URL   @"https://dc.services.visualstudio.com/v2/track"
 ```
 <a id="extensions"></a>
 ## iOS 8 Extensions
@@ -182,7 +182,7 @@ The following points need to be considered to use AppInsights SDK iOS with iOS 8
 - (void)viewDidLoad {
 [super viewDidLoad];
 if (!self.didSetupAppInsightsSDK) {
-[MSAIAppInsights initialize];
+[MSAIAppInsights setup];
 [MSAIAppInsights start];
 self.didSetupAppInsightsSDK = YES;
 }
@@ -221,4 +221,3 @@ Instead of manually adding the missing frameworks, you can also use our bundled 
 - `SystemConfiguration`
 - `UIKit`
 - `CoreTelephony`(only required if iOS > 7.0)
-
