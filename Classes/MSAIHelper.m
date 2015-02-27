@@ -6,6 +6,8 @@
 
 #import <sys/sysctl.h>
 
+static NSString *const kMSAIUtcDateFormatter = @"utcDateFormatter";
+
 #if __IPHONE_OS_VERSION_MAX_ALLOWED < 70000
 @interface NSData (MSAIiOS7)
 - (NSString *)base64Encoding;
@@ -45,11 +47,36 @@ NSString *msai_URLDecodedString(NSString *inputString) {
 
 // Return ISO 8601 string representation of the date
 NSString *msai_utcDateString(NSDate *date){
-  NSLocale *enUSPOSIXLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
-  NSDateFormatter *dateFormatter = [NSDateFormatter new];
-  dateFormatter.locale = enUSPOSIXLocale;
-  dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
-  dateFormatter.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
+  static NSDateFormatter *dateFormatter;
+  
+  // NSDateFormatter is not thread-safe prior to iOS 7
+  if (msai_isPreiOS7Environment()) {
+    NSMutableDictionary *threadDictionary = [NSThread currentThread].threadDictionary;
+    NSDateFormatter *dateFormatter = threadDictionary[kMSAIUtcDateFormatter];
+    
+    if (!dateFormatter) {
+      dateFormatter = [NSDateFormatter new];
+      NSLocale *enUSPOSIXLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
+      dateFormatter.locale = enUSPOSIXLocale;
+      dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+      dateFormatter.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
+      threadDictionary[kMSAIUtcDateFormatter] = dateFormatter;
+    }
+    
+    NSString *dateString = [dateFormatter stringFromDate:date];
+    
+    return dateString;
+  }
+  
+  static dispatch_once_t dateFormatterToken;
+  dispatch_once(&dateFormatterToken, ^{
+    NSLocale *enUSPOSIXLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
+    dateFormatter = [NSDateFormatter new];
+    dateFormatter.locale = enUSPOSIXLocale;
+    dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+    dateFormatter.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
+  });
+
   NSString *dateString = [dateFormatter stringFromDate:date];
   
   return dateString;
