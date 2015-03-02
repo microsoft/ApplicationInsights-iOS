@@ -214,7 +214,7 @@ Use this on startup, to check if the app starts the first time after it crashed
 previously. You can use this also to disable specific events, like asking
 the user to rate your app.
 
-@warning This property only has a correct value, once `[MSAIManager startManager]` was
+@warning This property only has a correct value, once `[MSAIAppInsights start]` was
 invoked!
 
 @see lastSessionCrashDetails
@@ -260,10 +260,10 @@ can also be killed without the app ever receiving a low memory warning.
 Also the app could have received a low memory warning, but the reason for being killed was
 actually different.
 
-@warning This property only has a correct value, once `[MSAIManager startManager]` was
+@warning This property only has a correct value, once `[MSAIAppInsights start]` was
 invoked!
 
-@see enableAppNotTerminatingCleanlyDetection
+@see appNotTerminatingCleanlyDetectionEnabled
 @see lastSessionCrashDetails
 */
 
