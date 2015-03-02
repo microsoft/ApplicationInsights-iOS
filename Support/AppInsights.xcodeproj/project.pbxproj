@@ -75,8 +75,6 @@
 		1E59559A15B6FDA500A03429 /* MSAIAppInsights.h in Headers */ = {isa = PBXBuildFile; fileRef = E41EB465148D7BF50015DEDC /* MSAIAppInsights.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1E59559B15B6FDA500A03429 /* AppInsights.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E71509A15B5C76F004E88FF /* AppInsights.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1E5A459516F0DFC200B55C04 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E400561D148D79B500EB22B9 /* Foundation.framework */; };
-		1E67961719816B9200B6DA20 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E67961619816B9200B6DA20 /* CFNetwork.framework */; };
-		1E67961819816B9A00B6DA20 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E67961619816B9200B6DA20 /* CFNetwork.framework */; };
 		1E754E5C1621FBB70070AB92 /* MSAICrashManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E754E561621FBB70070AB92 /* MSAICrashManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1E754E5D1621FBB70070AB92 /* MSAICrashManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E754E571621FBB70070AB92 /* MSAICrashManager.m */; };
 		1E754E5E1621FBB70070AB92 /* MSAICrashManagerDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E754E581621FBB70070AB92 /* MSAICrashManagerDelegate.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -266,7 +264,6 @@
 		1E5954F215B6F24A00A03429 /* libAppInsights.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libAppInsights.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		1E5A459016F0DFC200B55C04 /* AppInsightsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AppInsightsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1E66CA9115D4100500F35BED /* buildnumber.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = buildnumber.xcconfig; sourceTree = "<group>"; };
-		1E67961619816B9200B6DA20 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		1E71509A15B5C76F004E88FF /* AppInsights.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppInsights.h; sourceTree = "<group>"; };
 		1E754DC61621BC170070AB92 /* AppInsights.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = AppInsights.xcconfig; sourceTree = "<group>"; };
 		1E754E561621FBB70070AB92 /* MSAICrashManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAICrashManager.h; sourceTree = "<group>"; };
@@ -385,9 +382,6 @@
 		808FB2631A7982300002872B /* live_report_signal.plcrash */ = {isa = PBXFileReference; lastKnownFileType = file; name = live_report_signal.plcrash; path = AppInsightsTests/Fixtures/live_report_signal.plcrash; sourceTree = SOURCE_ROOT; };
 		80F334AF1A9C8A430098026F /* MSAIManagerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIManagerTests.m; path = AppInsightsTests/MSAIManagerTests.m; sourceTree = SOURCE_ROOT; };
 		80F334B11A9C93290098026F /* MSAIAppInsightsPrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAIAppInsightsPrivate.h; sourceTree = "<group>"; };
-		9760F6C318BB4D2D00959B93 /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
-		97BD9BD4191109730043FD59 /* QuickLook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickLook.framework; path = System/Library/Frameworks/QuickLook.framework; sourceTree = SDKROOT; };
-		97CC11F81917C0310028768F /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		B25912321A8D129C00C88800 /* MSAIPersistenceTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIPersistenceTest.m; path = AppInsightsTests/MSAIPersistenceTest.m; sourceTree = SOURCE_ROOT; };
 		E400561D148D79B500EB22B9 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		E40E0B0A17DA1AFF005E38C1 /* MSAIAppClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAIAppClient.h; sourceTree = "<group>"; };
@@ -404,7 +398,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				1B85606F1A7A6A9D00A54FB7 /* UIKit.framework in Frameworks */,
-				1E67961819816B9A00B6DA20 /* CFNetwork.framework in Frameworks */,
 				1E5954DC15B6F24A00A03429 /* Foundation.framework in Frameworks */,
 				1B53FEBF1A6425240082F2E9 /* CrashReporter.framework in Frameworks */,
 			);
@@ -418,7 +411,6 @@
 				1B53FEC01A6425240082F2E9 /* CrashReporter.framework in Frameworks */,
 				808FB2671A7982B50002872B /* OCHamcrestIOS.framework in Frameworks */,
 				808FB2681A7982B50002872B /* OCMockitoIOS.framework in Frameworks */,
-				1E67961719816B9200B6DA20 /* CFNetwork.framework in Frameworks */,
 				1EA1170016F4D32C001C015C /* libAppInsights.a in Frameworks */,
 				1E5A459516F0DFC200B55C04 /* Foundation.framework in Frameworks */,
 			);
@@ -679,10 +671,6 @@
 				1B3B73071A94BC8E008DCADA /* CoreTelephony.framework */,
 				1B85606E1A7A6A9D00A54FB7 /* UIKit.framework */,
 				1B53FEBE1A6425240082F2E9 /* CrashReporter.framework */,
-				1E67961619816B9200B6DA20 /* CFNetwork.framework */,
-				97CC11F81917C0310028768F /* MobileCoreServices.framework */,
-				97BD9BD4191109730043FD59 /* QuickLook.framework */,
-				9760F6C318BB4D2D00959B93 /* AssetsLibrary.framework */,
 				E400561D148D79B500EB22B9 /* Foundation.framework */,
 			);
 			name = Frameworks;

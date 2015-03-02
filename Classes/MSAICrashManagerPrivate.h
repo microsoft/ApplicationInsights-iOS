@@ -29,7 +29,6 @@ should not need to set this delegate individually.
 @property (nonatomic, strong) NSFileManager *fileManager; //TODO remove when we refactor the persistence stuff out of crashmanager
 @property (nonatomic, strong) MSAIContext *appContext;
 @property (nonatomic, strong) NSMutableArray *crashFiles; //TODO remove when we refactor the persistence stuff out of crashmanager
-@property (nonatomic, strong) NSMutableDictionary *approvedCrashReports;
 @property (nonatomic, copy) NSString *settingsFile; //TODO remove when we refactor the persistence stuff out of crashmanager
 @property (nonatomic, copy) NSString *crashesDir; //TODO remove when we refactor the persistence stuff out of crashmanager
 @property (nonatomic, copy) NSString *lastCrashFilename;
@@ -54,8 +53,6 @@ should not need to set this delegate individually.
 
 - (void)handleCrashReport;
 
-- (NSString *)firstNotApprovedCrashReport;
-
 - (BOOL)hasPendingCrashReport;
 
 - (void)invokeDelayedProcessing;
@@ -65,10 +62,6 @@ should not need to set this delegate individually.
 - (void)createCrashReport;
 
 - (void)processCrashReportWithFilename:(NSString *)filename envelope:(MSAIEnvelope *)envelope;
-
-- (void)saveSettings;
-
-- (void)loadSettings;
 
 - (void)cleanCrashReports;
 
@@ -81,7 +74,7 @@ should not need to set this delegate individually.
 /**
 * by default, just logs the message
 *
-* can be overriden by subclasses to do their own error handling,
+* can be overridden by subclasses to do their own error handling,
 * e.g. to show UI
 *
 * @param error NSError
