@@ -94,11 +94,6 @@
   assertThatBool([_sut hasPendingCrashReport], equalToBool(NO));
 }
 
-- (void)testFirstNotApprovedCrashReportWithNoFiles {
-  _sut.isCrashManagerDisabled = NO;
-  assertThat([_sut firstNotApprovedCrashReport], equalTo(nil));
-}
-
 - (void)testCreateCrashReportForAppKill {
   //handle app kill (FakeCrashReport
   [_sut createCrashReportForAppKill]; //just creates a fake crash report and hands it over to MSAIPersistence
@@ -148,7 +143,6 @@
   
   // No files at startup
   assertThatBool([_sut hasPendingCrashReport], equalToBool(NO));
-  assertThat([_sut firstNotApprovedCrashReport], equalTo(nil));
   
   [_sut invokeDelayedProcessing];
   
@@ -159,7 +153,6 @@
   
   // we should have 0 pending crash report
   assertThatBool([_sut hasPendingCrashReport], equalToBool(NO));
-  assertThat([_sut firstNotApprovedCrashReport], equalTo(nil));
   
   [_sut cleanCrashReports];
   
@@ -170,7 +163,6 @@
   
   // we should have now 1 pending crash report
   assertThatBool([_sut hasPendingCrashReport], equalToBool(YES));
-  assertThat([_sut firstNotApprovedCrashReport], notNilValue());
   
   [_sut cleanCrashReports];
 
@@ -181,7 +173,6 @@
   
   // we should have now 1 pending crash report
   assertThatBool([_sut hasPendingCrashReport], equalToBool(YES));
-  assertThat([_sut firstNotApprovedCrashReport], notNilValue());
   
   [_sut cleanCrashReports];
   

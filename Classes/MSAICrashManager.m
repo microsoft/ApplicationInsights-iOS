@@ -23,9 +23,6 @@
 
 #include <sys/sysctl.h>
 
-// stores the set of crashreports that have been approved but aren't sent yet
-#define kMSAICrashApprovedReports @"MSAICrashApprovedReports" //TODO remove this in next Sprint
-
 // internal keys
 NSString *const kMSAICrashManagerIsDisabled = @"MSAICrashManagerIsDisabled";
 
@@ -91,7 +88,6 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
     [self initValues];
 
     [self registerObservers];
-    [self loadSettings];
 
     /* Configure our reporter */
 
@@ -205,8 +201,6 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
 - (void)initValues {
   _timeintervalCrashInLastSessionOccured = -1;
 
-  self.approvedCrashReports = [[NSMutableDictionary alloc] init];
-
   self.fileManager = [NSFileManager new];
   self.crashFiles = [NSMutableArray new];
 
@@ -232,6 +226,7 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
 }
 
 #pragma mark - Configuration
+
 // Enable/Disable the CrashManager and store the setting in standardUserDefaults
 - (void)setCrashManagerDisabled:(BOOL)disableCrashManager {
   _isCrashManagerDisabled = disableCrashManager;
@@ -408,8 +403,6 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
     // mark the start of the routine
     [self.fileManager createFileAtPath:self.analyzerInProgressFile contents:nil attributes:nil];
 
-    [self saveSettings];
-
     // Try loading the crash report
     NSData *crashData = [[NSData alloc] initWithData:[self.plCrashReporter loadPendingCrashReportDataAndReturnError:&error]];
 
@@ -464,29 +457,8 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
   if([self.fileManager fileExistsAtPath:self.analyzerInProgressFile]) {
     [self.fileManager removeItemAtPath:self.analyzerInProgressFile error:&error];
   }
-
-  [self saveSettings];
-
+  
   [self.plCrashReporter purgePendingCrashReport];
-}
-
-/**
-Get the filename of the first not approved crash report
-
-@return NSString Filename of the first found not approved crash report
-*/
-- (NSString *)firstNotApprovedCrashReport {
-  if((!self.approvedCrashReports || [self.approvedCrashReports count] == 0) && [self.crashFiles count] > 0) {
-    return self.crashFiles[0];
-  }
-
-  for(NSUInteger i = 0; i < [self.crashFiles count]; i++) {
-    NSString *filename = self.crashFiles[i];
-
-    if(self.approvedCrashReports[filename]) return filename;
-  }
-
-  return nil;
 }
 
 /**
@@ -567,13 +539,6 @@ Get the filename of the first not approved crash report
 
   if(!self.sendingInProgress && [self hasPendingCrashReport]) {
     self.sendingInProgress = YES;
-
-    NSString *notApprovedReportFilename = [self firstNotApprovedCrashReport];
-
-    // this can happen in case there is a non approved crash report but it didn't happen in the previous app session
-    if(notApprovedReportFilename && !self.lastCrashFilename) {
-      self.lastCrashFilename = [notApprovedReportFilename lastPathComponent];
-    }
     
     [self createCrashReport];
   }
@@ -655,11 +620,6 @@ Get the filename of the first not approved crash report
 //        _crashIdenticalCurrentVersion = YES;
     }
 
-    // store this crash report as user approved, so if it fails it will retry automatically
-    self.approvedCrashReports[filename] = @YES; //TODO this can be removed
-
-    [self saveSettings];
-
     [self processCrashReportWithFilename:filename envelope:crashEnvelope];
   } else {
     // we cannot do anything with this report, so delete it
@@ -697,57 +657,6 @@ Get the filename of the first not approved crash report
 #pragma mark - Helpers
 
 /**
-* Save all settings
-*
-* This saves the list of approved crash reports
-*/
-- (void)saveSettings {
-  NSError *error = nil;
-
-  NSMutableDictionary *rootObj = [NSMutableDictionary dictionaryWithCapacity:2];
-  if(self.approvedCrashReports && [self.approvedCrashReports count] > 0) {
-    rootObj[kMSAICrashApprovedReports] = self.approvedCrashReports;
-  }
-
-  NSData *plist = [NSPropertyListSerialization dataWithPropertyList:(id) rootObj format:NSPropertyListBinaryFormat_v1_0 options:0 error:&error];
-
-  if(plist) {
-    [plist writeToFile:self.settingsFile atomically:YES];
-  } else {
-    MSAILog(@"ERROR: Writing settings. %@", [error description]);
-  }
-}
-
-
-/**
-* Load all settings
-*
-* This contains the list of approved crash reports
-*/
-- (void)loadSettings {
-  NSError *error = nil;
-  NSPropertyListFormat format;
-
-  if(![self.fileManager fileExistsAtPath:self.settingsFile]) {
-    return;
-  }
-
-  NSData *plist = [NSData dataWithContentsOfFile:self.settingsFile];
-  if(plist) {
-    NSDictionary *rootObj = (NSDictionary *) [NSPropertyListSerialization
-        propertyListWithData:plist
-                     options:NSPropertyListMutableContainersAndLeaves
-                      format:&format
-                       error:&error];
-
-    if(rootObj[kMSAICrashApprovedReports])
-      [self.approvedCrashReports setDictionary:rootObj[kMSAICrashApprovedReports]];
-  } else {
-    MSAILog(@"ERROR: Reading crash manager settings.");
-  }
-}
-
-/**
 *	 Remove all crash reports for each from the file system
 *
 * This is currently only used as a helper method for tests
@@ -774,9 +683,6 @@ Get the filename of the first not approved crash report
   [self.fileManager removeItemAtPath:[filename stringByAppendingString:@".desc"] error:&error];
 
   [self.crashFiles removeObject:filename];
-  [self.approvedCrashReports removeObjectForKey:filename];
-
-  [self saveSettings];
 }
 
 //Safe info about safe termination of the app to NSUserDefaults
