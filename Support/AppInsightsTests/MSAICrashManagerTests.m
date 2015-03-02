@@ -148,8 +148,8 @@
   
   // handle a new empty crash report
   assertThatBool([MSAITestHelper copyFixtureCrashReportWithFileName:@"live_report_empty"], equalToBool(YES));
-  
-  [_sut handleCrashReport];
+
+  [_sut readCrashReportAndStartProcessing];
   
   // we should have 0 pending crash report
   assertThatBool([_sut hasPendingCrashReport], equalToBool(NO));
@@ -158,8 +158,8 @@
   
   // handle a new signal crash report
   assertThatBool([MSAITestHelper copyFixtureCrashReportWithFileName:@"live_report_signal"], equalToBool(YES));
-  
-  [_sut handleCrashReport];
+
+  [_sut readCrashReportAndStartProcessing];
   
   // we should have now 1 pending crash report
   assertThatBool([_sut hasPendingCrashReport], equalToBool(YES));
@@ -168,8 +168,8 @@
 
   // handle a new signal crash report
   assertThatBool([MSAITestHelper copyFixtureCrashReportWithFileName:@"live_report_exception"], equalToBool(YES));
-  
-  [_sut handleCrashReport];
+
+  [_sut readCrashReportAndStartProcessing];
   
   // we should have now 1 pending crash report
   assertThatBool([_sut hasPendingCrashReport], equalToBool(YES));

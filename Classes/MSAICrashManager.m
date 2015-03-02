@@ -17,10 +17,6 @@
 #import "MSAIEnvelopeManagerPrivate.h"
 #import "MSAIData.h"
 
-
-#import <mach-o/loader.h>
-#import <mach-o/dyld.h>
-
 #include <sys/sysctl.h>
 
 // internal keys
@@ -108,7 +104,7 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
     // Check if we previously crashed
     if([self.plCrashReporter hasPendingCrashReport]) {
       _didCrashInLastSession = YES;
-      [self handleCrashReport];
+      [self readCrashReportAndStartProcessing];
     }
 
     // The actual signal and mach handlers are only registered when invoking `enableCrashReporterAndReturnError`
@@ -201,23 +197,11 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
 - (void)initValues {
   _timeintervalCrashInLastSessionOccured = -1;
 
-  self.fileManager = [NSFileManager new];
-  self.crashFiles = [NSMutableArray new];
-
   NSString *testValue = [[NSUserDefaults standardUserDefaults] stringForKey:kMSAICrashManagerIsDisabled];
   if(testValue) {
     self.isCrashManagerDisabled = [[NSUserDefaults standardUserDefaults] boolForKey:kMSAICrashManagerIsDisabled];
   } else {
     [[NSUserDefaults standardUserDefaults] setInteger:self.isCrashManagerDisabled forKey:kMSAICrashManagerIsDisabled];
-  }
-
-  self.crashesDir = msai_settingsDir();
-  self.settingsFile = [self.crashesDir stringByAppendingPathComponent:MSAI_CRASH_SETTINGS];
-  self.analyzerInProgressFile = [self.crashesDir stringByAppendingPathComponent:MSAI_CRASH_ANALYZER];
-
-  if([self.fileManager fileExistsAtPath:self.analyzerInProgressFile]) {
-    NSError *error = nil;
-    [self.fileManager removeItemAtPath:self.analyzerInProgressFile error:&error];
   }
 }
 
@@ -393,20 +377,18 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
 *
 * Parse the new crash report and gather additional meta data from the app which will be stored along the crash report
 */
-- (void)handleCrashReport {
+- (void)readCrashReportAndStartProcessing {
   NSError *error = NULL;
 
   if(!self.plCrashReporter) return;
 
   // check if the next call ran successfully the last time
-  if(![self.fileManager fileExistsAtPath:self.analyzerInProgressFile]) {
+  if(![MSAIPersistence crashAnalyzerFilePresent]) {
     // mark the start of the routine
-    [self.fileManager createFileAtPath:self.analyzerInProgressFile contents:nil attributes:nil];
+    [MSAIPersistence writeAnalyzerFile];
 
     // Try loading the crash report
     NSData *crashData = [[NSData alloc] initWithData:[self.plCrashReporter loadPendingCrashReportDataAndReturnError:&error]];
-
-    NSString *cacheFilename = [NSString stringWithFormat:@"%.0f", [NSDate timeIntervalSinceReferenceDate]];
 
     if(crashData == nil) {
       MSAILog(@"ERROR: Could not load crash report: %@", error);
@@ -427,7 +409,7 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
           }
         }
 
-        [crashData writeToFile:[self.crashesDir stringByAppendingPathComponent:cacheFilename] atomically:YES];
+        [MSAIPersistence writeCrashData:crashData];
 
         NSString *incidentIdentifier = @"???";
         if(report.uuidRef != NULL) {
@@ -453,10 +435,8 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
 
   // Purge the report
   // mark the end of the routine
-  if([self.fileManager fileExistsAtPath:self.analyzerInProgressFile]) {
-    [self.fileManager removeItemAtPath:self.analyzerInProgressFile error:&error];
-  }
-  
+  [MSAIPersistence deleteAnalyzerFile];
+
   [self.plCrashReporter purgePendingCrashReport];
 }
 
@@ -468,30 +448,9 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
 - (BOOL)hasPendingCrashReport {
   if(self.isCrashManagerDisabled) return NO;
 
-  if([self.fileManager fileExistsAtPath:self.crashesDir]) {
-    NSError *error = NULL;
+  BOOL crashesDirEmpty = [MSAIPersistence crashesDirEmpty];
 
-    NSArray *dirArray = [self.fileManager contentsOfDirectoryAtPath:self.crashesDir error:&error];
-
-    for(NSString *file in dirArray) {
-      NSString *filePath = [self.crashesDir stringByAppendingPathComponent:file];
-
-      NSDictionary *fileAttributes = [self.fileManager attributesOfItemAtPath:filePath error:&error];
-      if([fileAttributes[NSFileType] isEqualToString:NSFileTypeRegular] &&
-          [fileAttributes[NSFileSize] intValue] > 0 &&
-          ![file hasSuffix:@".DS_Store"] &&
-          ![file hasSuffix:@".analyzer"] &&
-          ![file hasSuffix:@".plist"] &&
-          ![file hasSuffix:@".data"] &&
-          ![file hasSuffix:@".meta"] &&
-          ![file hasSuffix:@".desc"]) {
-        [self.crashFiles addObject:filePath];
-      }
-    }
-  }
-
-  if([self.crashFiles count] > 0) {
-    MSAILog(@"INFO: %lu pending crash reports found.", (unsigned long) [self.crashFiles count]);
+  if(crashesDirEmpty) {
     return YES;
   } else {
     if(self.didCrashInLastSession) {
@@ -574,10 +533,11 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
 - (void)createCrashReport { //TODO rename this!
   NSError *error = NULL;
 
-  if([self.crashFiles count] == 0)
+  NSString *filename = [MSAIPersistence nextCrashFile];
+  if(!filename) {
     return;
+  }
 
-  NSString *filename = self.crashFiles[0];
   NSString *cacheFilename = [filename lastPathComponent];
   NSData *crashData = [NSData dataWithContentsOfFile:filename];
 
@@ -627,7 +587,7 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
 }
 
 /**
-*	 Send the bundled up crash (in an envelope) over to the channel for persistence & sending
+*	Send the bundled up crash (in an envelope) over to the channel for persistence & sending
 *
 *	@param	filename the file that contains the crashreport
 *	@param envelope the bundled up crash data
@@ -644,7 +604,7 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
     //TODO: sending is done in persistence layer --> notify user that crashes are available to be sent?!
     if(success) {
       [strongSelf cleanCrashReportWithFilename:filename];
-      [strongSelf createCrashReport];
+      [strongSelf createCrashReport];//triggers the next report to be sent
     }
   }];
 
@@ -661,9 +621,7 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
 * This is currently only used as a helper method for tests
 */
 - (void)cleanCrashReports {
-  for(NSUInteger i = 0; i < [self.crashFiles count]; i++) {
-    [self cleanCrashReportWithFilename:self.crashFiles[i]];
-  }
+  [MSAIPersistence cleanCrashReportDirectory];
 }
 
 /**
@@ -672,16 +630,7 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
 *  @param filename The base filename of the crash report
 */
 - (void)cleanCrashReportWithFilename:(NSString *)filename {
-  if(!filename) return;
-
-  NSError *error = NULL;
-
-  [self.fileManager removeItemAtPath:filename error:&error];
-  [self.fileManager removeItemAtPath:[filename stringByAppendingString:@".data"] error:&error];
-  [self.fileManager removeItemAtPath:[filename stringByAppendingString:@".meta"] error:&error];
-  [self.fileManager removeItemAtPath:[filename stringByAppendingString:@".desc"] error:&error];
-
-  [self.crashFiles removeObject:filename];
+  [MSAIPersistence cleanCrashReportWithFilename:filename];
 }
 
 //Safe info about safe termination of the app to NSUserDefaults
@@ -692,7 +641,6 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
 
 /**
 * Stores info about didEnterBackground in NSUserDefaults.
-*
 */
 
 - (void)appEnteredForeground {
