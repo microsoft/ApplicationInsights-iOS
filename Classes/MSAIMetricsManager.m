@@ -20,6 +20,7 @@
 #import "MSAIEnums.h"
 #import "MSAICrashDataProvider.h"
 #import "MSAICrashData.h"
+#import "MSAISessionStateData.h"
 #import <pthread.h>
 #import <CrashReporter/CrashReporter.h>
 #import "MSAIEnvelope.h"
@@ -279,7 +280,9 @@ static NSInteger const defaultSessionExpirationTime = 20;
   double timeSinceLastBackground = [[NSDate date] timeIntervalSince1970] - appDidEnterBackgroundTime;
   if (timeSinceLastBackground > defaultSessionExpirationTime) {
     [[MSAIEnvelopeManager sharedManager] createNewSession];
-    [self trackEventWithName:@"Session Start Event"];
+    MSAISessionStateData *sessionStartData = [MSAISessionStateData new];
+    sessionStartData.state = MSAISessionState_start;
+    [self trackDataItem:sessionStartData];
     [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kMSAIApplicationWasLaunched];
   }
 }
