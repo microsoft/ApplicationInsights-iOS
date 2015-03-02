@@ -256,6 +256,14 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
   
   MSAIOperation *operationContext = [MSAIOperation new];
   MSAIUser *userContext = [MSAIUser new];
+  NSString *userId = [[NSUserDefaults standardUserDefaults] stringForKey:kMSAIUserId];
+  if (!userId || userId.length == 0) {
+    userId = msai_UUID();
+    [[NSUserDefaults standardUserDefaults] setObject:userId forKey:kMSAIUserId];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+  }
+  userContext.userId = userId;
+  
   MSAILocation *locationContext = [MSAILocation new];
   
   //TODO: Add additional context data

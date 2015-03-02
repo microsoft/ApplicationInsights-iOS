@@ -14,6 +14,9 @@
 #if MSAI_FEATURE_METRICS
 #import "MSAICategoryContainer.h"
 #import "MSAIMetricsManager.h"
+
+extern NSString *const __attribute__((unused)) kMSAIUserId;
+
 #endif /* MSAI_FEATURE_METRICS */
 
 // Notification message which AppInsightsManager is listening to, to retry requesting updated from the server
