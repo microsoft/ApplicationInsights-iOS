@@ -407,7 +407,6 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
     NSData *crashData = [[NSData alloc] initWithData:[self.plCrashReporter loadPendingCrashReportDataAndReturnError:&error]];
 
     NSString *cacheFilename = [NSString stringWithFormat:@"%.0f", [NSDate timeIntervalSinceReferenceDate]];
-    self.lastCrashFilename = cacheFilename;
 
     if(crashData == nil) {
       MSAILog(@"ERROR: Could not load crash report: %@", error);

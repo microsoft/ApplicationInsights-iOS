@@ -31,7 +31,6 @@ should not need to set this delegate individually.
 @property (nonatomic, strong) NSMutableArray *crashFiles; //TODO remove when we refactor the persistence stuff out of crashmanager
 @property (nonatomic, copy) NSString *settingsFile; //TODO remove when we refactor the persistence stuff out of crashmanager
 @property (nonatomic, copy) NSString *crashesDir; //TODO remove when we refactor the persistence stuff out of crashmanager
-@property (nonatomic, copy) NSString *lastCrashFilename;
 @property (nonatomic, strong) MSAIPLCrashReporter *plCrashReporter;
 @property (nonatomic, assign) BOOL didLogLowMemoryWarning;
 @property (nonatomic, assign) BOOL sendingInProgress;
