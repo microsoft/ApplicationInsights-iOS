@@ -9,6 +9,7 @@
 #import "AppInsights.h"
 #import "MSAIHelper.h"
 #import "MSAIKeychainUtils.h"
+#import "AppInsightsPrivate.h"
 
 
 @interface MSAIHelperTests : XCTestCase
@@ -105,6 +106,7 @@
     for (int i = 0; i < 100; i++) {
       NSDate *testDate = [NSDate dateWithTimeIntervalSince1970:0];
       NSString *utcDateString = msai_utcDateString(testDate);
+      MSAILog(@"Timestamp %@", utcDateString);
     }
   }];
 }
