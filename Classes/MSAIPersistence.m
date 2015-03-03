@@ -66,6 +66,18 @@ static NSUInteger maxFileCount = 20;
   }
 }
 
++ (BOOL)isFreeSpaceAvailable{
+  __block NSUInteger fileCount = 0;
+  dispatch_sync(self.persistenceQueue, ^() {
+    NSError *error = nil;
+    NSString *path = [self folderPathWithPriority:MSAIPersistenceTypeRegular];
+    NSArray *fileNames = [[NSFileManager defaultManager] subpathsOfDirectoryAtPath:path error:&error];
+    fileCount = fileNames.count;
+  });
+  BOOL freeSpaceAvailable = fileCount <= maxFileCount;
+  
+  return freeSpaceAvailable;
+}
 
 /**
  * Uses the persistenceQueue to retrieve the next bundle synchronously.
@@ -274,19 +286,6 @@ static NSUInteger maxFileCount = 20;
   NSString *path = [documentFolder stringByAppendingPathComponent:subfolderPath];
   
   return path;
-}
-
-+ (BOOL)isFreeSpaceAvailable{
-  __block NSUInteger fileCount = 0;
-  dispatch_sync(self.persistenceQueue, ^() {
-      NSError *error = nil;
-    NSString *path = [self folderPathWithPriority:MSAIPersistenceTypeRegular];
-    NSArray *fileNames = [[NSFileManager defaultManager] subpathsOfDirectoryAtPath:path error:&error];
-    fileCount = fileNames.count;
-  });
-  BOOL freeSpaceAvailable = fileCount <= maxFileCount;
-  
-  return freeSpaceAvailable;
 }
 
 + (dispatch_queue_t)persistenceQueue{
