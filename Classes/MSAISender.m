@@ -9,14 +9,13 @@
 
 @interface MSAISender ()
 
-@property (getter=isSending) BOOL sending;
-
 @end
+
+static NSUInteger const defaultRequestLimit = 10;
 
 @implementation MSAISender
 
-@synthesize sending = _sending;
-
+@synthesize runningRequestsCount = _runningRequestsCount;
 
 #pragma mark - Initialize & configure shared instance
 
@@ -35,6 +34,7 @@
 - (void)configureWithAppClient:(MSAIAppClient *)appClient endpointPath:(NSString *)endpointPath {
   self.endpointPath = endpointPath;
   self.appClient = appClient;
+  self.maxRequestCount = defaultRequestLimit;
   [self registerObservers];
 }
 
@@ -49,37 +49,29 @@
                   usingBlock:^(NSNotification *notification) {
                     typeof(self) strongSelf = weakSelf;
                     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                      NSString *path = [notification.userInfo objectForKey:kUserInfoFilePath];
-                      // If something was persisted, we have to send it to the server.
-                      if(path){
-                        [strongSelf sendSavedDataWithPath:path];
-                      }else{
-                        MSAILog(@"A file is ready for sending, but the filename was nil");
-                      }
+                      
+                      [strongSelf sendSavedData];
                     });
                   }];
 }
 
 #pragma mark - Sending
 
-- (void)sendSavedDataWithPath:(NSString *)path {
-  NSArray *bundle = [MSAIPersistence bundleAtPath:path];
+- (void)sendSavedData{
+  
+  @synchronized(self){
+    if(_runningRequestsCount < _maxRequestCount){
+      _runningRequestsCount++;
+    }else{
+      return;
+    }
+  }
+  NSString *path = [[MSAIPersistence sharedInstance] requestNextPath];
+  NSArray *bundle = [[MSAIPersistence sharedInstance] bundleAtPath:path];
   [self sendBundle:bundle withPath:path];
 }
 
-- (void)sendSavedData{
-  NSString *path = [MSAIPersistence nextPath];
-  [self sendSavedDataWithPath:path];
-}
-
 - (void)sendBundle:(NSArray *)bundle withPath:(NSString *)path{
-  
-  @synchronized(self){
-    if(_sending)
-      return;
-    else
-      _sending = YES;
-  }
   
   if(bundle && bundle.count > 0) {
     NSError *error = nil;
@@ -90,13 +82,12 @@
       [self sendRequest:request path:path];
     }else {
       MSAILog(@"Error creating JSON from bundle array, don't save back to disk");
-      self.sending = NO;
+      self.runningRequestsCount -= 1;
     }
   }else{
-    self.sending = NO;
+    self.runningRequestsCount -= 1;
   }
 }
-
 
 - (void)sendRequest:(NSURLRequest *)request path:(NSString *)path{
   
@@ -106,26 +97,27 @@
   MSAIHTTPOperation *operation = [self.appClient operationWithURLRequest:request completion:^(MSAIHTTPOperation *operation, NSData *responseData, NSError *error) {
     typeof(self) strongSelf = weakSelf;
     
+    self.runningRequestsCount -= 1;
     NSInteger statusCode = [operation.response statusCode];
-    
+
     if(statusCode >= 200 && statusCode < 400) {
       MSAILog(@"Sent data with status code: %ld", (long) statusCode);
       MSAILog(@"Response data:\n%@", [NSJSONSerialization JSONObjectWithData:responseData options:0 error:nil]);
       
-      [MSAIPersistence deleteBundleAtPath:path];
-      strongSelf.sending = NO;
+      [[MSAIPersistence sharedInstance] deleteBundleAtPath:path];
       [strongSelf sendSavedData];
     } else {
       MSAILog(@"Sending MSAIAppInsights data failed");
+      [[MSAIPersistence sharedInstance] giveBackRequestedPath:path];
     }
   }];
-
+  
   [self.appClient enqeueHTTPOperation:operation];
 }
 
 //TODO remove this because it is never used and it's not public?
 - (void)sendRequest:(NSURLRequest *)request withCompletionBlock:(MSAINetworkCompletionBlock)completion{
-
+  
   MSAIHTTPOperation *operation = [_appClient
                                   operationWithURLRequest:request
                                   completion:completion];
@@ -156,15 +148,15 @@
 
 #pragma mark - Getter/Setter
 
-- (BOOL)isSending {
-  @synchronized(self){
-    return _sending;
+- (NSUInteger)runningRequestsCount {
+  @synchronized(self) {
+    return _runningRequestsCount;
   }
 }
 
-- (void)setSending:(BOOL)sending {
-  @synchronized(self){
-    _sending = sending;
+- (void)setRunningRequestsCount:(NSUInteger)runningRequestsCount {
+  @synchronized(self) {
+    _runningRequestsCount = runningRequestsCount;
   }
 }
 
