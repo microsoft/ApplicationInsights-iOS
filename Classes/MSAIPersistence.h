@@ -26,8 +26,37 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
 };
 
 ///-----------------------------------------------------------------------------
+/// @name Create an instance
+///-----------------------------------------------------------------------------
+
+/**
+ *  Returns a shared MSAIPersistence object.
+ *
+ *  @return A singleton MSAIPersistence instance ready use
+ */
++ (instancetype)sharedInstance;
+  
+///-----------------------------------------------------------------------------
 /// @name Save/delete bundle of data
 ///-----------------------------------------------------------------------------
+
+/**
+ *  A queue which makes file system operations thread safe.
+ */
+@property (nonatomic, strong)dispatch_queue_t persistenceQueue;
+
+/**
+ *  Determines how many files (regular prio) can be on disk at a time.
+ */
+@property NSUInteger maxFileCount;
+
+/**
+ *  An array with all file paths, that have been requested by the sender. If the 
+ *  triggers a delete, the appropriate path should also be removed here. We keep to
+ *  track of requested bundles to make sure, that bundles get sent twice at the same 
+ *  time by differend http operations.
+ */
+@property (nonatomic, strong) NSMutableArray *requestedBundlePaths;
 
 /**
 * Saves the bundle and sends out a kMSAIPersistenceSuccessNotification in case of success
@@ -38,28 +67,21 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
 *
 * @warning: The data within the array needs to implement NSCoding.
 */
-+ (void)persistBundle:(NSArray *)bundle ofType:(MSAIPersistenceType)type withCompletionBlock:(void (^)(BOOL success))completionBlock;
+- (void)persistBundle:(NSArray *)bundle ofType:(MSAIPersistenceType)type withCompletionBlock:(void (^)(BOOL success))completionBlock;
 
 /**
  *  Deletes the file for the given path.
  *
  *  @param path the path of the file, which should be deleted
  */
-+ (void)deleteBundleAtPath:(NSString *)path ;
+- (void)deleteBundleAtPath:(NSString *)path ;
 
 /**
  *  Determines whether the persistence layer is able to write more files to disk.
  *
  *  @return YES if the maxFileCount has not been reached, yet (otherwise NO).
  */
-+ (BOOL)isFreeSpaceAvailable;
-
-/**
- *  Set the count of files, that can be written to disk by the SDK.
- *
- *  @param maxFileCount number of files that can be on disk
- */
-+ (void)setMaxFileCount:(NSUInteger)maxFileCount;
+- (BOOL)isFreeSpaceAvailable;
 
 ///-----------------------------------------------------------------------------
 /// @name Get a bundle of saved data
@@ -82,7 +104,7 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
  *
  *  @return the path of the item, which should be sent next
  */
-+ (NSString *)nextPath;
+- (NSString *)nextPath;
 
 /**
  *  Return the bundle for a given path.
@@ -91,7 +113,7 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
  *
  *  @return an array with all envelope objects.
  */
-+ (NSArray *)bundleAtPath:(NSString *)path;
+- (NSArray *)bundleAtPath:(NSString *)path;
 
 ///-----------------------------------------------------------------------------
 /// @name Handling of a "fake" CrashReport
@@ -102,13 +124,13 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
 *
 * @param bundle The bundle of application insights data
 */
-+ (void)persistFakeReportBundle:(NSArray *)bundle;
+- (void)persistFakeReportBundle:(NSArray *)bundle;
 
 /**
 * Get the first of all saved fake crash reports (an arbitrary one in case we have several fake reports)
 *
 * @return a fake crash report, wrapped as a bundle
 */
-+ (NSArray *)fakeReportBundle;
+- (NSArray *)fakeReportBundle;
 
 @end

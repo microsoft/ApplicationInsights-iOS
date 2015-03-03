@@ -13,16 +13,32 @@ NSString *const kMSAIPersistenceSuccessNotification = @"MSAIPersistenceSuccessNo
 NSString *const kUserInfoFilePath = @"filePath";
 char const *kPersistenceQueueString = "com.microsoft.appInsights.persistenceQueue";
 
-static dispatch_queue_t persistenceQueue;
-static dispatch_once_t onceToken = nil;
-static NSUInteger _maxFileCount = 20;
-
 @implementation MSAIPersistence
 
 #pragma mark - Public
 
++ (instancetype)sharedInstance{
+  static MSAIPersistence *sharedInstance = nil;
+  static dispatch_once_t onceToken;
+  
+  dispatch_once(&onceToken, ^{
+    sharedInstance = [MSAIPersistence new];
+  });
+  return sharedInstance;
+}
+
+- (instancetype)init{
+  self = [super init];
+  if ( self ) {
+    self.persistenceQueue = dispatch_queue_create(kPersistenceQueueString, DISPATCH_QUEUE_SERIAL);
+    self.requestedBundlePaths = [NSMutableArray new];
+    [self createApplicationSupportDirectoryIfNeeded];
+  }
+  return self;
+}
+
 //TODO remove the completion block and implement notification-handling in MSAICrashManager
-+ (void)persistBundle:(NSArray *)bundle ofType:(MSAIPersistenceType)type withCompletionBlock:(void (^)(BOOL success))completionBlock {
+- (void)persistBundle:(NSArray *)bundle ofType:(MSAIPersistenceType)type withCompletionBlock:(void (^)(BOOL success))completionBlock {
   [self persistBundle:bundle ofType:type withCompletionBlock:completionBlock enableNotifications:YES];
 }
 
@@ -32,7 +48,7 @@ static NSUInteger _maxFileCount = 20;
  * In case if type MSAIPersistenceTypeFakeCrash, we don't send out a kMSAIPersistenceSuccessNotification.
  *
  */
-+ (void)persistBundle:(NSArray *)bundle ofType:(MSAIPersistenceType)type withCompletionBlock:(void (^)(BOOL success))completionBlock enableNotifications:(BOOL)sendNotifications {
+- (void)persistBundle:(NSArray *)bundle ofType:(MSAIPersistenceType)type withCompletionBlock:(void (^)(BOOL success))completionBlock enableNotifications:(BOOL)sendNotifications {
   
   if(bundle && bundle.count > 0) {
     NSString *fileURL = [self newFileURLForPriority:type];
@@ -66,7 +82,7 @@ static NSUInteger _maxFileCount = 20;
   }
 }
 
-+ (BOOL)isFreeSpaceAvailable{
+- (BOOL)isFreeSpaceAvailable{
   __block NSUInteger fileCount = 0;
   dispatch_sync(self.persistenceQueue, ^() {
     NSError *error = nil;
@@ -79,46 +95,12 @@ static NSUInteger _maxFileCount = 20;
   return freeSpaceAvailable;
 }
 
-+ (void)setMaxFileCount:(NSUInteger)maxFileCount{
-  _maxFileCount = maxFileCount;
-}
-
-/**
- * Uses the persistenceQueue to retrieve the next bundle synchronously.
- *
- * @returns the next available bundle or nil
- */
-+ (NSArray *)nextBundle {
-  
-  __weak typeof(self) weakSelf = self;
-  __block NSArray *bundle = nil;
-  
-  dispatch_sync(self.persistenceQueue, ^() {
-    typeof(self) strongSelf = weakSelf;
-    NSString *path = [strongSelf nextURLWithPriority:MSAIPersistenceTypeHighPriority];
-    if(!path) {
-      path = [strongSelf nextURLWithPriority:MSAIPersistenceTypeRegular];
-    }
-    
-    if(path) {
-      bundle = [strongSelf bundleAtPath:path];
-    }
-  });
-  
-  //in some cases, bundle may be non-nil but empty
-  //setting it to nil to indicate that nothing's there.
-  if([bundle count] == 0) {
-    bundle = nil;
-  }
-  
-  return bundle;
-}
-
-+ (NSString *)nextPath {
+- (NSString *)nextPath {
   __block NSString *path = nil;
   __weak typeof(self) weakSelf = self;
   dispatch_sync(self.persistenceQueue, ^() {
     typeof(self) strongSelf = weakSelf;
+    
     path = [strongSelf nextURLWithPriority:MSAIPersistenceTypeHighPriority];
     if(!path) {
       path = [strongSelf nextURLWithPriority:MSAIPersistenceTypeRegular];
@@ -131,14 +113,14 @@ static NSUInteger _maxFileCount = 20;
  * Method used to persist the "fake" crash reports. Fake crash reports are handled but are similar to the other bundle
  * types under the hood.
  */
-+ (void)persistFakeReportBundle:(NSArray *)bundle {
+- (void)persistFakeReportBundle:(NSArray *)bundle {
   [self persistBundle:bundle ofType:MSAIPersistenceTypeFakeCrash withCompletionBlock:nil];
 }
 
 /*
  * @Returns a bundle that includes a fake crash report.
  */
-+ (NSArray *)fakeReportBundle {
+- (NSArray *)fakeReportBundle {
   NSString *path = [self nextURLWithPriority:MSAIPersistenceTypeFakeCrash];
   if(path && [path isKindOfClass:[NSString class]] && path.length > 0) {
     NSArray *bundle = [self bundleAtPath:path];
@@ -153,18 +135,25 @@ static NSUInteger _maxFileCount = 20;
  * Deserializes a bundle from disk using NSKeyedUnarchiver and deletes it from disk
  * @return a bundle of data or nil
  */
-+ (NSArray *)bundleAtPath:(NSString *)path {
-  NSArray *bundle = nil;
-  if(path && [path rangeOfString:kFileBaseString].location != NSNotFound) {
+- (NSArray *)bundleAtPath:(NSString *)path {
+  __block NSArray *bundle = nil;
+  
+  __weak typeof(self) weakSelf = self;
+  dispatch_sync(self.persistenceQueue, ^() {
+    typeof(self) strongSelf = weakSelf;
+    
+    if(path && [path rangeOfString:kFileBaseString].location != NSNotFound) {
       bundle = [NSKeyedUnarchiver unarchiveObjectWithFile:path];
-  }
+      [strongSelf.requestedBundlePaths addObject:path];
+    }
+  });
   return bundle;
 }
 
 /**
  * Deletes a file at the given path.
  */
-+ (void)deleteBundleAtPath:(NSString *)path {
+- (void)deleteBundleAtPath:(NSString *)path {
   if([path rangeOfString:kFileBaseString].location != NSNotFound) {
     NSError *error = nil;
     [[NSFileManager new] removeItemAtPath:path error:&error];
@@ -187,8 +176,7 @@ static NSUInteger _maxFileCount = 20;
  * The filename includes the timestamp.
  * For each MSAIPersistenceType, we create a folder within the app's Application Support directory directory
  */
-+ (NSString *)newFileURLForPriority:(MSAIPersistenceType)type {
-  [self createApplicationSupportDirectoryIfNeeded];
+- (NSString *)newFileURLForPriority:(MSAIPersistenceType)type {
   
   NSString *applicationSupportDir = [NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES) lastObject];
   NSString *uuid = msai_UUID();
@@ -219,7 +207,7 @@ static NSUInteger _maxFileCount = 20;
 /**
  * create a folder within at the given path
  */
-+ (void)createFolderAtPathIfNeeded:(NSString *)path {
+- (void)createFolderAtPathIfNeeded:(NSString *)path {
   if(path && ![[NSFileManager defaultManager] fileExistsAtPath:path]) {
     NSError *error = nil;
     [[NSFileManager defaultManager] createDirectoryAtPath:path withIntermediateDirectories:NO attributes:nil error:&error];
@@ -232,7 +220,7 @@ static NSUInteger _maxFileCount = 20;
 /**
  * Create ApplicationSupport directory if necessary and exclude it from iCloud Backup
  */
-+ (void)createApplicationSupportDirectoryIfNeeded {
+- (void)createApplicationSupportDirectoryIfNeeded {
   NSString *appplicationSupportDir = [NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES) lastObject];
   if(![[NSFileManager defaultManager] fileExistsAtPath:appplicationSupportDir isDirectory:NULL]) {
     NSError *error = nil;
@@ -256,8 +244,8 @@ static NSUInteger _maxFileCount = 20;
 /**
  * @returns the URL to the next file depending on the specified type. If there's no file, return nil.
  */
-+ (NSString *)nextURLWithPriority:(MSAIPersistenceType)type {
-  [self createApplicationSupportDirectoryIfNeeded];
+- (NSString *)nextURLWithPriority:(MSAIPersistenceType)type {
+  
   NSString *path = [self folderPathWithPriority:type];
   NSArray *fileNames = [[NSFileManager defaultManager] subpathsOfDirectoryAtPath:path error:nil];
   if(fileNames && fileNames.count > 0) {
@@ -268,7 +256,7 @@ static NSUInteger _maxFileCount = 20;
   }
 }
 
-+ (NSString *)folderPathWithPriority:(MSAIPersistenceType)type {
+- (NSString *)folderPathWithPriority:(MSAIPersistenceType)type {
   NSString *documentFolder = [NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES) lastObject];
   NSString *subfolderPath;
   
@@ -292,18 +280,11 @@ static NSUInteger _maxFileCount = 20;
   return path;
 }
 
-+ (dispatch_queue_t)persistenceQueue{
-  dispatch_once(&onceToken, ^{
-    persistenceQueue = dispatch_queue_create(kPersistenceQueueString, DISPATCH_QUEUE_SERIAL);
-  });
-  return persistenceQueue;
-}
-
 /**
  ** Send a kMSAIPersistenceSuccessNotification to the main thread to notify observers that we have successfully saved a file
  ** This is typocally used to trigger sending.
  **/
-+ (void)sendBundleSavedNotificationWithPath:(NSString *)path {
+- (void)sendBundleSavedNotificationWithPath:(NSString *)path {
   dispatch_async(dispatch_get_main_queue(), ^{
     [[NSNotificationCenter defaultCenter] postNotificationName:kMSAIPersistenceSuccessNotification
                                                         object:nil
