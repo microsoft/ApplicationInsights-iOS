@@ -15,7 +15,7 @@ char const *kPersistenceQueueString = "com.microsoft.appInsights.persistenceQueu
 
 static dispatch_queue_t persistenceQueue;
 static dispatch_once_t onceToken = nil;
-static NSUInteger maxFileCount = 20;
+static NSUInteger _maxFileCount = 20;
 
 @implementation MSAIPersistence
 
@@ -74,9 +74,13 @@ static NSUInteger maxFileCount = 20;
     NSArray *fileNames = [[NSFileManager defaultManager] subpathsOfDirectoryAtPath:path error:&error];
     fileCount = fileNames.count;
   });
-  BOOL freeSpaceAvailable = fileCount <= maxFileCount;
+  BOOL freeSpaceAvailable = fileCount < _maxFileCount;
   
   return freeSpaceAvailable;
+}
+
++ (void)setMaxFileCount:(NSUInteger)maxFileCount{
+  _maxFileCount = maxFileCount;
 }
 
 /**

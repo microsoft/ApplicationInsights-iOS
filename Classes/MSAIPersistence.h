@@ -54,6 +54,13 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
  */
 + (BOOL)isFreeSpaceAvailable;
 
+/**
+ *  Set the count of files, that can be written to disk by the SDK.
+ *
+ *  @param maxFileCount number of files that can be on disk
+ */
++ (void)setMaxFileCount:(NSUInteger)maxFileCount;
+
 ///-----------------------------------------------------------------------------
 /// @name Get a bundle of saved data
 ///-----------------------------------------------------------------------------
