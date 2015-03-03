@@ -40,8 +40,9 @@
  *  Creates a HTTP operation and puts it to the queue.
  *
  *  @param request a request for sending a data object to the telemetry server
+ *  @param path path to the file which should be sent
  */
-- (void)sendRequest:(NSURLRequest *)request;
+- (void)sendRequest:(NSURLRequest *)request path:(NSString *)path;
 
 ///-----------------------------------------------------------------------------
 /// @name Helper

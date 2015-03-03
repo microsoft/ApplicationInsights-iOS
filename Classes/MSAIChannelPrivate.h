@@ -82,4 +82,6 @@
  */
 - (void)invalidateTimer;
 
+- (BOOL)isQueueBusy;
+
 @end
