@@ -26,16 +26,15 @@ should not need to set this delegate individually.
 @property (nonatomic, weak) id delegate; //TODO Will be removed eventually?
 
 @property (nonatomic, assign) PLCrashReporterCallbacks *crashCallBacks;
-@property (nonatomic, strong) NSFileManager *fileManager; //TODO remove when we refactor the persistence stuff out of crashmanager
+//@property (nonatomic, strong) NSFileManager *fileManager; //TODO remove when we refactor the persistence stuff out of crashmanager
 @property (nonatomic, strong) MSAIContext *appContext;
-@property (nonatomic, strong) NSMutableArray *crashFiles; //TODO remove when we refactor the persistence stuff out of crashmanager
-@property (nonatomic, copy) NSString *settingsFile; //TODO remove when we refactor the persistence stuff out of crashmanager
-@property (nonatomic, copy) NSString *crashesDir; //TODO remove when we refactor the persistence stuff out of crashmanager
-@property (nonatomic, copy) NSString *lastCrashFilename;
+//@property (nonatomic, strong) NSMutableArray *crashFiles; //TODO remove when we refactor the persistence stuff out of crashmanager
+//@property (nonatomic, copy) NSString *settingsFile; //TODO remove when we refactor the persistence stuff out of crashmanager
+//@property (nonatomic, copy) NSString *crashesDir; //TODO remove when we refactor the persistence stuff out of crashmanager
 @property (nonatomic, strong) MSAIPLCrashReporter *plCrashReporter;
 @property (nonatomic, assign) BOOL didLogLowMemoryWarning;
 @property (nonatomic, assign) BOOL sendingInProgress;
-@property (nonatomic, copy) NSString *analyzerInProgressFile;
+//@property (nonatomic, copy) NSString *analyzerInProgressFile;
 @property (nonatomic, assign) NSUncaughtExceptionHandler *exceptionHandler;
 
 /**
@@ -49,9 +48,9 @@ should not need to set this delegate individually.
 
 - (void)startManager;
 
-- (void)initValues;
+- (void)checkCrashManagerDisabled;
 
-- (void)handleCrashReport;
+- (void)readCrashReportAndStartProcessing;
 
 - (BOOL)hasPendingCrashReport;
 
