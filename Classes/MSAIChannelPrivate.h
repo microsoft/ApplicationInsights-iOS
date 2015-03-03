@@ -15,6 +15,11 @@
 /// @name Initialisation
 ///-----------------------------------------------------------------------------
 
+/**
+*  Returns a shared MSAIChannel object.
+*
+*  @return A singleton MSAIChannel instance ready use
+*/
 + (instancetype)sharedChannel;
 
 ///-----------------------------------------------------------------------------
