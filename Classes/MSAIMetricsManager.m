@@ -218,9 +218,6 @@ static NSInteger const defaultSessionExpirationTime = 20;
   if(![[MSAIChannel sharedChannel] isQueueBusy]){
     MSAIEnvelope *envelope = [[MSAIEnvelopeManager sharedManager] envelopeForTelemetryData:dataItem];
     [[MSAIChannel sharedChannel] enqueueEnvelope:envelope];
-    NSLog(@"Enqueue event");
-  }else{
-    NSLog(@"Can't enqueue event: Queue is busy");
   }
 }
 
