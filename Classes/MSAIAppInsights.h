@@ -110,8 +110,7 @@
  * The value returned by this method is unique and persisted per app installation
  * in the keychain.  It is also being used in crash reports as `CrashReporter Key`
  * and internally when sending crash reports and feedback messages.
- * This is not identical to the `[ASIdentifierManager advertisingIdentifier]` or
- * the `[UIDevice identifierForVendor]`!
+ * This is not identical to the `[UIDevice identifierForVendor]`!
  */
 @property (nonatomic, readonly) NSString *installString;
 
