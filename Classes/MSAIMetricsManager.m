@@ -214,8 +214,14 @@ static NSInteger const defaultSessionExpirationTime = 20;
 #pragma mark Track DataItem
 
 - (void)trackDataItem:(MSAITelemetryData *)dataItem{
-  MSAIEnvelope *envelope = [[MSAIEnvelopeManager sharedManager] envelopeForTelemetryData:dataItem];
-  [[MSAIChannel sharedChannel] enqueueEnvelope:envelope];
+  
+  if(![[MSAIChannel sharedChannel] isQueueBusy]){
+    MSAIEnvelope *envelope = [[MSAIEnvelopeManager sharedManager] envelopeForTelemetryData:dataItem];
+    [[MSAIChannel sharedChannel] enqueueEnvelope:envelope];
+    NSLog(@"Enqueue event");
+  }else{
+    NSLog(@"Can't enqueue event: Queue is busy");
+  }
 }
 
 #pragma mark - Session update
