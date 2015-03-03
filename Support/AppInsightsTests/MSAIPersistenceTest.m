@@ -33,17 +33,18 @@ typedef void (^MSAIPersistenceTestBlock)(BOOL);
   [super tearDown];
   
   //Delete all bundles to make sure we have a clean dir next time
-  NSString *nextPath = [_sut nextPath];
+  [_sut.requestedBundlePaths removeAllObjects];
+  NSString *nextPath = [_sut requestNextPath];
   NSArray *bundle = [_sut bundleAtPath:nextPath];
   while (bundle) {
     [_sut deleteBundleAtPath:nextPath];
-    nextPath = [_sut nextPath];
+    nextPath = [_sut requestNextPath];
     bundle = [_sut bundleAtPath:nextPath];
   }
 }
 
 - (void)testNoBundles {
-  XCTAssertNil([_sut nextPath]);
+  XCTAssertNil([_sut requestNextPath]);
 }
 
 - (void)testIfItPersistsRegular {
@@ -67,11 +68,11 @@ typedef void (^MSAIPersistenceTestBlock)(BOOL);
   [_sut persistBundle:@[testHigh] ofType:MSAIPersistenceTypeHighPriority withCompletionBlock:nil];
   [_sut persistBundle:@[testRegular] ofType:MSAIPersistenceTypeRegular withCompletionBlock:nil];
   
-  NSString *nextPath = [_sut nextPath];
+  NSString *nextPath = [_sut requestNextPath];
   NSString *returned = [[_sut bundleAtPath:nextPath] firstObject];
   XCTAssertTrue([returned isEqualToString:testHigh]);
   [_sut deleteBundleAtPath:nextPath];
-  nextPath = [_sut nextPath];
+  nextPath = [_sut requestNextPath];
   returned = [[_sut bundleAtPath:nextPath] firstObject];
   XCTAssertTrue([returned isEqualToString:testRegular]);
 }
@@ -82,19 +83,19 @@ typedef void (^MSAIPersistenceTestBlock)(BOOL);
     XCTAssertTrue(success);
   }];
   
-  NSString *nextPath = [_sut nextPath];
+  NSString *nextPath = [_sut requestNextPath];
   XCTAssertNotNil([_sut bundleAtPath:nextPath]);
  
   [_sut deleteBundleAtPath:nextPath];
-  XCTAssertNil([_sut nextPath]);
+  XCTAssertNil([_sut requestNextPath]);
 }
 
 - (void)testNextPathNotEmptyWhenFilePersisted{
-  NSString *nextPath = [_sut nextPath];
+  NSString *nextPath = [_sut requestNextPath];
   XCTAssertNil(nextPath);
   
   [_sut persistBundle:@[@"testBundle"] ofType:MSAIPersistenceTypeRegular withCompletionBlock:nil];
-  nextPath = [_sut nextPath];
+  nextPath = [_sut requestNextPath];
   XCTAssertNotNil(nextPath);
 }
 
@@ -102,14 +103,14 @@ typedef void (^MSAIPersistenceTestBlock)(BOOL);
   
   NSString *bundleItemValue = @"myBundleItemValue";
   [_sut persistBundle:@[bundleItemValue] ofType:MSAIPersistenceTypeRegular withCompletionBlock:nil];
-  NSString *nextPath = [_sut nextPath];
+  NSString *nextPath = [_sut requestNextPath];
   NSArray *bundle = [_sut bundleAtPath:nextPath];
   
   XCTAssert([[bundle firstObject] isEqualToString:bundleItemValue]);
 }
 
 - (void)testIfIsFreeSpaceAvailableWorks{
-  [_sut setMaxFileCount:1];
+  _sut.maxFileCount = 1;
   XCTAssertTrue([_sut isFreeSpaceAvailable]);
   
   [_sut persistBundle:@[@"testBundle"] ofType:MSAIPersistenceTypeRegular withCompletionBlock:nil];
