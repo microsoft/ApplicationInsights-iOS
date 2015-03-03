@@ -26,7 +26,7 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
 };
 
 ///-----------------------------------------------------------------------------
-/// @name Save bundle of data
+/// @name Save/delete bundle of data
 ///-----------------------------------------------------------------------------
 
 /**
@@ -39,6 +39,20 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
 * @warning: The data within the array needs to implement NSCoding.
 */
 + (void)persistBundle:(NSArray *)bundle ofType:(MSAIPersistenceType)type withCompletionBlock:(void (^)(BOOL success))completionBlock;
+
+/**
+ *  Deletes the file for the given path.
+ *
+ *  @param path the path of the file, which should be deleted
+ */
++ (void)deleteBundleAtPath:(NSString *)path ;
+
+/**
+ *  Determines whether the persistence layer is able to write more files to disk.
+ *
+ *  @return YES if the maxFileCount has not been reached, yet (otherwise NO).
+ */
++ (BOOL)isFreeSpaceAvailable;
 
 ///-----------------------------------------------------------------------------
 /// @name Get a bundle of saved data
@@ -56,15 +70,22 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
 * @return a bundle of AppInsightsData that's ready to be sent to the server
 */
 
-
-
+/**
+ *  Returns the path for the next item to send.
+ *
+ *  @return the path of the item, which should be sent next
+ */
 + (NSString *)nextPath;
 
+/**
+ *  Return the bundle for a given path.
+ *
+ *  @param path the path of the bundle.
+ *
+ *  @return an array with all envelope objects.
+ */
 + (NSArray *)bundleAtPath:(NSString *)path;
 
-+ (void)deleteBundleAtPath:(NSString *)path ;
-
-+ (BOOL)isFreeSpaceAvailable;
 ///-----------------------------------------------------------------------------
 /// @name Handling of a "fake" CrashReport
 ///-----------------------------------------------------------------------------
