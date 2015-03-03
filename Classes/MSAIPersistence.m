@@ -11,6 +11,7 @@ NSString *const kFileBaseString = @"app-insights-bundle-";
 
 NSString *const kMSAIPersistenceSuccessNotification = @"MSAIPersistenceSuccessNotification";
 char const *kPersistenceQueueString = "com.microsoft.appInsights.persistenceQueue";
+NSUInteger const defaultFileCount = 15;
 
 @implementation MSAIPersistence
 
@@ -32,7 +33,7 @@ char const *kPersistenceQueueString = "com.microsoft.appInsights.persistenceQueu
   if ( self ) {
     _persistenceQueue = dispatch_queue_create(kPersistenceQueueString, DISPATCH_QUEUE_SERIAL);
     _requestedBundlePaths = [NSMutableArray new];
-    _maxFileCount = 15;
+    _maxFileCount = defaultFileCount;
   }
   return self;
 }
