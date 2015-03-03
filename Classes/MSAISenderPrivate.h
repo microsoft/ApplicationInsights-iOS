@@ -18,6 +18,16 @@
 @property (nonatomic, strong)NSString *endpointPath;
 
 /**
+ *  The max number of request that can run at a time.
+ */
+@property NSUInteger maxRequestCount;
+
+/**
+ *  The number of requests that are currently running.
+ */
+@property NSUInteger runningRequestsCount;
+
+/**
 *  Returns a shared MSAISender object.
 *
 *  @return A singleton MSAISender instance ready use
