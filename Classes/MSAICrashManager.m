@@ -81,25 +81,13 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
   if(self.isCrashManagerDisabled) return;
   static dispatch_once_t plcrPredicate;
   dispatch_once(&plcrPredicate, ^{
-    [self initValues];
+    _timeintervalCrashInLastSessionOccured = -1;
+
+    [self checkCrashManagerDisabled];
 
     [self registerObservers];
 
-    /* Configure our reporter */
-
-    PLCrashReporterSignalHandlerType signalHandlerType = PLCrashReporterSignalHandlerTypeBSD;
-    if(self.machExceptionHandlerEnabled) {
-      signalHandlerType = PLCrashReporterSignalHandlerTypeMach;
-    }
-
-    PLCrashReporterSymbolicationStrategy symbolicationStrategy = PLCrashReporterSymbolicationStrategyNone;
-    if(self.onDeviceSymbolicationEnabled) {
-      symbolicationStrategy = PLCrashReporterSymbolicationStrategyAll;
-    }
-
-    MSAIPLCrashReporterConfig *config = [[MSAIPLCrashReporterConfig alloc] initWithSignalHandlerType:signalHandlerType
-                                                                               symbolicationStrategy:symbolicationStrategy];
-    self.plCrashReporter = [[MSAIPLCrashReporter alloc] initWithConfiguration:config];
+    [self configPLCrashReporter];
 
     // Check if we previously crashed
     if([self.plCrashReporter hasPendingCrashReport]) {
@@ -118,52 +106,31 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
       }
     }
 
-    if(!self.debuggerIsAttached) {
-      // Multiple exception handlers can be set, but we can only query the top level error handler (uncaught exception handler).
-      //
-      // To check if PLCrashReporter's error handler is successfully added, we compare the top
-      // level one that is set before and the one after PLCrashReporter sets up its own.
-      //
-      // With delayed processing we can then check if another error handler was set up afterwards
-      // and can show a debug warning log message, that the dev has to make sure the "newer" error handler
-      // doesn't exit the process itself, because then all subsequent handlers would never be invoked.
-      //
-      // Note: ANY error handler setup BEFORE AppInsightsSDK initialization will not be processed!
-
-      // get the current top level error handler
-      NSUncaughtExceptionHandler *initialHandler = NSGetUncaughtExceptionHandler();
-
-      // PLCrashReporter may only be initialized once. So make sure the developer
-      // can't break this
-      NSError *error = NULL;
-
-      // set any user defined callbacks, hopefully the users knows what they do
-      if(self.crashCallBacks) {
-        [self.plCrashReporter setCrashCallbacks:self.crashCallBacks];
-      }
-
-      // Enable the Crash Reporter
-      if(![self.plCrashReporter enableCrashReporterAndReturnError:&error])
-        NSLog(@"[AppInsightsSDK] WARNING: Could not enable crash reporter: %@", [error localizedDescription]);
-
-      // get the new current top level error handler, which should now be the one from PLCrashReporter
-      NSUncaughtExceptionHandler *currentHandler = NSGetUncaughtExceptionHandler();
-
-      // do we have a new top level error handler? then we were successful
-      if(currentHandler && currentHandler != initialHandler) {
-        self.exceptionHandler = currentHandler;
-
-        MSAILog(@"INFO: Exception handler successfully initialized.");
-      } else {
-        // this should never happen, theoretically only if NSSetUncaugtExceptionHandler() has some internal issues
-        NSLog(@"[AppInsightsSDK] ERROR: Exception handler could not be set. Make sure there is no other exception handler set up!");
-      }
-    }
+    [self setupExceptionHandler];
   });
 
-  if([[NSUserDefaults standardUserDefaults] valueForKey:kMSAIAppDidReceiveLowMemoryNotification])
-    _didReceiveMemoryWarningInLastSession = [[NSUserDefaults standardUserDefaults] boolForKey:kMSAIAppDidReceiveLowMemoryNotification];
+  [self checkForLowMemoryWarning];
 
+  [self checkStateOfLastSession];
+
+  [self appEnteredForeground];
+
+  [[NSUserDefaults standardUserDefaults] setBool:NO forKey:kMSAIAppDidReceiveLowMemoryNotification];
+  [[NSUserDefaults standardUserDefaults] synchronize];
+
+  [MSAICrashManager sharedManager].isSetupCorrectly = YES;
+
+  [self triggerDelayedProcessing];
+}
+
+
+- (void)dealloc {
+  [self unregisterObservers];
+}
+
+#pragma mark - Start Helpers
+
+- (void)checkStateOfLastSession {
   if(!self.didCrashInLastSession && self.appNotTerminatingCleanlyDetectionEnabled) {
     BOOL didAppSwitchToBackgroundSafely = YES;
 
@@ -185,28 +152,83 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
       }
     }
   }
-  [self appEnteredForeground];
-  [[NSUserDefaults standardUserDefaults] setBool:NO forKey:kMSAIAppDidReceiveLowMemoryNotification];
-  [[NSUserDefaults standardUserDefaults] synchronize];
-
-  [MSAICrashManager sharedManager].isSetupCorrectly = YES;
-  
-  [self triggerDelayedProcessing];
 }
 
-- (void)initValues {
-  _timeintervalCrashInLastSessionOccured = -1;
+- (void)checkForLowMemoryWarning {
+  if([[NSUserDefaults standardUserDefaults] valueForKey:kMSAIAppDidReceiveLowMemoryNotification]) {
+    _didReceiveMemoryWarningInLastSession = [[NSUserDefaults standardUserDefaults] boolForKey:kMSAIAppDidReceiveLowMemoryNotification];
+  }
+}
 
+- (void)setupExceptionHandler {
+  if(!self.debuggerIsAttached) {
+    // Multiple exception handlers can be set, but we can only query the top level error handler (uncaught exception handler).
+    //
+    // To check if PLCrashReporter's error handler is successfully added, we compare the top
+    // level one that is set before and the one after PLCrashReporter sets up its own.
+    //
+    // With delayed processing we can then check if another error handler was set up afterwards
+    // and can show a debug warning log message, that the dev has to make sure the "newer" error handler
+    // doesn't exit the process itself, because then all subsequent handlers would never be invoked.
+    //
+    // Note: ANY error handler setup BEFORE AppInsightsSDK initialization will not be processed!
+
+    // get the current top level error handler
+    NSUncaughtExceptionHandler *initialHandler = NSGetUncaughtExceptionHandler();
+
+    // PLCrashReporter may only be initialized once. So make sure the developer
+    // can't break this
+    NSError *error = NULL;
+
+    // set any user defined callbacks, hopefully the users knows what they do
+    if(self.crashCallBacks) {
+      [self.plCrashReporter setCrashCallbacks:self.crashCallBacks];
+    }
+
+    // Enable the Crash Reporter
+    if(![self.plCrashReporter enableCrashReporterAndReturnError:&error])
+      NSLog(@"[AppInsightsSDK] WARNING: Could not enable crash reporter: %@", [error localizedDescription]);
+
+    // get the new current top level error handler, which should now be the one from PLCrashReporter
+    NSUncaughtExceptionHandler *currentHandler = NSGetUncaughtExceptionHandler();
+
+    // do we have a new top level error handler? then we were successful
+    if(currentHandler && currentHandler != initialHandler) {
+      self.exceptionHandler = currentHandler;
+
+      MSAILog(@"INFO: Exception handler successfully initialized.");
+    } else {
+      // this should never happen, theoretically only if NSSetUncaugtExceptionHandler() has some internal issues
+      NSLog(@"[AppInsightsSDK] ERROR: Exception handler could not be set. Make sure there is no other exception handler set up!");
+    }
+  }
+}
+
+- (void)configPLCrashReporter {
+/* Configure our reporter */
+
+  PLCrashReporterSignalHandlerType signalHandlerType = PLCrashReporterSignalHandlerTypeBSD;
+  if(self.machExceptionHandlerEnabled) {
+    signalHandlerType = PLCrashReporterSignalHandlerTypeMach;
+  }
+
+  PLCrashReporterSymbolicationStrategy symbolicationStrategy = PLCrashReporterSymbolicationStrategyNone;
+  if(self.onDeviceSymbolicationEnabled) {
+    symbolicationStrategy = PLCrashReporterSymbolicationStrategyAll;
+  }
+
+  MSAIPLCrashReporterConfig *config = [[MSAIPLCrashReporterConfig alloc] initWithSignalHandlerType:signalHandlerType
+                                                                             symbolicationStrategy:symbolicationStrategy];
+  self.plCrashReporter = [[MSAIPLCrashReporter alloc] initWithConfiguration:config];
+}
+
+- (void)checkCrashManagerDisabled {
   NSString *testValue = [[NSUserDefaults standardUserDefaults] stringForKey:kMSAICrashManagerIsDisabled];
   if(testValue) {
     self.isCrashManagerDisabled = [[NSUserDefaults standardUserDefaults] boolForKey:kMSAICrashManagerIsDisabled];
   } else {
     [[NSUserDefaults standardUserDefaults] setInteger:self.isCrashManagerDisabled forKey:kMSAICrashManagerIsDisabled];
   }
-}
-
-- (void)dealloc {
-  [self unregisterObservers];
 }
 
 #pragma mark - Configuration

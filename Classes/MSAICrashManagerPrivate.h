@@ -48,7 +48,7 @@ should not need to set this delegate individually.
 
 - (void)startManager;
 
-- (void)initValues;
+- (void)checkCrashManagerDisabled;
 
 - (void)readCrashReportAndStartProcessing;
 
