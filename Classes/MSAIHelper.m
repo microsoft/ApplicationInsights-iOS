@@ -76,7 +76,7 @@ NSString *msai_utcDateString(NSDate *date){
     dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
     dateFormatter.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
   });
-
+  
   NSString *dateString = [dateFormatter stringFromDate:date];
   
   return dateString;
@@ -313,4 +313,16 @@ BOOL msai_isRunningInAppExtension(void) {
   });
   
   return isRunningInAppExtension;
+}
+
+BOOL msai_isAppStoreEnvironment(void){
+  
+  #if !TARGET_IPHONE_SIMULATOR
+  // check if we are really in an app store environment
+  if (![[NSBundle mainBundle] pathForResource:@"embedded" ofType:@"mobileprovision"]) {
+    appStoreEnvironment = YES;
+  }
+  #endif
+  
+  return NO;
 }
