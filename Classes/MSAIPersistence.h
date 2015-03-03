@@ -11,7 +11,6 @@
 * This is typically used to trigger sending to the server.
 */
 FOUNDATION_EXPORT NSString *const kMSAIPersistenceSuccessNotification;
-FOUNDATION_EXPORT NSString *const kUserInfoFilePath;
 
 
 /**
@@ -100,11 +99,21 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
 */
 
 /**
- *  Returns the path for the next item to send.
+ *  Returns the path for the next item to send. The requested path is reserved as long
+ *  as leaveUpRequestedPath: gets called.
+ *
+ *  @see leleaveUpRequestedPath:
  *
  *  @return the path of the item, which should be sent next
  */
-- (NSString *)nextPath;
+- (NSString *)requestNextPath;
+
+/**
+ *  Release a requested path. This method should be called after sending a file failed.
+ *
+ *  @param path the path that should be available for sending again.
+ */
+- (void)giveBackRequestedPath:(NSString *) path;
 
 /**
  *  Return the bundle for a given path.

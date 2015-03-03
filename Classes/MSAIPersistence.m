@@ -10,7 +10,6 @@ NSString *const kFakeCrashString = @"fakeCrash";
 NSString *const kFileBaseString = @"app-insights-bundle-";
 
 NSString *const kMSAIPersistenceSuccessNotification = @"MSAIPersistenceSuccessNotification";
-NSString *const kUserInfoFilePath = @"filePath";
 char const *kPersistenceQueueString = "com.microsoft.appInsights.persistenceQueue";
 
 @implementation MSAIPersistence
@@ -23,6 +22,7 @@ char const *kPersistenceQueueString = "com.microsoft.appInsights.persistenceQueu
   
   dispatch_once(&onceToken, ^{
     sharedInstance = [MSAIPersistence new];
+    [sharedInstance createApplicationSupportDirectoryIfNeeded];
   });
   return sharedInstance;
 }
@@ -30,9 +30,9 @@ char const *kPersistenceQueueString = "com.microsoft.appInsights.persistenceQueu
 - (instancetype)init{
   self = [super init];
   if ( self ) {
-    self.persistenceQueue = dispatch_queue_create(kPersistenceQueueString, DISPATCH_QUEUE_SERIAL);
-    self.requestedBundlePaths = [NSMutableArray new];
-    [self createApplicationSupportDirectoryIfNeeded];
+    _persistenceQueue = dispatch_queue_create(kPersistenceQueueString, DISPATCH_QUEUE_SERIAL);
+    _requestedBundlePaths = [NSMutableArray new];
+    _maxFileCount = 15;
   }
   return self;
 }
@@ -95,7 +95,7 @@ char const *kPersistenceQueueString = "com.microsoft.appInsights.persistenceQueu
   return freeSpaceAvailable;
 }
 
-- (NSString *)nextPath {
+- (NSString *)requestNextPath {
   __block NSString *path = nil;
   __weak typeof(self) weakSelf = self;
   dispatch_sync(self.persistenceQueue, ^() {
@@ -104,6 +104,10 @@ char const *kPersistenceQueueString = "com.microsoft.appInsights.persistenceQueu
     path = [strongSelf nextURLWithPriority:MSAIPersistenceTypeHighPriority];
     if(!path) {
       path = [strongSelf nextURLWithPriority:MSAIPersistenceTypeRegular];
+    }
+    
+    if(path){
+      [self.requestedBundlePaths addObject:path];
     }
   });
   return path;
@@ -137,14 +141,11 @@ char const *kPersistenceQueueString = "com.microsoft.appInsights.persistenceQueu
  */
 - (NSArray *)bundleAtPath:(NSString *)path {
   __block NSArray *bundle = nil;
-  
-  __weak typeof(self) weakSelf = self;
+
   dispatch_sync(self.persistenceQueue, ^() {
-    typeof(self) strongSelf = weakSelf;
     
     if(path && [path rangeOfString:kFileBaseString].location != NSNotFound) {
       bundle = [NSKeyedUnarchiver unarchiveObjectWithFile:path];
-      [strongSelf.requestedBundlePaths addObject:path];
     }
   });
   return bundle;
@@ -154,19 +155,32 @@ char const *kPersistenceQueueString = "com.microsoft.appInsights.persistenceQueu
  * Deletes a file at the given path.
  */
 - (void)deleteBundleAtPath:(NSString *)path {
-  if([path rangeOfString:kFileBaseString].location != NSNotFound) {
-    NSError *error = nil;
-    [[NSFileManager new] removeItemAtPath:path error:&error];
-    if(error) {
-      MSAILog(@"Error deleting file at path %@", path);
+  __weak typeof(self) weakSelf = self;
+  dispatch_sync(self.persistenceQueue, ^() {
+    typeof(self) strongSelf = weakSelf;
+    if([path rangeOfString:kFileBaseString].location != NSNotFound) {
+      NSError *error = nil;
+      [[NSFileManager defaultManager] removeItemAtPath:path error:&error];
+      if(error) {
+        MSAILog(@"Error deleting file at path %@", path);
+      }
+      else {
+        MSAILog(@"Successfully deleted file at path %@", path);
+        [strongSelf.requestedBundlePaths removeObject:path];
+      }
+    }else {
+      MSAILog(@"Empty path, so nothing can be deleted");
     }
-    else {
-      MSAILog(@"Successfully deleted file at path %@", path);
-    }
-  }
-  else {
-    MSAILog(@"Empty path, so nothing can be deleted");
-  }
+  });
+}
+
+- (void)giveBackRequestedPath:(NSString *) path {
+  __weak typeof(self) weakSelf = self;
+  dispatch_sync(self.persistenceQueue, ^() {
+    typeof(self) strongSelf = weakSelf;
+    
+    [strongSelf.requestedBundlePaths removeObject:path];
+  });
 }
 
 #pragma mark - Private
@@ -249,11 +263,15 @@ char const *kPersistenceQueueString = "com.microsoft.appInsights.persistenceQueu
   NSString *path = [self folderPathWithPriority:type];
   NSArray *fileNames = [[NSFileManager defaultManager] subpathsOfDirectoryAtPath:path error:nil];
   if(fileNames && fileNames.count > 0) {
-    return [path stringByAppendingPathComponent:[fileNames firstObject]];
+    for(NSString *filename in fileNames){
+      NSString *absolutePath = [path stringByAppendingPathComponent:filename];
+      if(![self.requestedBundlePaths containsObject:absolutePath]){
+        return absolutePath;
+      }
+    }
   }
-  else {
-    return nil;
-  }
+  
+  return nil;
 }
 
 - (NSString *)folderPathWithPriority:(MSAIPersistenceType)type {
@@ -288,7 +306,7 @@ char const *kPersistenceQueueString = "com.microsoft.appInsights.persistenceQueu
   dispatch_async(dispatch_get_main_queue(), ^{
     [[NSNotificationCenter defaultCenter] postNotificationName:kMSAIPersistenceSuccessNotification
                                                         object:nil
-                                                      userInfo:@{kUserInfoFilePath:path}];
+                                                      userInfo:nil];
   });
 }
 
