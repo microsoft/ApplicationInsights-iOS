@@ -320,7 +320,7 @@ BOOL msai_isAppStoreEnvironment(void){
   #if !TARGET_IPHONE_SIMULATOR
   // check if we are really in an app store environment
   if (![[NSBundle mainBundle] pathForResource:@"embedded" ofType:@"mobileprovision"]) {
-    appStoreEnvironment = YES;
+    return YES;
   }
   #endif
   
