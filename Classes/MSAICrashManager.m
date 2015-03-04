@@ -50,7 +50,6 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
   id _appDidEnterBackgroundObserver;
   id _appWillEnterForegroundObserver;
   id _appDidReceiveLowMemoryWarningObserver;
-  id _networkDidBecomeReachableObserver;
 }
 
 #pragma mark - Start
@@ -65,7 +64,7 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
 }
 
 + (void)startWithContext:(MSAIContext *)context {
-  //TODO does it make sense to have everything not initialised if the context is nil?
+  //TODO this needs some more tweaking when mergin in chris' latest refactorings.
   if(context) {
     if(![MSAICrashManager sharedManager].isSetupCorrectly) {
       [MSAICrashManager sharedManager].appContext = context;
@@ -79,13 +78,16 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
 */
 - (void)startManager {
   if(self.isCrashManagerDisabled) return;
+
+  [self checkCrashManagerDisabled];
+
+  [self registerObservers];
+
   static dispatch_once_t plcrPredicate;
   dispatch_once(&plcrPredicate, ^{
     _timeintervalCrashInLastSessionOccured = -1;
 
-    [self checkCrashManagerDisabled];
-
-    [self registerObservers];
+    [MSAIPersistence deleteCrashReporterLockFile]; //
 
     [self configPLCrashReporter];
 
@@ -103,6 +105,7 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
     if(![self.appContext isAppStoreEnvironment]) {
       if(self.debuggerIsAttached) {
         NSLog(@"[AppInsightsSDK] WARNING: Detecting crashes is NOT enabled due to running the app with a debugger attached.");
+        //TODO shouldn't we do something here?!
       }
     }
 
@@ -119,10 +122,7 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
   [[NSUserDefaults standardUserDefaults] synchronize];
 
   [MSAICrashManager sharedManager].isSetupCorrectly = YES;
-
-  [self triggerDelayedProcessing];
 }
-
 
 - (void)dealloc {
   [self unregisterObservers];
@@ -186,8 +186,9 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
     }
 
     // Enable the Crash Reporter
-    if(![self.plCrashReporter enableCrashReporterAndReturnError:&error])
+    if(![self.plCrashReporter enableCrashReporterAndReturnError:&error]) {
       NSLog(@"[AppInsightsSDK] WARNING: Could not enable crash reporter: %@", [error localizedDescription]);
+    }
 
     // get the new current top level error handler, which should now be the one from PLCrashReporter
     NSUncaughtExceptionHandler *currentHandler = NSGetUncaughtExceptionHandler();
@@ -314,17 +315,8 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
                                                                                      queue:NSOperationQueue.mainQueue
                                                                                 usingBlock:^(NSNotification *note) {
                                                                                   typeof(self) strongSelf = weakSelf;
-                                                                                  [strongSelf triggerDelayedProcessing];
+                                                                                  [strongSelf readCrashReportAndStartProcessing];
                                                                                 }];
-  }
-
-  if(nil == _networkDidBecomeReachableObserver) {
-    _networkDidBecomeReachableObserver = [[NSNotificationCenter defaultCenter] addObserverForName:MSAINetworkDidBecomeReachableNotification
-                                                                                           object:nil
-                                                                                            queue:NSOperationQueue.mainQueue
-                                                                                       usingBlock:^(NSNotification *note) {
-                                                                                         [weakSelf triggerDelayedProcessing];
-                                                                                       }];
   }
 
   if(nil == _appWillTerminateObserver) {
@@ -380,8 +372,6 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
   [self unregisterObserver:_appWillEnterForegroundObserver];
 
   [self unregisterObserver:_appDidReceiveLowMemoryWarningObserver];
-
-  [self unregisterObserver:_networkDidBecomeReachableObserver];
 }
 
 - (void)unregisterObserver:(id)observer {
@@ -390,7 +380,6 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
     observer = nil;
   }
 }
-
 
 #pragma mark - PLCrashReporter
 
@@ -404,13 +393,15 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
 
   if(!self.plCrashReporter) return;
 
+  NSData *crashData;
+
   // check if the next call ran successfully the last time
-  if(![MSAIPersistence crashAnalyzerFilePresent]) {
+  if(![MSAIPersistence crashReportLockFilePresent]) {
     // mark the start of the routine
-    [MSAIPersistence writeAnalyzerFile];
+    [MSAIPersistence createCrashReporterLockFile];
 
     // Try loading the crash report
-    NSData *crashData = [[NSData alloc] initWithData:[self.plCrashReporter loadPendingCrashReportDataAndReturnError:&error]];
+    crashData = [[NSData alloc] initWithData:[self.plCrashReporter loadPendingCrashReportDataAndReturnError:&error]];
 
     if(crashData == nil) {
       MSAILog(@"ERROR: Could not load crash report: %@", error);
@@ -420,7 +411,8 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
 
       if(report == nil) {
         MSAILog(@"WARNING: Could not parse crash report");
-      } else {
+      }
+      else {
         NSDate *appStartTime = nil;
         NSDate *appCrashTime = nil;
         if([report.processInfo respondsToSelector:@selector(processStartTime)]) {
@@ -430,8 +422,6 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
             _timeintervalCrashInLastSessionOccured = [report.systemInfo.timestamp timeIntervalSinceDate:report.processInfo.processStartTime];
           }
         }
-
-        [MSAIPersistence writeCrashData:crashData];
 
         NSString *incidentIdentifier = @"???";
         if(report.uuidRef != NULL) {
@@ -455,74 +445,41 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
     }
   }
 
+  //TODO was this REALLY only related to sending
+
+//  if(!msai_isRunningInAppExtension() &&
+//      [[UIApplication sharedApplication] applicationState] != UIApplicationStateActive) {
+//    return;
+//  }
+
+  // was again if another exception handler was added with a short delay
+  [self performSelector:@selector(checkForOtherExceptionHandlersAfterSetup) withObject:nil afterDelay:0.5f];
+
+  [self createCrashReportWithCrashData:crashData];
+
+
   // Purge the report
   // mark the end of the routine
-  [MSAIPersistence deleteAnalyzerFile];
+  [MSAIPersistence deleteCrashReporterLockFile];//TODO only do this when persisting was successful?
 
-  [self.plCrashReporter purgePendingCrashReport];
+  [self.plCrashReporter purgePendingCrashReport]; //TODO only do this when persisting was successful?
 }
 
-/**
-*	Check if there are any new crash reports that are not yet processed
-*
-*	@return	`YES` if there is at least one new crash report found, `NO` otherwise
-*/
-- (BOOL)hasPendingCrashReport {
-  if(self.isCrashManagerDisabled) return NO;
-
-  BOOL crashesDirEmpty = [MSAIPersistence crashesDirEmpty];
-
-  if(crashesDirEmpty) {
-    return YES;
-  } else {
-    if(self.didCrashInLastSession) {
-      _didCrashInLastSession = NO;
-    }
-
-    return NO;
-  }
-}
-
-#pragma mark - Crash Report Processing
-
-- (void)triggerDelayedProcessing {
-  [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(invokeDelayedProcessing) object:nil];
-  [self performSelector:@selector(invokeDelayedProcessing) withObject:nil afterDelay:0.5];
-}
-
-/**
-* Delayed startup processing for everything that does not to be done in the app startup runloop
-*
-* - Checks if there is another exception handler installed that may block ours
-* - Present UI if the user has to approve new crash reports
-* - Send pending approved crash reports
-*/
-- (void)invokeDelayedProcessing {
-  if(!msai_isRunningInAppExtension() &&
-      [[UIApplication sharedApplication] applicationState] != UIApplicationStateActive) {
-    return;
-  }
-
-  MSAILog(@"INFO: Start delayed CrashManager processing");
-
+- (void)checkForOtherExceptionHandlersAfterSetup {
   // was our own exception handler successfully added?
-  if(self.exceptionHandler) {
+  if (self.exceptionHandler) {
     // get the current top level error handler
     NSUncaughtExceptionHandler *currentHandler = NSGetUncaughtExceptionHandler();
 
     // If the top level error handler differs from our own, then at least another one was added.
-    // This could cause exception crashes not to be reported to AppInsights. See log message for details.
-    if(self.exceptionHandler != currentHandler) {
-      MSAILog(@"[AppInsightsSDK] WARNING: Another exception handler was added. If this invokes any kind exit() after processing the exception, which causes any subsequent error handler not to be invoked, these crashes will NOT be reported to AppInsights!");
+    // This could cause exception crashes not to be reported to HockeyApp. See log message for details.
+    if (self.exceptionHandler != currentHandler) {
+      NSLog(@"[AppInsightsSDK] ERROR: Exception handler could not be set. Make sure there is no other exception handler set up!");
     }
   }
-
-  if(!self.sendingInProgress && [self hasPendingCrashReport]) {
-    self.sendingInProgress = YES;
-    
-    [self createCrashReport];
-  }
 }
+
+#pragma mark - Crash Report Processing
 
 
 /**
@@ -552,47 +509,24 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
 /***
 * Gathers all collected data and constructs Crash into an Envelope for processing
 */
-- (void)createCrashReport { //TODO rename this!
-  NSError *error = NULL;
-
-  NSString *filename = [MSAIPersistence nextCrashFile];
-  if(!filename) {
+- (void)createCrashReportWithCrashData:(NSData*)crashData {
+  if(!crashData) {
     return;
   }
 
-  NSString *cacheFilename = [filename lastPathComponent];
-  NSData *crashData = [NSData dataWithContentsOfFile:filename];
+  NSError *error = NULL;
 
   if([crashData length] > 0) {
     MSAIPLCrashReport *report = nil;
     MSAIEnvelope *crashEnvelope = nil;
 
-    if([[cacheFilename pathExtension] isEqualToString:@"fake"]) {
-      NSArray *fakeReportBundle = [MSAIPersistence fakeReportBundle];
-      if(fakeReportBundle && fakeReportBundle.count > 0) {
-        crashEnvelope = fakeReportBundle[0];
-        if([crashEnvelope.appId compare:[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"]] == NSOrderedSame) {
-        }
-      }
-    } else {
-      report = [[MSAIPLCrashReport alloc] initWithData:crashData error:&error];
-    }
-
-    if(report == nil && crashEnvelope == nil) {
-      MSAILog(@"WARNING: Could not parse crash report");
-      // we cannot do anything with this report, so delete it
-      [self cleanCrashReportWithFilename:filename];
-      // we don't continue with the next report here, even if there are to prevent calling sendCrashReports from itself again
-      // the next crash will be automatically send on the next app start/becoming active event
-      return;
-    }
+    report = [[MSAIPLCrashReport alloc] initWithData:crashData error:&error];
 
     if(report) {
       crashEnvelope = [MSAICrashDataProvider crashDataForCrashReport:report];
       if([report.applicationInfo.applicationVersion compare:[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"]] == NSOrderedSame) {
         //TODO Check if this has to be added again
 //        _crashIdenticalCurrentVersion = YES;
-
       }
     }
 
@@ -601,59 +535,24 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
 //        _crashIdenticalCurrentVersion = YES;
     }
 
-    [self processCrashReportWithFilename:filename envelope:crashEnvelope];
-  } else {
-    // we cannot do anything with this report, so delete it
-    [self cleanCrashReportWithFilename:filename];
-  }
-}
-
-/**
-*	Send the bundled up crash (in an envelope) over to the channel for persistence & sending
-*
-*	@param	filename the file that contains the crashreport
-*	@param envelope the bundled up crash data
-*/
-- (void)processCrashReportWithFilename:(NSString *)filename envelope:(MSAIEnvelope *)envelope {
-
-  MSAILog(@"INFO: Persisting crash reports started.");
-
-  __weak typeof(self) weakSelf = self;
-  [[MSAIChannel sharedChannel] processEnvelope:envelope withCompletionBlock:^(BOOL success) {
-    typeof(self) strongSelf = weakSelf;
-
-    self.sendingInProgress = NO;
-    //TODO: sending is done in persistence layer --> notify user that crashes are available to be sent?!
-    if(success) {
-      [strongSelf cleanCrashReportWithFilename:filename];
-      [strongSelf createCrashReport];//triggers the next report to be sent
+    if(report == nil && crashEnvelope == nil) {
+      MSAILog(@"WARNING: Could not parse crash report");
+      // we cannot do anything with this report, so delete it
+      // we don't continue with the next report here, even if there are to prevent calling sendCrashReports from itself again
+      // the next crash will be automatically send on the next app start/becoming active event
+      return;
     }
-  }];
 
-  if(self.delegate != nil && [self.delegate respondsToSelector:@selector(crashManagerWillSendCrashReport)]) {
-    [self.delegate crashManagerWillSendCrashReport];
+    MSAILog(@"INFO: Persisting crash reports started.");
+
+    [[MSAIChannel sharedChannel] processEnvelope:crashEnvelope withCompletionBlock:^(BOOL success) {
+      //TODO: we don't have to trigger another sending as there will be no more than one crash report
+    }];
+
   }
 }
 
 #pragma mark - Helpers
-
-/**
-*	 Remove all crash reports for each from the file system
-*
-* This is currently only used as a helper method for tests
-*/
-- (void)cleanCrashReports {
-  [MSAIPersistence cleanCrashReportDirectory];
-}
-
-/**
-* Remove a cached crash report
-*
-*  @param filename The base filename of the crash report
-*/
-- (void)cleanCrashReportWithFilename:(NSString *)filename {
-  [MSAIPersistence cleanCrashReportWithFilename:filename];
-}
 
 //Safe info about safe termination of the app to NSUserDefaults
 - (void)leavingAppSafely {

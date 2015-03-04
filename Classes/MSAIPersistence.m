@@ -301,10 +301,7 @@ static NSString *analyzerInProgressFile;
   });
 }
 
-
-
-
-
+//TODO: move this to property and singelton approach (Chris has done that)
 + (void)initCrashValuesIfNeeded {
   static dispatch_once_t token;
   dispatch_once(&token, ^{
@@ -320,12 +317,12 @@ static NSString *analyzerInProgressFile;
   });
 }
 
-+ (BOOL)crashAnalyzerFilePresent {
++ (BOOL)crashReportLockFilePresent {
   [self initCrashValuesIfNeeded];
   return [fileManager fileExistsAtPath:analyzerInProgressFile];
 }
 
-+ (void)writeAnalyzerFile {
++ (void)createCrashReporterLockFile {
   [self initCrashValuesIfNeeded];
 
   [fileManager createFileAtPath:analyzerInProgressFile contents:nil attributes:nil];
@@ -338,7 +335,7 @@ static NSString *analyzerInProgressFile;
   [crashData writeToFile:[msai_settingsDir() stringByAppendingPathComponent:cacheFilename] atomically:YES];
 }
 
-+ (void)deleteAnalyzerFile {
++ (void)deleteCrashReporterLockFile {
   [self initCrashValuesIfNeeded];
 
   NSError *error = NULL;

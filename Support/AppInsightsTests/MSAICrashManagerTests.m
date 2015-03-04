@@ -95,7 +95,7 @@
 }
 
 - (void)testCreateCrashReportForAppKill {
-  //handle app kill (FakeCrashReport
+  //handle app kill (FakeCrashReport will be generated)
   [_sut createCrashReportForAppKill]; //just creates a fake crash report and hands it over to MSAIPersistence
   
   NSArray *bundle = [MSAIPersistence nextBundle];
@@ -107,10 +107,7 @@
       assertThatBool([((MSAIEnvelope *) envelope).data isKindOfClass:[MSAICrashData class]], equalToBool(YES));
     }
   }
-
 }
-
-
 
 #pragma mark - StartManager
 
