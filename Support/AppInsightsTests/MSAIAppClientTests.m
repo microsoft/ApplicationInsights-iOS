@@ -1,8 +1,6 @@
 //
 //  MSAIAppClientTests
-//  AppInsightsSDKTests
-//
-//  Created by Stephan Diederich on 06.09.13.
+//  AppInsightsTests
 //
 //
 
