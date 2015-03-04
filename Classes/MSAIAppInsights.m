@@ -121,6 +121,13 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
   
 #if MSAI_FEATURE_METRICS
   if (![self isMetricsManagerDisabled]) {
+    
+    if([self isAutoPageViewsDisabled]){
+      MSAILog(@"INFO: Auto page views disabled");
+      [MSAIMetricsManager sharedManager].autoPageViewsDisabled = YES;
+    }
+    [MSAICategoryContainer activateCategory];
+    
     MSAILog(@"INFO: Starting MSAIMetricsManager");
     [[MSAIMetricsManager sharedManager] startManager];
   }
@@ -144,6 +151,15 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 
 + (void)setMetricsManagerDisabled:(BOOL)metricsManagerDisabled {
   [[self sharedInstance] setMetricsManagerDisabled:metricsManagerDisabled];
+}
+
+- (void)setAutoPageViewsDisabled:(BOOL)autoPageViewsDisabled {
+  [MSAIMetricsManager sharedManager].autoPageViewsDisabled = autoPageViewsDisabled;
+  _autoPageViewsDisabled = autoPageViewsDisabled;
+}
+
++ (void)setAutoPageViewsDisabled:(BOOL)autoPageViewsDisabled {
+  [[self sharedInstance] setAutoPageViewsDisabled:autoPageViewsDisabled];
 }
 #endif /* MSAI_FEATURE_METRICS */
 
@@ -376,11 +392,6 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
   _startManagerIsInvoked = NO;
   
   if (_validInstrumentationKey) {
-    
-#if MSAI_FEATURE_METRICS
-    MSAILog(@"INFO: Setup MetricsManager");
-    [MSAICategoryContainer activateCategory];
-#endif /* MSAI_FEATURE_METRICS */
     
     if (![self isAppStoreEnvironment]) {
       NSString *integrationFlowTime = [self integrationFlowTimeString];
