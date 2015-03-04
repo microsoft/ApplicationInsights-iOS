@@ -8,6 +8,7 @@
 
 NSString *const kMSAITelemetrySessionId = @"MSAITelemetrySessionId";
 NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
+NSString *const kMSAIApplicationWasLaunched = @"MSAIApplicationWasLaunched";
 
 @implementation MSAITelemetryContext
 
