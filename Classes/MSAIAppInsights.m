@@ -127,13 +127,13 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 - (void)validateStartManagerIsInvoked {
   if (_validInstrumentationKey && !_appStoreEnvironment) {
     if (!_startManagerIsInvoked) {
-      NSLog(@"[AppInsights] ERROR: You did not call [MSAIAppInsights setup] to setup the AppInsightsSDK! Please do so after setting up all properties. The SDK is NOT running.");
+      NSLog(@"[AppInsights] ERROR: You did not call [MSAIAppInsights setup] to setup AppInsights! Please do so after setting up all properties. The SDK is NOT running.");
     }
   }
 }
 
 - (BOOL)isSetUpOnMainThread {
-  NSString *errorString = @"ERROR: AppInsightsSDK has to be setup on the main thread!";
+  NSString *errorString = @"ERROR: AppInsights has to be setup on the main thread!";
   
   if (!NSThread.isMainThread) {
     if (self.isAppStoreEnvironment) {
