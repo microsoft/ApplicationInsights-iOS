@@ -26,7 +26,6 @@ should not need to set this delegate individually.
 @property (nonatomic, weak) id delegate; //TODO Will be removed eventually
 
 @property (nonatomic, assign) PLCrashReporterCallbacks *crashCallBacks;
-@property (nonatomic, strong) MSAIContext *appContext;
 @property (nonatomic, strong) MSAIPLCrashReporter *plCrashReporter;
 @property (nonatomic, assign) BOOL didLogLowMemoryWarning;
 @property (nonatomic, assign) NSUncaughtExceptionHandler *exceptionHandler;
@@ -38,7 +37,6 @@ should not need to set this delegate individually.
 *
 *  @param context the MSAIContext object
 */
-+ (void)startWithContext:(MSAIContext *)context;
 
 - (void)startManager;
 

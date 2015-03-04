@@ -37,7 +37,7 @@
   
   _startManagerInitialized = NO;
   
-  _context = [[MSAIContext alloc]initWithInstrumentationKey:nil isAppStoreEnvironment:NO];
+  _context = [[MSAIContext alloc]initWithInstrumentationKey:nil];
   _sut = [MSAICrashManager sharedManager];
 }
 

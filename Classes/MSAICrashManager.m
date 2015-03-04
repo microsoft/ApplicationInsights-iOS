@@ -63,65 +63,53 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
   return sharedManager;
 }
 
-+ (void)startWithContext:(MSAIContext *)context {
-  //TODO this needs some more tweaking when mergin in chris' latest refactorings.
-  if(context) {
-    if(![MSAICrashManager sharedManager].isSetupCorrectly) {
-      [MSAICrashManager sharedManager].appContext = context;
-      [[self sharedManager] startManager];
-    }
-  }
-}
-
 /**
 *	 Main startup sequence initializing PLCrashReporter if it wasn't disabled
 */
 - (void)startManager {
   if(self.isCrashManagerDisabled) return;
+  if(![MSAICrashManager sharedManager].isSetupCorrectly) {
+    [self checkCrashManagerDisabled];
 
-  [self checkCrashManagerDisabled];
+    [self registerObservers];
 
-  [self registerObservers];
+    static dispatch_once_t plcrPredicate;
+    dispatch_once(&plcrPredicate, ^{
+      _timeintervalCrashInLastSessionOccured = -1;
 
-  static dispatch_once_t plcrPredicate;
-  dispatch_once(&plcrPredicate, ^{
-    _timeintervalCrashInLastSessionOccured = -1;
+      [MSAIPersistence deleteCrashReporterLockFile]; //
 
-    [MSAIPersistence deleteCrashReporterLockFile]; //
+      [self configPLCrashReporter];
 
-    [self configPLCrashReporter];
-
-    // Check if we previously crashed
-    if([self.plCrashReporter hasPendingCrashReport]) {
-      _didCrashInLastSession = YES;
-      [self readCrashReportAndStartProcessing];
-    }
-
-    // The actual signal and mach handlers are only registered when invoking `enableCrashReporterAndReturnError`
-    // So it is safe enough to only disable the following part when a debugger is attached no matter which
-    // signal handler type is set
-    // We only check for this if we are not in the App Store environment
-
-    if(![self.appContext isAppStoreEnvironment]) {
-      if(self.debuggerIsAttached) {
-        NSLog(@"[AppInsightsSDK] WARNING: Detecting crashes is NOT enabled due to running the app with a debugger attached.");
-        //TODO shouldn't we do something here?!
+      // Check if we previously crashed
+      if([self.plCrashReporter hasPendingCrashReport]) {
+        _didCrashInLastSession = YES;
+        [self readCrashReportAndStartProcessing];
       }
-    }
 
-    [self setupExceptionHandler];
-  });
+      // The actual signal and mach handlers are only registered when invoking `enableCrashReporterAndReturnError`
+      // So it is safe enough to only disable the following part when a debugger is attached no matter which
+      // signal handler type is set
+      // We only check for this if we are not in the App Store environment
 
-  [self checkForLowMemoryWarning];
+      if(!msai_isAppStoreEnvironment()) {
+        if(self.debuggerIsAttached) {
+          NSLog(@"[AppInsights] WARNING: Detecting crashes is NOT enabled due to running the app with a debugger attached.");
+        }
+      }
 
-  [self checkStateOfLastSession];
+      [self setupExceptionHandler];
+    });
 
-  [self appEnteredForeground];
+    [self checkForLowMemoryWarning];
+    [self checkStateOfLastSession];
+    [self appEnteredForeground];
 
-  [[NSUserDefaults standardUserDefaults] setBool:NO forKey:kMSAIAppDidReceiveLowMemoryNotification];
-  [[NSUserDefaults standardUserDefaults] synchronize];
+    [[NSUserDefaults standardUserDefaults] setBool:NO forKey:kMSAIAppDidReceiveLowMemoryNotification];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 
-  [MSAICrashManager sharedManager].isSetupCorrectly = YES;
+    [MSAICrashManager sharedManager].isSetupCorrectly = YES;
+  }
 }
 
 - (void)dealloc {
@@ -171,7 +159,7 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
     // and can show a debug warning log message, that the dev has to make sure the "newer" error handler
     // doesn't exit the process itself, because then all subsequent handlers would never be invoked.
     //
-    // Note: ANY error handler setup BEFORE AppInsightsSDK initialization will not be processed!
+    // Note: ANY error handler setup BEFORE AppInsights initialization will not be processed!
 
     // get the current top level error handler
     NSUncaughtExceptionHandler *initialHandler = NSGetUncaughtExceptionHandler();
@@ -187,7 +175,7 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
 
     // Enable the Crash Reporter
     if(![self.plCrashReporter enableCrashReporterAndReturnError:&error]) {
-      NSLog(@"[AppInsightsSDK] WARNING: Could not enable crash reporter: %@", [error localizedDescription]);
+      NSLog(@"[AppInsights] WARNING: Could not enable crash reporter: %@", [error localizedDescription]);
     }
 
     // get the new current top level error handler, which should now be the one from PLCrashReporter
@@ -200,7 +188,7 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
       MSAILog(@"INFO: Exception handler successfully initialized.");
     } else {
       // this should never happen, theoretically only if NSSetUncaugtExceptionHandler() has some internal issues
-      NSLog(@"[AppInsightsSDK] ERROR: Exception handler could not be set. Make sure there is no other exception handler set up!");
+      NSLog(@"[AppInsights] ERROR: Exception handler could not be set. Make sure there is no other exception handler set up!");
     }
   }
 }
@@ -282,7 +270,7 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
     name[3] = getpid();
 
     if(sysctl(name, 4, &info, &info_size, NULL, 0) == -1) {
-      NSLog(@"[AppInsightsSDK] ERROR: Checking for a running debugger via sysctl() failed: %s", strerror(errno));
+      NSLog(@"[AppInsights] ERROR: Checking for a running debugger via sysctl() failed: %s", strerror(errno));
       debuggerIsAttached = false;
     }
 
@@ -294,10 +282,10 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
 }
 
 - (void)generateTestCrash {
-  if(![self.appContext isAppStoreEnvironment]) {
+  if(!msai_isAppStoreEnvironment()) {
 
     if(self.debuggerIsAttached) {
-      NSLog(@"[AppInsightsSDK] WARNING: The debugger is attached. The following crash cannot be detected by the SDK!");
+      NSLog(@"[AppInsights] WARNING: The debugger is attached. The following crash cannot be detected by the SDK!");
     }
 
     __builtin_trap();
@@ -474,7 +462,7 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
     // If the top level error handler differs from our own, then at least another one was added.
     // This could cause exception crashes not to be reported to HockeyApp. See log message for details.
     if (self.exceptionHandler != currentHandler) {
-      NSLog(@"[AppInsightsSDK] ERROR: Exception handler could not be set. Make sure there is no other exception handler set up!");
+      NSLog(@"[AppInsights] ERROR: Exception handler could not be set. Make sure there is no other exception handler set up!");
     }
   }
 }

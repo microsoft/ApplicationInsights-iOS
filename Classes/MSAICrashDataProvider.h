@@ -12,7 +12,7 @@
 
 
 /**
- *  AppInsightsSDK Crash Reporter error domain
+ *  AppInsights Crash Reporter error domain
  */
 typedef NS_ENUM (NSInteger, MSAIBinaryImageType) {
   /**
