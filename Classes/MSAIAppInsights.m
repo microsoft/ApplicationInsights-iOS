@@ -34,7 +34,6 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
   BOOL _managersInitialized;
   MSAIAppClient *_appClient;
   MSAIContext *_appContext;
-  MSAITelemetryContext *_telemetryContext;
 }
 
 #pragma mark - Shared instance
