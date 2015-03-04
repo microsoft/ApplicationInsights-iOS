@@ -48,7 +48,7 @@ static NSUInteger const defaultRequestLimit = 10;
                        queue:nil
                   usingBlock:^(NSNotification *notification) {
                     typeof(self) strongSelf = weakSelf;
-                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
                       
                       [strongSelf sendSavedData];
                     });
