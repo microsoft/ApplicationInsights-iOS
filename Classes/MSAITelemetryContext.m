@@ -98,6 +98,8 @@ NSString *const kMSAIApplicationWasLaunched = @"MSAIApplicationWasLaunched";
   _session.sessionId = msai_UUID();
   _session.isNew = @"true";
   _session.isFirst = (firstSession ? @"true" : @"false");
+  
+  [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kMSAIApplicationWasLaunched];
 }
 
 #pragma mark - Helper

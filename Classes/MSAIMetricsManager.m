@@ -273,7 +273,6 @@ static NSInteger const defaultSessionExpirationTime = 20;
   if (timeSinceLastBackground > defaultSessionExpirationTime) {
     [[MSAIEnvelopeManager sharedManager] createNewSession];
     [self trackEventWithName:@"Session Start Event"];
-    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kMSAIApplicationWasLaunched];
   }
 }
 
