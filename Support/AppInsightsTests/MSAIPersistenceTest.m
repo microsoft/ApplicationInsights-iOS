@@ -94,13 +94,12 @@ typedef void (^MSAIPersistenceTestBlock)(BOOL);
   NSString *nextPath = [_sut requestNextPath];
   XCTAssertNil(nextPath);
   
-  [_sut persistBundle:@[@"testBundle"] ofType:MSAIPersistenceTypeRegular withCompletionBlock:nil];
+  [self createFile];
   nextPath = [_sut requestNextPath];
   XCTAssertNotNil(nextPath);
 }
 
 - (void)testBundleForPathReturnsCorrectFile{
-  
   NSString *bundleItemValue = @"myBundleItemValue";
   [_sut persistBundle:@[bundleItemValue] ofType:MSAIPersistenceTypeRegular withCompletionBlock:nil];
   NSString *nextPath = [_sut requestNextPath];
@@ -110,11 +109,56 @@ typedef void (^MSAIPersistenceTestBlock)(BOOL);
 }
 
 - (void)testIfIsFreeSpaceAvailableWorks{
+  
+  // Max 1 file at a time, we currently have 0
   _sut.maxFileCount = 1;
   XCTAssertTrue([_sut isFreeSpaceAvailable]);
   
-  [_sut persistBundle:@[@"testBundle"] ofType:MSAIPersistenceTypeRegular withCompletionBlock:nil];
+  // Save a file, so we will reach the max count
+  [self createFile];
   XCTAssertFalse([_sut isFreeSpaceAvailable]);
+}
+
+- (void)testRequestedPathIsBlocked{
+  
+  // Create file, make sure it has not been requested yet
+  [self createFile];
+  XCTAssertTrue(_sut.requestedBundlePaths.count == 0);
+  
+  // Path is added to list after path was requested
+  NSString *path = [_sut requestNextPath];
+  XCTAssertTrue(_sut.requestedBundlePaths.count == 1);
+  XCTAssertEqual(_sut.requestedBundlePaths[0], path);
+}
+
+- (void)testRequestedPathIsReleasedWhenOnGiveBack{
+  [self createFile];
+  
+  // Request path for sending
+  NSString *path = [_sut requestNextPath];
+  XCTAssertTrue(_sut.requestedBundlePaths.count == 1);
+  
+  // Release path again (e.g. no connection)
+  [_sut giveBackRequestedPath:path];
+  XCTAssertTrue(_sut.requestedBundlePaths.count == 0);
+}
+
+- (void)testRequestedPathIsReleasedOnDeletion {
+  [self createFile];
+  
+  // Request path for sending
+  NSString *path = [_sut requestNextPath];
+  XCTAssertTrue(_sut.requestedBundlePaths.count == 1);
+  
+  // Release path again (e.g. successfully sent)
+  [_sut deleteBundleAtPath:path];
+  XCTAssertTrue(_sut.requestedBundlePaths.count == 0);
+}
+
+#pragma mark - Helper
+
+-(void)createFile{
+    [_sut persistBundle:@[@"testBundle"] ofType:MSAIPersistenceTypeRegular withCompletionBlock:nil];
 }
 
 @end
