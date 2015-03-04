@@ -77,7 +77,7 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
     dispatch_once(&plcrPredicate, ^{
       _timeintervalCrashInLastSessionOccured = -1;
 
-      [MSAIPersistence deleteCrashReporterLockFile]; //
+      [[MSAIPersistence sharedInstance] deleteCrashReporterLockFile];
 
       [self configPLCrashReporter];
 
@@ -385,9 +385,9 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
 
   // check if the next call ran successfully the last time
   // check again if we have a pending crash report to be sure we actually have something to load
-  if(![MSAIPersistence crashReportLockFilePresent] && [self.plCrashReporter hasPendingCrashReport]) {
+  if(![[MSAIPersistence sharedInstance] crashReportLockFilePresent] && [self.plCrashReporter hasPendingCrashReport]) {
     // mark the start of the routine
-    [MSAIPersistence createCrashReporterLockFile];
+    [[MSAIPersistence sharedInstance] createCrashReporterLockFile];
 
     // Try loading the crash report
     crashData = [[NSData alloc] initWithData:[self.plCrashReporter loadPendingCrashReportDataAndReturnError:&error]];
@@ -449,7 +449,7 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
 
   // Purge the report
   // mark the end of the routine
-  [MSAIPersistence deleteCrashReporterLockFile];//TODO only do this when persisting was successful?
+  [[MSAIPersistence sharedInstance] deleteCrashReporterLockFile];//TODO only do this when persisting was successful?
 
   [self.plCrashReporter purgePendingCrashReport]; //TODO only do this when persisting was successful?
 }
@@ -492,7 +492,7 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
   fakeCrashEnvelope.data = data;
   fakeCrashEnvelope.name = crashData.envelopeTypeName;
 
-  [MSAIPersistence persistFakeReportBundle:@[fakeCrashEnvelope]];
+  [[MSAIPersistence sharedInstance] persistFakeReportBundle:@[fakeCrashEnvelope]];
 }
 
 /***

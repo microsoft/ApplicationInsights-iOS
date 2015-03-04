@@ -35,6 +35,8 @@ NSUInteger const defaultFileCount = 15;
     _persistenceQueue = dispatch_queue_create(kPersistenceQueueString, DISPATCH_QUEUE_SERIAL);
     _requestedBundlePaths = [NSMutableArray new];
     _maxFileCount = defaultFileCount;
+    
+    [self deleteCrashReporterLockFile];
   }
   return self;
 }
@@ -312,123 +314,23 @@ NSUInteger const defaultFileCount = 15;
   });
 }
 
-//TODO: move this to property and singelton approach (Chris has done that)
-+ (void)initCrashValuesIfNeeded {
-  static dispatch_once_t token;
-  dispatch_once(&token, ^{
-    fileManager = [NSFileManager new];
-    crashFiles = [NSMutableArray new];
-    settingsFile = [ msai_settingsDir() stringByAppendingPathComponent:MSAI_CRASH_SETTINGS];
-    analyzerInProgressFile = [msai_settingsDir() stringByAppendingPathComponent:MSAI_CRASH_ANALYZER];
+- (BOOL)crashReportLockFilePresent {
+  NSString *analyzerInProgressFile = [msai_settingsDir() stringByAppendingPathComponent:kMSAICrashAnalyzer];
 
-    if([fileManager fileExistsAtPath:analyzerInProgressFile]) {
-      NSError *error = nil;
-      [fileManager removeItemAtPath:analyzerInProgressFile error:&error];
-    }
-  });
+  return [[NSFileManager defaultManager] fileExistsAtPath:analyzerInProgressFile];
 }
 
-+ (BOOL)crashReportLockFilePresent {
-  [self initCrashValuesIfNeeded];
-  return [fileManager fileExistsAtPath:analyzerInProgressFile];
+- (void)createCrashReporterLockFile {
+  NSString *analyzerInProgressFile = [msai_settingsDir() stringByAppendingPathComponent:kMSAICrashAnalyzer];
+
+  [[NSFileManager defaultManager] createFileAtPath:analyzerInProgressFile contents:nil attributes:nil];
 }
 
-+ (void)createCrashReporterLockFile {
-  [self initCrashValuesIfNeeded];
-
-  [fileManager createFileAtPath:analyzerInProgressFile contents:nil attributes:nil];
-}
-
-+ (void)writeCrashData:(NSData *)crashData {
-  [self initCrashValuesIfNeeded];
-
-  NSString *cacheFilename = [NSString stringWithFormat:@"%.0f", [NSDate timeIntervalSinceReferenceDate]];
-  [crashData writeToFile:[msai_settingsDir() stringByAppendingPathComponent:cacheFilename] atomically:YES];
-}
-
-+ (void)deleteCrashReporterLockFile {
-  [self initCrashValuesIfNeeded];
-
+- (void)deleteCrashReporterLockFile {
+  NSString *analyzerInProgressFile = [msai_settingsDir() stringByAppendingPathComponent:kMSAICrashAnalyzer];
   NSError *error = NULL;
-
-  if([fileManager fileExistsAtPath:analyzerInProgressFile]) {
-    [fileManager removeItemAtPath:analyzerInProgressFile error:&error];
-  }
-}
-
-/**
-*	 Remove all crash reports for each from the file system
-*
-* This is currently only used as a helper method for tests
-*/
-+ (void)cleanCrashReportDirectory {
-  [self initCrashValuesIfNeeded];
-
-  for(NSUInteger i = 0; i < [crashFiles count]; i++) {
-    [self cleanCrashReportWithFilename:crashFiles[i]];
-  }
-}
-
-+ (void)cleanCrashReportWithFilename:(NSString *)filename {
-  [self initCrashValuesIfNeeded];
-
-  if(!filename) return;
-
-  NSError *error = NULL;
-
-  [fileManager removeItemAtPath:filename error:&error];
-  [fileManager removeItemAtPath:[filename stringByAppendingString:@".data"] error:&error];
-  [fileManager removeItemAtPath:[filename stringByAppendingString:@".meta"] error:&error];
-  [fileManager removeItemAtPath:[filename stringByAppendingString:@".desc"] error:&error];
-
-  [crashFiles removeObject:filename];
-}
-
-+ (NSString *)nextCrashFile {
-  [self initCrashValuesIfNeeded];
-
-  if([crashFiles count] == 0)
-    return nil;
-
-  else return crashFiles[0];
-}
-
-+ (void)loadCrashFiles {
-  [self initCrashValuesIfNeeded];
-
-  if([fileManager fileExistsAtPath:msai_settingsDir()]) {
-    NSError *error = NULL;
-
-    NSArray *dirArray = [fileManager contentsOfDirectoryAtPath:msai_settingsDir() error:&error];
-
-    for(NSString *file in dirArray) {
-      NSString *filePath = [msai_settingsDir() stringByAppendingPathComponent:file];
-
-      NSDictionary *fileAttributes = [fileManager attributesOfItemAtPath:filePath error:&error];
-      if([fileAttributes[NSFileType] isEqualToString:NSFileTypeRegular] &&
-          [fileAttributes[NSFileSize] intValue] > 0 &&
-          ![file hasSuffix:@".DS_Store"] &&
-          ![file hasSuffix:@".analyzer"] &&
-          ![file hasSuffix:@".plist"] &&
-          ![file hasSuffix:@".data"] &&
-          ![file hasSuffix:@".meta"] &&
-          ![file hasSuffix:@".desc"]) {
-        [crashFiles addObject:filePath];
-      }
-    }
-  }
-}
-
-+ (BOOL)crashesDirEmpty {
-  [self initCrashValuesIfNeeded];
-  
-  [self loadCrashFiles];
-
-  if([crashFiles count] > 0) {
-    MSAILog(@"INFO: %lu pending crash reports found.", (unsigned long) [crashFiles count]);
-    return YES;
-  } else {
-    return NO;
+  if([[NSFileManager defaultManager] fileExistsAtPath:analyzerInProgressFile]) {
+    [[NSFileManager defaultManager] removeItemAtPath:analyzerInProgressFile error:&error];
   }
 }
 

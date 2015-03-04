@@ -142,8 +142,8 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
 */
 - (NSArray *)fakeReportBundle;
 
-+ (BOOL)crashReportLockFilePresent;
-+ (void)createCrashReporterLockFile;
-+ (void)deleteCrashReporterLockFile;
+- (BOOL)crashReportLockFilePresent;
+- (void)createCrashReporterLockFile;
+- (void)deleteCrashReporterLockFile;
 
 @end
