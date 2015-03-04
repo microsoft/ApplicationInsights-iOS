@@ -183,28 +183,27 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 
 #pragma mark - Configuring modules
 
-#if MSAI_FEATURE_METRICS
 - (void)setMetricsManagerDisabled:(BOOL)metricsManagerDisabled {
+#if MSAI_FEATURE_METRICS
   [MSAIMetricsManager sharedManager].metricsManagerDisabled = metricsManagerDisabled;
+#endif /* MSAI_FEATURE_METRICS */
   _metricsManagerDisabled = metricsManagerDisabled;
 }
 
 + (void)setMetricsManagerDisabled:(BOOL)metricsManagerDisabled {
   [[self sharedInstance] setMetricsManagerDisabled:metricsManagerDisabled];
 }
-#endif /* MSAI_FEATURE_METRICS */
 
-
-#if MSAI_FEATURE_CRASH_REPORTER
 - (void)setCrashManagerDisabled:(BOOL)crashManagerDisabled {
+#if MSAI_FEATURE_CRASH_REPORTER
   [MSAICrashManager sharedManager].isCrashManagerDisabled = crashManagerDisabled;
+#endif /* MSAI_FEATURE_CRASH_REPORTER */
   _crashManagerDisabled = crashManagerDisabled;
 }
 
 + (void)setCrashManagerDisabled:(BOOL)crashManagerDisabled{
   [[self sharedInstance] setCrashManagerDisabled:crashManagerDisabled];
 }
-#endif /* MSAI_FEATURE_CRASH_REPORTER */
 
 - (void)setServerURL:(NSString *)serverURL {
   
