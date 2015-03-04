@@ -217,8 +217,8 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
   }
 
   self.crashesDir = msai_settingsDir();
-  self.settingsFile = [self.crashesDir stringByAppendingPathComponent:MSAI_CRASH_SETTINGS];
-  self.analyzerInProgressFile = [self.crashesDir stringByAppendingPathComponent:MSAI_CRASH_ANALYZER];
+  self.settingsFile = [self.crashesDir stringByAppendingPathComponent:kMSAICrashSettings];
+  self.analyzerInProgressFile = [self.crashesDir stringByAppendingPathComponent:kMSAICrashAnalyzer];
 
   if([self.fileManager fileExistsAtPath:self.analyzerInProgressFile]) {
     NSError *error = nil;
