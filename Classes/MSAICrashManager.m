@@ -384,7 +384,8 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
   NSData *crashData;
 
   // check if the next call ran successfully the last time
-  if(![MSAIPersistence crashReportLockFilePresent]) {
+  // check again if we have a pending crash report to be sure we actually have something to load
+  if(![MSAIPersistence crashReportLockFilePresent] && [self.plCrashReporter hasPendingCrashReport]) {
     // mark the start of the routine
     [MSAIPersistence createCrashReporterLockFile];
 
