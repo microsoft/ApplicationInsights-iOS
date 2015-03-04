@@ -227,7 +227,7 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
   if(testValue) {
     self.isCrashManagerDisabled = [[NSUserDefaults standardUserDefaults] boolForKey:kMSAICrashManagerIsDisabled];
   } else {
-    [[NSUserDefaults standardUserDefaults] setInteger:self.isCrashManagerDisabled forKey:kMSAICrashManagerIsDisabled];
+    [[NSUserDefaults standardUserDefaults] setBool:self.isCrashManagerDisabled forKey:kMSAICrashManagerIsDisabled];
   }
 }
 
