@@ -42,7 +42,6 @@
 }
 
 - (void)tearDown {
-  [_sut cleanCrashReports];
   [super tearDown];
 }
 
@@ -50,7 +49,6 @@
 
 - (void)startManager {
   [_sut startManager];
-  [NSObject cancelPreviousPerformRequestsWithTarget:_sut selector:@selector(invokeDelayedProcessing) object:nil];
   _startManagerInitialized = YES;
 }
 
@@ -91,7 +89,7 @@
 
 - (void)testHasPendingCrashReportWithNoFiles {
   _sut.isCrashManagerDisabled = NO;
-  assertThatBool([_sut hasPendingCrashReport], equalToBool(NO));
+  assertThatBool([_sut.plCrashReporter hasPendingCrashReport], equalToBool(NO));
 }
 
 - (void)testCreateCrashReportForAppKill {
@@ -139,9 +137,9 @@
   assertThatBool(result, equalToBool(YES));
   
   // No files at startup
-  assertThatBool([_sut hasPendingCrashReport], equalToBool(NO));
+  assertThatBool([_sut.plCrashReporter hasPendingCrashReport], equalToBool(NO));
   
-  [_sut invokeDelayedProcessing];
+  [_sut readCrashReportAndStartProcessing];
   
   // handle a new empty crash report
   assertThatBool([MSAITestHelper copyFixtureCrashReportWithFileName:@"live_report_empty"], equalToBool(YES));
@@ -149,31 +147,24 @@
   [_sut readCrashReportAndStartProcessing];
   
   // we should have 0 pending crash report
-  assertThatBool([_sut hasPendingCrashReport], equalToBool(NO));
+  assertThatBool([_sut.plCrashReporter hasPendingCrashReport], equalToBool(NO));
   
-  [_sut cleanCrashReports];
-  
-  // handle a new signal crash report
+    // handle a new signal crash report
   assertThatBool([MSAITestHelper copyFixtureCrashReportWithFileName:@"live_report_signal"], equalToBool(YES));
+  
+  // we should have now 1 pending crash report
+  assertThatBool([_sut.plCrashReporter hasPendingCrashReport], equalToBool(YES));
 
   [_sut readCrashReportAndStartProcessing];
   
-  // we should have now 1 pending crash report
-  assertThatBool([_sut hasPendingCrashReport], equalToBool(YES));
-  
-  [_sut cleanCrashReports];
-
   // handle a new signal crash report
   assertThatBool([MSAITestHelper copyFixtureCrashReportWithFileName:@"live_report_exception"], equalToBool(YES));
 
+    // we should have now 1 pending crash report
+  assertThatBool([_sut.plCrashReporter hasPendingCrashReport], equalToBool(YES));
+  
   [_sut readCrashReportAndStartProcessing];
-  
-  // we should have now 1 pending crash report
-  assertThatBool([_sut hasPendingCrashReport], equalToBool(YES));
-  
-  [_sut cleanCrashReports];
-  
-  }
+}
 
 @end
 #endif
