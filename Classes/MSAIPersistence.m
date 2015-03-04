@@ -63,7 +63,7 @@ NSUInteger const defaultFileCount = 15;
         if(success) {
           MSAILog(@"Wrote %@", fileURL);
           if(sendNotifications && type != MSAIPersistenceTypeFakeCrash) {
-            [strongSelf sendBundleSavedNotificationWithPath:fileURL];
+            [strongSelf sendBundleSavedNotificationWithPath];
           }
         }
         
@@ -303,7 +303,7 @@ NSUInteger const defaultFileCount = 15;
  ** Send a kMSAIPersistenceSuccessNotification to the main thread to notify observers that we have successfully saved a file
  ** This is typocally used to trigger sending.
  **/
-- (void)sendBundleSavedNotificationWithPath:(NSString *)path {
+- (void)sendBundleSavedNotificationWithPath{
   dispatch_async(dispatch_get_main_queue(), ^{
     [[NSNotificationCenter defaultCenter] postNotificationName:kMSAIPersistenceSuccessNotification
                                                         object:nil
