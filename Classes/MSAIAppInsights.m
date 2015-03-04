@@ -97,10 +97,10 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
   _startManagerIsInvoked = YES;
   
   MSAITelemetryContext *telemetryContext = [[MSAITelemetryContext alloc] initWithAppContext:_appContext
-                                                                               endpointPath:MSAI_TELEMETRY_PATH];
+                                                                               endpointPath:kMSAITelemetryPath];
   [[MSAIEnvelopeManager sharedManager] configureWithTelemetryContext:telemetryContext];
   [[MSAISender sharedSender] configureWithAppClient:[self appClient]
-                                       endpointPath:MSAI_TELEMETRY_PATH];
+                                       endpointPath:kMSAITelemetryPath];
   [[MSAISender sharedSender] sendSavedData];
   
 #if MSAI_FEATURE_CRASH_REPORTER
@@ -244,7 +244,7 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 }
 
 - (NSString *)integrationFlowTimeString {
-  NSString *timeString = [[NSBundle mainBundle] objectForInfoDictionaryKey:MSAI_INTEGRATIONFLOW_TIMESTAMP];
+  NSString *timeString = [[NSBundle mainBundle] objectForInfoDictionaryKey:kMSAIIntegrationflowTimestamp];
   
   return timeString;
 }
@@ -278,7 +278,7 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
   
   [[self appClient] postPath:integrationPath
                   parameters:@{@"timestamp": timeString,
-                               @"sdk": MSAI_NAME,
+                               @"sdk": kMSAIName,
                                @"sdk_version": MSAI_VERSION,
                                @"bundle_version": [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"]
                                }
