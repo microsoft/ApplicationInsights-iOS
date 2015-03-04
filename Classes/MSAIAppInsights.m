@@ -97,9 +97,11 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
   MSAILog(@"INFO: Starting MSAIManager");
   _startManagerIsInvoked = YES;
   
-  [[MSAIEnvelopeManager sharedManager] configureWithTelemetryContext:[self telemetryContext]];
+  MSAITelemetryContext *telemetryContext = [[MSAITelemetryContext alloc] initWithAppContext:_appContext
+                                                                               endpointPath:MSAI_TELEMETRY_PATH];
+  [[MSAIEnvelopeManager sharedManager] configureWithTelemetryContext:telemetryContext];
   [[MSAISender sharedSender] configureWithAppClient:[self appClient]
-                                       endpointPath:[[self telemetryContext] endpointPath]];
+                                       endpointPath:MSAI_TELEMETRY_PATH];
   [[MSAISender sharedSender] sendSavedData];
   
 #if MSAI_FEATURE_CRASH_REPORTER
@@ -329,50 +331,6 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
   }
   
   return result;
-}
-
-// TODO: Put class vars to private header file
-// TODO: Put logic to MSAITelemetryContext initWithIKey:appContext:
-- (MSAITelemetryContext *)telemetryContext{
-  
-  if(_telemetryContext){
-    return _telemetryContext;
-  }
-  
-  MSAIDevice *deviceContext = [MSAIDevice new];
-  [deviceContext setModel: [_appContext deviceModel]];
-  [deviceContext setType:[_appContext deviceType]];
-  [deviceContext setOsVersion:[_appContext osVersion]];
-  [deviceContext setOs:[_appContext osName]];
-  [deviceContext setDeviceId:msai_appAnonID()];
-  deviceContext.locale = msai_deviceLocale();
-  deviceContext.language = msai_deviceLanguage();
-  [deviceContext setOemName:@"Apple"];
-  deviceContext.screenResolution = msai_screenSize();
-  
-  MSAIInternal *internalContext = [MSAIInternal new];
-  [internalContext setSdkVersion: msai_sdkVersion()];
-  
-  MSAIApplication *applicationContext = [MSAIApplication new];
-  [applicationContext setVersion:[_appContext appVersion]];
-  
-  MSAISession *sessionContext = [MSAISession new];
-  
-  MSAIOperation *operationContext = [MSAIOperation new];
-  MSAIUser *userContext = [MSAIUser new];
-  MSAILocation *locationContext = [MSAILocation new];
-  
-  //TODO: Add additional context data
-  MSAITelemetryContext *telemetryContext = [[MSAITelemetryContext alloc]initWithInstrumentationKey:[_appContext instrumentationKey]
-                                                                                      endpointPath:MSAI_TELEMETRY_PATH
-                                                                                applicationContext:applicationContext
-                                                                                     deviceContext:deviceContext
-                                                                                   locationContext:locationContext
-                                                                                    sessionContext:sessionContext
-                                                                                       userContext:userContext
-                                                                                   internalContext:internalContext
-                                                                                  operationContext:operationContext];
-  return telemetryContext;
 }
 
 - (MSAIAppClient *)appClient {

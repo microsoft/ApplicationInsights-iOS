@@ -75,7 +75,6 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
   //TODO does it make sense to have everything not initialised if the context is nil?
   if(context) {
     if(![MSAICrashManager sharedManager].isSetupCorrectly) {
-      [MSAICrashManager sharedManager].appContext = context;
       [[self sharedManager] startManager];
     }
   }
