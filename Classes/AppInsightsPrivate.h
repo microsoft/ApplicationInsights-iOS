@@ -9,13 +9,6 @@
 #define MSAI_CRASH_SETTINGS @"MSAICrashManager.plist"
 #define MSAI_CRASH_ANALYZER @"MSAICrashManager.analyzer"
 
-#define MSAI_METRICS_DATA @"MSAIMetricsManager.plist"
-#define MSAI_METRICS_TEMP_DATA @"MSAIMetricsManagerTemp.plist"
-
-#define kMSAIMetaUserName  @"MSAIMetaUserName"
-#define kMSAIMetaUserEmail @"MSAIMetaUserEmail"
-#define kMSAIMetaUserID    @"MSAIMetaUserID"
-
 #if MSAI_FEATURE_METRICS
 
 extern NSString *const __attribute__((unused)) kMSAIMetricsCachesSessions;
