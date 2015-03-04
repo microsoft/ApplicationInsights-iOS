@@ -600,7 +600,7 @@ Get the filename of the first not approved crash report
   fakeCrashEnvelope.data = data;
   fakeCrashEnvelope.name = crashData.envelopeTypeName;
 
-  [MSAIPersistence persistFakeReportBundle:@[fakeCrashEnvelope]];
+  [[MSAIPersistence sharedInstance] persistFakeReportBundle:@[fakeCrashEnvelope]];
 }
 
 /***
@@ -621,7 +621,7 @@ Get the filename of the first not approved crash report
     MSAIEnvelope *crashEnvelope = nil;
 
     if([[cacheFilename pathExtension] isEqualToString:@"fake"]) {
-      NSArray *fakeReportBundle = [MSAIPersistence fakeReportBundle];
+      NSArray *fakeReportBundle = [[MSAIPersistence sharedInstance] fakeReportBundle];
       if(fakeReportBundle && fakeReportBundle.count > 0) {
         crashEnvelope = fakeReportBundle[0];
         if([crashEnvelope.appId compare:[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"]] == NSOrderedSame) {

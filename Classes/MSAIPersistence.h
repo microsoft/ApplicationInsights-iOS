@@ -25,8 +25,37 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
 };
 
 ///-----------------------------------------------------------------------------
-/// @name Save bundle of data
+/// @name Create an instance
 ///-----------------------------------------------------------------------------
+
+/**
+ *  Returns a shared MSAIPersistence object.
+ *
+ *  @return A singleton MSAIPersistence instance ready use
+ */
++ (instancetype)sharedInstance;
+  
+///-----------------------------------------------------------------------------
+/// @name Save/delete bundle of data
+///-----------------------------------------------------------------------------
+
+/**
+ *  A queue which makes file system operations thread safe.
+ */
+@property (nonatomic, strong)dispatch_queue_t persistenceQueue;
+
+/**
+ *  Determines how many files (regular prio) can be on disk at a time.
+ */
+@property NSUInteger maxFileCount;
+
+/**
+ *  An array with all file paths, that have been requested by the sender. If the 
+ *  triggers a delete, the appropriate path should also be removed here. We keep to
+ *  track of requested bundles to make sure, that bundles get sent twice at the same 
+ *  time by differend http operations.
+ */
+@property (nonatomic, strong) NSMutableArray *requestedBundlePaths;
 
 /**
 * Saves the bundle and sends out a kMSAIPersistenceSuccessNotification in case of success
@@ -37,22 +66,21 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
 *
 * @warning: The data within the array needs to implement NSCoding.
 */
-+ (void)persistBundle:(NSArray *)bundle ofType:(MSAIPersistenceType)type withCompletionBlock:(void (^)(BOOL success))completionBlock;
-
+- (void)persistBundle:(NSArray *)bundle ofType:(MSAIPersistenceType)type withCompletionBlock:(void (^)(BOOL success))completionBlock;
 
 /**
-*  Convenience method for saving a bundle of data back to disk after an error (typically when sending a bundle to
-*  the server fails).
-*  This method will determine the priority of the bundle depending on it's content using reflection on the data within
-*  the bundle. It uses the same logic as `persistBundle:ofType:withCompletionBlock:´ internally.
-*  This method doesn't trigger kMSAIPersistenceSuccessNotification to avoid an endless cycle of saving & sending
-*  Bundles that are persisted with this method will be sent to the server during the next attempt to send events.
-*
-*  @param bundle a bundle of tracked events (telemetry, crashes, ...) that will be serialized and saved.
-*
-*  @warning: The data within the array needs to implement NSCoding. (which is typically the case)
-*/
-+ (void)persistAfterErrorWithBundle:(NSArray *)bundle;
+ *  Deletes the file for the given path.
+ *
+ *  @param path the path of the file, which should be deleted
+ */
+- (void)deleteBundleAtPath:(NSString *)path ;
+
+/**
+ *  Determines whether the persistence layer is able to write more files to disk.
+ *
+ *  @return YES if the maxFileCount has not been reached, yet (otherwise NO).
+ */
+- (BOOL)isFreeSpaceAvailable;
 
 ///-----------------------------------------------------------------------------
 /// @name Get a bundle of saved data
@@ -70,7 +98,31 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
 * @return a bundle of AppInsightsData that's ready to be sent to the server
 */
 
-+ (NSArray *)nextBundle;
+/**
+ *  Returns the path for the next item to send. The requested path is reserved as long
+ *  as leaveUpRequestedPath: gets called.
+ *
+ *  @see leleaveUpRequestedPath:
+ *
+ *  @return the path of the item, which should be sent next
+ */
+- (NSString *)requestNextPath;
+
+/**
+ *  Release a requested path. This method should be called after sending a file failed.
+ *
+ *  @param path the path that should be available for sending again.
+ */
+- (void)giveBackRequestedPath:(NSString *) path;
+
+/**
+ *  Return the bundle for a given path.
+ *
+ *  @param path the path of the bundle.
+ *
+ *  @return an array with all envelope objects.
+ */
+- (NSArray *)bundleAtPath:(NSString *)path;
 
 ///-----------------------------------------------------------------------------
 /// @name Handling of a "fake" CrashReport
@@ -81,14 +133,13 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
 *
 * @param bundle The bundle of application insights data
 */
-+ (void)persistFakeReportBundle:(NSArray *)bundle;
+- (void)persistFakeReportBundle:(NSArray *)bundle;
 
 /**
 * Get the first of all saved fake crash reports (an arbitrary one in case we have several fake reports)
 *
 * @return a fake crash report, wrapped as a bundle
 */
-+ (NSArray *)fakeReportBundle;
-
+- (NSArray *)fakeReportBundle;
 
 @end

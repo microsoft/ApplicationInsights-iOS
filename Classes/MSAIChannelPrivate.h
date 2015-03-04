@@ -15,6 +15,11 @@
 /// @name Initialisation
 ///-----------------------------------------------------------------------------
 
+/**
+*  Returns a shared MSAIChannel object.
+*
+*  @return A singleton MSAIChannel instance ready use
+*/
 + (instancetype)sharedChannel;
 
 ///-----------------------------------------------------------------------------
@@ -81,5 +86,7 @@
  *  Stops the timer if currently running.
  */
 - (void)invalidateTimer;
+
+- (BOOL)isQueueBusy;
 
 @end

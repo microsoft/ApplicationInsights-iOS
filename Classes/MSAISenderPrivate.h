@@ -18,6 +18,16 @@
 @property (nonatomic, strong)NSString *endpointPath;
 
 /**
+ *  The max number of request that can run at a time.
+ */
+@property NSUInteger maxRequestCount;
+
+/**
+ *  The number of requests that are currently running.
+ */
+@property NSUInteger runningRequestsCount;
+
+/**
 *  Returns a shared MSAISender object.
 *
 *  @return A singleton MSAISender instance ready use
@@ -40,8 +50,9 @@
  *  Creates a HTTP operation and puts it to the queue.
  *
  *  @param request a request for sending a data object to the telemetry server
+ *  @param path path to the file which should be sent
  */
-- (void)sendRequest:(NSURLRequest *)request;
+- (void)sendRequest:(NSURLRequest *)request path:(NSString *)path;
 
 ///-----------------------------------------------------------------------------
 /// @name Helper
