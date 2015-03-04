@@ -11,67 +11,63 @@ NSString *const kFileBaseString = @"app-insights-bundle-";
 
 NSString *const kMSAIPersistenceSuccessNotification = @"MSAIPersistenceSuccessNotification";
 char const *kPersistenceQueueString = "com.microsoft.appInsights.persistenceQueue";
-
-static dispatch_queue_t persistenceQueue;
-static dispatch_once_t onceToken = nil;
-
-static NSFileManager *fileManager;
-static NSMutableArray *crashFiles;
-static NSString *settingsFile;
-static NSString *lastCrashFilename;
-static NSString *analyzerInProgressFile;
+NSUInteger const defaultFileCount = 15;
 
 @implementation MSAIPersistence
 
 
 #pragma mark - Public
 
++ (instancetype)sharedInstance{
+  static MSAIPersistence *sharedInstance = nil;
+  static dispatch_once_t onceToken;
+  
+  dispatch_once(&onceToken, ^{
+    sharedInstance = [MSAIPersistence new];
+    [sharedInstance createApplicationSupportDirectoryIfNeeded];
+  });
+  return sharedInstance;
+}
+
+- (instancetype)init{
+  self = [super init];
+  if ( self ) {
+    _persistenceQueue = dispatch_queue_create(kPersistenceQueueString, DISPATCH_QUEUE_SERIAL);
+    _requestedBundlePaths = [NSMutableArray new];
+    _maxFileCount = defaultFileCount;
+  }
+  return self;
+}
+
 //TODO remove the completion block and implement notification-handling in MSAICrashManager
-+ (void)persistBundle:(NSArray *)bundle ofType:(MSAIPersistenceType)type withCompletionBlock:(void (^)(BOOL success))completionBlock {
+- (void)persistBundle:(NSArray *)bundle ofType:(MSAIPersistenceType)type withCompletionBlock:(void (^)(BOOL success))completionBlock {
   [self persistBundle:bundle ofType:type withCompletionBlock:completionBlock enableNotifications:YES];
 }
 
-+ (void)persistAfterErrorWithBundle:(NSArray *)bundle {
-  if(bundle && ([bundle count] > 0)) {
-    id envelope = [bundle firstObject];
-    if(envelope && [envelope isKindOfClass:[MSAIEnvelope class]]) {
-      if([((MSAIEnvelope *) envelope).data isKindOfClass:[MSAICrashData class]]) {
-        [self persistBundle:bundle ofType:MSAIPersistenceTypeHighPriority withCompletionBlock:nil enableNotifications:NO];
-      }
-      else {
-        [self persistBundle:bundle ofType:MSAIPersistenceTypeRegular withCompletionBlock:nil enableNotifications:NO];
-      }
-    }
-  }
-}
-
 /**
-* Creates a serial background queue that saves the Bundle using NSKeyedArchiver and NSData's writeToFile:atomically
-*
-* In case if type MSAIPersistenceTypeFakeCrash, we don't send out a kMSAIPersistenceSuccessNotification.
-*
-*/
-+ (void)persistBundle:(NSArray *)bundle ofType:(MSAIPersistenceType)type withCompletionBlock:(void (^)(BOOL success))completionBlock enableNotifications:(BOOL)sendNotifications {
-  dispatch_once(&onceToken, ^{
-    persistenceQueue = dispatch_queue_create(kPersistenceQueueString, DISPATCH_QUEUE_SERIAL);
-  });
-
+ * Creates a serial background queue that saves the Bundle using NSKeyedArchiver and NSData's writeToFile:atomically
+ *
+ * In case if type MSAIPersistenceTypeFakeCrash, we don't send out a kMSAIPersistenceSuccessNotification.
+ *
+ */
+- (void)persistBundle:(NSArray *)bundle ofType:(MSAIPersistenceType)type withCompletionBlock:(void (^)(BOOL success))completionBlock enableNotifications:(BOOL)sendNotifications {
+  
   if(bundle && bundle.count > 0) {
     NSString *fileURL = [self newFileURLForPriority:type];
     NSData *data = [NSKeyedArchiver archivedDataWithRootObject:bundle];
-
+    
     if(data) {
       __weak typeof(self) weakSelf = self;
-      dispatch_async(persistenceQueue, ^{
+      dispatch_async(self.persistenceQueue, ^{
         typeof(self) strongSelf = weakSelf;
         BOOL success = [data writeToFile:fileURL atomically:YES];
         if(success) {
           MSAILog(@"Wrote %@", fileURL);
           if(sendNotifications && type != MSAIPersistenceTypeFakeCrash) {
-            [strongSelf sendBundleSavedNotification];
+            [strongSelf sendBundleSavedNotificationWithPath];
           }
         }
-
+        
         if(completionBlock) {
           completionBlock(success);
         }
@@ -88,53 +84,49 @@ static NSString *analyzerInProgressFile;
   }
 }
 
-
-/**
-* Uses the persistenceQueue to retrieve the next bundle synchronously.
-*
-* @returns the next available bundle or nil
-*/
-+ (NSArray *)nextBundle {
-  dispatch_once(&onceToken, ^{
-    persistenceQueue = dispatch_queue_create(kPersistenceQueueString, DISPATCH_QUEUE_SERIAL);
+- (BOOL)isFreeSpaceAvailable{
+  __block NSUInteger fileCount = 0;
+  dispatch_sync(self.persistenceQueue, ^() {
+    NSError *error = nil;
+    NSString *path = [self folderPathWithPriority:MSAIPersistenceTypeRegular];
+    NSArray *fileNames = [[NSFileManager defaultManager] subpathsOfDirectoryAtPath:path error:&error];
+    fileCount = fileNames.count;
   });
+  BOOL freeSpaceAvailable = fileCount < _maxFileCount;
+  
+  return freeSpaceAvailable;
+}
 
+- (NSString *)requestNextPath {
+  __block NSString *path = nil;
   __weak typeof(self) weakSelf = self;
-  __block NSArray *bundle = nil;
-
-  dispatch_sync(persistenceQueue, ^() {
+  dispatch_sync(self.persistenceQueue, ^() {
     typeof(self) strongSelf = weakSelf;
-    NSString *path = [strongSelf nextURLWithPriority:MSAIPersistenceTypeHighPriority];
+    
+    path = [strongSelf nextURLWithPriority:MSAIPersistenceTypeHighPriority];
     if(!path) {
       path = [strongSelf nextURLWithPriority:MSAIPersistenceTypeRegular];
     }
-
-    if(path) {
-      bundle = [strongSelf bundleAtPath:path];
+    
+    if(path){
+      [self.requestedBundlePaths addObject:path];
     }
   });
-  
-  //in some cases, bundle may be non-nil but empty
-  //setting it to nil to indicate that nothing's there.
-  if([bundle count] == 0) {
-    bundle = nil;
-  }
-
-  return bundle;
+  return path;
 }
 
 /**
-* Method used to persist the "fake" crash reports. Fake crash reports are handled but are similar to the other bundle
-* types under the hood.
-*/
-+ (void)persistFakeReportBundle:(NSArray *)bundle {
+ * Method used to persist the "fake" crash reports. Fake crash reports are handled but are similar to the other bundle
+ * types under the hood.
+ */
+- (void)persistFakeReportBundle:(NSArray *)bundle {
   [self persistBundle:bundle ofType:MSAIPersistenceTypeFakeCrash withCompletionBlock:nil];
 }
 
 /*
-* @Returns a bundle that includes a fake crash report.
+ * @Returns a bundle that includes a fake crash report.
  */
-+ (NSArray *)fakeReportBundle {
+- (NSArray *)fakeReportBundle {
   NSString *path = [self nextURLWithPriority:MSAIPersistenceTypeFakeCrash];
   if(path && [path isKindOfClass:[NSString class]] && path.length > 0) {
     NSArray *bundle = [self bundleAtPath:path];
@@ -145,57 +137,68 @@ static NSString *analyzerInProgressFile;
   return nil;
 }
 
+/**
+ * Deserializes a bundle from disk using NSKeyedUnarchiver and deletes it from disk
+ * @return a bundle of data or nil
+ */
+- (NSArray *)bundleAtPath:(NSString *)path {
+  __block NSArray *bundle = nil;
+
+  dispatch_sync(self.persistenceQueue, ^() {
+    
+    if(path && [path rangeOfString:kFileBaseString].location != NSNotFound) {
+      bundle = [NSKeyedUnarchiver unarchiveObjectWithFile:path];
+    }
+  });
+  return bundle;
+}
+
+/**
+ * Deletes a file at the given path.
+ */
+- (void)deleteBundleAtPath:(NSString *)path {
+  __weak typeof(self) weakSelf = self;
+  dispatch_sync(self.persistenceQueue, ^() {
+    typeof(self) strongSelf = weakSelf;
+    if([path rangeOfString:kFileBaseString].location != NSNotFound) {
+      NSError *error = nil;
+      [[NSFileManager defaultManager] removeItemAtPath:path error:&error];
+      if(error) {
+        MSAILog(@"Error deleting file at path %@", path);
+      }
+      else {
+        MSAILog(@"Successfully deleted file at path %@", path);
+        [strongSelf.requestedBundlePaths removeObject:path];
+      }
+    }else {
+      MSAILog(@"Empty path, so nothing can be deleted");
+    }
+  });
+}
+
+- (void)giveBackRequestedPath:(NSString *) path {
+  __weak typeof(self) weakSelf = self;
+  dispatch_sync(self.persistenceQueue, ^() {
+    typeof(self) strongSelf = weakSelf;
+    
+    [strongSelf.requestedBundlePaths removeObject:path];
+  });
+}
+
 #pragma mark - Private
 
 /**
-* Deserializes a bundle from disk using NSKeyedUnarchiver and deletes it from disk
-* @return a bundle of data or nil
-*/
-+ (NSArray *)bundleAtPath:(NSString *)path {
-  if(path) {
-    if([path rangeOfString:kFileBaseString].location != NSNotFound) {
-      NSArray *bundle = [NSKeyedUnarchiver unarchiveObjectWithFile:path];
-      if(bundle) {
-        [self deleteBundleAtPath:path];
-        return bundle;
-      }
-    }
-  }
-  return nil;
-}
-
-/**
-* Deletes a file at the given path.
-*/
-+ (void)deleteBundleAtPath:(NSString *)path {
-  if([path rangeOfString:kFileBaseString].location != NSNotFound) {
-    NSError *error = nil;
-    [[NSFileManager new] removeItemAtPath:path error:&error];
-    if(error) {
-      MSAILog(@"Error deleting file at path %@", path);
-    }
-    else {
-      MSAILog(@"Successfully deleted file at path %@", path);
-    }
-  }
-  else {
-    MSAILog(@"Empty path, so nothing can be deleted");
-  }
-}
-
-/**
-* Creates the path for a file depending on the MSAIPersistenceType.
-* The filename includes the timestamp.
-* For each MSAIPersistenceType, we create a folder within the app's Application Support directory directory
-*/
-+ (NSString *)newFileURLForPriority:(MSAIPersistenceType)type {
-  [self createApplicationSupportDirectoryIfNeeded];
-
+ * Creates the path for a file depending on the MSAIPersistenceType.
+ * The filename includes the timestamp.
+ * For each MSAIPersistenceType, we create a folder within the app's Application Support directory directory
+ */
+- (NSString *)newFileURLForPriority:(MSAIPersistenceType)type {
+  
   NSString *applicationSupportDir = [NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES) lastObject];
   NSString *uuid = msai_UUID();
   NSString *fileName = [NSString stringWithFormat:@"%@%@", kFileBaseString, uuid];
   NSString *filePath;
-
+  
   switch(type) {
     case MSAIPersistenceTypeHighPriority: {
       [self createFolderAtPathIfNeeded:[applicationSupportDir stringByAppendingPathComponent:kHighPrioString]];
@@ -213,14 +216,14 @@ static NSString *analyzerInProgressFile;
       break;
     };
   }
-
+  
   return filePath;
 }
 
 /**
-* create a folder within at the given path
-*/
-+ (void)createFolderAtPathIfNeeded:(NSString *)path {
+ * create a folder within at the given path
+ */
+- (void)createFolderAtPathIfNeeded:(NSString *)path {
   if(path && ![[NSFileManager defaultManager] fileExistsAtPath:path]) {
     NSError *error = nil;
     [[NSFileManager defaultManager] createDirectoryAtPath:path withIntermediateDirectories:NO attributes:nil error:&error];
@@ -231,9 +234,9 @@ static NSString *analyzerInProgressFile;
 }
 
 /**
-* Create ApplicationSupport directory if necessary and exclude it from iCloud Backup
-*/
-+ (void)createApplicationSupportDirectoryIfNeeded {
+ * Create ApplicationSupport directory if necessary and exclude it from iCloud Backup
+ */
+- (void)createApplicationSupportDirectoryIfNeeded {
   NSString *appplicationSupportDir = [NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES) lastObject];
   if(![[NSFileManager defaultManager] fileExistsAtPath:appplicationSupportDir isDirectory:NULL]) {
     NSError *error = nil;
@@ -255,14 +258,28 @@ static NSString *analyzerInProgressFile;
 }
 
 /**
-* @returns the URL to the next file depending on the specified type. If there's no file, return nil.
-*/
-+ (NSString *)nextURLWithPriority:(MSAIPersistenceType)type {
-  [self createApplicationSupportDirectoryIfNeeded];
+ * @returns the URL to the next file depending on the specified type. If there's no file, return nil.
+ */
+- (NSString *)nextURLWithPriority:(MSAIPersistenceType)type {
+  
+  NSString *path = [self folderPathWithPriority:type];
+  NSArray *fileNames = [[NSFileManager defaultManager] subpathsOfDirectoryAtPath:path error:nil];
+  if(fileNames && fileNames.count > 0) {
+    for(NSString *filename in fileNames){
+      NSString *absolutePath = [path stringByAppendingPathComponent:filename];
+      if(![self.requestedBundlePaths containsObject:absolutePath]){
+        return absolutePath;
+      }
+    }
+  }
+  
+  return nil;
+}
 
+- (NSString *)folderPathWithPriority:(MSAIPersistenceType)type {
   NSString *documentFolder = [NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES) lastObject];
   NSString *subfolderPath;
-
+  
   switch(type) {
     case MSAIPersistenceTypeHighPriority: {
       subfolderPath = kHighPrioString;
@@ -277,23 +294,17 @@ static NSString *analyzerInProgressFile;
       break;
     }
   }
-
+  
   NSString *path = [documentFolder stringByAppendingPathComponent:subfolderPath];
-
-  NSArray *fileNames = [[NSFileManager defaultManager] subpathsOfDirectoryAtPath:path error:nil];
-  if(fileNames && fileNames.count > 0) {
-    return [path stringByAppendingPathComponent:[fileNames firstObject]];
-  }
-  else {
-    return nil;
-  }
+  
+  return path;
 }
 
 /**
-** Send a kMSAIPersistenceSuccessNotification to the main thread to notify observers that we have successfully saved a file
-** This is typically used to trigger sending.
-**/
-+ (void)sendBundleSavedNotification {
+ ** Send a kMSAIPersistenceSuccessNotification to the main thread to notify observers that we have successfully saved a file
+ ** This is typocally used to trigger sending.
+ **/
+- (void)sendBundleSavedNotificationWithPath{
   dispatch_async(dispatch_get_main_queue(), ^{
     [[NSNotificationCenter defaultCenter] postNotificationName:kMSAIPersistenceSuccessNotification
                                                         object:nil

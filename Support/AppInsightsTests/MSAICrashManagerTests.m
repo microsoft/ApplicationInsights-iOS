@@ -96,7 +96,7 @@
   //handle app kill (FakeCrashReport will be generated)
   [_sut createCrashReportForAppKill]; //just creates a fake crash report and hands it over to MSAIPersistence
   
-  NSArray *bundle = [MSAIPersistence nextBundle];
+  NSArray *bundle = [[MSAIPersistence sharedInstance] fakeReportBundle];
   XCTAssertNil(bundle);
   
   if(bundle && ([bundle count] > 0)) {

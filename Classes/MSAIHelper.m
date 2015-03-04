@@ -107,7 +107,7 @@ NSString *msai_settingsDir(void) {
     
     // temporary directory for crashes grabbed from PLCrashReporter
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
-    settingsDir = [paths[0] stringByAppendingPathComponent:MSAI_IDENTIFIER];
+    settingsDir = [paths[0] stringByAppendingPathComponent:kMSAIIdentifier];
     
     if (![fileManager fileExistsAtPath:settingsDir]) {
       NSDictionary *attributes = @{NSFilePosixPermissions : @0755};

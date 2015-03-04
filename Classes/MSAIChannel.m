@@ -13,7 +13,7 @@
 #import "MSAIPersistence.h"
 
 #ifdef DEBUG
-static NSInteger const defaultMaxBatchCount = 5;
+static NSInteger const defaultMaxBatchCount = 50;
 static NSInteger const defaultBatchInterval = 15;
 #else
 static NSInteger const defaultMaxBatchCount = 50;
@@ -65,7 +65,7 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
         // Max batch count has been reached, so write queue to disk and delete all items.
         [strongSelf invalidateTimer];
         NSArray *bundle = [NSArray arrayWithArray:strongSelf->_dataItemQueue];
-        [MSAIPersistence persistBundle:bundle ofType:MSAIPersistenceTypeRegular withCompletionBlock:nil];
+        [[MSAIPersistence sharedInstance] persistBundle:bundle ofType:MSAIPersistenceTypeRegular withCompletionBlock:nil];
         [strongSelf->_dataItemQueue removeAllObjects];
       } else if([strongSelf->_dataItemQueue count] == 1) {
         
@@ -77,7 +77,7 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
 }
 
 - (void)processEnvelope:(MSAIEnvelope *)envelope withCompletionBlock: (void (^)(BOOL success)) completionBlock{
-  [MSAIPersistence persistBundle:[NSArray arrayWithObject:envelope]
+  [[MSAIPersistence sharedInstance] persistBundle:[NSArray arrayWithObject:envelope]
                           ofType:MSAIPersistenceTypeHighPriority withCompletionBlock:completionBlock];
 }
 
@@ -90,6 +90,10 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
     queue = [NSMutableArray arrayWithArray:strongSelf->_dataItemQueue];
   });
   return queue;
+}
+
+- (BOOL)isQueueBusy{
+  return ![[MSAIPersistence sharedInstance] isFreeSpaceAvailable];
 }
 
 #pragma mark - Batching
@@ -121,7 +125,7 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
 
 - (void)persistQueue {
   NSArray *bundle = [NSArray arrayWithArray:_dataItemQueue];
-  [MSAIPersistence persistBundle:bundle ofType:MSAIPersistenceTypeRegular withCompletionBlock:nil];
+  [[MSAIPersistence sharedInstance] persistBundle:bundle ofType:MSAIPersistenceTypeRegular withCompletionBlock:nil];
   [_dataItemQueue removeAllObjects];
 }
 
