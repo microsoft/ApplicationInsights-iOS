@@ -75,7 +75,6 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
   //TODO does it make sense to have everything not initialised if the context is nil?
   if(context) {
     if(![MSAICrashManager sharedManager].isSetupCorrectly) {
-      [MSAICrashManager sharedManager].appContext = context;
       [[self sharedManager] startManager];
     }
   }
@@ -120,7 +119,7 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
     // signal handler type is set
     // We only check for this if we are not in the App Store environment
 
-    if(![self.appContext isAppStoreEnvironment]) {
+    if(!msai_isAppStoreEnvironment()) {
       if(self.debuggerIsAttached) {
         NSLog(@"[AppInsightsSDK] WARNING: Detecting crashes is NOT enabled due to running the app with a debugger attached.");
       }
@@ -292,7 +291,7 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
 }
 
 - (void)generateTestCrash {
-  if(![self.appContext isAppStoreEnvironment]) {
+  if(!msai_isAppStoreEnvironment()) {
 
     if(self.debuggerIsAttached) {
       NSLog(@"[AppInsightsSDK] WARNING: The debugger is attached. The following crash cannot be detected by the SDK!");
