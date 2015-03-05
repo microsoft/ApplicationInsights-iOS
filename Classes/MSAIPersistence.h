@@ -73,7 +73,7 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
  *
  *  @param path the path of the file, which should be deleted
  */
-- (void)deleteBundleAtPath:(NSString *)path ;
+- (void)deleteFileAtPath:(NSString *)path ;
 
 /**
  *  Determines whether the persistence layer is able to write more files to disk.

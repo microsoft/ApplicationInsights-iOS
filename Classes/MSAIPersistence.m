@@ -147,7 +147,7 @@ NSUInteger const defaultFileCount = 50;
 /**
  * Deletes a file at the given path.
  */
-- (void)deleteBundleAtPath:(NSString *)path {
+- (void)deleteFileAtPath:(NSString *)path {
   __weak typeof(self) weakSelf = self;
   dispatch_sync(self.persistenceQueue, ^() {
     typeof(self) strongSelf = weakSelf;

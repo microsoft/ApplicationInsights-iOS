@@ -104,7 +104,7 @@ static NSUInteger const defaultRequestLimit = 10;
       MSAILog(@"Sent data with status code: %ld", (long) statusCode);
       MSAILog(@"Response data:\n%@", [NSJSONSerialization JSONObjectWithData:responseData options:0 error:nil]);
       
-      [[MSAIPersistence sharedInstance] deleteBundleAtPath:path];
+      [[MSAIPersistence sharedInstance] deleteFileAtPath:path];
       [strongSelf sendSavedData];
     } else {
       MSAILog(@"Sending MSAIAppInsights data failed");
