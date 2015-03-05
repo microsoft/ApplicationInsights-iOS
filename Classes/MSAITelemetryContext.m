@@ -40,7 +40,10 @@ NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
     MSAISession *sessionContext = [MSAISession new];
     
     MSAIOperation *operationContext = [MSAIOperation new];
+    
     MSAIUser *userContext = [MSAIUser new];
+    userContext.userId = msai_appAnonID();
+    
     MSAILocation *locationContext = [MSAILocation new];
     
     _instrumentationKey = appContext.instrumentationKey;
