@@ -2,12 +2,12 @@
 //  Copyright 2015 Jonathan M. Reid. See LICENSE.txt
 
 #import <Foundation/Foundation.h>
-#import "MKTPrimitiveArgumentMatching.h"
 
 
-@interface MKTBaseMockObject : NSProxy <MKTPrimitiveArgumentMatching>
+@interface MKTArgumentCaptor : NSObject
 
-- (instancetype)init;
-- (void)reset;
+- (id)capture;
+- (id)value;
+- (NSArray *)allValues;
 
 @end

@@ -1,24 +1,18 @@
-//
-//  OCHamcrest - OCHamcrest.h
-//  Copyright 2013 hamcrest.org. See LICENSE.txt
-//
-//  Created by: Jon Reid, http://qualitycoding.org/
-//  Docs: http://hamcrest.github.com/OCHamcrest/
-//  Source: https://github.com/hamcrest/OCHamcrest
-//
+//  OCHamcrest by Jon Reid, http://qualitycoding.org/about/
+//  Copyright 2014 hamcrest.org. See LICENSE.txt
 
 /**
-    @defgroup library Matcher Library
+ @defgroup library Matcher Library
 
-    Library of Matcher implementations.
+ Library of Matcher implementations.
  */
 
 /**
-    @defgroup object_matchers Object Matchers
+ @defgroup object_matchers Object Matchers
 
-    Matchers that inspect objects.
+ Matchers that inspect objects.
 
-    @ingroup library
+ @ingroup library
  */
 #import <OCHamcrestIOS/HCConformsToProtocol.h>
 #import <OCHamcrestIOS/HCHasDescription.h>
@@ -28,14 +22,16 @@
 #import <OCHamcrestIOS/HCIsNil.h>
 #import <OCHamcrestIOS/HCIsSame.h>
 #import <OCHamcrestIOS/HCIsTypeOf.h>
+#import <OCHamcrestIOS/HCThrowsException.h>
 
 /**
-    @defgroup collection_matchers Collection Matchers
+ @defgroup collection_matchers Collection Matchers
 
-    Matchers of collections.
+ Matchers of collections.
 
-    @ingroup library
+ @ingroup library
  */
+#import <OCHamcrestIOS/HCEvery.h>
 #import <OCHamcrestIOS/HCHasCount.h>
 #import <OCHamcrestIOS/HCIsCollectionContaining.h>
 #import <OCHamcrestIOS/HCIsCollectionContainingInAnyOrder.h>
@@ -49,30 +45,31 @@
 #import <OCHamcrestIOS/HCIsIn.h>
 
 /**
-    @defgroup number_matchers Number Matchers
+ @defgroup number_matchers Number Matchers
 
-    Matchers that perform numeric comparisons.
+ Matchers that perform numeric comparisons.
 
-    @ingroup library
+ @ingroup library
  */
 #import <OCHamcrestIOS/HCIsCloseTo.h>
 #import <OCHamcrestIOS/HCOrderingComparison.h>
 
 /**
-    @defgroup primitive_number_matchers Primitive Number Matchers
+ @defgroup primitive_number_matchers Primitive Number Matchers
 
-    Matchers for testing equality against primitive numeric types.
+ Matchers for testing equality against primitive numeric types.
 
-    @ingroup number_matchers
+ @ingroup number_matchers
  */
 #import <OCHamcrestIOS/HCIsEqualToNumber.h>
+#import <OCHamcrestIOS/HCIsTrueFalse.h>
 
 /**
-    @defgroup text_matchers Text Matchers
+ @defgroup text_matchers Text Matchers
 
-    Matchers that perform text comparisons.
+ Matchers that perform text comparisons.
 
-    @ingroup library
+ @ingroup library
  */
 #import <OCHamcrestIOS/HCIsEqualIgnoringCase.h>
 #import <OCHamcrestIOS/HCIsEqualIgnoringWhiteSpace.h>
@@ -82,11 +79,11 @@
 #import <OCHamcrestIOS/HCStringStartsWith.h>
 
 /**
-    @defgroup logical_matchers Logical Matchers
+ @defgroup logical_matchers Logical Matchers
 
-    Boolean logic using other matchers.
+ Boolean logic using other matchers.
 
-    @ingroup library
+ @ingroup library
  */
 #import <OCHamcrestIOS/HCAllOf.h>
 #import <OCHamcrestIOS/HCAnyOf.h>
@@ -94,17 +91,17 @@
 #import <OCHamcrestIOS/HCIsNot.h>
 
 /**
-    @defgroup decorator_matchers Decorator Matchers
+ @defgroup decorator_matchers Decorator Matchers
 
-    Matchers that decorate other matchers for better expression.
+ Matchers that decorate other matchers for better expression.
 
-    @ingroup library
+ @ingroup library
  */
 #import <OCHamcrestIOS/HCDescribedAs.h>
 #import <OCHamcrestIOS/HCIs.h>
 
 /**
-    @defgroup integration Unit Test Integration
+ @defgroup integration Unit Test Integration
  */
 #import <OCHamcrestIOS/HCAssertThat.h>
 #import <OCHamcrestIOS/HCTestFailure.h>
@@ -112,30 +109,30 @@
 #import <OCHamcrestIOS/HCTestFailureHandlerChain.h>
 
 /**
-    @defgroup integration_numeric Unit Tests of Primitive Numbers
+ @defgroup integration_numeric Unit Tests of Primitive Numbers
 
-    Unit test integration for primitive numbers.
-    
-    The @c assertThat&lt;Type&gt; macros convert the primitive actual value to an @c NSNumber,
-    passing that to the matcher for evaluation. If the matcher is not satisfied, an exception is
-    thrown describing the mismatch.
+ Unit test integration for primitive numbers.
 
-    This family of macros is designed to integrate well with OCUnit and other unit testing
-    frameworks. Unmet assertions are reported as test failures. In Xcode, they can be clicked to
-    reveal the line of the assertion.
+ The @c assertThat&lt;Type&gt; macros convert the primitive actual value to an @c NSNumber,
+ passing that to the matcher for evaluation. If the matcher is not satisfied, an exception is
+ thrown describing the mismatch.
 
-    @ingroup integration
+ This family of macros is designed to integrate well with OCUnit and other unit testing
+ frameworks. Unmet assertions are reported as test failures. In Xcode, they can be clicked to
+ reveal the line of the assertion.
+
+ @ingroup integration
  */
 #import <OCHamcrestIOS/HCNumberAssert.h>
 
 /**
-    @defgroup core Core API
+ @defgroup core Core API
  */
 
 /**
-    @defgroup helpers Helpers
+ @defgroup helpers Helpers
 
-    Utilities for writing Matchers.
+ Utilities for writing Matchers.
 
-    @ingroup core
+ @ingroup core
  */
