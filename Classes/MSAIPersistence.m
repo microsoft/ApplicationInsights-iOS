@@ -11,9 +11,11 @@ NSString *const kFileBaseString = @"app-insights-bundle-";
 
 NSString *const kMSAIPersistenceSuccessNotification = @"MSAIPersistenceSuccessNotification";
 char const *kPersistenceQueueString = "com.microsoft.appInsights.persistenceQueue";
-NSUInteger const defaultFileCount = 15;
+NSUInteger const defaultFileCount = 50;
 
-@implementation MSAIPersistence
+@implementation MSAIPersistence{
+  BOOL _maxFileCountReached;
+}
 
 #pragma mark - Public
 
@@ -34,6 +36,9 @@ NSUInteger const defaultFileCount = 15;
     _persistenceQueue = dispatch_queue_create(kPersistenceQueueString, DISPATCH_QUEUE_SERIAL);
     _requestedBundlePaths = [NSMutableArray new];
     _maxFileCount = defaultFileCount;
+    
+    // Evantually there are old files on disk, the flag will be updated before the first event gets created
+    _maxFileCountReached = YES;
   }
   return self;
 }
@@ -84,16 +89,7 @@ NSUInteger const defaultFileCount = 15;
 }
 
 - (BOOL)isFreeSpaceAvailable{
-  __block NSUInteger fileCount = 0;
-  dispatch_sync(self.persistenceQueue, ^() {
-    NSError *error = nil;
-    NSString *path = [self folderPathWithPriority:MSAIPersistenceTypeRegular];
-    NSArray *fileNames = [[NSFileManager defaultManager] subpathsOfDirectoryAtPath:path error:&error];
-    fileCount = fileNames.count;
-  });
-  BOOL freeSpaceAvailable = fileCount < _maxFileCount;
-  
-  return freeSpaceAvailable;
+  return !_maxFileCountReached;
 }
 
 - (NSString *)requestNextPath {
@@ -263,6 +259,10 @@ NSUInteger const defaultFileCount = 15;
   
   NSString *path = [self folderPathWithPriority:type];
   NSArray *fileNames = [[NSFileManager defaultManager] subpathsOfDirectoryAtPath:path error:nil];
+  
+  // each track method asks, if space is still available. Getting the file count for each event would be too expensive,
+  // so let's get it here
+  _maxFileCountReached = fileNames.count > _maxFileCount;
   if(fileNames && fileNames.count > 0) {
     for(NSString *filename in fileNames){
       NSString *absolutePath = [path stringByAppendingPathComponent:filename];
