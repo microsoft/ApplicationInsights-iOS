@@ -287,7 +287,7 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
   }
 }
 
-#pragma mark - (Un)register for Lifecycle Notifications
+#pragma mark - Lifecycle Notifications
 
 - (void)registerObservers {
   __weak typeof(self) weakSelf = self;
@@ -363,6 +363,26 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
     observer = nil;
   }
 }
+
+//Safe info about safe termination of the app to NSUserDefaults
+- (void)leavingAppSafely {
+  if(self.appNotTerminatingCleanlyDetectionEnabled)
+    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kMSAIAppWentIntoBackgroundSafely];
+}
+
+/**
+* Stores info about didEnterBackground in NSUserDefaults.
+*/
+
+- (void)appEnteredForeground {
+  // we disable kill detection while the debugger is running, since we'd get only false positives if the app is terminated by the user using the debugger
+  if(self.debuggerIsAttached) {
+    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kMSAIAppWentIntoBackgroundSafely];
+  } else if(self.appNotTerminatingCleanlyDetectionEnabled) {
+    [[NSUserDefaults standardUserDefaults] setBool:NO forKey:kMSAIAppWentIntoBackgroundSafely];
+  }
+}
+
 
 #pragma mark - PLCrashReporter
 
@@ -522,32 +542,11 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
     }
 
     MSAILog(@"INFO: Persisting crash reports started.");
-
     [[MSAIChannel sharedChannel] processEnvelope:crashEnvelope withCompletionBlock:nil];
-
   }
 }
 
-#pragma mark - Helpers
-
-//Safe info about safe termination of the app to NSUserDefaults
-- (void)leavingAppSafely {
-  if(self.appNotTerminatingCleanlyDetectionEnabled)
-    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kMSAIAppWentIntoBackgroundSafely];
-}
-
-/**
-* Stores info about didEnterBackground in NSUserDefaults.
-*/
-
-- (void)appEnteredForeground {
-  // we disable kill detection while the debugger is running, since we'd get only false positives if the app is terminated by the user using the debugger
-  if(self.debuggerIsAttached) {
-    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kMSAIAppWentIntoBackgroundSafely];
-  } else if(self.appNotTerminatingCleanlyDetectionEnabled) {
-    [[NSUserDefaults standardUserDefaults] setBool:NO forKey:kMSAIAppWentIntoBackgroundSafely];
-  }
-}
+#pragma mark - Logging Helpers
 
 - (void)reportError:(NSError *)error {
   MSAILog(@"ERROR: %@", [error localizedDescription]);
