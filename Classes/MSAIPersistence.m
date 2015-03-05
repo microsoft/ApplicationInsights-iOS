@@ -137,14 +137,10 @@ NSUInteger const defaultFileCount = 50;
  * @return a bundle of data or nil
  */
 - (NSArray *)bundleAtPath:(NSString *)path {
-  __block NSArray *bundle = nil;
-
-  dispatch_sync(self.persistenceQueue, ^() {
-    
-    if(path && [path rangeOfString:kFileBaseString].location != NSNotFound) {
-      bundle = [NSKeyedUnarchiver unarchiveObjectWithFile:path];
-    }
-  });
+  NSArray *bundle = nil;
+  if(path && [path rangeOfString:kFileBaseString].location != NSNotFound) {
+    bundle = [NSKeyedUnarchiver unarchiveObjectWithFile:path];
+  }
   return bundle;
 }
 
