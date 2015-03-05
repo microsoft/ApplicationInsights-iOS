@@ -4,7 +4,6 @@
 
 #import "AppInsightsPrivate.h"
 #import "MSAIHelper.h"
-#import "MSAIContextPrivate.h"
 #import "MSAICrashManagerPrivate.h"
 #import "MSAICrashDataProvider.h"
 #import "MSAICrashDetailsPrivate.h"
@@ -25,7 +24,6 @@ NSString *const kMSAICrashManagerIsDisabled = @"MSAICrashManagerIsDisabled";
 NSString *const kMSAIAppWentIntoBackgroundSafely = @"MSAIAppWentIntoBackgroundSafely";
 NSString *const kMSAIAppDidReceiveLowMemoryNotification = @"MSAIAppDidReceiveLowMemoryNotification";
 
-//TODO: don't use a static
 static MSAICrashManagerCallbacks msaiCrashCallbacks = {
     .context = NULL,
     .handleSignal = NULL
@@ -37,7 +35,6 @@ static void plcr_post_crash_callback(siginfo_t *info, ucontext_t *uap, void *con
     msaiCrashCallbacks.handleSignal(context);
 }
 
-//TODO: don't use static
 static PLCrashReporterCallbacks plCrashCallbacks = {
     .version = 0,
     .context = NULL,
@@ -194,8 +191,6 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
 }
 
 - (void)configPLCrashReporter {
-/* Configure our reporter */
-
   PLCrashReporterSignalHandlerType signalHandlerType = PLCrashReporterSignalHandlerTypeBSD;
   if(self.machExceptionHandlerEnabled) {
     signalHandlerType = PLCrashReporterSignalHandlerTypeMach;
@@ -434,23 +429,19 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
     }
   }
 
-  //TODO was this REALLY only related to sending
+  if(!msai_isRunningInAppExtension() &&
+      [[UIApplication sharedApplication] applicationState] != UIApplicationStateActive) {
+    return;
+  }
 
-//  if(!msai_isRunningInAppExtension() &&
-//      [[UIApplication sharedApplication] applicationState] != UIApplicationStateActive) {
-//    return;
-//  }
-
-  // was again if another exception handler was added with a short delay
+  // check again if another exception handler was added with a short delay
   [self performSelector:@selector(checkForOtherExceptionHandlersAfterSetup) withObject:nil afterDelay:0.5f];
 
   [self createCrashReportWithCrashData:crashData];
 
-
   // Purge the report
   // mark the end of the routine
   [[MSAIPersistence sharedInstance] deleteCrashReporterLockFile];//TODO only do this when persisting was successful?
-
   [self.plCrashReporter purgePendingCrashReport]; //TODO only do this when persisting was successful?
 }
 
@@ -469,7 +460,6 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
 }
 
 #pragma mark - Crash Report Processing
-
 
 /**
 *  Creates a fake crash report because the app was killed while being in foreground
@@ -526,17 +516,14 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
 
     if(report == nil && crashEnvelope == nil) {
       MSAILog(@"WARNING: Could not parse crash report");
-      // we cannot do anything with this report, so delete it
-      // we don't continue with the next report here, even if there are to prevent calling sendCrashReports from itself again
-      // the next crash will be automatically send on the next app start/becoming active event
+      // we cannot do anything with this report, so don't continue
+      // the next crash will be automatically processed on the next app start/becoming active event
       return;
     }
 
     MSAILog(@"INFO: Persisting crash reports started.");
 
-    [[MSAIChannel sharedChannel] processEnvelope:crashEnvelope withCompletionBlock:^(BOOL success) {
-      //TODO: we don't have to trigger another sending as there will be no more than one crash report
-    }];
+    [[MSAIChannel sharedChannel] processEnvelope:crashEnvelope withCompletionBlock:nil];
 
   }
 }
