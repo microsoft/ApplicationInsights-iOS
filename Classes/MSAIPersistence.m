@@ -173,7 +173,7 @@ NSUInteger const defaultFileCount = 50;
 
 - (void)giveBackRequestedPath:(NSString *) path {
   __weak typeof(self) weakSelf = self;
-  dispatch_sync(self.persistenceQueue, ^() {
+  dispatch_async(self.persistenceQueue, ^() {
     typeof(self) strongSelf = weakSelf;
     
     [strongSelf.requestedBundlePaths removeObject:path];
