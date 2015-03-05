@@ -34,7 +34,7 @@
                                      forServiceName:@"Test"
                                      updateExisting:YES
                                               error:nil];
-  assertThatBool(success, equalToBool(YES));
+  assertThatBool(success, isTrue());
   NSString *pass = [MSAIKeychainUtils getPasswordForUsername:@"Peter"
                                               andServiceName:@"Test"
                                                        error:NULL];
@@ -49,7 +49,7 @@
                                      updateExisting:YES
                                       accessibility:kSecAttrAccessibleWhenUnlockedThisDeviceOnly
                                               error:nil];
-  assertThatBool(success, equalToBool(YES));
+  assertThatBool(success, isTrue());
   NSString *pass = [MSAIKeychainUtils getPasswordForUsername:@"Peter"
                                               andServiceName:@"Test"
                                                        error:NULL];
@@ -64,7 +64,7 @@
                     updateExisting:YES
                              error:nil];
   BOOL success = [MSAIKeychainUtils deleteItemForUsername:@"Peter" andServiceName:@"Test" error:nil];
-  assertThatBool(success, equalToBool(YES));
+  assertThatBool(success, isTrue());
   
   NSString *pass = [MSAIKeychainUtils getPasswordForUsername:@"Peter"
                                               andServiceName:@"Test"
