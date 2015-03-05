@@ -677,7 +677,7 @@ Get the filename of the first not approved crash report
   MSAILog(@"INFO: Persisting crash reports started.");
 
   __weak typeof(self) weakSelf = self;
-  [[MSAIChannel sharedChannel] processEnvelope:envelope withCompletionBlock:^(BOOL success) {
+  [[MSAIChannel sharedChannel] processDictionary:[envelope serializeToDictionary] withCompletionBlock:^(BOOL success) {
     typeof(self) strongSelf = weakSelf;
 
     self.sendingInProgress = NO;

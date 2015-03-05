@@ -66,24 +66,18 @@ static NSUInteger const defaultRequestLimit = 10;
       return;
     }
   }
-  NSString *path = [[MSAIPersistence sharedInstance] requestNextPath];
-  NSArray *bundle = [[MSAIPersistence sharedInstance] bundleAtPath:path];
-  [self sendBundle:bundle withPath:path];
+    NSString *path = [[MSAIPersistence sharedInstance] requestNextPath];
+    NSData *data = [[MSAIPersistence sharedInstance] dataAtPath:path];
+    [self sendData:data withPath:path];
 }
 
-- (void)sendBundle:(NSArray *)bundle withPath:(NSString *)path{
+- (void)sendData:(NSData *)data withPath:(NSString *)path{
   
-  if(bundle && bundle.count > 0) {
-    NSError *error = nil;
-    NSData *json = [NSJSONSerialization dataWithJSONObject:[self jsonArrayFromArray:bundle] options:NSJSONWritingPrettyPrinted error:&error];
-    if(!error) {
-      NSString *urlString = [[(MSAIEnvelope *)bundle[0] name] isEqualToString:@"Microsoft.ApplicationInsights.Crash"] ? MSAI_CRASH_DATA_URL : MSAI_EVENT_DATA_URL;
-      NSURLRequest *request = [self requestForData:json urlString:urlString];
-      [self sendRequest:request path:path];
-    }else {
-      MSAILog(@"Error creating JSON from bundle array, don't save back to disk");
-      self.runningRequestsCount -= 1;
-    }
+  if(data) {
+    NSString *urlString = MSAI_EVENT_DATA_URL;
+    NSURLRequest *request = [self requestForData:data urlString:urlString];
+    [self sendRequest:request path:path];
+    
   }else{
     self.runningRequestsCount -= 1;
   }
@@ -99,7 +93,7 @@ static NSUInteger const defaultRequestLimit = 10;
     
     self.runningRequestsCount -= 1;
     NSInteger statusCode = [operation.response statusCode];
-
+    
     if(statusCode >= 200 && statusCode < 400) {
       MSAILog(@"Sent data with status code: %ld", (long) statusCode);
       MSAILog(@"Response data:\n%@", [NSJSONSerialization JSONObjectWithData:responseData options:0 error:nil]);
@@ -125,14 +119,6 @@ static NSUInteger const defaultRequestLimit = 10;
 }
 
 #pragma mark - Helper
-
-- (NSArray *)jsonArrayFromArray:(NSArray *)envelopeArray{
-  NSMutableArray *array = [NSMutableArray new];
-  for(MSAIEnvelope *envelope in envelopeArray){
-    [array addObject:[envelope serializeToDictionary]];
-  }
-  return array;
-}
 
 - (NSURLRequest *)requestForData:(NSData *)data urlString:(NSString *)urlString {
   NSMutableURLRequest *request = [self.appClient requestWithMethod:@"POST"

@@ -58,7 +58,8 @@ NSUInteger const defaultFileCount = 50;
   
   if(bundle && bundle.count > 0) {
     NSString *fileURL = [self newFileURLForPriority:type];
-    NSData *data = [NSKeyedArchiver archivedDataWithRootObject:bundle];
+    
+    NSData *data = [self dataForBundle:bundle withPersistenceTye:type];
     
     if(data) {
       __weak typeof(self) weakSelf = self;
@@ -142,6 +143,15 @@ NSUInteger const defaultFileCount = 50;
     bundle = [NSKeyedUnarchiver unarchiveObjectWithFile:path];
   }
   return bundle;
+}
+
+- (NSData *)dataAtPath:(NSString *)path {
+  NSData *data = nil;
+  
+  if(path && [path rangeOfString:kFileBaseString].location != NSNotFound) {
+    data = [NSData dataWithContentsOfFile:path];
+  }
+  return data;
 }
 
 /**
@@ -289,10 +299,20 @@ NSUInteger const defaultFileCount = 50;
       break;
     }
   }
-  
   NSString *path = [documentFolder stringByAppendingPathComponent:subfolderPath];
   
   return path;
+}
+
+-(NSData *)dataForBundle:(NSArray *)bundle withPersistenceTye:(MSAIPersistenceType)persistenceType{
+  NSData *data = nil;
+  
+  if(persistenceType == MSAIPersistenceTypeFakeCrash){
+    data = [NSKeyedArchiver archivedDataWithRootObject:bundle];
+  }else{
+    data = [NSJSONSerialization dataWithJSONObject:bundle options:NSJSONWritingPrettyPrinted error:nil];
+  }
+  return data;
 }
 
 /**

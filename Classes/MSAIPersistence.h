@@ -124,6 +124,15 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
  */
 - (NSArray *)bundleAtPath:(NSString *)path;
 
+/**
+ *  Return the json data for a given path
+ *
+ *  @param path the path of the file
+ *
+ *  @return a data object which contains telemetry data in json representation
+ */
+- (NSData *)dataAtPath:(NSString *)path;
+
 ///-----------------------------------------------------------------------------
 /// @name Handling of a "fake" CrashReport
 ///-----------------------------------------------------------------------------
