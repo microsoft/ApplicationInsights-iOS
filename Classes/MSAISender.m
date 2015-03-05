@@ -48,16 +48,16 @@ static NSUInteger const defaultRequestLimit = 10;
                        queue:nil
                   usingBlock:^(NSNotification *notification) {
                     typeof(self) strongSelf = weakSelf;
-                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
-                      
-                      [strongSelf sendSavedData];
-                    });
+                    
+                    [strongSelf sendSavedData];
+                    
                   }];
 }
 
 #pragma mark - Sending
 
 - (void)sendSavedData{
+  
   
   @synchronized(self){
     if(_runningRequestsCount < _maxRequestCount){
@@ -66,9 +66,12 @@ static NSUInteger const defaultRequestLimit = 10;
       return;
     }
   }
+  
+  dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
     NSString *path = [[MSAIPersistence sharedInstance] requestNextPath];
     NSData *data = [[MSAIPersistence sharedInstance] dataAtPath:path];
     [self sendData:data withPath:path];
+  });
 }
 
 - (void)sendData:(NSData *)data withPath:(NSString *)path{
