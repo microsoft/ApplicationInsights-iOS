@@ -56,6 +56,7 @@ NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
     _internal = internalContext;
     _operation = operationContext;
     _session = sessionContext;
+    _tags = [self tags];
     
     [self createNewSession];
     [self configureNetworkStatusTracking];
@@ -102,19 +103,29 @@ NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
   _session.isFirst = (firstSession ? @"true" : @"false");
 }
 
+#pragma mark - Custom getter
 #pragma mark - Helper
 
 - (MSAIOrderedDictionary *)contextDictionary {
-  MSAIOrderedDictionary *contextDictionary = [self.application serializeToDictionary];
+  MSAIOrderedDictionary *contextDictionary = [MSAIOrderedDictionary new];
+  [contextDictionary addEntriesFromDictionary:self.tags];
   [contextDictionary addEntriesFromDictionary:[self.session serializeToDictionary]];
   [contextDictionary addEntriesFromDictionary:[self.device serializeToDictionary]];
-  [contextDictionary addEntriesFromDictionary:[self.location serializeToDictionary]];
-  [contextDictionary addEntriesFromDictionary:[self.user serializeToDictionary]];
-  [contextDictionary addEntriesFromDictionary:[self.internal serializeToDictionary]];
-  [contextDictionary addEntriesFromDictionary:[self.operation serializeToDictionary]];
   [self updateSessionContext];
   
   return contextDictionary;
+}
+
+- (MSAIOrderedDictionary *)tags {
+  if(!_tags){
+    _tags = [self.application serializeToDictionary];
+    [_tags addEntriesFromDictionary:[self.application serializeToDictionary]];
+    [_tags addEntriesFromDictionary:[self.location serializeToDictionary]];
+    [_tags addEntriesFromDictionary:[self.user serializeToDictionary]];
+    [_tags addEntriesFromDictionary:[self.internal serializeToDictionary]];
+    [_tags addEntriesFromDictionary:[self.operation serializeToDictionary]];
+  }
+  return _tags;
 }
 
 @end
