@@ -70,7 +70,7 @@
  *
  * Default: 5
  */
-@property (nonatomic, assign) NSInteger senderBatchSize;
+@property (nonatomic, assign) NSUInteger senderBatchSize;
 
 /**
  *  A timer source which is used to flush the queue after a cretain time.
