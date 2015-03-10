@@ -26,13 +26,13 @@ The SDK runs on devices with iOS 6.0 or higher.
 
 2. Unzip the file. A new folder `AppInsights` is created.
 
-3. Move the folder into your project directory. We usually put 3rd-party code into a subdirectory named `Vendor`, so we move the directory into it.
+3. Move the folder into your project directory. Usually, 3rd-party code is put into a subdirectory named `Vendor`. If it doesn't exist, create it and put the folder there.
 
 <a id="xcode"></a> 
 ## Set up Xcode
 
 1. Drag & drop `AppInsights.framework` from your project directory to your Xcode project.
-2. Similar to above, our projects have a group `Vendor`, so we drop it there.
+2. Similar to above, you should create a group `Vendor` in your project and drop the `AppInsights.framework` there.
 3. Select `Create groups for any added folders` and set the checkmark for your target. Then click `Finish`.
 4. Select your project in the `Project Navigator` (⌘+1).
 5. Select your app target.
