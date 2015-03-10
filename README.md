@@ -74,8 +74,8 @@ The SDK runs on devices with iOS 6.0 or higher.
 	[[MSAIAppInsights sharedInstance] start];
 	```
 
-5. Send some data to the server:
-
+5. Send data to the server
+By default, the Application Insights SDK will track anonymous user IDs, user sessions and pageviews. If you want, you can send additional data like this:
 	```objectivec	
 	// Send an event with custom properties and measuremnts data
 	[MSAIMetricsManager trackEventWithName:@"Hello World event!"
@@ -97,6 +97,8 @@ The SDK runs on devices with iOS 6.0 or higher.
 	[MSAIMetricsManager trackMetricWithName:@"Test metric" 
 									  value:42.2];
 	```
+
+For a full list of tracking methods see `MSAIMetricsManager.h`.
 
 *Note:* The SDK is optimized to defer everything possible to a later time while making sure e.g. crashes on startup can also be caught and each module executes other code with a delay some seconds. This ensures that applicationDidFinishLaunching will process as fast as possible and the SDK will not block the startup sequence resulting in a possible kill by the watchdog process.
 
@@ -129,7 +131,8 @@ If you want to do some additional configuration you have to call the sharedInsta
     MSAIAppInsights.sharedInstance().start()
 	```	
 
-5. Send some data to the server:
+5. Send data to the server
+By default, the Application Insights SDK will track anonymous user IDs, user sessions and pageviews. If you want, you can send additional data like this:
 	```swift
 	// Send an event with custom properties and measuremnts data
 	MSAIMetricsManager.trackEventWithName(name:"Hello World event!", 
@@ -152,6 +155,9 @@ If you want to do some additional configuration you have to call the sharedInsta
 										  value:42.2)
 	```
 
+For a full list of tracking methods see `MSAIMetricsManager.h`.
+
+*Note:* The SDK is optimized to defer everything possible to a later time while making sure e.g. crashes on startup can also be caught and each module executes other code with a delay some seconds. This ensures that applicationDidFinishLaunching will process as fast as possible and the SDK will not block the startup sequence resulting in a possible kill by the watchdog process.
 
 <a id="extensions"></a>
 ## iOS 8 Extensions
