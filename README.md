@@ -106,9 +106,9 @@ For a full list of tracking methods see `MSAIMetricsManager.h`.
 
 1. Open your `AppDelegate.swift` file.
 
-2. Add the following line at the top of the file below your own #import statements:	
+2. Add the following line at the top of the file:	
 	```swift	
-	#import AppInsights
+	import AppInsights
 	```
 
 3. Search for the method 	
