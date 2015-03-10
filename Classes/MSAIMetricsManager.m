@@ -178,11 +178,11 @@ static NSInteger const defaultSessionExpirationTime = 20;
 }
 
 + (void)trackPageView:(NSString *)pageName {
-  [self trackPageView:pageName duration:nil];
+  [self trackPageView:pageName duration:0];
 }
 
 - (void)trackPageView:(NSString *)pageName {
-  [self trackPageView:pageName duration:nil];
+  [self trackPageView:pageName duration:0];
 }
 
 + (void)trackPageView:(NSString *)pageName duration:(long)duration {
