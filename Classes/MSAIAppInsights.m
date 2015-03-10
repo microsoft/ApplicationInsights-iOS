@@ -122,9 +122,9 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 #if MSAI_FEATURE_METRICS
   if (![self isMetricsManagerDisabled]) {
     
-    if([self isAutoPageViewsDisabled]){
+    if([self isAutoPageViewTrackingDisabled]){
       MSAILog(@"INFO: Auto page views disabled");
-      [MSAIMetricsManager sharedManager].autoPageViewsDisabled = YES;
+      [MSAIMetricsManager sharedManager].autoPageViewTrackingDisabled = YES;
     }
     [MSAICategoryContainer activateCategory];
     
@@ -153,13 +153,13 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
   [[self sharedInstance] setMetricsManagerDisabled:metricsManagerDisabled];
 }
 
-- (void)setAutoPageViewsDisabled:(BOOL)autoPageViewsDisabled {
-  [MSAIMetricsManager sharedManager].autoPageViewsDisabled = autoPageViewsDisabled;
-  _autoPageViewsDisabled = autoPageViewsDisabled;
+- (void)setAutoPageViewTrackingDisabled:(BOOL)autoPageViewTrackingDisabled {
+  [MSAIMetricsManager sharedManager].autoPageViewTrackingDisabled = autoPageViewTrackingDisabled;
+  _autoPageViewTrackingDisabled = autoPageViewTrackingDisabled;
 }
 
-+ (void)setAutoPageViewsDisabled:(BOOL)autoPageViewsDisabled {
-  [[self sharedInstance] setAutoPageViewsDisabled:autoPageViewsDisabled];
++ (void)setAutoPageViewTrackingDisabled:(BOOL)autoPageViewTrackingDisabled {
+  [[self sharedInstance] setAutoPageViewTrackingDisabled:autoPageViewTrackingDisabled];
 }
 #endif /* MSAI_FEATURE_METRICS */
 

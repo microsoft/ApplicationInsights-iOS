@@ -36,7 +36,7 @@ extern NSString *const kMSAIApplicationWasLaunched;
  *  A flag which determines rather collecting page views automatically is enabled or not.
  *  NO by default.
  */
-@property BOOL autoPageViewsDisabled;
+@property BOOL autoPageViewTrackingDisabled;
 
 /**
  *  A concurrent queue which creates telemetry objects and forwards them to the channel.

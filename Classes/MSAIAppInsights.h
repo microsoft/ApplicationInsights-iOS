@@ -102,14 +102,14 @@
  * @default NO
  * @warning This property needs to be set before calling `start`
  */
-@property (nonatomic, getter = isAutoPageViewsDisabled) BOOL autoPageViewsDisabled;
+@property (nonatomic, getter = isAutoPageViewTrackingDisabled) BOOL autoPageViewTrackingDisabled;
 
 /**
  *  Enable (NO) or disable (YES) auto collection of page views. This should be called before `start`.
  *
- *  @param autoPageViewsDisabled Flag which determines whether the page view collection should be disabled
+ *  @param autoPageViewTrackingDisabled Flag which determines whether the page view collection should be disabled
  */
-+ (void)setAutoPageViewsDisabled:(BOOL)autoPageViewsDisabled;
++ (void)setAutoPageViewTrackingDisabled:(BOOL)autoPageViewTrackingDisabled;
 
 ///-----------------------------------------------------------------------------
 /// @name Environment
