@@ -143,15 +143,15 @@ By default, the Application Insights SDK will track anonymous user IDs, user ses
  											     "Test measurement 3":@(23.42)})
 
 	// Send a message
-	MSAIMetricsManager.trackTraceWithMessage(message:"Test message")
+	MSAIMetricsManager.trackTraceWithMessage("Test message")
 
 	// Manually send pageviews
-	MSAIMetricsManager.trackPageView(pageView:"MyViewController",
+	MSAIMetricsManager.trackPageView("MyViewController",
 									 duration:300,
 								   properties:@{"Test measurement 1":@(4.8)})
 
 	// Send a message
-	MSAIMetricsManager.trackMetricWithName(name:"Test metric", 
+	MSAIMetricsManager.trackMetricWithName("Test metric", 
 										  value:42.2)
 	```
 
