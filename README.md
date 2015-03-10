@@ -50,30 +50,31 @@ The SDK runs on devices with iOS 6.0 or higher.
 
 ### Objective-C
 
-2. Open your `AppDelegate.m` file.
-3. Add the following line at the top of the file below your own #import statements:
+1. Open your `AppDelegate.m` file.
+2. Add the following line at the top of the file below your own #import statements:
 
 	```objectivec
 	#import <AppInsights/AppInsights.h>
 	```
-4. Search for the method `application:didFinishLaunchingWithOptions:`
-5. Add the following lines to setup and start the AppInsights SDK:
-
-	```objectivec
-	[[MSAIAppInsights sharedInstance] setup];
-	// Do some additional configuration if needed here
-	...
-	[[MSAIAppInsights sharedInstance] start];
-	```
-
-	You can also use the following shortcut:
+3. Search for the method `application:didFinishLaunchingWithOptions:`
+4. Add the following lines to setup and start the AppInsights SDK:
 
 	```objectivec
 	[MSAIAppInsights setup];
 	[MSAIAppInsights start];
 	```
 
-6. Send some data to the server:
+	If you want to do some additional configuration you have to call the sharedInstance directly between the `setup()` and `start()` calls:
+
+	```objectivec
+	[[MSAIAppInsights sharedInstance] setup];
+	// Do some additional configuration if needed here
+	// For example:
+	[[MSAIAppInsights sharedInstance] setDebugLogEnabled:YES];
+	[[MSAIAppInsights sharedInstance] start];
+	```
+
+5. Send some data to the server:
 
 	```objectivec	
 	// Send an event with custom properties and measuremnts data
@@ -101,30 +102,33 @@ The SDK runs on devices with iOS 6.0 or higher.
 
 ### Swift
 
-2. Open your `AppDelegate.swift` file.
-3. Add the following line at the top of the file below your own #import statements:
-	
+1. Open your `AppDelegate.swift` file.
+
+2. Add the following line at the top of the file below your own #import statements:	
 	```swift	
 	#import AppInsights
 	```
-4. Search for the method 
-	
+
+3. Search for the method 	
 	```swift	
 	application(application: UIApplication, didFinishLaunchingWithOptions launchOptions:[NSObject: AnyObject]?) -> Bool`
 	```
-5. Add the following lines to setup and start the AppInsights SDK:
-	
+
+4. Add the following lines to setup and start the AppInsights SDK:
 	```swift
-	MSAIAppInsights.sharedInstance().setup();
-   MSAIAppInsights.sharedInstance().start();
+	MSAIAppInsights.setup()
+   MSAIAppInsights.start()
 	```
-	
-	You can also use the following shortcut:
+
+If you want to do some additional configuration you have to call the sharedInstance directly between the `setup()` and `start()` calls:
 
 	```swift
-	MSAIAppInsights.setup();
-   MSAIAppInsights.start();
-	```
+	MSAIAppInsights.sharedInstance().setup()	
+	//For example:
+	MSAIAppInsights.sharedInstance().debugLogEnabled = true
+    MSAIAppInsights.sharedInstance().start()
+	```	
+
 5. Send some data to the server:
 	```swift
 	// Send an event with custom properties and measuremnts data
