@@ -52,13 +52,13 @@ The SDK runs on devices with iOS 6.0 or higher.
 
 1. Open your `AppDelegate.m` file.
 2. Add the following line at the top of the file below your own #import statements:
-
 	```objectivec
 	#import <AppInsights/AppInsights.h>
 	```
-3. Search for the method `application:didFinishLaunchingWithOptions:`
-4. Add the following lines to setup and start the AppInsights SDK:
 
+3. Search for the method `application:didFinishLaunchingWithOptions:`
+
+4. Add the following lines to setup and start the AppInsights SDK:
 	```objectivec
 	[MSAIAppInsights setup];
 	[MSAIAppInsights start];
@@ -74,8 +74,9 @@ The SDK runs on devices with iOS 6.0 or higher.
 	[[MSAIAppInsights sharedInstance] start];
 	```
 
-5. Send data to the server
+5. Send data to the server  
 By default, the Application Insights SDK will track anonymous user IDs, user sessions and pageviews. If you want, you can send additional data like this:
+
 	```objectivec	
 	// Send an event with custom properties and measuremnts data
 	[MSAIMetricsManager trackEventWithName:@"Hello World event!"
@@ -122,14 +123,14 @@ For a full list of tracking methods see `MSAIMetricsManager.h`.
    MSAIAppInsights.start()
 	```
 
-If you want to do some additional configuration you have to call the sharedInstance directly between the `setup()` and `start()` calls:
+	If you want to do some additional configuration you have to call the sharedInstance directly between the `setup()` and `start()` calls:
 
 	```swift
 	MSAIAppInsights.sharedInstance().setup()	
-	//For example:
+	// For example:
 	MSAIAppInsights.sharedInstance().debugLogEnabled = true
     MSAIAppInsights.sharedInstance().start()
-	```	
+	```
 
 5. Send data to the server
 By default, the Application Insights SDK will track anonymous user IDs, user sessions and pageviews. If you want, you can send additional data like this:
