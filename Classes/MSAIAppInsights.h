@@ -99,6 +99,24 @@
  */
 + (void)setMetricsManagerDisabled:(BOOL)metricsManagerDisabled;
 
+/**
+ * Flag the determines whether collecting page views automatically should be disabled.
+ * If YES, auto page view collection is disabled. Y
+ *
+ * @return YES, if manager is disabled
+ *
+ * @default NO
+ * @warning This property needs to be set before calling `start`
+ */
+@property (nonatomic, getter = isAutoPageViewTrackingDisabled) BOOL autoPageViewTrackingDisabled;
+
+/**
+ *  Enable (NO) or disable (YES) auto collection of page views. This should be called before `start`.
+ *
+ *  @param autoPageViewTrackingDisabled Flag which determines whether the page view collection should be disabled
+ */
++ (void)setAutoPageViewTrackingDisabled:(BOOL)autoPageViewTrackingDisabled;
+
 ///-----------------------------------------------------------------------------
 /// @name Environment
 ///-----------------------------------------------------------------------------
