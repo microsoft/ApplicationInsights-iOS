@@ -178,11 +178,11 @@ static NSInteger const defaultSessionExpirationTime = 20;
 }
 
 + (void)trackPageView:(NSString *)pageName {
-  [self trackPageView:pageName duration:nil];
+  [self trackPageView:pageName duration:0];
 }
 
 - (void)trackPageView:(NSString *)pageName {
-  [self trackPageView:pageName duration:nil];
+  [self trackPageView:pageName duration:0];
 }
 
 + (void)trackPageView:(NSString *)pageName duration:(long)duration {
@@ -214,8 +214,11 @@ static NSInteger const defaultSessionExpirationTime = 20;
 #pragma mark Track DataItem
 
 - (void)trackDataItem:(MSAITelemetryData *)dataItem{
-  MSAIEnvelope *envelope = [[MSAIEnvelopeManager sharedManager] envelopeForTelemetryData:dataItem];
-  [[MSAIChannel sharedChannel] enqueueEnvelope:envelope];
+  
+  if(![[MSAIChannel sharedChannel] isQueueBusy]){
+    MSAIEnvelope *envelope = [[MSAIEnvelopeManager sharedManager] envelopeForTelemetryData:dataItem];
+    [[MSAIChannel sharedChannel] enqueueEnvelope:envelope];
+  }
 }
 
 #pragma mark - Session update

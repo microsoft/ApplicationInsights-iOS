@@ -15,6 +15,11 @@
 /// @name Initialisation
 ///-----------------------------------------------------------------------------
 
+/**
+*  Returns a shared MSAIChannel object.
+*
+*  @return A singleton MSAIChannel instance ready use
+*/
 + (instancetype)sharedChannel;
 
 ///-----------------------------------------------------------------------------
@@ -65,7 +70,7 @@
  *
  * Default: 5
  */
-@property (nonatomic, assign) NSInteger senderBatchSize;
+@property (nonatomic, assign) NSUInteger senderBatchSize;
 
 /**
  *  A timer source which is used to flush the queue after a cretain time.
@@ -81,5 +86,7 @@
  *  Stops the timer if currently running.
  */
 - (void)invalidateTimer;
+
+- (BOOL)isQueueBusy;
 
 @end

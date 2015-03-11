@@ -37,7 +37,7 @@
   
   _startManagerInitialized = NO;
   
-  _context = [[MSAIContext alloc]initWithInstrumentationKey:nil isAppStoreEnvironment:NO];
+  _context = [[MSAIContext alloc]initWithInstrumentationKey:nil];
   _sut = [MSAICrashManager sharedManager];
 }
 
@@ -103,7 +103,7 @@
   //handle app kill (FakeCrashReport
   [_sut createCrashReportForAppKill]; //just creates a fake crash report and hands it over to MSAIPersistence
   
-  NSArray *bundle = [MSAIPersistence nextBundle];
+  NSArray *bundle = [[MSAIPersistence sharedInstance] fakeReportBundle];
   XCTAssertNil(bundle);
   
   if(bundle && ([bundle count] > 0)) {
@@ -112,10 +112,7 @@
       assertThatBool([((MSAIEnvelope *) envelope).data isKindOfClass:[MSAICrashData class]], equalToBool(YES));
     }
   }
-
 }
-
-
 
 #pragma mark - StartManager
 

@@ -2,10 +2,26 @@
 
 @interface MSAIAppInsights : NSObject
 
-#pragma mark - Public Methods
+///-----------------------------------------------------------------------------
+/// @name Setting up and start an MSAIAppInsights
+///-----------------------------------------------------------------------------
+
+/**
+ * Configures the manager with the instrumentation key from the info.plist and
+ * initializes all modules. This method should be called before calling `start`.
+ */
++ (void)setup;
+
+/**
+ * Starts the manager and runs all modules. Call this after initializing the manager
+ * and setting up all modules.
+ *
+ * @see setup;
+ */
++ (void)start;
 
 ///-----------------------------------------------------------------------------
-/// @name Initialization
+/// @name Getting the shared MSAIAppInsights instance
 ///-----------------------------------------------------------------------------
 
 /**
@@ -15,25 +31,15 @@
  */
 + (MSAIAppInsights *)sharedInstance;
 
-/**
- * Configures the manager with the instrumentation key from the info.plist and
- * initializes all modules. This method should be called before calling `start`.
- */
-+ (void)setup;
+///-----------------------------------------------------------------------------
+/// @name Setting up and start an MSAIAppInsights instance
+///-----------------------------------------------------------------------------
 
 /**
  * Configures the manager with the instrumentation key from the info.plist and
  * initializes all modules. This method should be called before calling `start`.
  */
 - (void)setup;
-
-/**
- * Starts the manager and runs all modules. Call this after initializing the manager 
- * and setting up all modules.
- *
- * @see setup;
- */
-+ (void)start;
 
 /**
  * Starts the manager and runs all modules. Call this after initializing the manager
@@ -44,7 +50,7 @@
 - (void)start;
 
 ///-----------------------------------------------------------------------------
-/// @name Modules
+/// @name Configuring MSAIAppInsights
 ///-----------------------------------------------------------------------------
 
 /**
@@ -123,15 +129,6 @@
  */
 @property (nonatomic, readonly, getter=isAppStoreEnvironment) BOOL appStoreEnvironment;
 
-/**
- * Returns the app installation specific anonymous UUID.
- * The value returned by this method is unique and persisted per app installation
- * in the keychain.  It is also being used in crash reports as `CrashReporter Key`
- * and internally when sending crash reports and feedback messages.
- * This is not identical to the `[UIDevice identifierForVendor]`!
- */
-@property (nonatomic, readonly) NSString *installString;
-
 ///-----------------------------------------------------------------------------
 /// @name Debug Logging
 ///-----------------------------------------------------------------------------
@@ -146,7 +143,7 @@
 @property (nonatomic, assign, getter=isDebugLogEnabled) BOOL debugLogEnabled;
 
 ///-----------------------------------------------------------------------------
-/// @name Integration test
+/// @name Testing integration
 ///-----------------------------------------------------------------------------
 
 /**
@@ -170,7 +167,7 @@
 - (void)testIdentifier;
 
 ///-----------------------------------------------------------------------------
-/// @name SDK meta data
+/// @name Getting SDK meta data
 ///-----------------------------------------------------------------------------
 
 /**

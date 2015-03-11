@@ -5,6 +5,8 @@
 #import "MSAIUser.h"
 #import "MSAISession.h"
 #import "MSAILocation.h"
+#import "MSAIContext.h"
+#import "MSAIContextPrivate.h"
 
 @interface MSAITelemetryContext()
 
@@ -61,27 +63,13 @@
 /**
  *  Initializes a telemetry context.
  *
- *  @param instrumentationKey the instrumentation key of the app
+ *  @param appContext         the context of the app, which contains several meta infos
  *  @param endpointPath       the path to the telemetry endpoint
- *  @param applicationContext the application context object
- *  @param deviceContext      the device context object
- *  @param locationContext    the location context object
- *  @param sessionContext     the session context object
- *  @param userContext        the user context object
- *  @param internalContext    the internal context object
- *  @param operationContext   the operation context object
  *
  *  @return the telemetry context
  */
-- (instancetype)initWithInstrumentationKey:(NSString *)instrumentationKey
-                              endpointPath:(NSString *)endpointPath
-                        applicationContext:(MSAIApplication *)applicationContext
-                             deviceContext:(MSAIDevice *)deviceContext
-                           locationContext:(MSAILocation *)locationContext
-                            sessionContext:(MSAISession *)sessionContext
-                               userContext:(MSAIUser *)userContext
-                           internalContext:(MSAIInternal *)internalContext
-                          operationContext:(MSAIOperation *)operationContext;
+- (instancetype)initWithAppContext:(MSAIContext *)appContext
+                      endpointPath:(NSString *)endpointPath;
 
 ///-----------------------------------------------------------------------------
 /// @name Session

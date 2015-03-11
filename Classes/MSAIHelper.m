@@ -76,7 +76,7 @@ NSString *msai_utcDateString(NSDate *date){
     dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
     dateFormatter.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
   });
-
+  
   NSString *dateString = [dateFormatter stringFromDate:date];
   
   return dateString;
@@ -107,7 +107,7 @@ NSString *msai_settingsDir(void) {
     
     // temporary directory for crashes grabbed from PLCrashReporter
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
-    settingsDir = [paths[0] stringByAppendingPathComponent:MSAI_IDENTIFIER];
+    settingsDir = [paths[0] stringByAppendingPathComponent:kMSAIIdentifier];
     
     if (![fileManager fileExistsAtPath:settingsDir]) {
       NSDictionary *attributes = @{NSFilePosixPermissions : @0755};
@@ -313,4 +313,16 @@ BOOL msai_isRunningInAppExtension(void) {
   });
   
   return isRunningInAppExtension;
+}
+
+BOOL msai_isAppStoreEnvironment(void){
+  
+  #if !TARGET_IPHONE_SIMULATOR
+  // check if we are really in an app store environment
+  if (![[NSBundle mainBundle] pathForResource:@"embedded" ofType:@"mobileprovision"]) {
+    return YES;
+  }
+  #endif
+  
+  return NO;
 }

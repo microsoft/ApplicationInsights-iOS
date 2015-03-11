@@ -13,17 +13,40 @@ NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
 
 #pragma mark - Initialisation
 
-- (instancetype)initWithInstrumentationKey:(NSString *)instrumentationKey
-                              endpointPath:(NSString *)endpointPath
-                        applicationContext:(MSAIApplication *)applicationContext
-                             deviceContext:(MSAIDevice *)deviceContext
-                           locationContext:(MSAILocation *)locationContext
-                            sessionContext:(MSAISession *)sessionContext
-                               userContext:(MSAIUser *)userContext
-                           internalContext:(MSAIInternal *)internalContext
-                          operationContext:(MSAIOperation *)operationContext{
+- (instancetype)initWithAppContext:(MSAIContext *)appContext
+                      endpointPath:(NSString *)endpointPath{
+  
   if ((self = [self init])) {
-    _instrumentationKey = instrumentationKey;
+
+    MSAIDevice *deviceContext = [MSAIDevice new];
+    deviceContext.model = appContext.deviceModel;
+    deviceContext.type = appContext.deviceType;
+    deviceContext.osVersion = appContext.osVersion;
+    deviceContext.os = appContext.osName;
+    
+    //TODO: Get device id from appContext
+    deviceContext.deviceId = msai_appAnonID();
+    deviceContext.locale = msai_deviceLocale();
+    deviceContext.language = msai_deviceLanguage();
+    deviceContext.screenResolution = msai_screenSize();
+    deviceContext.oemName = @"Apple";
+    
+    MSAIInternal *internalContext = [MSAIInternal new];
+    internalContext.sdkVersion = msai_sdkVersion();
+    
+    MSAIApplication *applicationContext = [MSAIApplication new];
+    applicationContext.version = appContext.appVersion;
+    
+    MSAISession *sessionContext = [MSAISession new];
+    
+    MSAIOperation *operationContext = [MSAIOperation new];
+    
+    MSAIUser *userContext = [MSAIUser new];
+    userContext.userId = msai_appAnonID();
+    
+    MSAILocation *locationContext = [MSAILocation new];
+    
+    _instrumentationKey = appContext.instrumentationKey;
     _endpointPath = endpointPath;
     _userDefaults = NSUserDefaults.standardUserDefaults;
     _application = applicationContext;
@@ -33,6 +56,7 @@ NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
     _internal = internalContext;
     _operation = operationContext;
     _session = sessionContext;
+    
     [self createNewSession];
     [self configureNetworkStatusTracking];
   }

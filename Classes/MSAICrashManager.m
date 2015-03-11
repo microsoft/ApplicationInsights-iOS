@@ -75,7 +75,6 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
   //TODO does it make sense to have everything not initialised if the context is nil?
   if(context) {
     if(![MSAICrashManager sharedManager].isSetupCorrectly) {
-      [MSAICrashManager sharedManager].appContext = context;
       [[self sharedManager] startManager];
     }
   }
@@ -120,9 +119,9 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
     // signal handler type is set
     // We only check for this if we are not in the App Store environment
 
-    if(![self.appContext isAppStoreEnvironment]) {
+    if(!msai_isAppStoreEnvironment()) {
       if(self.debuggerIsAttached) {
-        NSLog(@"[AppInsightsSDK] WARNING: Detecting crashes is NOT enabled due to running the app with a debugger attached.");
+        NSLog(@"[AppInsights] WARNING: Detecting crashes is NOT enabled due to running the app with a debugger attached.");
       }
     }
 
@@ -136,7 +135,7 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
       // and can show a debug warning log message, that the dev has to make sure the "newer" error handler
       // doesn't exit the process itself, because then all subsequent handlers would never be invoked.
       //
-      // Note: ANY error handler setup BEFORE AppInsightsSDK initialization will not be processed!
+      // Note: ANY error handler setup BEFORE AppInsights initialization will not be processed!
 
       // get the current top level error handler
       NSUncaughtExceptionHandler *initialHandler = NSGetUncaughtExceptionHandler();
@@ -152,7 +151,7 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
 
       // Enable the Crash Reporter
       if(![self.plCrashReporter enableCrashReporterAndReturnError:&error])
-        NSLog(@"[AppInsightsSDK] WARNING: Could not enable crash reporter: %@", [error localizedDescription]);
+        NSLog(@"[AppInsights] WARNING: Could not enable crash reporter: %@", [error localizedDescription]);
 
       // get the new current top level error handler, which should now be the one from PLCrashReporter
       NSUncaughtExceptionHandler *currentHandler = NSGetUncaughtExceptionHandler();
@@ -164,7 +163,7 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
         MSAILog(@"INFO: Exception handler successfully initialized.");
       } else {
         // this should never happen, theoretically only if NSSetUncaugtExceptionHandler() has some internal issues
-        NSLog(@"[AppInsightsSDK] ERROR: Exception handler could not be set. Make sure there is no other exception handler set up!");
+        NSLog(@"[AppInsights] ERROR: Exception handler could not be set. Make sure there is no other exception handler set up!");
       }
     }
   });
@@ -218,8 +217,8 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
   }
 
   self.crashesDir = msai_settingsDir();
-  self.settingsFile = [self.crashesDir stringByAppendingPathComponent:MSAI_CRASH_SETTINGS];
-  self.analyzerInProgressFile = [self.crashesDir stringByAppendingPathComponent:MSAI_CRASH_ANALYZER];
+  self.settingsFile = [self.crashesDir stringByAppendingPathComponent:kMSAICrashSettings];
+  self.analyzerInProgressFile = [self.crashesDir stringByAppendingPathComponent:kMSAICrashAnalyzer];
 
   if([self.fileManager fileExistsAtPath:self.analyzerInProgressFile]) {
     NSError *error = nil;
@@ -280,7 +279,7 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
     name[3] = getpid();
 
     if(sysctl(name, 4, &info, &info_size, NULL, 0) == -1) {
-      NSLog(@"[AppInsightsSDK] ERROR: Checking for a running debugger via sysctl() failed: %s", strerror(errno));
+      NSLog(@"[AppInsights] ERROR: Checking for a running debugger via sysctl() failed: %s", strerror(errno));
       debuggerIsAttached = false;
     }
 
@@ -292,10 +291,10 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
 }
 
 - (void)generateTestCrash {
-  if(![self.appContext isAppStoreEnvironment]) {
+  if(!msai_isAppStoreEnvironment()) {
 
     if(self.debuggerIsAttached) {
-      NSLog(@"[AppInsightsSDK] WARNING: The debugger is attached. The following crash cannot be detected by the SDK!");
+      NSLog(@"[AppInsights] WARNING: The debugger is attached. The following crash cannot be detected by the SDK!");
     }
 
     __builtin_trap();
@@ -561,7 +560,7 @@ Get the filename of the first not approved crash report
     // If the top level error handler differs from our own, then at least another one was added.
     // This could cause exception crashes not to be reported to AppInsights. See log message for details.
     if(self.exceptionHandler != currentHandler) {
-      MSAILog(@"[AppInsightsSDK] WARNING: Another exception handler was added. If this invokes any kind exit() after processing the exception, which causes any subsequent error handler not to be invoked, these crashes will NOT be reported to AppInsights!");
+      MSAILog(@"[AppInsights] WARNING: Another exception handler was added. If this invokes any kind exit() after processing the exception, which causes any subsequent error handler not to be invoked, these crashes will NOT be reported to AppInsights!");
     }
   }
 
@@ -601,7 +600,7 @@ Get the filename of the first not approved crash report
   fakeCrashEnvelope.data = data;
   fakeCrashEnvelope.name = crashData.envelopeTypeName;
 
-  [MSAIPersistence persistFakeReportBundle:@[fakeCrashEnvelope]];
+  [[MSAIPersistence sharedInstance] persistFakeReportBundle:@[fakeCrashEnvelope]];
 }
 
 /***
@@ -622,7 +621,7 @@ Get the filename of the first not approved crash report
     MSAIEnvelope *crashEnvelope = nil;
 
     if([[cacheFilename pathExtension] isEqualToString:@"fake"]) {
-      NSArray *fakeReportBundle = [MSAIPersistence fakeReportBundle];
+      NSArray *fakeReportBundle = [[MSAIPersistence sharedInstance] fakeReportBundle];
       if(fakeReportBundle && fakeReportBundle.count > 0) {
         crashEnvelope = fakeReportBundle[0];
         if([crashEnvelope.appId compare:[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"]] == NSOrderedSame) {
