@@ -45,16 +45,15 @@ NSUInteger const defaultFileCount = 50;
 
 //TODO remove the completion block and implement notification-handling in MSAICrashManager
 - (void)persistBundle:(NSArray *)bundle ofType:(MSAIPersistenceType)type withCompletionBlock:(void (^)(BOOL success))completionBlock {
-  [self persistBundle:bundle ofType:type withCompletionBlock:completionBlock enableNotifications:YES];
+  [self persistBundle:bundle ofType:type enableNotifications:YES withCompletionBlock:completionBlock];
 }
 
 /**
  * Creates a serial background queue that saves the Bundle using NSKeyedArchiver and NSData's writeToFile:atomically
  *
  * In case if type MSAIPersistenceTypeFakeCrash, we don't send out a kMSAIPersistenceSuccessNotification.
- *
  */
-- (void)persistBundle:(NSArray *)bundle ofType:(MSAIPersistenceType)type withCompletionBlock:(void (^)(BOOL success))completionBlock enableNotifications:(BOOL)sendNotifications {
+- (void)persistBundle:(NSArray *)bundle ofType:(MSAIPersistenceType)type enableNotifications:(BOOL)sendNotifications withCompletionBlock:(void (^)(BOOL success))completionBlock {
   
   if(bundle && bundle.count > 0) {
     NSString *fileURL = [self newFileURLForPriority:type];
