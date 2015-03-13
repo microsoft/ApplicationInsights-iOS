@@ -174,6 +174,7 @@ NSUInteger const defaultFileCount = 50;
       MSAILog(@"Empty path, so nothing can be deleted");
     }
   });
+  
 }
 
 - (void)giveBackRequestedPath:(NSString *) path {

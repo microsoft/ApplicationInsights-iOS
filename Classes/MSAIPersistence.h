@@ -143,6 +143,16 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
  */
 - (NSData *)dataAtPath:(NSString *)path;
 
+/**
+ *  Return data for a given array based on its persistence type.
+ *
+ *  @param bundle          items, which should be persisted
+ *  @param persistenceType the type of the data (crash/telemetry data)
+ *
+ *  @return data for a given array based on its persistence type
+ */
+-(NSData *)dataForBundle:(NSArray *)bundle withPersistenceTye:(MSAIPersistenceType)persistenceType;
+
 ///-----------------------------------------------------------------------------
 /// @name Handling of a "fake" CrashReport
 ///-----------------------------------------------------------------------------
