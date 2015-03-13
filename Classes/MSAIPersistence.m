@@ -20,7 +20,7 @@ NSUInteger const defaultFileCount = 50;
 #pragma mark - Public
 
 + (instancetype)sharedInstance{
-  static MSAIPersistence *sharedInstance = nil;
+  static MSAIPersistence *sharedInstance;
   static dispatch_once_t onceToken;
   
   dispatch_once(&onceToken, ^{
@@ -208,7 +208,7 @@ NSUInteger const defaultFileCount = 50;
     };
     case MSAIPersistenceTypeFakeCrash: {
       [self createFolderAtPathIfNeeded:[applicationSupportDir stringByAppendingPathComponent:kFakeCrashString]];
-      filePath = [[applicationSupportDir stringByAppendingPathComponent:kFakeCrashString] stringByAppendingPathComponent:fileName];
+      filePath = [[applicationSupportDir stringByAppendingPathComponent:kFakeCrashString] stringByAppendingPathComponent:kFakeCrashString];
       break;
     };
     default: {
