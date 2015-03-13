@@ -268,7 +268,10 @@ NSUInteger const defaultFileCount = 50;
   
   // each track method asks, if space is still available. Getting the file count for each event would be too expensive,
   // so let's get it here
-  _maxFileCountReached = fileNames.count > _maxFileCount;
+  if(type == MSAIPersistenceTypeRegular){
+    _maxFileCountReached = fileNames.count >= _maxFileCount;
+  }
+  
   if(fileNames && fileNames.count > 0) {
     for(NSString *filename in fileNames){
       NSString *absolutePath = [path stringByAppendingPathComponent:filename];
