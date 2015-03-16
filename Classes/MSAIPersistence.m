@@ -305,7 +305,7 @@ NSUInteger const defaultFileCount = 50;
       subfolderPath = kCrashTemplateString;
       break;
     };
-    default: {
+    case MSAIPersistenceTypeRegular: {
       subfolderPath = kRegularPrioString;
       break;
     }
