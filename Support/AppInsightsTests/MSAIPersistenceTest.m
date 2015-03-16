@@ -145,6 +145,20 @@ typedef void (^MSAIPersistenceTestBlock)(BOOL);
   XCTAssertTrue(_sut.requestedBundlePaths.count == 0);
 }
 
+- (void)testFolderPathForPersistenceTypePerformance {
+  [self measureBlock:^{
+    for (int i = 0; i < 1000; ++i) {
+      [_sut folderPathForPersistenceType:MSAIPersistenceTypeHighPriority];
+    }
+    for (int i = 0; i < 1000; ++i) {
+      [_sut folderPathForPersistenceType:MSAIPersistenceTypeRegular];
+    }
+    for (int i = 0; i < 1000; ++i) {
+      [_sut folderPathForPersistenceType:MSAIPersistenceTypeCrashTemplate];
+    }
+  }];
+}
+
 - (void)testOverwriteCrashTemplateWorks {
   
   // Create first crash template
