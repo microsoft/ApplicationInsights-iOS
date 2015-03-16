@@ -315,7 +315,7 @@ NSUInteger const defaultFileCount = 50;
   return path;
 }
 
--(NSData *)dataForBundle:(NSArray *)bundle withPersistenceTye:(MSAIPersistenceType)persistenceType{
+- (NSData *)dataForBundle:(NSArray *)bundle withPersistenceTye:(MSAIPersistenceType)persistenceType{
   NSData *data = nil;
   
   if(persistenceType == MSAIPersistenceTypeCrashTemplate){
@@ -324,7 +324,7 @@ NSUInteger const defaultFileCount = 50;
     NSError *error = nil;
     data = [NSJSONSerialization dataWithJSONObject:bundle options:NSJSONWritingPrettyPrinted error:&error];
     if(error){
-      MSAILog(@"Unable to convert json to NSData: %@", [error localizedDescription]);
+      MSAILog(@"Unable to convert JSON to NSData: %@", [error localizedDescription]);
     }
   }
   return data;
