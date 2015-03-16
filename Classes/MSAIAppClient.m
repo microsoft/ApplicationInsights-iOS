@@ -2,7 +2,7 @@
 
 @implementation MSAIAppClient
 - (void)dealloc {
-  [self cancelOperationsWithPath:nil method:nil];
+  [self cancelAllOperations];
 }
 
 - (instancetype)initWithBaseURL:(NSURL *)baseURL {
@@ -129,22 +129,31 @@
   for(MSAIHTTPOperation *operation in self.operationQueue.operations) {
     NSURLRequest *request = operation.URLRequest;
     
-    BOOL matchedMethod = YES;
-    if(method && ![request.HTTPMethod isEqualToString:method]) {
-      matchedMethod = NO;
+    BOOL matchedMethod = NO;
+    if ([request.HTTPMethod isEqualToString:method]) {
+      matchedMethod = YES;
     }
     
-    BOOL matchedPath = YES;
-    if(path) {
+    BOOL matchedPath = NO;
+    if (path) {
       //method is not interesting here, we' just creating it to get the URL
       NSURL *url = [self requestWithMethod:@"GET" path:path parameters:nil].URL;
       matchedPath = [request.URL isEqual:url];
     }
     
-    if(matchedPath && matchedMethod) {
-      ++cancelledOperations;
+    if (matchedPath && matchedMethod) {
       [operation cancel];
+      ++cancelledOperations;
     }
+  }
+  return cancelledOperations;
+}
+
+- (NSUInteger)cancelAllOperations {
+  NSUInteger cancelledOperations = 0;
+  for(MSAIHTTPOperation *operation in self.operationQueue.operations) {
+    [operation cancel];
+    ++cancelledOperations;
   }
   return cancelledOperations;
 }

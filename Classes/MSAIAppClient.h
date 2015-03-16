@@ -1,6 +1,7 @@
 #import <Foundation/Foundation.h>
 #import "MSAIHTTPOperation.h"
 
+NS_ASSUME_NONNULL_BEGIN
 /**
  *  Generic AppInsights API client
  */
@@ -28,9 +29,9 @@
  *
  *	@return	an NSMutableURLRequest for further configuration
  */
-- (NSMutableURLRequest *) requestWithMethod:(NSString*) method
-                                       path:(NSString *) path
-                                 parameters:(NSDictionary *) params;
+- (NSMutableURLRequest *)requestWithMethod:(NSString*)method
+                                      path:(NSString *)path
+                                parameters:(nullable NSDictionary *)params;
 /**
  *	Creates an operation for the given NSURLRequest
  *
@@ -39,8 +40,8 @@
  *
  *	@return	operation, which can be queued via enqueueHTTPOperation:
  */
-- (MSAIHTTPOperation *) operationWithURLRequest:(NSURLRequest*) request
-                                   completion:(MSAINetworkCompletionBlock) completion;
+- (MSAIHTTPOperation *) operationWithURLRequest:(NSURLRequest*)request
+                                     completion:(nullable MSAINetworkCompletionBlock)completion;
 
 /**
  *	Creates an operation for the given path, and enqueues it
@@ -50,9 +51,9 @@
  *	@param	completion	completionBlock that is called once the operation finished
  *
  */
-- (void) getPath:(NSString*) path
-      parameters:(NSDictionary *) params
-      completion:(MSAINetworkCompletionBlock) completion;
+- (void)getPath:(NSString*)path
+     parameters:(nullable NSDictionary *)params
+     completion:(nullable MSAINetworkCompletionBlock)completion;
 
 /**
  *	Creates an operation for the given path, and enqueues it
@@ -62,9 +63,9 @@
  *	@param	completion	completionBlock that is called once the operation finished
  *
  */
-- (void) postPath:(NSString*) path
-       parameters:(NSDictionary *) params
-       completion:(MSAINetworkCompletionBlock) completion;
+- (void)postPath:(NSString*)path
+      parameters:(nullable NSDictionary *)params
+      completion:(nullable MSAINetworkCompletionBlock)completion;
 /**
  *	adds the given operation to the internal queue
  *
@@ -75,13 +76,25 @@
 /**
  *	cancels the specified operations
  *
- *	@param	path	the path which operation should be cancelled. Can be nil to match all
- *	@param	method	the method which operations to cancel. Can be nil to match all
+ *	@param	path	the path which operation should be cancelled.
+ *	@param	method	the method which operations to cancel.
+ *
  *  @return number of operations cancelled
+ *
+ *  @see cancelAllOperations
  */
-- (NSUInteger) cancelOperationsWithPath:(NSString*) path
-                                 method:(NSString*) method;
+- (NSUInteger)cancelOperationsWithPath:(NSString*)path
+                                method:(NSString*)method;
 
+/**
+ *  cancels all current operations
+ *
+ *  @returns number of operations cancelled
+ *
+ *  @see cancelOperationsWithPath:method
+ */
+- (NSUInteger)cancelAllOperations;
+ 
 /**
  *	Access to the internal operation queue
  */
@@ -114,3 +127,4 @@
 + (NSData *)dataWithPostValue:(NSData *)value forKey:(NSString *)key contentType:(NSString *)contentType boundary:(NSString *)boundary filename:(NSString *)filename;
 
 @end
+NS_ASSUME_NONNULL_END
