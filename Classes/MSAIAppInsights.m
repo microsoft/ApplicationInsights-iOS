@@ -71,12 +71,20 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 
 - (void)setup {
   NSString *instrumentationKey = [[NSBundle mainBundle] objectForInfoDictionaryKey:kMSAIInstrumentationKey];
+  [self setupWithInstrumentationKey:instrumentationKey];
+}
+
+- (void)setupWithInstrumentationKey:(NSString *)instrumentationKey{
   _appContext = [[MSAIContext alloc] initWithInstrumentationKey:instrumentationKey];
   [self initializeModules];
 }
 
 + (void)setup {
   [[self sharedInstance] setup];
+}
+
++ (void)setupWithInstrumentationKey:(NSString *)instrumentationKey{
+  [[self sharedInstance] setupWithInstrumentationKey:instrumentationKey];
 }
 
 - (void)start {
