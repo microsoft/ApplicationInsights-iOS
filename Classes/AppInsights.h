@@ -23,6 +23,7 @@
 #define MSAI_EVENT_DATA_URL   @"https://dc.services.visualstudio.com/v2/track"
 
 #if MSAI_FEATURE_CRASH_REPORTER
+NS_ASSUME_NONNULL_BEGIN
 /**
  *  MSAI Crash Reporter error domain
  */
@@ -57,6 +58,7 @@ typedef NS_ENUM(NSInteger, MSAIErrorReason) {
   MSAIErrorUnknown
 };
 extern NSString *const __attribute__((unused)) kMSAIErrorDomain;
+NS_ASSUME_NONNULL_END
 #endif 
 
 #endif

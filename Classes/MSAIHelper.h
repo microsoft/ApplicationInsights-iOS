@@ -1,6 +1,7 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
+NS_ASSUME_NONNULL_BEGIN
 /* NSString helpers */
 NSString *msai_URLEncodedString(NSString *inputString);
 NSString *msai_URLDecodedString(NSString *inputString);
@@ -31,3 +32,4 @@ BOOL msai_isPreiOS7Environment(void);
 BOOL msai_isPreiOS8Environment(void);
 BOOL msai_isRunningInAppExtension(void);
 BOOL msai_isAppStoreEnvironment(void);
+NS_ASSUME_NONNULL_END

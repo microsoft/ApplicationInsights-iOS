@@ -1,5 +1,6 @@
 #import <Foundation/Foundation.h>
 
+NS_ASSUME_NONNULL_BEGIN
 /**
  *  This class provides properties that can be attached to a crash report via a custom alert view flow
  */
@@ -26,3 +27,4 @@
 @property (nonatomic, copy) NSString *userID;
 
 @end
+NS_ASSUME_NONNULL_END

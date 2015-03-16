@@ -3,6 +3,7 @@
 #if MSAI_FEATURE_METRICS
 @class MSAITelemetryData;
 
+NS_ASSUME_NONNULL_BEGIN
 extern NSString *const kMSAIApplicationWasLaunched;
 
 @interface MSAIMetricsManager ()
@@ -55,5 +56,6 @@ extern NSString *const kMSAIApplicationWasLaunched;
 - (void)registerObservers;
 
 @end
+NS_ASSUME_NONNULL_END
 
 #endif /* MSAI_FEATURE_METRICS */

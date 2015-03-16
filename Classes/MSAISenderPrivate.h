@@ -1,6 +1,7 @@
 @class MSAIEnvelope;
 @class MSAITelemetryContext;
 
+NS_ASSUME_NONNULL_BEGIN
 @interface MSAISender ()
 
 ///-----------------------------------------------------------------------------
@@ -78,3 +79,4 @@
 - (NSArray *)jsonArrayFromArray:(NSArray *)envelopeArray;
 
 @end
+NS_ASSUME_NONNULL_END

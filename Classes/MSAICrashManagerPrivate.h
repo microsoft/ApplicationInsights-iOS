@@ -7,9 +7,8 @@
 @class MSAIAppClient;
 @class MSAIEnvelope;
 
-@interface MSAICrashManager () {
-}
-
+NS_ASSUME_NONNULL_BEGIN
+@interface MSAICrashManager ()
 
 ///-----------------------------------------------------------------------------
 /// @name Delegate
@@ -87,6 +86,6 @@ should not need to set this delegate individually.
 - (void)reportError:(NSError *)error;
 
 @end
-
+NS_ASSUME_NONNULL_END
 
 #endif /* MSAI_FEATURE_CRASH_REPORTER */

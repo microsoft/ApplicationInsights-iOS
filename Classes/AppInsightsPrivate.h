@@ -1,6 +1,7 @@
 #import <Foundation/Foundation.h>
 #import "MSAIAppInsights.h"
 
+NS_ASSUME_NONNULL_BEGIN
 #ifndef MSAI_Private_h
 #define MSAI_Private_h
 
@@ -29,3 +30,4 @@ extern NSString *const kMSAITelemetryPath;
 #endif
 
 #endif /* MSAI_Private_h */
+NS_ASSUME_NONNULL_END

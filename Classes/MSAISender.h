@@ -1,5 +1,6 @@
 #import <Foundation/Foundation.h>
 
+NS_ASSUME_NONNULL_BEGIN
 /**
  * Utility class that's responsible for sending a bundle of data to the server
  */
@@ -11,3 +12,4 @@
 - (void)sendSavedData;
 
 @end
+NS_ASSUME_NONNULL_END
