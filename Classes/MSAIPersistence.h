@@ -21,7 +21,7 @@ FOUNDATION_EXPORT NSString *const kMSAIPersistenceSuccessNotification;
 typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
   MSAIPersistenceTypeHighPriority = 0,
   MSAIPersistenceTypeRegular = 1,
-  MSAIPersistenceTypeFakeCrash = 2
+  MSAIPersistenceTypeCrashTemplate = 2
 };
 
 ///-----------------------------------------------------------------------------
@@ -59,7 +59,7 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
 
 /**
 * Saves the bundle and sends out a kMSAIPersistenceSuccessNotification in case of success
-* for all types except MSAIPersistenceTypeFakeCrash
+* for all types except MSAIPersistenceTypeCrashTemplate
 * @param bundle a bundle of tracked events (telemetry, crashes, ...) that will be serialized and saved.
 * @param type The type of the bundle we want to save.
 * @param completionBlock An optional block that will be executed after we have tried to save the bundle.
@@ -72,7 +72,7 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
  *  Saves the bundle to disk.
  *
  *  @param bundle            the bundle, which should be saved to disk
- *  @param type              the persistence type of the bundle (high prio/regular prio/fake crash)
+ *  @param type              the persistence type of the bundle (high prio/regular prio/crash template)
  *  @param sendNotifications a flag which determines if a notification should be sent if saving was successful
  *  @param completionBlock   a block which is executed after the bundle has been stored
  */
@@ -158,17 +158,17 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
 ///-----------------------------------------------------------------------------
 
 /**
-* Persist a "fake" crash report.
+* Persist a crash template.
 *
 * @param bundle The bundle of application insights data
 */
-- (void)persistFakeReportBundle:(NSArray *)bundle;
+- (void)persistCrashTemplateBundle:(NSArray *)bundle;
 
 /**
-* Get the first of all saved fake crash reports (an arbitrary one in case we have several fake reports)
+* Get the persisted crash template.
 *
-* @return a fake crash report, wrapped as a bundle
+* @return a crash template, wrapped as a bundle
 */
-- (NSArray *)fakeReportBundle;
+- (NSArray *)crashTemplateBundle;
 
 @end

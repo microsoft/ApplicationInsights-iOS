@@ -6,7 +6,7 @@
 
 NSString *const kHighPrioString = @"highPrio";
 NSString *const kRegularPrioString = @"regularPrio";
-NSString *const kFakeCrashString = @"fakeCrash";
+NSString *const kCrashTemplateString = @"crashTemplate";
 NSString *const kFileBaseString = @"app-insights-bundle-";
 
 NSString *const kMSAIPersistenceSuccessNotification = @"MSAIPersistenceSuccessNotification";
@@ -51,7 +51,7 @@ NSUInteger const defaultFileCount = 50;
 /**
  * Creates a serial background queue that saves the Bundle using NSKeyedArchiver and NSData's writeToFile:atomically
  *
- * In case if type MSAIPersistenceTypeFakeCrash, we don't send out a kMSAIPersistenceSuccessNotification.
+ * In case if type MSAIPersistenceTypeCrashTemplate, we don't send out a kMSAIPersistenceSuccessNotification.
  */
 - (void)persistBundle:(NSArray *)bundle ofType:(MSAIPersistenceType)type enableNotifications:(BOOL)sendNotifications withCompletionBlock:(void (^)(BOOL success))completionBlock {
   
@@ -67,7 +67,7 @@ NSUInteger const defaultFileCount = 50;
         BOOL success = [data writeToFile:fileURL atomically:YES];
         if(success) {
           MSAILog(@"Wrote %@", fileURL);
-          if(sendNotifications && type != MSAIPersistenceTypeFakeCrash) {
+          if(sendNotifications && type != MSAIPersistenceTypeCrashTemplate) {
             [strongSelf sendBundleSavedNotification];
           }
         }
@@ -111,18 +111,18 @@ NSUInteger const defaultFileCount = 50;
 }
 
 /**
- * Method used to persist the "fake" crash reports. Fake crash reports are handled but are similar to the other bundle
+ * Method used to persist the "fake" crash reports. Crash templates are handled but are similar to the other bundle
  * types under the hood.
  */
-- (void)persistFakeReportBundle:(NSArray *)bundle {
-  [self persistBundle:bundle ofType:MSAIPersistenceTypeFakeCrash withCompletionBlock:nil];
+- (void)persistCrashTemplateBundle:(NSArray *)bundle {
+  [self persistBundle:bundle ofType:MSAIPersistenceTypeCrashTemplate withCompletionBlock:nil];
 }
 
 /*
- * @Returns a bundle that includes a fake crash report.
+ * @Returns a bundle that includes a crash template.
  */
-- (NSArray *)fakeReportBundle {
-  NSString *path = [self nextURLWithPriority:MSAIPersistenceTypeFakeCrash];
+- (NSArray *)crashTemplateBundle {
+  NSString *path = [self nextURLWithPriority:MSAIPersistenceTypeCrashTemplate];
   if(path && [path isKindOfClass:[NSString class]] && path.length > 0) {
     NSArray *bundle = [self bundleAtPath:path];
     if(bundle) {
@@ -206,9 +206,9 @@ NSUInteger const defaultFileCount = 50;
       filePath = [[applicationSupportDir stringByAppendingPathComponent:kHighPrioString] stringByAppendingPathComponent:fileName];
       break;
     };
-    case MSAIPersistenceTypeFakeCrash: {
-      [self createFolderAtPathIfNeeded:[applicationSupportDir stringByAppendingPathComponent:kFakeCrashString]];
-      filePath = [[applicationSupportDir stringByAppendingPathComponent:kFakeCrashString] stringByAppendingPathComponent:kFakeCrashString];
+    case MSAIPersistenceTypeCrashTemplate: {
+      [self createFolderAtPathIfNeeded:[applicationSupportDir stringByAppendingPathComponent:kCrashTemplateString]];
+      filePath = [[applicationSupportDir stringByAppendingPathComponent:kCrashTemplateString] stringByAppendingPathComponent:kCrashTemplateString];
       break;
     };
     default: {
@@ -296,8 +296,8 @@ NSUInteger const defaultFileCount = 50;
       subfolderPath = kHighPrioString;
       break;
     };
-    case MSAIPersistenceTypeFakeCrash: {
-      subfolderPath = kFakeCrashString;
+    case MSAIPersistenceTypeCrashTemplate: {
+      subfolderPath = kCrashTemplateString;
       break;
     };
     default: {
@@ -313,7 +313,7 @@ NSUInteger const defaultFileCount = 50;
 -(NSData *)dataForBundle:(NSArray *)bundle withPersistenceTye:(MSAIPersistenceType)persistenceType{
   NSData *data = nil;
   
-  if(persistenceType == MSAIPersistenceTypeFakeCrash){
+  if(persistenceType == MSAIPersistenceTypeCrashTemplate){
     data = [NSKeyedArchiver archivedDataWithRootObject:bundle];
   }else{
     NSError *error = nil;
