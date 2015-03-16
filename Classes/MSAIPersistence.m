@@ -284,7 +284,6 @@ NSUInteger const defaultFileCount = 50;
       }
     }
   }
-  
   return nil;
 }
 
@@ -317,7 +316,11 @@ NSUInteger const defaultFileCount = 50;
   if(persistenceType == MSAIPersistenceTypeFakeCrash){
     data = [NSKeyedArchiver archivedDataWithRootObject:bundle];
   }else{
-    data = [NSJSONSerialization dataWithJSONObject:bundle options:NSJSONWritingPrettyPrinted error:nil];
+    NSError *error = nil;
+    data = [NSJSONSerialization dataWithJSONObject:bundle options:NSJSONWritingPrettyPrinted error:&error];
+    if(error){
+      MSAILog(@"Unable to convert json to NSData: %@", [error localizedDescription]);
+    }
   }
   return data;
 }
