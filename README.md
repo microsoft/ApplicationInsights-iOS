@@ -64,7 +64,7 @@ The SDK runs on devices with iOS 6.0 or higher.
 	[MSAIAppInsights start];
 	```
 
-	If you want to do some additional configuration you have to call the sharedInstance directly between the `setup()` and `start()` calls:
+	If additional configuration is needed, the sharedInstance can be accessed between the `setup()` and `start()` calls:
 
 	```objectivec
 	[[MSAIAppInsights sharedInstance] setup];
