@@ -37,7 +37,7 @@
   
   _startManagerInitialized = NO;
   
-  _context = [[MSAIContext alloc]initWithInstrumentationKey:nil];
+  _context = [[MSAIContext alloc]initWithInstrumentationKey:kMSAIDummyInstrumentationKey];
   _sut = [MSAICrashManager sharedManager];
 }
 
