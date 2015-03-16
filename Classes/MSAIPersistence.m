@@ -288,7 +288,12 @@ NSUInteger const defaultFileCount = 50;
 }
 
 - (NSString *)folderPathForPersistenceType:(MSAIPersistenceType)type {
-  NSString *documentFolder = [NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES) lastObject];
+  static NSString *documentFolder;
+  static dispatch_once_t documentFolderToken;
+  dispatch_once(&documentFolderToken, ^{
+    documentFolder = [NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES) lastObject];
+  });
+  
   NSString *subfolderPath;
   
   switch(type) {
