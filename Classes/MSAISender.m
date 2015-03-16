@@ -100,7 +100,9 @@ static NSUInteger const defaultRequestLimit = 10;
     self.runningRequestsCount -= 1;
     NSInteger statusCode = [operation.response statusCode];
 
-    if(statusCode >= 200 && statusCode < 400) {
+    if(statusCode >= 200 && statusCode <= 400) {
+      
+      // We should delete data if it has been succesfully sent (200/202) or if its values have not been accepted (400)
       MSAILog(@"Sent data with status code: %ld", (long) statusCode);
       MSAILog(@"Response data:\n%@", [NSJSONSerialization JSONObjectWithData:responseData options:0 error:nil]);
       
