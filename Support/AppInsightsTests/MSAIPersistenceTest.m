@@ -179,4 +179,15 @@ typedef void (^MSAIPersistenceTestBlock)(BOOL);
   [_sut requestNextPath];
 }
 
+- (NSUInteger)fileCountForType:(MSAIPersistenceType)type{
+  NSString *directoryPath = [_sut folderPathForPersistenceType:type];
+  NSError *error;
+  NSArray *fileNames = [[NSFileManager defaultManager] contentsOfDirectoryAtURL:[NSURL fileURLWithPath:directoryPath]
+                                                     includingPropertiesForKeys:[NSArray arrayWithObject:NSURLNameKey]
+                                                                        options:NSDirectoryEnumerationSkipsHiddenFiles
+                                                                          error:&error];
+
+  return fileNames.count;
+}
+
 @end
