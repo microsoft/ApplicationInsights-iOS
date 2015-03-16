@@ -16,7 +16,7 @@
  * Configures the manager with a instrumentation key and initializes all modules. 
  * This method should be called before calling `start`.
  *
- *  @param instrumentationKey the instrumentationKey nof your AppInsights component
+ *  @param instrumentationKey the instrumentationKey of your AppInsights component
  */
 + (void)setupWithInstrumentationKey:(NSString *)instrumentationKey;
 
@@ -53,7 +53,7 @@
  * Configures the manager with a instrumentation key and initializes all modules.
  * This method should be called before calling `start`.
  *
- *  @param instrumentationKey the instrumentationKey nof your AppInsights component
+ *  @param instrumentationKey the instrumentationKey of your AppInsights component
  */
 - (void)setupWithInstrumentationKey:(NSString *)instrumentationKey;
 
