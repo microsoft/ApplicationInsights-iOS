@@ -141,7 +141,7 @@
       matchedPath = [request.URL isEqual:url];
     }
     
-    if (matchedPath && matchedMethod) {
+    if (matchedPath || matchedMethod) {
       [operation cancel];
       ++cancelledOperations;
     }

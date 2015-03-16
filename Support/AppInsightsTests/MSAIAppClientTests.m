@@ -31,7 +31,7 @@
 }
 
 - (void)tearDown {
-  [_sut cancelOperationsWithPath:nil method:nil];
+  [_sut cancelAllOperations];
   _sut = nil;
   
   [super tearDown];
@@ -120,7 +120,7 @@
 
 - (void) testThatPostPathCreatesAndEnquesAnOperation {
   assertThatUnsignedLong(_sut.operationQueue.operationCount, equalToUnsignedLong(0));
-  [given([_sut operationWithURLRequest:nil
+  [given([_sut operationWithURLRequest:[NSURLRequest new]
                             completion:nil]) willReturn:[NSOperation new]];
   
   [_sut postPath:@"endpoint"
@@ -156,7 +156,7 @@
   [_sut enqeueHTTPOperation:[_sut operationWithURLRequest:requestPost
                                                completion:nil]];
   assertThatUnsignedLong(_sut.operationQueue.operationCount, equalToUnsignedLong(3));
-  NSUInteger numCancelled = [_sut cancelOperationsWithPath:nil method:nil];
+  NSUInteger numCancelled = [_sut cancelAllOperations];
   assertThatUnsignedLong(numCancelled, equalToUnsignedLong(3));
 }
 
@@ -172,7 +172,7 @@
   [_sut enqeueHTTPOperation:[_sut operationWithURLRequest:requestPost
                                                completion:nil]];
   assertThatUnsignedLong(_sut.operationQueue.operationCount, equalToUnsignedLong(3));
-  NSUInteger numCancelled = [_sut cancelOperationsWithPath:nil method:nil];
+  NSUInteger numCancelled = [_sut cancelAllOperations];
   assertThatUnsignedLong(numCancelled, equalToUnsignedLong(3));
 }
 

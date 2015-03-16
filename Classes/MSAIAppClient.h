@@ -30,7 +30,7 @@ NS_ASSUME_NONNULL_BEGIN
  *	@return	an NSMutableURLRequest for further configuration
  */
 - (NSMutableURLRequest *)requestWithMethod:(NSString*)method
-                                      path:(NSString *)path
+                                      path:(nullable NSString *)path
                                 parameters:(nullable NSDictionary *)params;
 /**
  *	Creates an operation for the given NSURLRequest
@@ -83,8 +83,8 @@ NS_ASSUME_NONNULL_BEGIN
  *
  *  @see cancelAllOperations
  */
-- (NSUInteger)cancelOperationsWithPath:(NSString*)path
-                                method:(NSString*)method;
+- (NSUInteger)cancelOperationsWithPath:(nullable NSString*)path
+                                method:(nullable NSString*)method;
 
 /**
  *  cancels all current operations
@@ -124,7 +124,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  *	@return	NSData instance configured to be attached on a (post) URLRequest
  */
-+ (NSData *)dataWithPostValue:(NSData *)value forKey:(NSString *)key contentType:(NSString *)contentType boundary:(NSString *)boundary filename:(NSString *)filename;
++ (NSData *)dataWithPostValue:(NSData *)value forKey:(NSString *)key contentType:(NSString *)contentType boundary:(NSString *)boundary filename:(null_unspecified NSString *)filename;
 
 @end
 NS_ASSUME_NONNULL_END
