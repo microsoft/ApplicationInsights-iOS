@@ -13,6 +13,7 @@ This document contains the following sections:
 - [Endpoints](#endpoints)
 - [iOS 8 Extensions](#extension)
 - [Additional Options](#options)
+- [Contact](#contact)
 
 <a id="requirements"></a> 
 ## Requirements
@@ -183,8 +184,8 @@ The following points need to be considered to use AppInsights SDK iOS with iOS 8
           self.didSetupAppInsightsSDK = YES;
        }
     }
-    ```
- 
+	```
+
 <a id="options"></a> 
 ## Additional Options
 
@@ -217,3 +218,8 @@ Instead of manually adding the missing frameworks, you can also use our bundled 
 	- `SystemConfiguration`
 	- `UIKit`
 	- `CoreTelephony`(only required if iOS > 7.0)
+
+<a id="contact"></a>
+## Contact
+
+If you have further questions or are running into trouble that cannot be resolved by any of the steps here, feel free to contact us at [AppInsights-iOS@microsoft.com](mailto:appinsights-ios@microsoft.com)
