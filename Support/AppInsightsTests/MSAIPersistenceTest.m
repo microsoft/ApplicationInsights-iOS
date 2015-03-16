@@ -38,15 +38,15 @@ typedef void (^MSAIPersistenceTestBlock)(BOOL);
 
 - (void)testIfItPersistsRegular {
   MSAIOrderedDictionary *dict = [MSAIOrderedDictionary new];
-  XCTAssertTrue([self createFileForDict:dict withHighPrio:NO]);
+  XCTAssertTrue([self createFileForDict:dict withType:MSAIPersistenceTypeRegular]);
 }
 
 - (void)testReturnsHighPrioFirst {
   // Create regular & high prio file
   NSDictionary *highPrioDict = @{@"prio":@"high"};
   NSDictionary *regularPrioDict = @{@"prio":@"regular"};
-  [self createFileForDict:highPrioDict withHighPrio:YES];
-  [self createFileForDict:regularPrioDict withHighPrio:NO];
+  [self createFileForDict:highPrioDict withType:MSAIPersistenceTypeHighPriority];
+  [self createFileForDict:regularPrioDict withType:MSAIPersistenceTypeRegular];
   
   // First requested file should be high prio
   NSString *nextPath = [_sut requestNextPath];
@@ -61,7 +61,7 @@ typedef void (^MSAIPersistenceTestBlock)(BOOL);
 
 - (void)testDeletionWorks {
   // Create file
-  [self createFileForDict:@{} withHighPrio:NO];
+  [self createFileForDict:@{} withType:MSAIPersistenceTypeRegular];
   NSString *nextPath = [_sut requestNextPath];
   XCTAssertNotNil([_sut dataAtPath:nextPath]);
   
@@ -75,7 +75,7 @@ typedef void (^MSAIPersistenceTestBlock)(BOOL);
   NSString *nextPath = [_sut requestNextPath];
   XCTAssertNil(nextPath);
   
-  [self createFileForDict:@{} withHighPrio:NO];
+  [self createFileForDict:@{} withType:MSAIPersistenceTypeRegular];
   nextPath = [_sut requestNextPath];
   XCTAssertNotNil(nextPath);
 }
@@ -85,7 +85,7 @@ typedef void (^MSAIPersistenceTestBlock)(BOOL);
   NSString *key = @"myKey";
   NSString *value = @"myValue";
   NSDictionary *dict = @{key:value};
-  [self createFileForDict:dict withHighPrio:MSAIPersistenceTypeRegular];
+  [self createFileForDict:dict withType:MSAIPersistenceTypeRegular];
   
   // Test
   NSString *nextPath = [_sut requestNextPath];
@@ -103,14 +103,14 @@ typedef void (^MSAIPersistenceTestBlock)(BOOL);
   XCTAssertTrue([_sut isFreeSpaceAvailable]);
   
   // Save a file, so we will reach the max count
-  [self createFileForDict:@{} withHighPrio:NO];
+  [self createFileForDict:@{} withType:MSAIPersistenceTypeRegular];
   [self updateFileCount];
   XCTAssertFalse([_sut isFreeSpaceAvailable]);
 }
 
 - (void)testRequestedPathIsBlocked{
   // Create file, make sure it has not been requested yet
-  [self createFileForDict:@{} withHighPrio:YES];
+  [self createFileForDict:@{} withType:MSAIPersistenceTypeHighPriority];
   XCTAssertTrue(_sut.requestedBundlePaths.count == 0);
   
   // Path is added to list after path was requested
@@ -120,7 +120,7 @@ typedef void (^MSAIPersistenceTestBlock)(BOOL);
 }
 
 - (void)testRequestedPathIsReleasedWhenOnGiveBack{
-  [self createFileForDict:@{} withHighPrio:NO];
+  [self createFileForDict:@{} withType:MSAIPersistenceTypeRegular];
   
   // Request path for sending
   NSString *path = [_sut requestNextPath];
@@ -134,7 +134,7 @@ typedef void (^MSAIPersistenceTestBlock)(BOOL);
 }
 
 - (void)testRequestedPathIsReleasedOnDeletion {
-  [self createFileForDict:@{} withHighPrio:NO];
+  [self createFileForDict:@{} withType:MSAIPersistenceTypeRegular];
   
   // Request path for sending
   NSString *path = [_sut requestNextPath];
@@ -145,14 +145,23 @@ typedef void (^MSAIPersistenceTestBlock)(BOOL);
   XCTAssertTrue(_sut.requestedBundlePaths.count == 0);
 }
 
+- (void)testOverwriteCrashTemplateWorks {
+  
+  // Create first crash template
+  [self createFileForDict:@{} withType:MSAIPersistenceTypeCrashTemplate];
+  XCTAssertEqual([self fileCountForType:MSAIPersistenceTypeCrashTemplate], 1);
+  
+  // Create a new crash template, which should overwrite the first one
+  [self createFileForDict:@{} withType:MSAIPersistenceTypeCrashTemplate];
+  XCTAssertEqual([self fileCountForType:MSAIPersistenceTypeCrashTemplate], 1);
+}
 
 #pragma mark - Helper
 
--(BOOL)createFileForDict:(NSDictionary *)dict withHighPrio:(BOOL)highPrio{
+-(BOOL)createFileForDict:(NSDictionary *)dict withType:(MSAIPersistenceType)type{
   
   __block BOOL success = NO;
   XCTestExpectation *documentOpenExpectation = [self expectationWithDescription:@"File saved to disk"];
-  MSAIPersistenceType type = highPrio ? MSAIPersistenceTypeHighPriority : MSAIPersistenceTypeRegular;
   [_sut persistBundle:@[dict] ofType:type enableNotifications:NO withCompletionBlock:^(BOOL success) {
     [documentOpenExpectation fulfill];
   }];
