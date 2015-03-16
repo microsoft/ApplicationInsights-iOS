@@ -9,6 +9,7 @@
 @class MSAISender;
 @class MSAICrashData;
 
+NS_ASSUME_NONNULL_BEGIN
 @interface MSAIChannel ()
 
 ///-----------------------------------------------------------------------------
@@ -49,7 +50,7 @@
  *  @param envelope        the envelope object to process.
  *  @param completionBlock the block, which should be executed after the envelope has been persisted.
  */
-- (void)processEnvelope:(MSAIEnvelope *)envelope withCompletionBlock: (void (^)(BOOL success)) completionBlock;
+- (void)processEnvelope:(MSAIEnvelope *)envelope withCompletionBlock:(nullable void (^)(BOOL success))completionBlock;
 
 ///-----------------------------------------------------------------------------
 /// @name Batching
@@ -75,7 +76,7 @@
 /**
  *  A timer source which is used to flush the queue after a cretain time.
  */
-@property (nonatomic, strong) dispatch_source_t timerSource;
+@property (nonatomic, strong, null_unspecified) dispatch_source_t timerSource;
 
 /**
  *  Starts the timer.
@@ -90,3 +91,4 @@
 - (BOOL)isQueueBusy;
 
 @end
+NS_ASSUME_NONNULL_END
