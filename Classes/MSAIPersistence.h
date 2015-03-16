@@ -154,6 +154,19 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
 -(NSData *)dataForBundle:(NSArray *)bundle withPersistenceTye:(MSAIPersistenceType)persistenceType;
 
 ///-----------------------------------------------------------------------------
+/// @name Getting a path
+///-----------------------------------------------------------------------------
+
+/**
+ *  Returns a folder path for items of a given type.
+ *
+ *  @param type the file type, which the directory holds
+ *
+ *  @return a folder path for items of a given type
+ */
+- (NSString *)folderPathForPersistenceType:(MSAIPersistenceType)type;
+
+///-----------------------------------------------------------------------------
 /// @name Handling of a "fake" CrashReport
 ///-----------------------------------------------------------------------------
 
