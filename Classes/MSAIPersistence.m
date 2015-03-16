@@ -263,7 +263,7 @@ NSUInteger const defaultFileCount = 50;
  */
 - (NSString *)nextURLWithPriority:(MSAIPersistenceType)type {
   
-  NSString *directoryPath = [self folderPathWithPriority:type];
+  NSString *directoryPath = [self folderPathForPersistenceType:type];
   NSError *error;
   NSArray *fileNames = [[NSFileManager defaultManager] contentsOfDirectoryAtURL:[NSURL fileURLWithPath:directoryPath]
                                                      includingPropertiesForKeys:[NSArray arrayWithObject:NSURLNameKey]
@@ -287,7 +287,7 @@ NSUInteger const defaultFileCount = 50;
   return nil;
 }
 
-- (NSString *)folderPathWithPriority:(MSAIPersistenceType)type {
+- (NSString *)folderPathForPersistenceType:(MSAIPersistenceType)type {
   NSString *documentFolder = [NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES) lastObject];
   NSString *subfolderPath;
   
