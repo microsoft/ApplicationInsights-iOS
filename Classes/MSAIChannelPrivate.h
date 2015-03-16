@@ -34,7 +34,7 @@
 /**
  *  An array for collecting data, which should be sent to the telemetry server.
  */
-@property(nonatomic, strong) NSMutableArray *dataItemQueue;
+@property (nonatomic, strong) NSMutableArray *dataItemQueue;
 
 /**
  *  Enqueue telemetry data (events, metrics, exceptions, traces) before processing it.

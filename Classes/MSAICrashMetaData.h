@@ -1,6 +1,5 @@
 #import <Foundation/Foundation.h>
 
-
 /**
  *  This class provides properties that can be attached to a crash report via a custom alert view flow
  */

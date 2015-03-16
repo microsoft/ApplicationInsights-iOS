@@ -2,7 +2,6 @@
 
 @class MSAIHTTPOperation;
 
-
 /**
  * A typedefed block that can be used for MSAIHTTPOperation
  */
@@ -14,14 +13,14 @@ typedef void (^MSAINetworkCompletionBlock)(MSAIHTTPOperation * operation, NSData
 
 @interface MSAIHTTPOperation : NSOperation
 
-+ (instancetype) operationWithRequest:(NSURLRequest *) urlRequest;
++ (instancetype)operationWithRequest:(NSURLRequest *)urlRequest;
 
 @property (nonatomic, readonly) NSURLRequest *URLRequest;
 
 /**
 * @param completionBlock block of type MSAINetworkCompletionBlock that will be called in case the MSAIHTTPOperation is not cancelled
 */
-- (void) setCompletion:(MSAINetworkCompletionBlock) completionBlock;
+- (void)setCompletion:(MSAINetworkCompletionBlock)completionBlock;
 
 @property (nonatomic, readonly) NSHTTPURLResponse *response;
 @property (nonatomic, readonly) NSData *data;

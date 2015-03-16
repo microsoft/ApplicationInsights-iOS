@@ -3,7 +3,6 @@
 /**
 * A simple class that handles serialisation and deserialisation of bundles of data.
 */
-
 @interface MSAIPersistence : NSObject
 
 /**
@@ -42,7 +41,7 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
 /**
  *  A queue which makes file system operations thread safe.
  */
-@property (nonatomic, strong)dispatch_queue_t persistenceQueue;
+@property (nonatomic, strong) dispatch_queue_t persistenceQueue;
 
 /**
  *  Determines how many files (regular prio) can be on disk at a time.
@@ -113,7 +112,7 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
  *
  *  @param path the path that should be available for sending again.
  */
-- (void)giveBackRequestedPath:(NSString *) path;
+- (void)giveBackRequestedPath:(NSString *)path;
 
 /**
  *  Return the bundle for a given path.

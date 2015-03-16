@@ -1,7 +1,6 @@
 #import "AppInsights.h"
 
 #if MSAI_FEATURE_METRICS
-
 @class MSAITelemetryData;
 
 extern NSString *const kMSAIApplicationWasLaunched;
@@ -57,4 +56,4 @@ extern NSString *const kMSAIApplicationWasLaunched;
 
 @end
 
-#endif
+#endif /* MSAI_FEATURE_METRICS */

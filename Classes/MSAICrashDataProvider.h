@@ -10,7 +10,6 @@
 #define kMSAIBinaryImageKeyType @"type"
 #endif
 
-
 /**
  *  AppInsights Crash Reporter error domain
  */

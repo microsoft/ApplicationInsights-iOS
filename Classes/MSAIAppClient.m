@@ -15,9 +15,9 @@
 }
 
 #pragma mark - Networking
-- (NSMutableURLRequest *) requestWithMethod:(NSString*) method
-                                       path:(NSString *) path
-                                 parameters:(NSDictionary *)params {
+- (NSMutableURLRequest *)requestWithMethod:(NSString*)method
+                                      path:(NSString *)path
+                                parameters:(NSDictionary *)params {
   
   NSParameterAssert(method);
   NSParameterAssert(params == nil || [method isEqualToString:@"POST"] || [method isEqualToString:@"GET"]);
@@ -120,12 +120,11 @@
   [self enqeueHTTPOperation:op];
 }
 
-- (void) enqeueHTTPOperation:(MSAIHTTPOperation *) operation {
+- (void)enqeueHTTPOperation:(MSAIHTTPOperation *)operation {
   [self.operationQueue addOperation:operation];
 }
 
-- (NSUInteger) cancelOperationsWithPath:(NSString*) path
-                                 method:(NSString*) method {
+- (NSUInteger)cancelOperationsWithPath:(NSString*)path method:(NSString*)method {
   NSUInteger cancelledOperations = 0;
   for(MSAIHTTPOperation *operation in self.operationQueue.operations) {
     NSURLRequest *request = operation.URLRequest;

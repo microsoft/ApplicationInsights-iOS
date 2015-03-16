@@ -6,7 +6,6 @@
 The `MSAICrashManagerDelegate` formal protocol defines methods further configuring
 the behaviour of `MSAICrashManager`.
 */
-
 @protocol MSAICrashManagerDelegate <NSObject>
 
 @optional

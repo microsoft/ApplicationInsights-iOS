@@ -15,7 +15,7 @@ extern NSString *const __attribute__((unused)) kMSAIMetricsCachesSessions;
 extern NSString *const __attribute__((unused)) kMSAIMetricsTempSessionData;
 extern NSString *const __attribute__((unused)) kMSAIMetricsLastAppVersion;
 
-#endif
+#endif /* MSAI_FEATURE_METRICS */
 
 extern NSString *const kMSAIIntegrationflowTimestamp;
 
@@ -28,4 +28,4 @@ extern NSString *const kMSAITelemetryPath;
 #define __IPHONE_8_0     80000
 #endif
 
-#endif //MSAI_Private_h
+#endif /* MSAI_Private_h */

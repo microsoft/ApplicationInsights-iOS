@@ -4,7 +4,6 @@
 * It provides methods to track custom events, traces, metrics, pageviews and exceptions. You can access them via
 * class methods as well as via the sharedManager instance.
 */
-
 @interface MSAIMetricsManager : NSObject
 
 ///-----------------------------------------------------------------------------

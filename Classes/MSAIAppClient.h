@@ -1,5 +1,4 @@
 #import <Foundation/Foundation.h>
-
 #import "MSAIHTTPOperation.h"
 
 /**
@@ -12,7 +11,7 @@
  *
  *	@param	baseURL	the baseURL of the AppInsights instance
  */
-- (instancetype) initWithBaseURL:(NSURL*) baseURL;
+- (instancetype)initWithBaseURL:(NSURL*)baseURL;
 
 /**
  *	baseURL to which relative paths are appended
@@ -71,7 +70,7 @@
  *
  *	@param	operation	operation to add
  */
-- (void) enqeueHTTPOperation:(MSAIHTTPOperation *) operation;
+- (void)enqeueHTTPOperation:(MSAIHTTPOperation *)operation;
 
 /**
  *	cancels the specified operations
@@ -99,19 +98,19 @@
  *
  *	@return	NSData instance configured to be attached on a (post) URLRequest
  */
-+ (NSData *)dataWithPostValue:(NSString *)value forKey:(NSString *)key boundary:(NSString *) boundary;
++ (NSData *)dataWithPostValue:(NSString *)value forKey:(NSString *)key boundary:(NSString *)boundary;
 
 /**
  *	create a post body from the given value, key and boundary and content type.
  *
  *	@param	value	-
  *	@param	key	-
- *@param contentType -
+ *  @param contentType -
  *	@param	boundary	-
  *	@param	filename	-
  *
  *	@return	NSData instance configured to be attached on a (post) URLRequest
  */
-+ (NSData *)dataWithPostValue:(NSData *)value forKey:(NSString *)key contentType:(NSString *)contentType boundary:(NSString *) boundary filename:(NSString *)filename;
++ (NSData *)dataWithPostValue:(NSData *)value forKey:(NSString *)key contentType:(NSString *)contentType boundary:(NSString *)boundary filename:(NSString *)filename;
 
 @end
