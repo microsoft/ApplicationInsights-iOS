@@ -67,6 +67,14 @@
   XCTAssertTrue([_sut.session.isNew isEqualToString:@"false"]);
 }
 
+- (void)testContextDictionaryPerformance {
+    [self measureBlock:^{
+      for (int i = 0; i < 1000; ++i) {
+        [_sut contextDictionary];
+      }
+    }];
+}
+
 - (void)testIsFirstSession {
   NSUserDefaults *userDefaults = [NSUserDefaults new];
   _sut.userDefaults = userDefaults;

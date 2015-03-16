@@ -59,8 +59,10 @@
     [dict setObject:self.userId forKey:@"userId"];
   }
   [dict setObject:self.tags forKey:@"tags"];
-  if([NSJSONSerialization isValidJSONObject:[self.data serializeToDictionary]]) {
-    [dict setObject:[self.data serializeToDictionary] forKey:@"data"];
+  
+  MSAIOrderedDictionary *dataDict = [self.data serializeToDictionary];
+  if ([NSJSONSerialization isValidJSONObject:dataDict]) {
+    [dict setObject:dataDict forKey:@"data"];
   }
   return dict;
 }

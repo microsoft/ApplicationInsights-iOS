@@ -580,7 +580,7 @@ Get the filename of the first not approved crash report
 
 
 /**
-*  Creates a fake crash report because the app was killed while being in foreground
+*  Creates a crash template because the app was killed while being in foreground
 */
 - (void)createCrashReportForAppKill {
   MSAICrashDataHeaders *crashHeaders = [MSAICrashDataHeaders new];
@@ -596,11 +596,11 @@ Get the filename of the first not approved crash report
   data.baseData = crashData;
   data.baseType = crashData.dataTypeName;
 
-  MSAIEnvelope *fakeCrashEnvelope = [[MSAIEnvelopeManager sharedManager] envelope];
-  fakeCrashEnvelope.data = data;
-  fakeCrashEnvelope.name = crashData.envelopeTypeName;
+  MSAIEnvelope *crashTemplate = [[MSAIEnvelopeManager sharedManager] envelope];
+  crashTemplate.data = data;
+  crashTemplate.name = crashData.envelopeTypeName;
 
-  [[MSAIPersistence sharedInstance] persistFakeReportBundle:@[fakeCrashEnvelope]];
+  [[MSAIPersistence sharedInstance] persistCrashTemplateBundle:@[crashTemplate]];
 }
 
 /***
@@ -621,9 +621,9 @@ Get the filename of the first not approved crash report
     MSAIEnvelope *crashEnvelope = nil;
 
     if([[cacheFilename pathExtension] isEqualToString:@"fake"]) {
-      NSArray *fakeReportBundle = [[MSAIPersistence sharedInstance] fakeReportBundle];
-      if(fakeReportBundle && fakeReportBundle.count > 0) {
-        crashEnvelope = fakeReportBundle[0];
+      NSArray *crashTemplateBundle = [[MSAIPersistence sharedInstance] crashTemplateBundle];
+      if(crashTemplateBundle && crashTemplateBundle.count > 0) {
+        crashEnvelope = crashTemplateBundle[0];
         if([crashEnvelope.appId compare:[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"]] == NSOrderedSame) {
         }
       }
@@ -677,7 +677,7 @@ Get the filename of the first not approved crash report
   MSAILog(@"INFO: Persisting crash reports started.");
 
   __weak typeof(self) weakSelf = self;
-  [[MSAIChannel sharedChannel] processEnvelope:envelope withCompletionBlock:^(BOOL success) {
+  [[MSAIChannel sharedChannel] processDictionary:[envelope serializeToDictionary] withCompletionBlock:^(BOOL success) {
     typeof(self) strongSelf = weakSelf;
 
     self.sendingInProgress = NO;
