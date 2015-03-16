@@ -49,6 +49,14 @@
   [self checkEnvelopeTemplate:template];
 }
 
+- (void)testEnvelopePerformance {
+    [self measureBlock:^{
+      for (int i = 0; i < 1000; ++i) {
+        [_sut envelope];
+      }
+    }];
+}
+
 - (void)testThatItInstantiatesEnvelopeForTelemetryData {
   MSAIEventData *testEvent = [MSAIEventData new];
   testEvent.name = @"Test event";
