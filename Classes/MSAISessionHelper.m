@@ -136,8 +136,8 @@ static char *const MSAISessionOperationsQueue = "com.microsoft.appInsights.sessi
 }
 
 - (NSString *)createFilePath{
-  NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES); //1
-  NSString *documentsDirectory = [paths objectAtIndex:0];
+  NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+  NSString *documentsDirectory = [[paths objectAtIndex:0] stringByAppendingString:@"sessions"];
   NSString *fileName = [NSString stringWithFormat:@"%@.%@", kMSAIFileName, kMSAIFileType];
   return [documentsDirectory stringByAppendingPathComponent:fileName];
 }
