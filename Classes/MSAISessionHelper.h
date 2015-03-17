@@ -12,7 +12,7 @@
  *  @param sessionId the sessionId (value)
  *  @param timestamp the timestamp, which represents the creation of the session
  */
-- (void)addSessionId:(NSString *)sessionId WithTimestamp:(NSString *)timestamp;
+- (void)addSessionId:(NSString *)sessionId withTimestamp:(NSString *)timestamp;
 
 ///-----------------------------------------------------------------------------
 /// @name Getting a session

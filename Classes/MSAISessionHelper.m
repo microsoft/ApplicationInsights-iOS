@@ -1,19 +1,10 @@
 #import "AppInsightsPrivate.h"
 #import "MSAISessionHelper.h"
+#import "MSAISessionHelperPrivate.h"
 
 static NSString *const kMSAIFileName = @"MSAISessions";
 static NSString *const kMSAIFileType = @"plist";
 static char *const MSAISessionOperationsQueue = "com.microsoft.appInsights.sessionQueue";
-
-@interface MSAISessionHelper()
-
-@property (nonatomic, strong) NSString *filePath;
-@property (nonatomic, strong) NSFileManager *fileManager;
-@property (nonatomic, strong) dispatch_queue_t operationsQueue;
-@property (nonatomic, strong) NSMutableDictionary *sessionEntries;
-@property (nonatomic, strong) NSArray *sortDescriptors;
-
-@end
 
 @implementation MSAISessionHelper
 

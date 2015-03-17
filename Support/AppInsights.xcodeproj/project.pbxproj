@@ -220,6 +220,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1B2439BF1AB8AB8100B07374 /* MSAISessionHelperPrivate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MSAISessionHelperPrivate.h; sourceTree = "<group>"; };
 		1B3B73071A94BC8E008DCADA /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
 		1B3C386C1A82213000700081 /* MSAICrashData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAICrashData.h; sourceTree = "<group>"; };
 		1B3C386D1A82213000700081 /* MSAICrashData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAICrashData.m; sourceTree = "<group>"; };
@@ -605,6 +606,7 @@
 				1BC8596D1A7ACC040018FB6B /* MSAIPageViewLogging_UIViewController.h */,
 				1BE53D741AB889420048ABBC /* MSAISessionHelper.h */,
 				1BE53D751AB889420048ABBC /* MSAISessionHelper.m */,
+				1B2439BF1AB8AB8100B07374 /* MSAISessionHelperPrivate.h */,
 			);
 			name = Helper;
 			sourceTree = "<group>";
