@@ -27,8 +27,7 @@ static char *const MSAISessionOperationsQueue = "com.microsoft.appInsights.sessi
     _sortDescriptors = [NSArray arrayWithObject:dateSort];
     _operationsQueue = dispatch_queue_create(MSAISessionOperationsQueue, DISPATCH_QUEUE_SERIAL);
     _fileManager = [NSFileManager new];
-    _filePath = [self createFilePath];
-    [self createPropertyListIfNeeded];
+    [self createFilePath];
     [self loadFile];
   }
   return self;
@@ -47,7 +46,7 @@ static char *const MSAISessionOperationsQueue = "com.microsoft.appInsights.sessi
     typeof(self) strongSelf = weakSelf;
     
     [strongSelf.sessionEntries setObject:sessionId forKey:timestamp];
-    [self saveFile];
+    [strongSelf saveFile];
   });
 }
 
@@ -92,7 +91,7 @@ static char *const MSAISessionOperationsQueue = "com.microsoft.appInsights.sessi
     // Remove entry
     if(sessionKey){
       [strongSelf.sessionEntries removeObjectForKey:sessionKey];
-      [self saveFile];
+      [strongSelf saveFile];
     }
   });
 }
@@ -151,21 +150,15 @@ static char *const MSAISessionOperationsQueue = "com.microsoft.appInsights.sessi
   _sessionEntries = [[NSMutableDictionary alloc] initWithContentsOfFile: _filePath];
 }
 
-- (NSString *)createFilePath{
+- (void)createFilePath{
+  
+  // TODO: Modify test target: http://stackoverflow.com/questions/8378712/nshomedirectory-in-iphone-unit-test
   NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-  NSString *documentsDirectory = [[paths objectAtIndex:0] stringByAppendingString:@"sessions"];
+  NSString *documentsDirectory = [[paths lastObject] stringByAppendingString:@"/sessions"];
   NSString *fileName = [NSString stringWithFormat:@"%@.%@", kMSAIFileName, kMSAIFileType];
-  return [documentsDirectory stringByAppendingPathComponent:fileName];
-}
-
-- (void)createPropertyListIfNeeded {
-  if (_fileManager && _filePath && ![_fileManager fileExistsAtPath: _filePath]) {
-    NSError *error;
-    NSString *bundle = [[NSBundle mainBundle] pathForResource:kMSAIFileName ofType:kMSAIFileType];
-    [_fileManager copyItemAtPath:bundle toPath: _filePath error:&error];
-    if(error){
-      MSAILog(@"Could not create file %@.%@: %@", kMSAIFileName, kMSAIFileType, [error localizedDescription]);
-    }
+  _filePath = [documentsDirectory stringByAppendingPathComponent:fileName];
+  if(![_fileManager fileExistsAtPath:_filePath]){
+    [self saveFile];
   }
 }
 
