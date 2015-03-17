@@ -33,6 +33,7 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		1B2439C31AB8AF0300B07374 /* MSAISessionHelperTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B2439C21AB8AF0300B07374 /* MSAISessionHelperTests.m */; };
 		1B3B73081A94BC8E008DCADA /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B3B73071A94BC8E008DCADA /* CoreTelephony.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		1B3C38761A82213000700081 /* MSAICrashData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3C386C1A82213000700081 /* MSAICrashData.h */; };
 		1B3C38771A82213000700081 /* MSAICrashData.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3C386D1A82213000700081 /* MSAICrashData.m */; };
@@ -221,6 +222,7 @@
 
 /* Begin PBXFileReference section */
 		1B2439BF1AB8AB8100B07374 /* MSAISessionHelperPrivate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MSAISessionHelperPrivate.h; sourceTree = "<group>"; };
+		1B2439C21AB8AF0300B07374 /* MSAISessionHelperTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAISessionHelperTests.m; path = AppInsightsTests/MSAISessionHelperTests.m; sourceTree = SOURCE_ROOT; };
 		1B3B73071A94BC8E008DCADA /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
 		1B3C386C1A82213000700081 /* MSAICrashData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAICrashData.h; sourceTree = "<group>"; };
 		1B3C386D1A82213000700081 /* MSAICrashData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAICrashData.m; sourceTree = "<group>"; };
@@ -554,6 +556,7 @@
 				808FB2391A7982230002872B /* MSAIRemoteDependencyDataTests.m */,
 				808FB23A1A7982230002872B /* MSAIRequestDataTests.m */,
 				808FB23B1A7982230002872B /* MSAISenderTests.m */,
+				1B2439C21AB8AF0300B07374 /* MSAISessionHelperTests.m */,
 				808FB23C1A7982230002872B /* MSAISessionTests.m */,
 				808FB23D1A7982230002872B /* MSAIStackFrameTests.m */,
 				808FB23E1A7982230002872B /* MSAITelemetryContextTests.m */,
@@ -1045,6 +1048,7 @@
 				808FB2471A7982230002872B /* MSAIDataPointTests.m in Sources */,
 				808FB2461A7982230002872B /* MSAICrashReportTextFormatterTests.m in Sources */,
 				808FB24D1A7982230002872B /* MSAIExceptionDataTests.m in Sources */,
+				1B2439C31AB8AF0300B07374 /* MSAISessionHelperTests.m in Sources */,
 				80F334B01A9C8A430098026F /* MSAIManagerTests.m in Sources */,
 				808FB24F1A7982230002872B /* MSAIHelperTests.m in Sources */,
 				808FB25E1A7982230002872B /* MSAITelemetryContextTests.m in Sources */,

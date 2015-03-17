@@ -34,4 +34,8 @@
  */
 + (id)sharedInstance;
 
+- (void)saveFile;
+
+- (void)loadFile;
+
 @end
