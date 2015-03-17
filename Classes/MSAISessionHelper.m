@@ -45,25 +45,26 @@ static char *const MSAISessionOperationsQueue = "com.microsoft.appInsights.sessi
 
 #pragma mark - edit property list
 
-- (void)addSessionId:(NSString *)sessionId WithTimestamp:(NSNumber *)timestamp {
+- (void)addSessionId:(NSString *)sessionId withTimestamp:(NSString *)timestamp {
   
   __weak typeof(self) weakSelf = self;
   dispatch_sync(self.operationsQueue, ^{
     typeof(self) strongSelf = weakSelf;
     
     [strongSelf.sessionEntries setObject:sessionId forKey:timestamp];
+    [self saveFile];
   });
 }
 
-- (NSString *)sessionIdForTimestamp:(NSNumber *)timestamp {
+- (NSString *)sessionIdForTimestamp:(NSString *)timestamp {
   __block NSString *sessionId = nil;
   
   __weak typeof(self) weakSelf = self;
   dispatch_sync(self.operationsQueue, ^{
     typeof(self) strongSelf = weakSelf;
     
-    NSNumber *sessionKey = [strongSelf keyForTimestamp:timestamp];
-    sessionId = [strongSelf.sessionEntries valueForKey:[sessionKey stringValue]];
+    NSString *sessionKey = [strongSelf keyForTimestamp:timestamp];
+    sessionId = [strongSelf.sessionEntries valueForKey:sessionKey];
   });
   
   return sessionId;
@@ -88,6 +89,7 @@ static char *const MSAISessionOperationsQueue = "com.microsoft.appInsights.sessi
     // Remove entry
     if(sessionKey){
       [strongSelf.sessionEntries removeObjectForKey:sessionKey];
+      [self saveFile];
     }
   });
 }
@@ -107,14 +109,15 @@ static char *const MSAISessionOperationsQueue = "com.microsoft.appInsights.sessi
     NSString *lastValue = strongSelf.sessionEntries[lastKey];
     [strongSelf.sessionEntries removeAllObjects];
     [strongSelf.sessionEntries setObject:lastValue forKey:lastKey];
+    [self saveFile];
   });
 }
 
 #pragma mark - Helper
 
-- (NSNumber *)keyForTimestamp:(NSNumber *)timestamp {
+- (NSString *)keyForTimestamp:(NSString *)timestamp {
   
-  for(NSNumber *key in [self sortedKeys]){
+  for(NSString *key in [self sortedKeys]){
     if([self iskey:key forTimestamp:timestamp]){
       return timestamp;
     }
@@ -129,8 +132,8 @@ static char *const MSAISessionOperationsQueue = "com.microsoft.appInsights.sessi
   return keys;
 }
 
-- (BOOL)iskey:(NSNumber *)key forTimestamp:(NSNumber *)timestamp {
-  return timestamp > key;
+- (BOOL)iskey:(NSString *)key forTimestamp:(NSString *)timestamp {
+  return [timestamp longLongValue] > [key longLongValue];
 }
 
 - (void)saveFile {
@@ -151,7 +154,7 @@ static char *const MSAISessionOperationsQueue = "com.microsoft.appInsights.sessi
 - (void)createPropertyListIfNeeded {
   if (_fileManager && _filePath && ![_fileManager fileExistsAtPath: _filePath]) {
     NSError *error;
-    NSString *bundle = [[NSBundle mainBundle] pathForResource:kMSAIFileName ofType:kMSAIFileType]; //5
+    NSString *bundle = [[NSBundle mainBundle] pathForResource:kMSAIFileName ofType:kMSAIFileType];
     [_fileManager copyItemAtPath:bundle toPath: _filePath error:&error];
     if(error){
       MSAILog(@"Could not create file %@.%@: %@", kMSAIFileName, kMSAIFileType, [error localizedDescription]);

@@ -12,7 +12,7 @@
  *  @param sessionId the sessionId (value)
  *  @param timestamp the timestamp, which represents the creation of the session
  */
-- (void)addSessionId:(NSString *)sessionId WithTimestamp:(NSNumber *)timestamp;
+- (void)addSessionId:(NSString *)sessionId WithTimestamp:(NSString *)timestamp;
 
 ///-----------------------------------------------------------------------------
 /// @name Getting a session
@@ -26,7 +26,7 @@
  *
  *  @return the sessionId of the session, in which the crash occured
  */
-- (NSString *)sessionIdForTimestamp:(NSNumber *)timestamp;
+- (NSString *)sessionIdForTimestamp:(NSString *)timestamp;
 
 ///-----------------------------------------------------------------------------
 /// @name Removing sessions
