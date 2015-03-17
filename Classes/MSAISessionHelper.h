@@ -12,7 +12,7 @@
  *  @param sessionId the sessionId (value)
  *  @param timestamp the timestamp, which represents the creation of the session
  */
-- (void)addSessionId:(NSString *)sessionId withTimestamp:(NSString *)timestamp;
++ (void)addSessionId:(NSString *)sessionId withTimestamp:(NSString *)timestamp;
 
 ///-----------------------------------------------------------------------------
 /// @name Getting a session
@@ -26,7 +26,7 @@
  *
  *  @return the sessionId of the session, in which the crash occured
  */
-- (NSString *)sessionIdForTimestamp:(NSString *)timestamp;
++ (NSString *)sessionIdForTimestamp:(NSString *)timestamp;
 
 ///-----------------------------------------------------------------------------
 /// @name Removing sessions
@@ -37,11 +37,11 @@
  *
  *  @param sessionId the sessionId of the plist entry, which should be removed
  */
-- (void)removeSessionId:(NSString *)sessionId;
++ (void)removeSessionId:(NSString *)sessionId;
 
 /**
  *  Keep the most recent sessionId, but all other entries from the plist
  */
-- (void)cleanUpSessionIds;
++ (void)cleanUpSessionIds;
 
 @end

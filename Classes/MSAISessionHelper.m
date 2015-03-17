@@ -36,6 +36,10 @@ static char *const MSAISessionOperationsQueue = "com.microsoft.appInsights.sessi
 
 #pragma mark - edit property list
 
++ (void)addSessionId:(NSString *)sessionId withTimestamp:(NSString *)timestamp {
+  [[self sharedInstance] addSessionId:sessionId withTimestamp:timestamp];
+}
+
 - (void)addSessionId:(NSString *)sessionId withTimestamp:(NSString *)timestamp {
   
   __weak typeof(self) weakSelf = self;
@@ -45,6 +49,10 @@ static char *const MSAISessionOperationsQueue = "com.microsoft.appInsights.sessi
     [strongSelf.sessionEntries setObject:sessionId forKey:timestamp];
     [self saveFile];
   });
+}
+
++ (NSString *)sessionIdForTimestamp:(NSString *)timestamp {
+  return [[self sharedInstance] sessionIdForTimestamp:timestamp];
 }
 
 - (NSString *)sessionIdForTimestamp:(NSString *)timestamp {
@@ -59,6 +67,10 @@ static char *const MSAISessionOperationsQueue = "com.microsoft.appInsights.sessi
   });
   
   return sessionId;
+}
+
++ (void)removeSessionId:(NSString *)sessionId {
+  [[self sharedInstance] removeSessionId:sessionId];
 }
 
 - (void)removeSessionId:(NSString *)sessionId {
@@ -83,6 +95,10 @@ static char *const MSAISessionOperationsQueue = "com.microsoft.appInsights.sessi
       [self saveFile];
     }
   });
+}
+
++ (void)cleanUpSessionIds {
+  [[self sharedInstance] cleanUpSessionIds];
 }
 
 - (void)cleanUpSessionIds {
