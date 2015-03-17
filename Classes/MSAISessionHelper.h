@@ -2,6 +2,10 @@
 
 @interface MSAISessionHelper : NSObject
 
+///-----------------------------------------------------------------------------
+/// @name Adding a session
+///-----------------------------------------------------------------------------
+
 /**
  *  Adds a new sessionId (value) for a given timestamp (key) to the session plist.
  *
@@ -9,6 +13,10 @@
  *  @param timestamp the timestamp, which represents the creation of the session
  */
 - (void)addSessionId:(NSString *)sessionId WithTimestamp:(NSString *)timestamp;
+
+///-----------------------------------------------------------------------------
+/// @name Getting a session
+///-----------------------------------------------------------------------------
 
 /**
  *  Returns the best effort based on a given timestamp.
@@ -19,6 +27,10 @@
  *  @return the sessionId of the session, in which the crash occured
  */
 - (NSString *)sessionIdForTimestamp:(NSString *)timestamp;
+
+///-----------------------------------------------------------------------------
+/// @name Removing sessions
+///-----------------------------------------------------------------------------
 
 /**
  *  Removes the entry for a given sessionId.
