@@ -24,8 +24,6 @@ static char *const MSAISessionOperationsQueue = "com.microsoft.appInsights.sessi
 
 - (instancetype)init {
   if(self = [super init]) {
-    NSSortDescriptor *dateSort= [NSSortDescriptor sortDescriptorWithKey:@"self" ascending:NO];
-    _sortDescriptors = [NSArray arrayWithObject:dateSort];
     _operationsQueue = dispatch_queue_create(MSAISessionOperationsQueue, DISPATCH_QUEUE_SERIAL);
     _sessionEntries = [[[MSAIPersistence sharedInstance] sessionIds] mutableCopy];
   }
@@ -104,17 +102,19 @@ static char *const MSAISessionOperationsQueue = "com.microsoft.appInsights.sessi
   __weak typeof(self) weakSelf = self;
   dispatch_sync(self.operationsQueue, ^{
     typeof(self) strongSelf = weakSelf;
+    NSInteger sessionsCount = strongSelf.sessionEntries.count;
+    if(sessionsCount >= 0){
     
-    // Get most recent session
-    NSArray *sortedKeys = [strongSelf sortedKeys];
-    NSInteger lastIndex = [sortedKeys indexOfObject:[sortedKeys lastObject]];
-    NSString *lastKey = sortedKeys[lastIndex];
-    
-    // Clear list and add most recent session
-    NSString *lastValue = strongSelf.sessionEntries[lastKey];
-    [strongSelf.sessionEntries removeAllObjects];
-    [strongSelf.sessionEntries setObject:lastValue forKey:lastKey];
+      // Get most recent session
+      NSArray *sortedKeys = [strongSelf sortedKeys];
+      NSString *recentSessionKey = sortedKeys[0];
+      
+      // Clear list and add most recent session
+      NSString *lastValue = strongSelf.sessionEntries[recentSessionKey];
+      [strongSelf.sessionEntries removeAllObjects];
+      [strongSelf.sessionEntries setObject:lastValue forKey:recentSessionKey];
       [[MSAIPersistence sharedInstance] persistSessionIds:strongSelf.sessionEntries];
+    }
   });
 }
 
@@ -124,7 +124,7 @@ static char *const MSAISessionOperationsQueue = "com.microsoft.appInsights.sessi
   
   for(NSString *key in [self sortedKeys]){
     if([self iskey:key forTimestamp:timestamp]){
-      return timestamp;
+      return key;
     }
   }
   return nil;
@@ -132,9 +132,10 @@ static char *const MSAISessionOperationsQueue = "com.microsoft.appInsights.sessi
 
 - (NSArray *)sortedKeys {
   NSMutableArray *keys = [[_sessionEntries allKeys] mutableCopy];
-  [keys sortUsingDescriptors:_sortDescriptors];
-  
-  return keys;
+  NSArray *sortedArray = [keys sortedArrayUsingComparator:^(id a, id b) {
+    return [b compare:a options:NSNumericSearch];
+  }];
+  return sortedArray;
 }
 
 - (BOOL)iskey:(NSString *)key forTimestamp:(NSString *)timestamp {

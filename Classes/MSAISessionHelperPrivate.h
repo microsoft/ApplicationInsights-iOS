@@ -13,11 +13,6 @@
 @property (nonatomic, strong) NSMutableDictionary *sessionEntries;
 
 /**
- *  An Array with sorting rules which are used to sort the content of the property list.
- */
-@property (nonatomic, strong) NSArray *sortDescriptors;
-
-/**
  *  Returns the shared instance.
  *
  *  @return the shared instance
