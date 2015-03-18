@@ -1,6 +1,7 @@
 #import "AppInsightsPrivate.h"
 #import "MSAISessionHelper.h"
 #import "MSAISessionHelperPrivate.h"
+#import "MSAIPersistence.h"
 
 static NSString *const kMSAIFileName = @"MSAISessions";
 static NSString *const kMSAIFileType = @"plist";
@@ -28,7 +29,7 @@ static char *const MSAISessionOperationsQueue = "com.microsoft.appInsights.sessi
     _operationsQueue = dispatch_queue_create(MSAISessionOperationsQueue, DISPATCH_QUEUE_SERIAL);
     _fileManager = [NSFileManager new];
     [self createFilePath];
-    [self loadFile];
+    _sessionEntries = [[[MSAIPersistence sharedInstance] sessionIds] mutableCopy];
   }
   return self;
 }
@@ -46,7 +47,7 @@ static char *const MSAISessionOperationsQueue = "com.microsoft.appInsights.sessi
     typeof(self) strongSelf = weakSelf;
     
     [strongSelf.sessionEntries setObject:sessionId forKey:timestamp];
-    [strongSelf saveFile];
+    [[MSAIPersistence sharedInstance] persistSessionIds:strongSelf.sessionEntries];
   });
 }
 
@@ -91,7 +92,7 @@ static char *const MSAISessionOperationsQueue = "com.microsoft.appInsights.sessi
     // Remove entry
     if(sessionKey){
       [strongSelf.sessionEntries removeObjectForKey:sessionKey];
-      [strongSelf saveFile];
+      [[MSAIPersistence sharedInstance] persistSessionIds:strongSelf.sessionEntries];
     }
   });
 }
@@ -115,7 +116,7 @@ static char *const MSAISessionOperationsQueue = "com.microsoft.appInsights.sessi
     NSString *lastValue = strongSelf.sessionEntries[lastKey];
     [strongSelf.sessionEntries removeAllObjects];
     [strongSelf.sessionEntries setObject:lastValue forKey:lastKey];
-    [self saveFile];
+      [[MSAIPersistence sharedInstance] persistSessionIds:strongSelf.sessionEntries];
   });
 }
 
@@ -158,7 +159,6 @@ static char *const MSAISessionOperationsQueue = "com.microsoft.appInsights.sessi
   NSString *fileName = [NSString stringWithFormat:@"%@.%@", kMSAIFileName, kMSAIFileType];
   _filePath = [documentsDirectory stringByAppendingPathComponent:fileName];
   if(![_fileManager fileExistsAtPath:_filePath]){
-    [self saveFile];
   }
 }
 

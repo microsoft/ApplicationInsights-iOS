@@ -21,7 +21,8 @@ FOUNDATION_EXPORT NSString *const kMSAIPersistenceSuccessNotification;
 typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
   MSAIPersistenceTypeHighPriority = 0,
   MSAIPersistenceTypeRegular = 1,
-  MSAIPersistenceTypeCrashTemplate = 2
+  MSAIPersistenceTypeCrashTemplate = 2,
+  MSAIPersistenceTypeSessionIds = 3
 };
 
 ///-----------------------------------------------------------------------------
@@ -77,6 +78,13 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
  *  @param completionBlock   a block which is executed after the bundle has been stored
  */
 - (void)persistBundle:(NSArray *)bundle ofType:(MSAIPersistenceType)type enableNotifications:(BOOL)sendNotifications withCompletionBlock:(void (^)(BOOL success))completionBlock;
+
+/**
+ *  Saves the given dictionary to the session Ids file.
+ *
+ *  @param propertyList the dictionary, which should be saved
+ */
+- (void)persistSessionIds:(NSDictionary *)sessionIds;
 
 /**
  *  Deletes the file for the given path.
@@ -142,6 +150,13 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
  *  @return a data object which contains telemetry data in json representation
  */
 - (NSData *)dataAtPath:(NSString *)path;
+
+/**
+ *  Returns the content of the session Ids file.
+ *
+ *  @return return a dictionary containing all session Ids
+ */
+- (NSDictionary *)sessionIds;
 
 /**
  *  Return data for a given array based on its persistence type.

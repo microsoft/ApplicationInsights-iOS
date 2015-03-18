@@ -7,6 +7,7 @@
 NSString *const kHighPrioString = @"highPrio";
 NSString *const kRegularPrioString = @"regularPrio";
 NSString *const kCrashTemplateString = @"crashTemplate";
+NSString *const kSessionIdsString = @"sessionIds";
 NSString *const kFileBaseString = @"app-insights-bundle-";
 
 NSString *const kMSAIPersistenceSuccessNotification = @"MSAIPersistenceSuccessNotification";
@@ -56,7 +57,7 @@ NSUInteger const defaultFileCount = 50;
 - (void)persistBundle:(NSArray *)bundle ofType:(MSAIPersistenceType)type enableNotifications:(BOOL)sendNotifications withCompletionBlock:(void (^)(BOOL success))completionBlock {
   
   if(bundle && bundle.count > 0) {
-    NSString *fileURL = [self newFileURLForPriority:type];
+    NSString *fileURL = [self newFileURLForPersitenceType:type];
     
     NSData *data = [self dataForBundle:bundle withPersistenceTye:type];
     
@@ -86,6 +87,14 @@ NSUInteger const defaultFileCount = 50;
       //TODO send out a fail notification?
     }
   }
+}
+
+- (void)persistSessionIds:(NSDictionary *)sessionIds {
+  NSString *fileURL = [self newFileURLForPersitenceType:MSAIPersistenceTypeSessionIds];
+  
+  dispatch_async(self.persistenceQueue, ^{
+    [NSKeyedArchiver archiveRootObject:sessionIds toFile:fileURL];
+  });
 }
 
 - (BOOL)isFreeSpaceAvailable{
@@ -144,6 +153,15 @@ NSUInteger const defaultFileCount = 50;
   return bundle;
 }
 
+- (NSDictionary *)sessionIds {
+  NSDictionary *sessionIds = nil;;
+  NSString *path = [self newFileURLForPersitenceType:MSAIPersistenceTypeSessionIds];
+  if(path) {
+    sessionIds = [NSKeyedUnarchiver unarchiveObjectWithFile:path];
+  }
+  return sessionIds;
+}
+
 - (NSData *)dataAtPath:(NSString *)path {
   NSData *data = nil;
   
@@ -193,7 +211,7 @@ NSUInteger const defaultFileCount = 50;
  * The filename includes the timestamp.
  * For each MSAIPersistenceType, we create a folder within the app's Application Support directory directory
  */
-- (NSString *)newFileURLForPriority:(MSAIPersistenceType)type {
+- (NSString *)newFileURLForPersitenceType:(MSAIPersistenceType)type {
   
   NSString *applicationSupportDir = [NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES) lastObject];
   NSString *uuid = msai_UUID();
@@ -209,6 +227,11 @@ NSUInteger const defaultFileCount = 50;
     case MSAIPersistenceTypeCrashTemplate: {
       [self createFolderAtPathIfNeeded:[applicationSupportDir stringByAppendingPathComponent:kCrashTemplateString]];
       filePath = [[applicationSupportDir stringByAppendingPathComponent:kCrashTemplateString] stringByAppendingPathComponent:kCrashTemplateString];
+      break;
+    };
+    case MSAIPersistenceTypeSessionIds: {
+      [self createFolderAtPathIfNeeded:[applicationSupportDir stringByAppendingPathComponent:kSessionIdsString]];
+      filePath = [[applicationSupportDir stringByAppendingPathComponent:kSessionIdsString] stringByAppendingPathComponent:kSessionIdsString];
       break;
     };
     default: {
@@ -307,6 +330,10 @@ NSUInteger const defaultFileCount = 50;
     };
     case MSAIPersistenceTypeRegular: {
       subfolderPath = kRegularPrioString;
+      break;
+    }
+    case MSAIPersistenceTypeSessionIds: {
+      subfolderPath = kSessionIdsString;
       break;
     }
   }
