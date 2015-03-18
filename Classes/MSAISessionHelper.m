@@ -27,8 +27,6 @@ static char *const MSAISessionOperationsQueue = "com.microsoft.appInsights.sessi
     NSSortDescriptor *dateSort= [NSSortDescriptor sortDescriptorWithKey:@"self" ascending:NO];
     _sortDescriptors = [NSArray arrayWithObject:dateSort];
     _operationsQueue = dispatch_queue_create(MSAISessionOperationsQueue, DISPATCH_QUEUE_SERIAL);
-    _fileManager = [NSFileManager new];
-    [self createFilePath];
     _sessionEntries = [[[MSAIPersistence sharedInstance] sessionIds] mutableCopy];
   }
   return self;
@@ -141,25 +139,6 @@ static char *const MSAISessionOperationsQueue = "com.microsoft.appInsights.sessi
 
 - (BOOL)iskey:(NSString *)key forTimestamp:(NSString *)timestamp {
   return [timestamp longLongValue] > [key longLongValue];
-}
-
-- (void)saveFile {
-  [_sessionEntries writeToFile:_filePath atomically:YES];
-}
-
-- (void)loadFile {
-  _sessionEntries = [[NSMutableDictionary alloc] initWithContentsOfFile: _filePath];
-}
-
-- (void)createFilePath{
-  
-  // TODO: Modify test target: http://stackoverflow.com/questions/8378712/nshomedirectory-in-iphone-unit-test
-  NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-  NSString *documentsDirectory = [[paths lastObject] stringByAppendingString:@"/sessions"];
-  NSString *fileName = [NSString stringWithFormat:@"%@.%@", kMSAIFileName, kMSAIFileType];
-  _filePath = [documentsDirectory stringByAppendingPathComponent:fileName];
-  if(![_fileManager fileExistsAtPath:_filePath]){
-  }
 }
 
 @end
