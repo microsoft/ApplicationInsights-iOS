@@ -3,6 +3,7 @@
 #import "MSAITelemetryContextPrivate.h"
 #import "MSAIMetricsManagerPrivate.h"
 #import "MSAIHelper.h"
+#import "MSAISessionHelper.h"
 #import "MSAIReachability.h"
 #import "MSAIReachabilityPrivate.h"
 
@@ -100,6 +101,7 @@ NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
   _session.sessionId = msai_UUID();
   _session.isNew = @"true";
   _session.isFirst = (firstSession ? @"true" : @"false");
+  [MSAISessionHelper addSessionId:_session.sessionId withDate:[NSDate date]];
 }
 
 #pragma mark - Custom getter
