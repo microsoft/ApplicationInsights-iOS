@@ -9,6 +9,7 @@
 #import "MSAISessionHelper.h"
 #import "MSAISessionHelperPrivate.h"
 #import "MSAIPersistence.h"
+#import "MSAIPersistencePrivate.h"
 
 @interface MSAISessionHelperTests : XCTestCase
 
@@ -29,30 +30,32 @@
 }
 
 - (void)teardown {
-  [super tearDown];
+  NSString *path = [[MSAIPersistence sharedInstance] newFileURLForPersitenceType:MSAIPersistenceTypeSessionIds];
+  [[MSAIPersistence sharedInstance] deleteFileAtPath:path];
   
-  // Reset property list
+  [super tearDown];
 }
 
 #pragma mark - Setup Tests
 
 - (void)testAddSessionWorks {
   
-  NSString *timestamp = @"1234";
+  NSDate *date = [NSDate date];
+  NSString *timestamp = [_sut unixTimestampFromDate:date];
   NSString *sessionId = @"xyz";
-  [MSAISessionHelper addSessionId:sessionId withTimestamp:timestamp];
+  [MSAISessionHelper addSessionId:sessionId withDate:date];
   
-  XCTAssertLessThanOrEqual(_sut.sessionEntries.count, 1);
-  XCTAssertTrue([_sut.sessionEntries[timestamp] isEqualToString:sessionId]);
+  XCTAssertEqual(_sut.sessionEntries.count, 1);
+  XCTAssertEqual(_sut.sessionEntries[timestamp], sessionId);
 }
 
 - (void)testRemoveSessionWorks {
-  NSString *key;
+  NSDate *key;
   NSString *value;
   for(int i = 0; i < 3; i++){
-    key = [NSString stringWithFormat:@"%d", i];
+    key = [NSDate dateWithTimeIntervalSince1970:i];
     value = [NSString stringWithFormat:@"VALUE%d", i];
-    [MSAISessionHelper addSessionId:value withTimestamp:key];
+    [_sut addSessionId:value withDate:key];
   }
   [MSAISessionHelper removeSessionId:@"VALUE1"];
   
@@ -64,37 +67,59 @@
 }
 
 - (void)testCleanUpSessionsWorks {
-  [MSAISessionHelper addSessionId:@"x" withTimestamp:@"3"];
-  [MSAISessionHelper addSessionId:@"x" withTimestamp:@"333"];
-  [MSAISessionHelper addSessionId:@"x" withTimestamp:@"33"];
+  XCTAssertEqual(_sut.sessionEntries.count, 0);
+  
+  [MSAISessionHelper addSessionId:@"a" withDate:msai_dateWithTimeIntervalSince1970(3)];
+  [MSAISessionHelper addSessionId:@"b" withDate:msai_dateWithTimeIntervalSince1970(33)];
+  [MSAISessionHelper addSessionId:@"c" withDate:msai_dateWithTimeIntervalSince1970(333)];
+  XCTAssertEqual(_sut.sessionEntries.count, 3);
+  
   [MSAISessionHelper cleanUpSessionIds];
   
   XCTAssertLessThanOrEqual(_sut.sessionEntries.count, 1);
-  XCTAssertNil(_sut.sessionEntries[@"33"]);
+  
   XCTAssertNil(_sut.sessionEntries[@"3"]);
+  XCTAssertNil(_sut.sessionEntries[@"33"]);
   XCTAssertNotNil(_sut.sessionEntries[@"333"]);
 }
 
-- (void)testReturnsCorrectSessionIdForTimestamp {
-  [MSAISessionHelper addSessionId:@"10" withTimestamp:@"10"];
-  [MSAISessionHelper addSessionId:@"20" withTimestamp:@"20"];
-  [MSAISessionHelper addSessionId:@"30" withTimestamp:@"30"];
+- (void)testReturnsCorrectsessionIdForDate {
+  [MSAISessionHelper addSessionId:@"10" withDate:msai_dateWithTimeIntervalSince1970(3)];
+  [MSAISessionHelper addSessionId:@"20" withDate:msai_dateWithTimeIntervalSince1970(33)];
+  [MSAISessionHelper addSessionId:@"30" withDate:msai_dateWithTimeIntervalSince1970(333)];
   
-  NSString *sessionId = [MSAISessionHelper sessionIdForTimestamp:@"7"];
+  NSString *sessionId = [MSAISessionHelper sessionIdForDate:[NSDate dateWithTimeIntervalSince1970:0]];
   XCTAssertNil(sessionId);
   
-  sessionId = [MSAISessionHelper sessionIdForTimestamp:@"10"];
+  sessionId = [MSAISessionHelper sessionIdForDate:msai_dateWithTimeIntervalSince1970(3)];
   XCTAssertNil(sessionId);
   
-  sessionId = [MSAISessionHelper sessionIdForTimestamp:@"15"];
+  sessionId = [MSAISessionHelper sessionIdForDate:msai_dateWithTimeIntervalSince1970(3+23)];
   XCTAssertEqual(sessionId, @"10");
   
-  sessionId = [MSAISessionHelper sessionIdForTimestamp:@"21"];
+  sessionId = [MSAISessionHelper sessionIdForDate:msai_dateWithTimeIntervalSince1970(33)];
+  XCTAssertEqual(sessionId, @"10");
+  
+  sessionId = [MSAISessionHelper sessionIdForDate:msai_dateWithTimeIntervalSince1970(33+42)];
   XCTAssertEqual(sessionId, @"20");
   
-  sessionId = [MSAISessionHelper sessionIdForTimestamp:@"33"];
+  sessionId = [MSAISessionHelper sessionIdForDate:msai_dateWithTimeIntervalSince1970(333+1337)];
   XCTAssertEqual(sessionId, @"30");
   
 }
+
+- (void)testUnixTimestampFromDate {
+  NSString *timestamp = [_sut unixTimestampFromDate:[NSDate dateWithTimeIntervalSince1970:42]];
+  XCTAssertEqualObjects(timestamp, @"42");
+}
+
+#pragma mark Helper
+
+NSDate *msai_dateWithTimeIntervalSince1970(int timeInterval);
+
+NSDate *msai_dateWithTimeIntervalSince1970(int timeInterval) {
+  return [NSDate dateWithTimeIntervalSince1970:timeInterval];
+}
+
 
 @end
