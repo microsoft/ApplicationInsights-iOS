@@ -58,7 +58,6 @@ NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
     _session = sessionContext;
     _tags = [self tags];
     
-    [self createNewSession];
     [self configureNetworkStatusTracking];
   }
   return self;
