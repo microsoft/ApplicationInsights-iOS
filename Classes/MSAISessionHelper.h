@@ -12,7 +12,7 @@
  *  @param sessionId the sessionId (value)
  *  @param timestamp the timestamp, which represents the creation of the session
  */
-+ (void)addSessionId:(NSString *)sessionId withTimestamp:(NSString *)timestamp;
++ (void)addSessionId:(NSString *)sessionId withDate:(NSDate *)date;
 
 ///-----------------------------------------------------------------------------
 /// @name Getting a session
@@ -21,12 +21,11 @@
 /**
  *  Returns the best effort based on a given timestamp.
  *
- *
- *  @param timestamp the creation timestamp of a crash report
+ *  @param date the creation date of a crash report
  *
  *  @return the sessionId of the session, in which the crash occured
  */
-+ (NSString *)sessionIdForTimestamp:(NSString *)timestamp;
++ (NSString *)sessionIdForDate:(NSDate *)date;
 
 ///-----------------------------------------------------------------------------
 /// @name Removing sessions

@@ -19,4 +19,39 @@
  */
 + (id)sharedInstance;
 
+/**
+ *  Adds a new sessionId (value) for a given timestamp (key) to the session plist.
+ *
+ *  @param sessionId the sessionId (value)
+ *  @param timestamp the timestamp, which represents the creation of the session
+ */
+- (void)addSessionId:(NSString *)sessionId withDate:(NSDate *)date;
+
+/**
+ *  Returns the best effort based on a given timestamp.
+ *
+ *
+ *  @param date the creation date of a crash report
+ *
+ *  @return the sessionId of the session, in which the crash occured
+ */
+- (NSString *)sessionIdForDate:(NSDate *)date;
+
+/**
+ *  Removes the entry for a given sessionId.
+ *
+ *  @param sessionId the sessionId of the plist entry, which should be removed
+ */
+- (void)removeSessionId:(NSString *)sessionId;
+
+
+/**
+ *  Turn a NSDate object into a unix time timestamp
+ *
+ * @param date any NSDate object
+ *
+ * @returns a string containing the date as a Unix timestamp
+ */
+- (NSString *)unixTimestampFromDate:(NSDate *)date;
+
 @end

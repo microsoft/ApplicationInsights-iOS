@@ -3,8 +3,11 @@
 #import "MSAISessionHelperPrivate.h"
 #import "MSAIPersistence.h"
 
-static NSString *const kMSAIFileName = @"MSAISessions";
-static NSString *const kMSAIFileType = @"plist";
+#import "MSAIHelper.h"
+
+static NSString *const kMSAISessionFileName = @"MSAISessions";
+static NSString *const kMSAISessionFileType = @"plist";
+
 static char *const MSAISessionOperationsQueue = "com.microsoft.appInsights.sessionQueue";
 
 @implementation MSAISessionHelper
@@ -23,35 +26,39 @@ static char *const MSAISessionOperationsQueue = "com.microsoft.appInsights.sessi
 }
 
 - (instancetype)init {
-  if(self = [super init]) {
+  if (self = [super init]) {
     _operationsQueue = dispatch_queue_create(MSAISessionOperationsQueue, DISPATCH_QUEUE_SERIAL);
-    _sessionEntries = [[[MSAIPersistence sharedInstance] sessionIds] mutableCopy];
+    NSMutableDictionary *restoredSessionIds = [[[MSAIPersistence sharedInstance] sessionIds] mutableCopy];
+    _sessionEntries = restoredSessionIds ? restoredSessionIds : [NSMutableDictionary new];
   }
   return self;
 }
 
 #pragma mark - edit property list
 
-+ (void)addSessionId:(NSString *)sessionId withTimestamp:(NSString *)timestamp {
-  [[self sharedInstance] addSessionId:sessionId withTimestamp:timestamp];
++ (void)addSessionId:(NSString *)sessionId withDate:(NSDate *)date {
+  [[self sharedInstance] addSessionId:sessionId withDate:date];
 }
 
-- (void)addSessionId:(NSString *)sessionId withTimestamp:(NSString *)timestamp {
+- (void)addSessionId:(NSString *)sessionId withDate:(NSDate *)date {
+  NSString *timestamp = [self unixTimestampFromDate:date];
   
   __weak typeof(self) weakSelf = self;
   dispatch_sync(self.operationsQueue, ^{
     typeof(self) strongSelf = weakSelf;
-    
+
     [strongSelf.sessionEntries setObject:sessionId forKey:timestamp];
     [[MSAIPersistence sharedInstance] persistSessionIds:strongSelf.sessionEntries];
   });
 }
 
-+ (NSString *)sessionIdForTimestamp:(NSString *)timestamp {
-  return [[self sharedInstance] sessionIdForTimestamp:timestamp];
++ (NSString *)sessionIdForDate:(NSDate *)date {
+  return [[self sharedInstance] sessionIdForDate:date];
 }
 
-- (NSString *)sessionIdForTimestamp:(NSString *)timestamp {
+- (NSString *)sessionIdForDate:(NSDate *)date {
+  NSString *timestamp = [self unixTimestampFromDate:date];
+
   __block NSString *sessionId = nil;
   
   __weak typeof(self) weakSelf = self;
@@ -70,26 +77,18 @@ static char *const MSAISessionOperationsQueue = "com.microsoft.appInsights.sessi
 }
 
 - (void)removeSessionId:(NSString *)sessionId {
-  
   __weak typeof(self) weakSelf = self;
+
   dispatch_sync(self.operationsQueue, ^{
     typeof(self) strongSelf = weakSelf;
     
-    // Find key for given sessionId
-    // TODO: Maybe sorting dictionary keys in advance is faster
-    NSString *sessionKey = nil;
-    for(NSString *key in _sessionEntries) {
-      if([strongSelf.sessionEntries[key] isEqualToString:sessionId]) {
-        sessionKey = key;
-        break;
+    [_sessionEntries enumerateKeysAndObjectsUsingBlock:^(NSString *blockTimestamp, NSString *blockSessionId, BOOL *stop) {
+      if ([blockSessionId isEqualToString:sessionId]) {
+        [_sessionEntries removeObjectForKey:blockTimestamp];
+        *stop = YES;
       }
-    }
-    
-    // Remove entry
-    if(sessionKey){
-      [strongSelf.sessionEntries removeObjectForKey:sessionKey];
-      [[MSAIPersistence sharedInstance] persistSessionIds:strongSelf.sessionEntries];
-    }
+    }];
+    [[MSAIPersistence sharedInstance] persistSessionIds:strongSelf.sessionEntries];
   });
 }
 
@@ -98,16 +97,17 @@ static char *const MSAISessionOperationsQueue = "com.microsoft.appInsights.sessi
 }
 
 - (void)cleanUpSessionIds {
-  
   __weak typeof(self) weakSelf = self;
+  
   dispatch_sync(self.operationsQueue, ^{
     typeof(self) strongSelf = weakSelf;
-    NSInteger sessionsCount = strongSelf.sessionEntries.count;
-    if(sessionsCount >= 0){
     
+    NSInteger sessionsCount = strongSelf.sessionEntries.count;
+    if (sessionsCount >= 0) {
+
       // Get most recent session
       NSArray *sortedKeys = [strongSelf sortedKeys];
-      NSString *recentSessionKey = sortedKeys[0];
+      NSString *recentSessionKey = sortedKeys.firstObject;
       
       // Clear list and add most recent session
       NSString *lastValue = strongSelf.sessionEntries[recentSessionKey];
@@ -120,10 +120,13 @@ static char *const MSAISessionOperationsQueue = "com.microsoft.appInsights.sessi
 
 #pragma mark - Helper
 
+- (NSString *)unixTimestampFromDate:(NSDate *)date {
+    return [NSString stringWithFormat:@"%ld", (time_t)[date timeIntervalSince1970]];
+}
+
 - (NSString *)keyForTimestamp:(NSString *)timestamp {
-  
-  for(NSString *key in [self sortedKeys]){
-    if([self iskey:key forTimestamp:timestamp]){
+  for (NSString *key in [self sortedKeys]){
+    if([timestamp doubleValue] > [key doubleValue]){
       return key;
     }
   }
@@ -136,10 +139,6 @@ static char *const MSAISessionOperationsQueue = "com.microsoft.appInsights.sessi
     return [b compare:a options:NSNumericSearch];
   }];
   return sortedArray;
-}
-
-- (BOOL)iskey:(NSString *)key forTimestamp:(NSString *)timestamp {
-  return [timestamp longLongValue] > [key longLongValue];
 }
 
 @end
