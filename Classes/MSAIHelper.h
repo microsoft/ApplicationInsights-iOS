@@ -15,7 +15,7 @@ NSString *msai_appVersion(void);
 NSString *msai_devicePlatform(void);
 NSString *msai_deviceLanguage(void);
 NSString *msai_deviceLocale(void);
-NSString *msai_osVersion(void);
+NSString *msai_osVersionBuild(void);
 NSString *msai_osName(void);
 NSString *msai_deviceType(void);
 NSString *msai_screenSize(void);
