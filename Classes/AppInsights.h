@@ -44,7 +44,7 @@ typedef NS_ENUM (NSInteger, MSAICrashErrorReason) {
    */
   MSAICrashAPIErrorWithStatusCode
 };
-extern NSString *const __attribute__((unused)) kMSAICrashErrorDomain;
+extern NSString *const __unused kMSAICrashErrorDomain;
 
 
 /**
@@ -56,7 +56,7 @@ typedef NS_ENUM(NSInteger, MSAIErrorReason) {
    */
   MSAIErrorUnknown
 };
-extern NSString *const __attribute__((unused)) kMSAIErrorDomain;
+extern NSString *const __unused kMSAIErrorDomain;
 #endif 
 
 #endif
