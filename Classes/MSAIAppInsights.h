@@ -96,24 +96,24 @@
 + (void)setCrashManagerDisabled:(BOOL)crashManagerDisabled;
 
 /**
- * Flag the determines whether the Metrics Manager should be disabled. 
- * If this flag is enabled, then metrics collection is disabled and metrics data will
+ * Flag the determines whether the Telemetry Manager should be disabled. 
+ * If this flag is enabled, then telemetry collection is disabled and telemetry data will
  * not be collected and send.
  *
  * @return YES, if manager is disabled
  *
  * @default NO
- * @see MSAIMetricsManager
+ * @see MSAITelemetryManager
  * @warning This property needs to be set before calling `start`
  */
-@property (nonatomic, getter = isMetricsManagerDisabled) BOOL metricsManagerDisabled;
+@property (nonatomic, getter = isTelemetryManagerDisabled) BOOL telemetryManagerDisabled;
 
 /**
- *  Enable (NO) or disable (YES) the metrics manager. This should be called before `start`.
+ *  Enable (NO) or disable (YES) the telemetry manager. This should be called before `start`.
  *
- *  @param metricsManagerDisabled Flag which determines whether the Metrics Manager should be disabled
+ *  @param telemetryManagerDisabled Flag which determines whether the Telemetry Manager should be disabled
  */
-+ (void)setMetricsManagerDisabled:(BOOL)metricsManagerDisabled;
++ (void)setTelemetryManagerDisabled:(BOOL)telemetryManagerDisabled;
 
 /**
  * Flag the determines whether collecting page views automatically should be disabled.

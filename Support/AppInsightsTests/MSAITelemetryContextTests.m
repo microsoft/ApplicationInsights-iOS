@@ -9,7 +9,7 @@
 #import "MSAITelemetryContext.h"
 #import "MSAITelemetryContextPrivate.h"
 
-#import "MSAIMetricsManagerPrivate.h"
+#import "MSAITelemetryManagerPrivate.h"
 #import "MSAIApplication.h"
 #import "MSAIDevice.h"
 #import "MSAIOperation.h"

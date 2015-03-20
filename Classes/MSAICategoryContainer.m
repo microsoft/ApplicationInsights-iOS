@@ -1,7 +1,7 @@
 #import "MSAICategoryContainer.h"
 #import <objc/runtime.h>
-#import "MSAIMetricsManager.h"
-#import "MSAIMetricsManagerPrivate.h"
+#import "MSAITelemetryManager.h"
+#import "MSAITelemetryManagerPrivate.h"
 
 @implementation MSAICategoryContainer
 
@@ -32,9 +32,9 @@
 - (void)msai_viewWillAppear:(BOOL)animated {
   [self msai_viewWillAppear:animated];
   
-  if(![MSAIMetricsManager sharedManager].autoPageViewTrackingDisabled){
+  if(![MSAITelemetryManager sharedManager].autoPageViewTrackingDisabled){
     NSString *pageViewName = [NSString stringWithFormat:@"%@ %@", NSStringFromClass([self class]), self.title];
-    [MSAIMetricsManager trackPageView:pageViewName];
+    [MSAITelemetryManager trackPageView:pageViewName];
   }
 }
 

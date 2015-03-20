@@ -9,8 +9,8 @@
 #import "AppInsights.h"
 #import "AppInsightsPrivate.h"
 #import "MSAIAppClient.h"
-#import "MSAIMetricsManager.h"
-#import "MSAIMetricsManagerPrivate.h"
+#import "MSAITelemetryManager.h"
+#import "MSAITelemetryManagerPrivate.h"
 
 static NSNotificationCenter *mockNotificationCenter = nil;
 
@@ -22,46 +22,46 @@ static NSNotificationCenter *mockNotificationCenter = nil;
 
 @end
 
-@interface MSAIMetricsManagerTests : XCTestCase
+@interface MSAITelemetryManagerTests : XCTestCase
 
-@property (strong) MSAIMetricsManager *sut;
+@property (strong) MSAITelemetryManager *sut;
 
 @end
 
 
-@implementation MSAIMetricsManagerTests
+@implementation MSAITelemetryManagerTests
 
 - (void)setUp {
   [super setUp];
   
-  self.sut = [MSAIMetricsManager new];
+  self.sut = [MSAITelemetryManager new];
 }
 
 #pragma mark - Singleton Tests
 
 - (void)testSharedManagerCreated {
-  XCTAssertNotNil([MSAIMetricsManager sharedManager]);
+  XCTAssertNotNil([MSAITelemetryManager sharedManager]);
 }
 
 - (void)testUniqueInstanceCreated {
-  XCTAssertNotNil([MSAIMetricsManager new]);
+  XCTAssertNotNil([MSAITelemetryManager new]);
 }
 
 - (void)testSingletonReturnsSameInstanceTwice {
-  MSAIMetricsManager *m1 = [MSAIMetricsManager sharedManager];
-  XCTAssertEqualObjects(m1, [MSAIMetricsManager sharedManager]);
+  MSAITelemetryManager *m1 = [MSAITelemetryManager sharedManager];
+  XCTAssertEqualObjects(m1, [MSAITelemetryManager sharedManager]);
 }
 
 - (void)testSingletonSeperateFromUniqueInstance {
-  XCTAssertNotEqualObjects([MSAIMetricsManager sharedManager], [MSAIMetricsManager new]);
+  XCTAssertNotEqualObjects([MSAITelemetryManager sharedManager], [MSAITelemetryManager new]);
 }
 
-- (void)testMetricsManagerReturnsSeperateUniqueInstances {
-  XCTAssertNotEqualObjects([MSAIMetricsManager new], [MSAIMetricsManager new]);
+- (void)testTelemetryManagerReturnsSeperateUniqueInstances {
+  XCTAssertNotEqualObjects([MSAITelemetryManager new], [MSAITelemetryManager new]);
 }
 
-- (void)testMetricsEventQueueWasInitialised {
-  XCTAssertNotNil(self.sut.metricEventQueue);
+- (void)testTelemetryEventQueueWasInitialised {
+  XCTAssertNotNil(self.sut.telemetryEventQueue);
 }
 
 - (void)testManagerIsInitialised {
@@ -71,8 +71,8 @@ static NSNotificationCenter *mockNotificationCenter = nil;
 }
 
 - (void)testMetricsManagerDisabled {
-  XCTAssertFalse(self.sut.metricsManagerDisabled);
-  self.sut.metricsManagerDisabled = YES;
+  XCTAssertFalse(self.sut.telemetryManagerDisabled);
+  self.sut.telemetryManagerDisabled= YES;
   [self.sut startManager];
   XCTAssertFalse(self.sut.managerInitialised);
 }

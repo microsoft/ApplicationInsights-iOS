@@ -9,11 +9,11 @@ extern NSString *const kMSAIIdentifier;
 extern NSString *const kMSAICrashSettings;
 extern NSString *const kMSAICrashAnalyzer;
 
-#if MSAI_FEATURE_METRICS
+#if MSAI_FEATURE_TELEMETRY
 
-extern NSString *const __attribute__((unused)) kMSAIMetricsCachesSessions;
-extern NSString *const __attribute__((unused)) kMSAIMetricsTempSessionData;
-extern NSString *const __attribute__((unused)) kMSAIMetricsLastAppVersion;
+extern NSString *const __attribute__((unused)) kMSAITelemetryCachesSessions;
+extern NSString *const __attribute__((unused)) kMSAITelemetryTempSessionData;
+extern NSString *const __attribute__((unused)) kMSAITelemetryLastAppVersion;
 
 #endif
 
