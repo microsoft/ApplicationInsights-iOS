@@ -227,7 +227,6 @@ static NSInteger const defaultSessionExpirationTime = 20;
 
 #pragma mark - Session update
 
-//TODO unregister Obeservers?!
 - (void)registerObservers {
   NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
   
@@ -238,7 +237,7 @@ static NSInteger const defaultSessionExpirationTime = 20;
                                                      queue:NSOperationQueue.mainQueue
                                                 usingBlock:^(NSNotification *note) {
                                                   typeof(self) strongSelf = weakSelf;
-                                                  [strongSelf checkIfSessionStartIsNeeded];
+                                                  [strongSelf startNewSession];
                                                 }];
   }
   if (nil == _appDidEnterBackgroundObserver) {
@@ -256,7 +255,7 @@ static NSInteger const defaultSessionExpirationTime = 20;
                                                       queue:NSOperationQueue.mainQueue
                                                  usingBlock:^(NSNotification *note) {
                                                    typeof(self) strongSelf = weakSelf;
-                                                   [strongSelf checkIfSessionStartIsNeeded];
+                                                   [strongSelf renewSessionIfNeeded];
                                                  }];
   }
   if (nil == _appWillTerminateObserver) {
@@ -275,9 +274,10 @@ static NSInteger const defaultSessionExpirationTime = 20;
   [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
-- (void)checkIfSessionStartIsNeeded {
+- (void)renewSessionIfNeeded {
   double appDidEnterBackgroundTime = [[NSUserDefaults standardUserDefaults] doubleForKey:kMSAIApplicationDidEnterBackgroundTime];
   double timeSinceLastBackground = [[NSDate date] timeIntervalSince1970] - appDidEnterBackgroundTime;
+  
   if (timeSinceLastBackground > defaultSessionExpirationTime) {
     [self startNewSession];
   }
@@ -285,7 +285,9 @@ static NSInteger const defaultSessionExpirationTime = 20;
 
 - (void)startNewSession {
   [[MSAIEnvelopeManager sharedManager] createNewSession];
-  [self trackDataItem:[MSAISessionStateData new]];
+  MSAISessionStateData *sessionState = [MSAISessionStateData new];
+  sessionState.state = MSAISessionState_start;
+  [self trackDataItem:sessionState];
   [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kMSAIApplicationWasLaunched];
 }
 
