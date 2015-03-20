@@ -18,6 +18,16 @@
 @property (nonatomic, strong)NSString *endpointPath;
 
 /**
+ *  The max number of request that can run at a time.
+ */
+@property NSUInteger maxRequestCount;
+
+/**
+ *  The number of requests that are currently running.
+ */
+@property NSUInteger runningRequestsCount;
+
+/**
 *  Returns a shared MSAISender object.
 *
 *  @return A singleton MSAISender instance ready use
@@ -40,8 +50,9 @@
  *  Creates a HTTP operation and puts it to the queue.
  *
  *  @param request a request for sending a data object to the telemetry server
+ *  @param path path to the file which should be sent
  */
-- (void)sendRequest:(NSURLRequest *)request;
+- (void)sendRequest:(NSURLRequest *)request path:(NSString *)path;
 
 ///-----------------------------------------------------------------------------
 /// @name Helper
@@ -58,13 +69,12 @@
 - (NSURLRequest *)requestForData:(NSData *)data urlString:(NSString *)urlString;
 
 /**
- *  Convert a collection of envelope objects to array of dictionaries.
+ *  Returns if data should be deleted based on a given status code.
  *
- *  @param envelopeArray array of envelope objects
+ *  @param statusCode the status code which is part of the response object
  *
- *  @return a json array of envelope objects
+ *  @return YES if data should be deleted, NO if the payload should be sent at a later time again.
  */
-- (NSArray *)jsonArrayFromArray:(NSArray *)envelopeArray;
-
+- (BOOL)shouldDeleteDataWithStatusCode:(NSInteger)statusCode;
 
 @end

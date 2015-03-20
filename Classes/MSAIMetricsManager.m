@@ -22,6 +22,7 @@
 #import "MSAICrashData.h"
 #import <pthread.h>
 #import <CrashReporter/CrashReporter.h>
+#import "MSAIEnvelope.h"
 #import "MSAIEnvelopeManager.h"
 #import "MSAIEnvelopeManagerPrivate.h"
 
@@ -172,16 +173,17 @@ static NSInteger const defaultSessionExpirationTime = 20;
     NSData *data = [cm generateLiveReportWithThread:pthread_mach_thread_np(thread)];
     MSAIPLCrashReport *report = [[MSAIPLCrashReport alloc] initWithData:data error:nil];
     MSAIEnvelope *envelope = [[MSAIEnvelopeManager sharedManager] envelopeForCrashReport:(PLCrashReport *)report exception:exception];
-    [[MSAIChannel sharedChannel] processEnvelope:envelope withCompletionBlock:nil];
+    MSAIOrderedDictionary *dict = [envelope serializeToDictionary];
+    [[MSAIChannel sharedChannel] processDictionary:dict withCompletionBlock:nil];
   });
 }
 
 + (void)trackPageView:(NSString *)pageName {
-  [self trackPageView:pageName duration:nil];
+  [self trackPageView:pageName duration:0];
 }
 
 - (void)trackPageView:(NSString *)pageName {
-  [self trackPageView:pageName duration:nil];
+  [self trackPageView:pageName duration:0];
 }
 
 + (void)trackPageView:(NSString *)pageName duration:(long)duration {
@@ -213,8 +215,12 @@ static NSInteger const defaultSessionExpirationTime = 20;
 #pragma mark Track DataItem
 
 - (void)trackDataItem:(MSAITelemetryData *)dataItem{
-  MSAIEnvelope *envelope = [[MSAIEnvelopeManager sharedManager] envelopeForTelemetryData:dataItem];
-  [[MSAIChannel sharedChannel] enqueueEnvelope:envelope];
+  
+  if(![[MSAIChannel sharedChannel] isQueueBusy]){
+    MSAIEnvelope *envelope = [[MSAIEnvelopeManager sharedManager] envelopeForTelemetryData:dataItem];
+    MSAIOrderedDictionary *dict = [envelope serializeToDictionary];
+    [[MSAIChannel sharedChannel] enqueueDictionary:dict];
+  }
 }
 
 #pragma mark - Session update

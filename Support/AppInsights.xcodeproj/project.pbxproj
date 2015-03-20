@@ -1088,6 +1088,11 @@
 				PUBLIC_HEADERS_FOLDER_PATH = "include/$(PRODUCT_NAME)";
 				SKIP_INSTALL = YES;
 				"VALID_ARCHS[sdk=iphonesimulator*]" = "$(MSAI_SIM_ARCHS)";
+				WARNING_CFLAGS = (
+					"-Wall",
+					"-Wextra",
+					"-Wno-unused-parameter",
+				);
 			};
 			name = Debug;
 		};
@@ -1110,6 +1115,11 @@
 				PUBLIC_HEADERS_FOLDER_PATH = "include/$(PRODUCT_NAME)";
 				SKIP_INSTALL = YES;
 				"VALID_ARCHS[sdk=iphonesimulator*]" = "$(MSAI_SIM_ARCHS)";
+				WARNING_CFLAGS = (
+					"-Wall",
+					"-Wextra",
+					"-Wno-unused-parameter",
+				);
 			};
 			name = Release;
 		};
@@ -1246,6 +1256,11 @@
 				PUBLIC_HEADERS_FOLDER_PATH = "include/$(PRODUCT_NAME)";
 				SKIP_INSTALL = YES;
 				"VALID_ARCHS[sdk=iphonesimulator*]" = "$(MSAI_SIM_ARCHS)";
+				WARNING_CFLAGS = (
+					"-Wall",
+					"-Wextra",
+					"-Wno-unused-parameter",
+				);
 			};
 			name = CodeCoverage;
 		};

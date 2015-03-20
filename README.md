@@ -13,6 +13,7 @@ This document contains the following sections:
 - [Endpoints](#endpoints)
 - [iOS 8 Extensions](#extension)
 - [Additional Options](#options)
+- [Contact](#contact)
 
 <a id="requirements"></a> 
 ## Requirements
@@ -26,13 +27,13 @@ The SDK runs on devices with iOS 6.0 or higher.
 
 2. Unzip the file. A new folder `AppInsights` is created.
 
-3. Move the folder into your project directory. We usually put 3rd-party code into a subdirectory named `Vendor`, so we move the directory into it.
+3. Move the folder into your project directory. Usually, 3rd-party code is put into a subdirectory named `Vendor`. If it doesn't exist, create it and put the folder there.
 
 <a id="xcode"></a> 
 ## Set up Xcode
 
 1. Drag & drop `AppInsights.framework` from your project directory to your Xcode project.
-2. Similar to above, our projects have a group `Vendor`, so we drop it there.
+2. Similar to above, you should create a group `Vendor` in your project and drop the `AppInsights.framework` there.
 3. Select `Create groups for any added folders` and set the checkmark for your target. Then click `Finish`.
 4. Select your project in the `Project Navigator` (⌘+1).
 5. Select your app target.
@@ -43,37 +44,39 @@ The SDK runs on devices with iOS 6.0 or higher.
 	- `SystemConfiguration`
 	- `UIKit`
 	- `CoreTelephony`(only required if iOS > 7.0)
-9. Open the info.plist of your app target and add a new field of type *String*. Name it `MSAIInstrumentationKey` and set your AppInsights instrumentation key as its value.
+9. Open the info.plist of your app target and add a new field of type *String*. Name it `MSAIInstrumentationKey` and set your AppInsights instrumentation key as its value. If you don't have one yet, we also have a guide on [how to get an instrumentation key](https://github.com/Microsoft/AppInsights-Home/wiki#getting-an-application-insights-instrumentation-key)
 
 <a id="modify"></a> 
 ## Modify Code 
 
 ### Objective-C
 
-2. Open your `AppDelegate.m` file.
-3. Add the following line at the top of the file below your own #import statements:
-
+1. Open your `AppDelegate.m` file.
+2. Add the following line at the top of the file below your own #import statements:
 	```objectivec
 	#import <AppInsights/AppInsights.h>
 	```
-4. Search for the method `application:didFinishLaunchingWithOptions:`
-5. Add the following lines to setup and start the AppInsights SDK:
 
-	```objectivec
-	[[MSAIAppInsights sharedInstance] setup];
-	// Do some additional configuration if needed here
-	...
-	[[MSAIAppInsights sharedInstance] start];
-	```
+3. Search for the method `application:didFinishLaunchingWithOptions:`
 
-	You can also use the following shortcut:
-
+4. Add the following lines to setup and start the AppInsights SDK:
 	```objectivec
 	[MSAIAppInsights setup];
 	[MSAIAppInsights start];
 	```
 
-6. Send some data to the server:
+	If additional configuration is needed, the sharedInstance can be accessed between the `setup()` and `start()` calls:
+
+	```objectivec
+	[[MSAIAppInsights sharedInstance] setup];
+	// Do some additional configuration if needed here
+	// For example:
+	[[MSAIAppInsights sharedInstance] setDebugLogEnabled:YES];
+	[[MSAIAppInsights sharedInstance] start];
+	```
+
+5. Send data to the server  
+By default, the Application Insights SDK will track anonymous user IDs, user sessions and pageviews. If you want, you can send additional data like this:
 
 	```objectivec	
 	// Send an event with custom properties and measuremnts data
@@ -97,36 +100,41 @@ The SDK runs on devices with iOS 6.0 or higher.
 									  value:42.2];
 	```
 
+For a full list of tracking methods see `MSAIMetricsManager.h`.
+
 *Note:* The SDK is optimized to defer everything possible to a later time while making sure e.g. crashes on startup can also be caught and each module executes other code with a delay some seconds. This ensures that applicationDidFinishLaunching will process as fast as possible and the SDK will not block the startup sequence resulting in a possible kill by the watchdog process.
 
 ### Swift
 
-2. Open your `AppDelegate.swift` file.
-3. Add the following line at the top of the file below your own #import statements:
-	
+1. Open your `AppDelegate.swift` file.
+
+2. Add the following line at the top of the file:	
 	```swift	
-	#import AppInsights
+	import AppInsights
 	```
-4. Search for the method 
-	
+
+3. Search for the method 	
 	```swift	
 	application(application: UIApplication, didFinishLaunchingWithOptions launchOptions:[NSObject: AnyObject]?) -> Bool`
 	```
-5. Add the following lines to setup and start the AppInsights SDK:
-	
+
+4. Add the following lines to setup and start the AppInsights SDK:
 	```swift
-	MSAIAppInsights.sharedInstance().setup();
-   MSAIAppInsights.sharedInstance().start();
+	MSAIAppInsights.setup()
+   MSAIAppInsights.start()
 	```
-	
-	You can also use the following shortcut:
+
+	If you want to do some additional configuration you have to call the sharedInstance directly between the `setup()` and `start()` calls:
 
 	```swift
-	MSAIAppInsights.setup();
-   MSAIAppInsights.start();
+	MSAIAppInsights.sharedInstance().setup()	
+	// For example:
+	MSAIAppInsights.sharedInstance().debugLogEnabled = true
+    MSAIAppInsights.sharedInstance().start()
 	```
-5. Send some data to the server:
-	
+
+5. Send data to the server
+By default, the Application Insights SDK will track anonymous user IDs, user sessions and pageviews. If you want, you can send additional data like this:
 	```swift
 	// Send an event with custom properties and measuremnts data
 	MSAIMetricsManager.trackEventWithName(name:"Hello World event!", 
@@ -134,36 +142,25 @@ The SDK runs on devices with iOS 6.0 or higher.
 												 "Test property 2":"Some other value"},
 								   mesurements:@{"Test measurement 1":@(4.8),
 												 "Test measurement 2":@(15.16),
- 											     "Test measurement 3":@(23.42)});
+ 											     "Test measurement 3":@(23.42)})
 
 	// Send a message
-	MSAIMetricsManager.trackTraceWithMessage(message:"Test message");
+	MSAIMetricsManager.trackTraceWithMessage("Test message")
 
 	// Manually send pageviews
-	MSAIMetricsManager.trackPageView(pageView:"MyViewController",
+	MSAIMetricsManager.trackPageView("MyViewController",
 									 duration:300,
-								   properties:@{"Test measurement 1":@(4.8)});
+								   properties:@{"Test measurement 1":@(4.8)})
 
 	// Send a message
-	MSAIMetricsManager.trackMetricWithName(name:"Test metric",
-										  value:42.2);
+	MSAIMetricsManager.trackMetricWithName("Test metric", 
+										  value:42.2)
 	```
 
-<a id="endpoints"></a> 
-## Endpoints 
+For a full list of tracking methods see `MSAIMetricsManager.h`.
 
-At this point exceptions as well as other telemetry data are sent to different endpoints.
-By default the following endpoints are used to work with the [Azure portal](https://portal.azure.com):
+*Note:* The SDK is optimized to defer everything possible to a later time while making sure e.g. crashes on startup can also be caught and each module executes other code with a delay some seconds. This ensures that applicationDidFinishLaunching will process as fast as possible and the SDK will not block the startup sequence resulting in a possible kill by the watchdog process.
 
-* Exceptions: `https://dray-prod.aisvc.visualstudio.com/v2/track`
-* Telemetry Data: `https://dc.services.visualstudio.com/v2/track`
-
-To change those endpoints open the `AppInsights.h` file and change the following define statements:
-
-```objectivec
-#define MSAI_CRASH_DATA_URL   @"https://dray-prod.aisvc.visualstudio.com/v2/track"
-#define MSAI_EVENT_DATA_URL   @"https://dc.services.visualstudio.com/v2/track"
-```
 <a id="extensions"></a>
 ## iOS 8 Extensions
 
@@ -187,8 +184,8 @@ The following points need to be considered to use AppInsights SDK iOS with iOS 8
           self.didSetupAppInsightsSDK = YES;
        }
     }
-    ```
- 
+	```
+
 <a id="options"></a> 
 ## Additional Options
 
@@ -221,3 +218,8 @@ Instead of manually adding the missing frameworks, you can also use our bundled 
 	- `SystemConfiguration`
 	- `UIKit`
 	- `CoreTelephony`(only required if iOS > 7.0)
+
+<a id="contact"></a>
+## Contact
+
+If you have further questions or are running into trouble that cannot be resolved by any of the steps here, feel free to contact us at [AppInsights-iOS@microsoft.com](mailto:appinsights-ios@microsoft.com)
