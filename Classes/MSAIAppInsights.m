@@ -201,7 +201,6 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 - (void)setMetricsManagerDisabled:(BOOL)metricsManagerDisabled {
 #if MSAI_FEATURE_METRICS
   [MSAIMetricsManager sharedManager].metricsManagerDisabled = metricsManagerDisabled;
-#endif /* MSAI_FEATURE_METRICS */
   _metricsManagerDisabled = metricsManagerDisabled;
 }
 
@@ -219,8 +218,6 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 }
 #endif /* MSAI_FEATURE_METRICS */
 
-
-#if MSAI_FEATURE_CRASH_REPORTER
 - (void)setCrashManagerDisabled:(BOOL)crashManagerDisabled {
 #if MSAI_FEATURE_CRASH_REPORTER
   [MSAICrashManager sharedManager].isCrashManagerDisabled = crashManagerDisabled;
