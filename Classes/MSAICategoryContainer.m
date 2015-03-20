@@ -31,11 +31,12 @@
 
 - (void)msai_viewWillAppear:(BOOL)animated {
   [self msai_viewWillAppear:animated];
-  
+#if MSAI_FEATURE_METRICS
   if(![MSAIMetricsManager sharedManager].autoPageViewTrackingDisabled){
     NSString *pageViewName = [NSString stringWithFormat:@"%@ %@", NSStringFromClass([self class]), self.title];
     [MSAIMetricsManager trackPageView:pageViewName];
   }
+#endif /* MSAI_FEATURE_METRICS */
 }
 
 @end

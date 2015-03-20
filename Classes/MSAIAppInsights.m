@@ -55,8 +55,12 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
     _serverURL = nil;
     _managersInitialized = NO;
     _appClient = nil;
+#if MSAI_FEATURE_CRASH_REPORTER
     _crashManagerDisabled = NO;
+#endif /* MSAI_FEATURE_CRASH_REPORTER */
+#if MSAI_FEATURE_METRICS
     _metricsManagerDisabled = NO;
+#endif /* MSAI_FEATURE_METRICS */
     _appStoreEnvironment = NO;
     _startManagerIsInvoked = NO;
     
@@ -197,9 +201,8 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 }
 
 #pragma mark - Configuring modules
-
-- (void)setMetricsManagerDisabled:(BOOL)metricsManagerDisabled {
 #if MSAI_FEATURE_METRICS
+- (void)setMetricsManagerDisabled:(BOOL)metricsManagerDisabled {
   [MSAIMetricsManager sharedManager].metricsManagerDisabled = metricsManagerDisabled;
   _metricsManagerDisabled = metricsManagerDisabled;
 }
@@ -218,16 +221,16 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 }
 #endif /* MSAI_FEATURE_METRICS */
 
-- (void)setCrashManagerDisabled:(BOOL)crashManagerDisabled {
 #if MSAI_FEATURE_CRASH_REPORTER
+- (void)setCrashManagerDisabled:(BOOL)crashManagerDisabled {
   [MSAICrashManager sharedManager].isCrashManagerDisabled = crashManagerDisabled;
-#endif /* MSAI_FEATURE_CRASH_REPORTER */
   _crashManagerDisabled = crashManagerDisabled;
 }
 
 + (void)setCrashManagerDisabled:(BOOL)crashManagerDisabled{
   [[self sharedInstance] setCrashManagerDisabled:crashManagerDisabled];
 }
+#endif /* MSAI_FEATURE_CRASH_REPORTER */
 
 - (void)setServerURL:(NSString *)serverURL {
   
