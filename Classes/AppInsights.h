@@ -14,6 +14,10 @@
 #if MSAI_FEATURE_TELEMETRY
 #import "MSAICategoryContainer.h"
 #import "MSAITelemetryManager.h"
+
+__attribute__((deprecated("Use MSAITelemetryManager instead!")))
+typedef MSAITelemetryManager MSAIMetricsManager;
+
 #endif /* MSAI_FEATURE_TELEMETRY */
 
 // Notification message which AppInsightsManager is listening to, to retry requesting updated from the server
