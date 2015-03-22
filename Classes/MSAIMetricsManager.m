@@ -36,6 +36,7 @@ static NSInteger const defaultSessionExpirationTime = 20;
   id _appDidFinishLaunchingObserver;
   id _appWillEnterForegroundObserver;
   id _appDidEnterBackgroundObserver;
+  id _appDidReceiveMemoryWarningObserver;
   id _appWillTerminateObserver;
 }
 
@@ -258,6 +259,14 @@ static NSInteger const defaultSessionExpirationTime = 20;
                                                    typeof(self) strongSelf = weakSelf;
                                                    [strongSelf startSession];
                                                  }];
+  }
+  if (nil == _appDidReceiveMemoryWarningObserver) {
+    _appDidReceiveMemoryWarningObserver = [nc addObserverForName:UIApplicationDidReceiveMemoryWarningNotification
+                                                      object:nil
+                                                       queue:NSOperationQueue.mainQueue
+                                                  usingBlock:^(NSNotification *note) {
+                                                    [[MSAIChannel sharedChannel] persistDataItemQueue];
+                                                  }];
   }
   if (nil == _appWillTerminateObserver) {
     _appWillTerminateObserver = [nc addObserverForName:UIApplicationWillTerminateNotification
