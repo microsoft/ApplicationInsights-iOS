@@ -9,6 +9,9 @@
 @class MSAISender;
 @class MSAICrashData;
 
+extern NSInteger const defaultMaxBatchCount;
+extern NSInteger const defaultBatchInterval;
+
 @interface MSAIChannel ()
 
 ///-----------------------------------------------------------------------------
@@ -22,6 +25,8 @@
 */
 + (instancetype)sharedChannel;
 
++ (void)setSharedChannel:(MSAIChannel *)channel;
+
 ///-----------------------------------------------------------------------------
 /// @name Queue management
 ///-----------------------------------------------------------------------------
@@ -34,7 +39,7 @@
 /**
  *  An array for collecting data, which should be sent to the telemetry server.
  */
-@property(nonatomic, strong) NSMutableArray *dataItemQueue;
+@property (nonatomic, strong) NSMutableArray *dataItemQueue;
 
 /**
  *  Enqueue telemetry data (events, metrics, exceptions, traces) before processing it.
