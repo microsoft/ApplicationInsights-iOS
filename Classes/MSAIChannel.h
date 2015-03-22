@@ -5,4 +5,9 @@
  */
 @interface MSAIChannel : NSObject
 
+/**
+ *  Manually trigger the MSAIChannel to persist all items currently in its dataItemsQueue
+ */
+- (void)persistDataItemQueue;
+
 @end
