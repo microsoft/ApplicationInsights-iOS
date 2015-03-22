@@ -76,11 +76,6 @@
 ///-----------------------------------------------------------------------------
 
 /**
- *  A reference to the userDefaults being used to store values
- */
-@property(nonatomic, weak) NSUserDefaults *userDefaults;
-
-/**
  *  Renews or even creates a new session if needed.
  */
 - (void)updateSessionContext;

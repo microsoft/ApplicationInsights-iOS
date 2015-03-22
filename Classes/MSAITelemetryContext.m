@@ -48,7 +48,6 @@ NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
     
     _instrumentationKey = appContext.instrumentationKey;
     _endpointPath = endpointPath;
-    _userDefaults = NSUserDefaults.standardUserDefaults;
     _application = applicationContext;
     _device = deviceContext;
     _location = locationContext;
@@ -92,7 +91,7 @@ NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
 }
 
 - (BOOL)isFirstSession{
-  return ![_userDefaults boolForKey:kMSAIApplicationWasLaunched];
+  return ![[NSUserDefaults standardUserDefaults] boolForKey:kMSAIApplicationWasLaunched];
 }
 
 - (void)createNewSession {

@@ -18,6 +18,16 @@
 #import "MSAISession.h"
 #import "MSAILocation.h"
 
+static NSUserDefaults *mockUserDefaults = nil;
+
+@implementation NSUserDefaults (Tests)
+
++ (NSUserDefaults *)standardUserDefaults {
+  return mockUserDefaults;
+}
+
+@end
+
 @interface MSAITelemetryContextTests : XCTestCase
 
 @end
@@ -34,6 +44,7 @@
 }
 
 - (void)tearDown {
+  mockUserDefaults = nil;
   [super tearDown];
 }
 
@@ -68,26 +79,24 @@
 }
 
 - (void)testIsFirstSession {
-  NSUserDefaults *userDefaults = [NSUserDefaults new];
-  _sut.userDefaults = userDefaults;
+  mockUserDefaults = [NSUserDefaults new];
+  [[NSUserDefaults standardUserDefaults] setBool:NO forKey:kMSAIApplicationWasLaunched];
   
-  [userDefaults setBool:NO forKey:kMSAIApplicationWasLaunched];
   assertThatBool([_sut isFirstSession], equalToBool(YES));
   
-  [userDefaults setBool:YES forKey:kMSAIApplicationWasLaunched];
   assertThatBool([_sut isFirstSession], equalToBool(NO));
+  [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kMSAIApplicationWasLaunched];
 }
 
 - (void)testCreateNewSession {
   MSAISession *session = _sut.session;
-  NSUserDefaults *userDefaults = [NSUserDefaults new];
-  _sut.userDefaults = userDefaults;
-  [userDefaults setBool:YES forKey:kMSAIApplicationWasLaunched];
+  [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kMSAIApplicationWasLaunched];
 
   [_sut createNewSession];
   XCTAssertTrue([session.isNew isEqualToString:@"true"]);
   XCTAssertTrue([session.isFirst isEqualToString:@"false"]);
   
+  mockUserDefaults = [NSUserDefaults new];
   NSString *firstGUID = session.sessionId;
 
   [_sut createNewSession];
