@@ -83,7 +83,7 @@
  *  TODO: what to do if we do run this e.g. on Jenkins or Xcode bots ?
  */
 - (void)testIsDebuggerAttached {
-  assertThatBool([_sut getIsDebuggerAttached], equalToBool(YES));
+  assertThatBool([_sut getIsDebuggerAttached], isTrue());
 }
 
 
@@ -91,7 +91,7 @@
 
 - (void)testHasPendingCrashReportWithNoFiles {
   _sut.isCrashManagerDisabled = NO;
-  assertThatBool([_sut hasPendingCrashReport], equalToBool(NO));
+  assertThatBool([_sut hasPendingCrashReport], isFalse());
 }
 
 - (void)testFirstNotApprovedCrashReportWithNoFiles {
@@ -109,7 +109,7 @@
   if(bundle && ([bundle count] > 0)) {
     id envelope = [bundle firstObject];
     if(envelope && [envelope isKindOfClass:[MSAIEnvelope class]]) {
-      assertThatBool([((MSAIEnvelope *) envelope).data isKindOfClass:[MSAICrashData class]], equalToBool(YES));
+      assertThatBool([((MSAIEnvelope *) envelope).data isKindOfClass:[MSAICrashData class]], isTrue());
     }
   }
 }
@@ -118,7 +118,7 @@
 
 - (void)testStartManagerWithModuleDisabled {
   [self startManagerDisabled];
-  assertThatBool(_sut.isCrashManagerDisabled, equalToBool(YES));
+  assertThatBool(_sut.isCrashManagerDisabled, isTrue());
 }
 
 - (void)testStartManagerWithAutoSend {
@@ -141,43 +141,43 @@
   
   BOOL result = (_sut.exceptionHandler == currentHandler);
   
-  assertThatBool(result, equalToBool(YES));
+  assertThatBool(result, isTrue());
   
   // No files at startup
-  assertThatBool([_sut hasPendingCrashReport], equalToBool(NO));
+  assertThatBool([_sut hasPendingCrashReport], isFalse());
   assertThat([_sut firstNotApprovedCrashReport], equalTo(nil));
   
   [_sut invokeDelayedProcessing];
   
   // handle a new empty crash report
-  assertThatBool([MSAITestHelper copyFixtureCrashReportWithFileName:@"live_report_empty"], equalToBool(YES));
+  assertThatBool([MSAITestHelper copyFixtureCrashReportWithFileName:@"live_report_empty"], isTrue());
   
   [_sut handleCrashReport];
   
   // we should have 0 pending crash report
-  assertThatBool([_sut hasPendingCrashReport], equalToBool(NO));
+  assertThatBool([_sut hasPendingCrashReport], isFalse());
   assertThat([_sut firstNotApprovedCrashReport], equalTo(nil));
   
   [_sut cleanCrashReports];
   
   // handle a new signal crash report
-  assertThatBool([MSAITestHelper copyFixtureCrashReportWithFileName:@"live_report_signal"], equalToBool(YES));
+  assertThatBool([MSAITestHelper copyFixtureCrashReportWithFileName:@"live_report_signal"], isTrue());
   
   [_sut handleCrashReport];
   
   // we should have now 1 pending crash report
-  assertThatBool([_sut hasPendingCrashReport], equalToBool(YES));
+  assertThatBool([_sut hasPendingCrashReport], isTrue());
   assertThat([_sut firstNotApprovedCrashReport], notNilValue());
   
   [_sut cleanCrashReports];
 
   // handle a new signal crash report
-  assertThatBool([MSAITestHelper copyFixtureCrashReportWithFileName:@"live_report_exception"], equalToBool(YES));
+  assertThatBool([MSAITestHelper copyFixtureCrashReportWithFileName:@"live_report_exception"], isTrue());
   
   [_sut handleCrashReport];
   
   // we should have now 1 pending crash report
-  assertThatBool([_sut hasPendingCrashReport], equalToBool(YES));
+  assertThatBool([_sut hasPendingCrashReport], isTrue());
   assertThat([_sut firstNotApprovedCrashReport], notNilValue());
   
   [_sut cleanCrashReports];

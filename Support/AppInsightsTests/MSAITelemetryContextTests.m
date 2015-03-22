@@ -81,11 +81,10 @@ static NSUserDefaults *mockUserDefaults = nil;
 - (void)testIsFirstSession {
   mockUserDefaults = [NSUserDefaults new];
   [[NSUserDefaults standardUserDefaults] setBool:NO forKey:kMSAIApplicationWasLaunched];
+  assertThatBool([_sut isFirstSession], isTrue());
   
-  assertThatBool([_sut isFirstSession], equalToBool(YES));
-  
-  assertThatBool([_sut isFirstSession], equalToBool(NO));
   [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kMSAIApplicationWasLaunched];
+  assertThatBool([_sut isFirstSession], isFalse());
 }
 
 - (void)testCreateNewSession {
