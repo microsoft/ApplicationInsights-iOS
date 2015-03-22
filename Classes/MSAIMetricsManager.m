@@ -246,6 +246,7 @@ static NSInteger const defaultSessionExpirationTime = 20;
                                                      queue:NSOperationQueue.mainQueue
                                                 usingBlock:^(NSNotification *note) {
                                                   typeof(self) strongSelf = weakSelf;
+                                                  [[MSAIChannel sharedChannel] persistDataItemQueue];
                                                   [strongSelf updateSessionDate];
                                                 }];
   }
