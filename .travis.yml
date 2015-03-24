@@ -1,0 +1,9 @@
+language: objective-c
+
+before_install:
+- gem install xcpretty -N
+script:
+- set -o pipefail
+- cd Support
+- xcodebuild -project AppInsights.xcodeproj -scheme "AppInsights" -sdk iphonesimulator -configuration Debug -destination "platform=iOS Simulator,name=iPhone 6" test | xcpretty -c
+- xcodebuild -project AppInsights.xcodeproj -scheme "AppInsights Framework" -sdk iphonesimulator -configuration Release | xcpretty -c
