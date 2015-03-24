@@ -1,17 +1,14 @@
+#!/bin/bash
 #   XcodeCoverage by Jon Reid, http://qualitycoding/about/
 #   Copyright 2014 Jonathan M. Reid. See LICENSE.txt
 
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-source ${DIR}/env.sh
+scripts="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+source "${scripts}/env.sh"
 
-# Change the report name if you like:
-LCOV_INFO=Coverage.info
+LCOV_PATH="${scripts}/lcov-1.11/bin"
+OBJ_DIR="${OBJECT_FILE_DIR_normal}/${CURRENT_ARCH}"
 
-XCODECOVERAGE_PATH="${SRCROOT}/../Vendor/XcodeCoverage"
-LCOV_PATH="${XCODECOVERAGE_PATH}/lcov-1.10/bin"
-OBJ_DIR=${OBJECT_FILE_DIR_normal}/${CURRENT_ARCH}
-
-# Fix for the new LLVM-COV that requires gcov to have a -v paramter
+# Fix for the new LLVM-COV that requires gcov to have a -v parameter
 LCOV() {
-	${LCOV_PATH}/lcov "$@" --gcov-tool ${XCODECOVERAGE_PATH}/llvm-cov-wrapper.sh
+	"${LCOV_PATH}/lcov" "$@" --gcov-tool "${scripts}/llvm-cov-wrapper.sh"
 }

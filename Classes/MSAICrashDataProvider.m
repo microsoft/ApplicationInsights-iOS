@@ -506,7 +506,7 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
     uint64_t startAddress = imageInfo.imageBaseAddress;
     binary.startAddress = [NSString stringWithFormat:fmt, startAddress];
     
-    uint64_t endAddress = imageInfo.imageBaseAddress + (MAX(1, imageInfo.imageSize) - 1);
+    uint64_t endAddress = imageInfo.imageBaseAddress + (MAX((uint64_t)1, imageInfo.imageSize) - 1);
     binary.endAddress = [NSString stringWithFormat:fmt, endAddress];
     
     if([self isBinaryWithStart:startAddress end:endAddress inAddresses:addresses]){

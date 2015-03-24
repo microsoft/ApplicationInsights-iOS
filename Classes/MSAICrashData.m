@@ -6,14 +6,14 @@
 
 /// Initializes a new instance of the class.
 - (instancetype)init {
-    if (self = [super init]) {
-        _envelopeTypeName = @"Microsoft.ApplicationInsights.Crash";
-        _dataTypeName = @"CrashData";
-        self.version = [NSNumber numberWithInt:1];
-        self.threads = [NSMutableArray new];
-        self.binaries = [NSMutableArray new];
-    }
-    return self;
+  if (self = [super init]) {
+    _envelopeTypeName = @"Microsoft.ApplicationInsights.Crash";
+    _dataTypeName = @"CrashData";
+    self.version = [NSNumber numberWithInt:2];
+    self.threads = [NSMutableArray new];
+    self.binaries = [NSMutableArray new];
+  }
+  return self;
 }
 
 ///
@@ -21,27 +21,26 @@
 /// @param dictionary to which the members of this class will be added.
 ///
 - (MSAIOrderedDictionary *)serializeToDictionary {
-    MSAIOrderedDictionary *dict = [super serializeToDictionary];
-    if (self.headers != nil) {
-        if ([NSJSONSerialization isValidJSONObject:[self.headers serializeToDictionary]]) {
-            [dict setObject:[self.headers serializeToDictionary] forKey:@"headers"];
-        }
+  MSAIOrderedDictionary *dict = [super serializeToDictionary];
+  MSAIOrderedDictionary *headersDict = [self.headers serializeToDictionary];
+  if ([NSJSONSerialization isValidJSONObject:headersDict]) {
+    [dict setObject:headersDict forKey:@"headers"];
+  }
+  if (self.threads != nil) {
+    NSMutableArray *threadsArray = [NSMutableArray array];
+    for (MSAICrashDataThread *threadsElement in self.threads) {
+      [threadsArray addObject:[threadsElement serializeToDictionary]];
     }
-    if (self.threads != nil) {
-        NSMutableArray *threadsArray = [NSMutableArray array];
-        for (MSAICrashDataThread *threadsElement in self.threads) {
-            [threadsArray addObject:[threadsElement serializeToDictionary]];
-        }
-        [dict setObject:threadsArray forKey:@"threads"];
+    [dict setObject:threadsArray forKey:@"threads"];
+  }
+  if (self.binaries != nil) {
+    NSMutableArray *binariesArray = [NSMutableArray array];
+    for (MSAICrashDataBinary *binariesElement in self.binaries) {
+      [binariesArray addObject:[binariesElement serializeToDictionary]];
     }
-    if (self.binaries != nil) {
-        NSMutableArray *binariesArray = [NSMutableArray array];
-        for (MSAICrashDataBinary *binariesElement in self.binaries) {
-            [binariesArray addObject:[binariesElement serializeToDictionary]];
-        }
-        [dict setObject:binariesArray forKey:@"binaries"];
-    }
-    return dict;
+    [dict setObject:binariesArray forKey:@"binaries"];
+  }
+  return dict;
 }
 
 - (id)initWithCoder:(NSCoder *)coder {
@@ -51,7 +50,7 @@
     self.threads = [coder decodeObjectForKey:@"self.threads"];
     self.binaries = [coder decodeObjectForKey:@"self.binaries"];
   }
-
+  
   return self;
 }
 

@@ -8,6 +8,7 @@
 @class MSAITelemetryData;
 @class MSAISender;
 @class MSAICrashData;
+@class MSAIOrderedDictionary;
 
 @interface MSAIChannel ()
 
@@ -39,17 +40,17 @@
 /**
  *  Enqueue telemetry data (events, metrics, exceptions, traces) before processing it.
  *
- *  @param envelope the data object, which should be processed
+ *  @param dictionary   the dictionary object, which should be processed
  */
-- (void)enqueueEnvelope:(MSAIEnvelope *)envelope;
+- (void)enqueueDictionary:(MSAIOrderedDictionary *)dictionary;
 
 /**
  *  Directly process telemetry data (crashs) without enqueuing it first.
  *
- *  @param envelope        the envelope object to process.
+ *  @param dictionary      the dictionary object to process.
  *  @param completionBlock the block, which should be executed after the envelope has been persisted.
  */
-- (void)processEnvelope:(MSAIEnvelope *)envelope withCompletionBlock: (void (^)(BOOL success)) completionBlock;
+- (void)processDictionary:(MSAIOrderedDictionary *)dictionary withCompletionBlock: (void (^)(BOOL success)) completionBlock;
 
 ///-----------------------------------------------------------------------------
 /// @name Batching
@@ -70,7 +71,7 @@
  *
  * Default: 5
  */
-@property (nonatomic, assign) NSInteger senderBatchSize;
+@property (nonatomic, assign) NSUInteger senderBatchSize;
 
 /**
  *  A timer source which is used to flush the queue after a cretain time.

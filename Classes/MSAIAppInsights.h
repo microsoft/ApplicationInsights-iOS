@@ -13,6 +13,14 @@
 + (void)setup;
 
 /**
+ * Configures the manager with a instrumentation key and initializes all modules. 
+ * This method should be called before calling `start`.
+ *
+ *  @param instrumentationKey the instrumentationKey of your AppInsights component
+ */
++ (void)setupWithInstrumentationKey:(NSString *)instrumentationKey;
+
+/**
  * Starts the manager and runs all modules. Call this after initializing the manager
  * and setting up all modules.
  *
@@ -40,6 +48,14 @@
  * initializes all modules. This method should be called before calling `start`.
  */
 - (void)setup;
+
+/**
+ * Configures the manager with a instrumentation key and initializes all modules.
+ * This method should be called before calling `start`.
+ *
+ *  @param instrumentationKey the instrumentationKey of your AppInsights component
+ */
+- (void)setupWithInstrumentationKey:(NSString *)instrumentationKey;
 
 /**
  * Starts the manager and runs all modules. Call this after initializing the manager
@@ -98,6 +114,24 @@
  *  @param metricsManagerDisabled Flag which determines whether the Metrics Manager should be disabled
  */
 + (void)setMetricsManagerDisabled:(BOOL)metricsManagerDisabled;
+
+/**
+ * Flag the determines whether collecting page views automatically should be disabled.
+ * If YES, auto page view collection is disabled. Y
+ *
+ * @return YES, if manager is disabled
+ *
+ * @default NO
+ * @warning This property needs to be set before calling `start`
+ */
+@property (nonatomic, getter = isAutoPageViewTrackingDisabled) BOOL autoPageViewTrackingDisabled;
+
+/**
+ *  Enable (NO) or disable (YES) auto collection of page views. This should be called before `start`.
+ *
+ *  @param autoPageViewTrackingDisabled Flag which determines whether the page view collection should be disabled
+ */
++ (void)setAutoPageViewTrackingDisabled:(BOOL)autoPageViewTrackingDisabled;
 
 ///-----------------------------------------------------------------------------
 /// @name Environment

@@ -16,6 +16,10 @@
 #import "MSAIEnvelope.h"
 #import "MSAICrashData.h"
 #import "MSAITestHelper.h"
+#import "MSAITelemetryContext.h"
+#import "MSAITelemetryContextPrivate.h"
+#import "MSAIEnvelopeManager.h"
+#import "MSAIEnvelopeManagerPrivate.h"
 
 #define kMSAICrashMetaAttachment @"MSAICrashMetaAttachment"
 
@@ -34,6 +38,11 @@
   [super setUp];
   
   _startManagerInitialized = NO;
+  
+  MSAIContext *context = [[MSAIContext alloc]initWithInstrumentationKey:@"123"];
+  MSAITelemetryContext *telemetryContext = [[MSAITelemetryContext alloc] initWithAppContext:context endpointPath:nil];
+  [[MSAIEnvelopeManager sharedManager] configureWithTelemetryContext:telemetryContext];
+
 }
 
 - (void)tearDown {
@@ -96,8 +105,8 @@
   //handle app kill (FakeCrashReport will be generated)
   [[MSAICrashManager sharedManager] createCrashReportForAppKill]; //just creates a fake crash report and hands it over to MSAIPersistence
   
-  NSArray *bundle = [[MSAIPersistence sharedInstance] fakeReportBundle];
-  XCTAssertNotNil(bundle);
+  NSArray *bundle = [[MSAIPersistence sharedInstance] crashTemplateBundle];
+  XCTAssertNil(bundle);
   
   if(bundle && ([bundle count] > 0)) {
     id envelope = [bundle firstObject];
@@ -106,6 +115,8 @@
     }
   }
 }
+
+#pragma mark - StartManager
 
 - (void)testStartPLCrashReporterSetup {
   // since PLCR is only initialized once ever, we need to pack all tests that rely on a PLCR instance
@@ -154,7 +165,7 @@
   
   // handle a new signal crash report
   assertThatBool([MSAITestHelper copyFixtureCrashReportWithFileName:@"live_report_exception"], equalToBool(YES));
-
+  
     // we should have now 1 pending crash report
   assertThatBool([[MSAICrashManager sharedManager].plCrashReporter hasPendingCrashReport], equalToBool(YES));
   

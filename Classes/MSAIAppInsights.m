@@ -71,12 +71,20 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 
 - (void)setup {
   NSString *instrumentationKey = [[NSBundle mainBundle] objectForInfoDictionaryKey:kMSAIInstrumentationKey];
+  [self setupWithInstrumentationKey:instrumentationKey];
+}
+
+- (void)setupWithInstrumentationKey:(NSString *)instrumentationKey{
   _appContext = [[MSAIContext alloc] initWithInstrumentationKey:instrumentationKey];
   [self initializeModules];
 }
 
 + (void)setup {
   [[self sharedInstance] setup];
+}
+
++ (void)setupWithInstrumentationKey:(NSString *)instrumentationKey{
+  [[self sharedInstance] setupWithInstrumentationKey:instrumentationKey];
 }
 
 - (void)start {
@@ -113,6 +121,13 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
   
 #if MSAI_FEATURE_METRICS
   if (![self isMetricsManagerDisabled]) {
+    
+    if([self isAutoPageViewTrackingDisabled]){
+      MSAILog(@"INFO: Auto page views disabled");
+      [MSAIMetricsManager sharedManager].autoPageViewTrackingDisabled = YES;
+    }
+    [MSAICategoryContainer activateCategory];
+    
     MSAILog(@"INFO: Starting MSAIMetricsManager");
     [[MSAIMetricsManager sharedManager] startManager];
   }
@@ -191,6 +206,15 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 
 + (void)setMetricsManagerDisabled:(BOOL)metricsManagerDisabled {
   [[self sharedInstance] setMetricsManagerDisabled:metricsManagerDisabled];
+}
+
+- (void)setAutoPageViewTrackingDisabled:(BOOL)autoPageViewTrackingDisabled {
+  [MSAIMetricsManager sharedManager].autoPageViewTrackingDisabled = autoPageViewTrackingDisabled;
+  _autoPageViewTrackingDisabled = autoPageViewTrackingDisabled;
+}
+
++ (void)setAutoPageViewTrackingDisabled:(BOOL)autoPageViewTrackingDisabled {
+  [[self sharedInstance] setAutoPageViewTrackingDisabled:autoPageViewTrackingDisabled];
 }
 #endif /* MSAI_FEATURE_METRICS */
 

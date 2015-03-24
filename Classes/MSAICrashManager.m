@@ -15,8 +15,12 @@
 #import "MSAIEnvelopeManager.h"
 #import "MSAIEnvelopeManagerPrivate.h"
 #import "MSAIData.h"
+#import <mach-o/loader.h>
+#import <mach-o/dyld.h>
 
 #include <sys/sysctl.h>
+// stores the set of crashreports that have been approved but aren't sent yet
+#define kMSAICrashApprovedReports @"MSAICrashApprovedReports" //TODO remove this in next Sprint
 
 // internal keys
 NSString *const kMSAICrashManagerIsDisabled = @"MSAICrashManagerIsDisabled";
@@ -394,7 +398,9 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
 - (void)readCrashReportAndStartProcessing {
   NSError *error = NULL;
 
-  if(!self.plCrashReporter) return;
+  if(!self.plCrashReporter) {
+    return;
+  }
 
   NSData *crashData;
 
@@ -482,7 +488,7 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
 #pragma mark - Crash Report Processing
 
 /**
-*  Creates a fake crash report because the app was killed while being in foreground
+*  Creates a crash template because the app was killed while being in foreground
 */
 - (void)createCrashReportForAppKill {
   MSAICrashDataHeaders *crashHeaders = [MSAICrashDataHeaders new];
@@ -498,11 +504,11 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
   data.baseData = crashData;
   data.baseType = crashData.dataTypeName;
 
-  MSAIEnvelope *fakeCrashEnvelope = [[MSAIEnvelopeManager sharedManager] envelope];
-  fakeCrashEnvelope.data = data;
-  fakeCrashEnvelope.name = crashData.envelopeTypeName;
+  MSAIEnvelope *crashTemplate = [[MSAIEnvelopeManager sharedManager] envelope];
+  crashTemplate.data = data;
+  crashTemplate.name = crashData.envelopeTypeName;
 
-  [[MSAIPersistence sharedInstance] persistFakeReportBundle:@[fakeCrashEnvelope]];
+  [[MSAIPersistence sharedInstance] persistCrashTemplateBundle:@[crashTemplate]];
 }
 
 /***
@@ -542,7 +548,7 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
     }
 
     MSAILog(@"INFO: Persisting crash reports started.");
-    [[MSAIChannel sharedChannel] processEnvelope:crashEnvelope withCompletionBlock:nil];
+    [[MSAIChannel sharedChannel] processDictionary:[crashEnvelope serializeToDictionary] withCompletionBlock:nil];
   }
 }
 

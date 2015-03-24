@@ -7,11 +7,15 @@
 #import "AppInsightsPrivate.h"
 #import "MSAIAppInsights.h"
 
+static NSUInteger const defaultRequestLimit = 10;
+
+static NSInteger const statusCodeOK = 200;
+static NSInteger const statusCodeAccepted = 202;
+static NSInteger const statusCodeBadRequest = 400;
+
 @interface MSAISender ()
 
 @end
-
-static NSUInteger const defaultRequestLimit = 10;
 
 @implementation MSAISender
 
@@ -48,10 +52,9 @@ static NSUInteger const defaultRequestLimit = 10;
                        queue:nil
                   usingBlock:^(NSNotification *notification) {
                     typeof(self) strongSelf = weakSelf;
-                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
-                      
-                      [strongSelf sendSavedData];
-                    });
+                    
+                    [strongSelf sendSavedData];
+                    
                   }];
 }
 
@@ -66,24 +69,21 @@ static NSUInteger const defaultRequestLimit = 10;
       return;
     }
   }
-  NSString *path = [[MSAIPersistence sharedInstance] requestNextPath];
-  NSArray *bundle = [[MSAIPersistence sharedInstance] bundleAtPath:path];
-  [self sendBundle:bundle withPath:path];
+  
+  dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    NSString *path = [[MSAIPersistence sharedInstance] requestNextPath];
+    NSData *data = [[MSAIPersistence sharedInstance] dataAtPath:path];
+    [self sendData:data withPath:path];
+  });
 }
 
-- (void)sendBundle:(NSArray *)bundle withPath:(NSString *)path{
+- (void)sendData:(NSData *)data withPath:(NSString *)path{
   
-  if(bundle && bundle.count > 0) {
-    NSError *error = nil;
-    NSData *json = [NSJSONSerialization dataWithJSONObject:[self jsonArrayFromArray:bundle] options:NSJSONWritingPrettyPrinted error:&error];
-    if(!error) {
-      NSString *urlString = [[(MSAIEnvelope *)bundle[0] name] isEqualToString:@"Microsoft.ApplicationInsights.Crash"] ? MSAI_CRASH_DATA_URL : MSAI_EVENT_DATA_URL;
-      NSURLRequest *request = [self requestForData:json urlString:urlString];
-      [self sendRequest:request path:path];
-    }else {
-      MSAILog(@"Error creating JSON from bundle array, don't save back to disk");
-      self.runningRequestsCount -= 1;
-    }
+  if(data) {
+    NSString *urlString = MSAI_EVENT_DATA_URL;
+    NSURLRequest *request = [self requestForData:data urlString:urlString];
+    [self sendRequest:request path:path];
+    
   }else{
     self.runningRequestsCount -= 1;
   }
@@ -100,11 +100,12 @@ static NSUInteger const defaultRequestLimit = 10;
     self.runningRequestsCount -= 1;
     NSInteger statusCode = [operation.response statusCode];
 
-    if(statusCode >= 200 && statusCode < 400) {
+    if([self shouldDeleteDataWithStatusCode:statusCode]) {
+      // We should delete data if it has been succesfully sent (200/202) or if its values have not been accepted (400)
       MSAILog(@"Sent data with status code: %ld", (long) statusCode);
       MSAILog(@"Response data:\n%@", [NSJSONSerialization JSONObjectWithData:responseData options:0 error:nil]);
       
-      [[MSAIPersistence sharedInstance] deleteBundleAtPath:path];
+      [[MSAIPersistence sharedInstance] deleteFileAtPath:path];
       [strongSelf sendSavedData];
     } else {
       MSAILog(@"Sending MSAIAppInsights data failed");
@@ -126,14 +127,6 @@ static NSUInteger const defaultRequestLimit = 10;
 
 #pragma mark - Helper
 
-- (NSArray *)jsonArrayFromArray:(NSArray *)envelopeArray{
-  NSMutableArray *array = [NSMutableArray new];
-  for(MSAIEnvelope *envelope in envelopeArray){
-    [array addObject:[envelope serializeToDictionary]];
-  }
-  return array;
-}
-
 - (NSURLRequest *)requestForData:(NSData *)data urlString:(NSString *)urlString {
   NSMutableURLRequest *request = [self.appClient requestWithMethod:@"POST"
                                                               path:urlString
@@ -144,6 +137,11 @@ static NSUInteger const defaultRequestLimit = 10;
   NSString *contentType = @"application/json";
   [request setValue:contentType forHTTPHeaderField:@"Content-type"];
   return request;
+}
+
+- (BOOL)shouldDeleteDataWithStatusCode:(NSInteger)statusCode {
+  
+  return (statusCode >= statusCodeOK && statusCode <= statusCodeAccepted) || statusCode == statusCodeBadRequest;
 }
 
 #pragma mark - Getter/Setter
