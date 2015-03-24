@@ -69,13 +69,12 @@
 - (NSURLRequest *)requestForData:(NSData *)data urlString:(NSString *)urlString;
 
 /**
- *  Convert a collection of envelope objects to array of dictionaries.
+ *  Returns if data should be deleted based on a given status code.
  *
- *  @param envelopeArray array of envelope objects
+ *  @param statusCode the status code which is part of the response object
  *
- *  @return a json array of envelope objects
+ *  @return YES if data should be deleted, NO if the payload should be sent at a later time again.
  */
-- (NSArray *)jsonArrayFromArray:(NSArray *)envelopeArray;
-
+- (BOOL)shouldDeleteDataWithStatusCode:(NSInteger)statusCode;
 
 @end

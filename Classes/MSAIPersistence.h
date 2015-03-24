@@ -21,7 +21,7 @@ FOUNDATION_EXPORT NSString *const kMSAIPersistenceSuccessNotification;
 typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
   MSAIPersistenceTypeHighPriority = 0,
   MSAIPersistenceTypeRegular = 1,
-  MSAIPersistenceTypeFakeCrash = 2
+  MSAIPersistenceTypeCrashTemplate = 2
 };
 
 ///-----------------------------------------------------------------------------
@@ -59,7 +59,7 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
 
 /**
 * Saves the bundle and sends out a kMSAIPersistenceSuccessNotification in case of success
-* for all types except MSAIPersistenceTypeFakeCrash
+* for all types except MSAIPersistenceTypeCrashTemplate
 * @param bundle a bundle of tracked events (telemetry, crashes, ...) that will be serialized and saved.
 * @param type The type of the bundle we want to save.
 * @param completionBlock An optional block that will be executed after we have tried to save the bundle.
@@ -69,11 +69,21 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
 - (void)persistBundle:(NSArray *)bundle ofType:(MSAIPersistenceType)type withCompletionBlock:(void (^)(BOOL success))completionBlock;
 
 /**
+ *  Saves the bundle to disk.
+ *
+ *  @param bundle            the bundle, which should be saved to disk
+ *  @param type              the persistence type of the bundle (high prio/regular prio/crash template)
+ *  @param sendNotifications a flag which determines if a notification should be sent if saving was successful
+ *  @param completionBlock   a block which is executed after the bundle has been stored
+ */
+- (void)persistBundle:(NSArray *)bundle ofType:(MSAIPersistenceType)type enableNotifications:(BOOL)sendNotifications withCompletionBlock:(void (^)(BOOL success))completionBlock;
+
+/**
  *  Deletes the file for the given path.
  *
  *  @param path the path of the file, which should be deleted
  */
-- (void)deleteBundleAtPath:(NSString *)path ;
+- (void)deleteFileAtPath:(NSString *)path ;
 
 /**
  *  Determines whether the persistence layer is able to write more files to disk.
@@ -124,22 +134,54 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
  */
 - (NSArray *)bundleAtPath:(NSString *)path;
 
+/**
+ *  Return the json data for a given path
+ *
+ *  @param path the path of the file
+ *
+ *  @return a data object which contains telemetry data in json representation
+ */
+- (NSData *)dataAtPath:(NSString *)path;
+
+/**
+ *  Return data for a given array based on its persistence type.
+ *
+ *  @param bundle          items, which should be persisted
+ *  @param persistenceType the type of the data (crash/telemetry data)
+ *
+ *  @return data for a given array based on its persistence type
+ */
+-(NSData *)dataForBundle:(NSArray *)bundle withPersistenceTye:(MSAIPersistenceType)persistenceType;
+
+///-----------------------------------------------------------------------------
+/// @name Getting a path
+///-----------------------------------------------------------------------------
+
+/**
+ *  Returns a folder path for items of a given type.
+ *
+ *  @param type the file type, which the directory holds
+ *
+ *  @return a folder path for items of a given type
+ */
+- (NSString *)folderPathForPersistenceType:(MSAIPersistenceType)type;
+
 ///-----------------------------------------------------------------------------
 /// @name Handling of a "fake" CrashReport
 ///-----------------------------------------------------------------------------
 
 /**
-* Persist a "fake" crash report.
+* Persist a crash template.
 *
 * @param bundle The bundle of application insights data
 */
-- (void)persistFakeReportBundle:(NSArray *)bundle;
+- (void)persistCrashTemplateBundle:(NSArray *)bundle;
 
 /**
-* Get the first of all saved fake crash reports (an arbitrary one in case we have several fake reports)
+* Get the persisted crash template.
 *
-* @return a fake crash report, wrapped as a bundle
+* @return a crash template, wrapped as a bundle
 */
-- (NSArray *)fakeReportBundle;
+- (NSArray *)crashTemplateBundle;
 
 @end

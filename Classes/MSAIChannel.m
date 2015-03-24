@@ -57,15 +57,15 @@ static dispatch_once_t once_token;
 
 #pragma mark - Queue management
 
-- (void)enqueueEnvelope:(MSAIEnvelope *)envelope{
-  if(envelope) {
+- (void)enqueueDictionary:(MSAIOrderedDictionary *)dictionary{
+  if(dictionary) {
     
     __weak typeof(self) weakSelf = self;
     dispatch_async(self.dataItemsOperations, ^{
       typeof(self) strongSelf = weakSelf;
       
       // Enqueue item
-      [strongSelf->_dataItemQueue addObject:envelope];
+      [strongSelf->_dataItemQueue addObject:dictionary];
       
       if([strongSelf->_dataItemQueue count] >= strongSelf.senderBatchSize) {
         
@@ -83,8 +83,8 @@ static dispatch_once_t once_token;
   }
 }
 
-- (void)processEnvelope:(MSAIEnvelope *)envelope withCompletionBlock: (void (^)(BOOL success)) completionBlock{
-  [[MSAIPersistence sharedInstance] persistBundle:[NSArray arrayWithObject:envelope]
+- (void)processDictionary:(MSAIOrderedDictionary *)dictionary withCompletionBlock: (void (^)(BOOL success)) completionBlock{
+  [[MSAIPersistence sharedInstance] persistBundle:[NSArray arrayWithObject:dictionary]
                           ofType:MSAIPersistenceTypeHighPriority withCompletionBlock:completionBlock];
 }
 

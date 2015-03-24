@@ -100,10 +100,9 @@
 }
 
 - (void)testCreateCrashReportForAppKill {
-  //handle app kill (FakeCrashReport
-  [_sut createCrashReportForAppKill]; //just creates a fake crash report and hands it over to MSAIPersistence
+  [_sut createCrashReportForAppKill]; //just creates a crash template and hands it over to MSAIPersistence
   
-  NSArray *bundle = [[MSAIPersistence sharedInstance] fakeReportBundle];
+  NSArray *bundle = [[MSAIPersistence sharedInstance] crashTemplateBundle];
   XCTAssertNil(bundle);
   
   if(bundle && ([bundle count] > 0)) {
