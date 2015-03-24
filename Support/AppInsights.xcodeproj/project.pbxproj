@@ -937,7 +937,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/../Vendor/XcodeCoverage/exportenv.sh\"";
+			shellScript = "if [ \"${CONFIGURATION}\" = \"CodeCoverage\" ]; then\n    \"${SRCROOT}/../Vendor/XcodeCoverage/exportenv.sh\"\nfi";
 		};
 /* End PBXShellScriptBuildPhase section */
 
