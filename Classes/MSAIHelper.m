@@ -149,12 +149,14 @@ NSString *msai_osVersionBuild(void) {
    * may change after each iteration. */
   do {
     /* Fetch the expected length */
-    if ((ret = sysctlbyname("kern.osversion", NULL, &result_len, NULL, 0)) == -1)
+    if ((ret = sysctlbyname("kern.osversion", NULL, &result_len, NULL, 0)) == -1) {
       break;
+    }
     
     /* Allocate the destination buffer */
-    if (result != NULL)
+    if (result != NULL) {
       free(result);
+    }
     result = malloc(result_len);
     
     /* Fetch the value */
@@ -165,8 +167,9 @@ NSString *msai_osVersionBuild(void) {
   if (ret == -1) {
     int saved_errno = errno;
     
-    if (result != NULL)
+    if (result != NULL) {
       free(result);
+    }
     
     errno = saved_errno;
     return NULL;
