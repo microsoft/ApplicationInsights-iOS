@@ -77,9 +77,9 @@
   
   for(NSInteger statusCode = 100; statusCode <= 510; statusCode++){
     if((statusCode >= 200 && statusCode <= 202) || statusCode == 400){
-      assertThatBool([_sut shouldDeleteDataWithStatusCode:statusCode], equalToBool(YES));
+      assertThatBool([_sut shouldDeleteDataWithStatusCode:statusCode], isTrue());
     }else{
-      assertThatBool([_sut shouldDeleteDataWithStatusCode:statusCode], equalToBool(NO));
+      assertThatBool([_sut shouldDeleteDataWithStatusCode:statusCode], isFalse());
     }
   }
 }

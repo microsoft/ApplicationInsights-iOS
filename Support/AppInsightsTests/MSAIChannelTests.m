@@ -86,15 +86,15 @@
 
 - (void)testEnqueueEnvelopeWithOneEnvelope {
   self.sut = OCMPartialMock(self.sut);
-  MSAIEnvelope *envelope = [MSAIEnvelope new];
+  MSAIOrderedDictionary *dictionary = [MSAIOrderedDictionary new];
   OCMStub([self.sut startTimer]);
   
-  [self.sut enqueueEnvelope:envelope];
+  [self.sut enqueueDictionary:dictionary];
   
   [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
   
   assertThat(self.sut.dataItemQueue, hasCountOf(1));
-  XCTAssertEqual(self.sut.dataItemQueue.firstObject, envelope);
+  XCTAssertEqual(self.sut.dataItemQueue.firstObject, dictionary);
   OCMVerify([self.sut startTimer]);
 }
 
@@ -104,17 +104,17 @@
   
   self.sut.senderBatchSize = 3;
   
-  MSAIEnvelope *envelope = [MSAIEnvelope new];
+  MSAIOrderedDictionary *dictionary = [MSAIOrderedDictionary new];
   
   assertThat(self.sut.dataItemQueue, hasCountOf(0));
   
-  [self.sut enqueueEnvelope:envelope];
+  [self.sut enqueueDictionary:dictionary];
   assertThat(self.sut.dataItemQueue, hasCountOf(1));
   
-  [self.sut enqueueEnvelope:envelope];
+  [self.sut enqueueDictionary:dictionary];
   assertThat(self.sut.dataItemQueue, hasCountOf(2));
   
-  [self.sut enqueueEnvelope:envelope];
+  [self.sut enqueueDictionary:dictionary];
   assertThat(self.sut.dataItemQueue, hasCountOf(0));
   
   OCMVerify([self.sut invalidateTimer]);
