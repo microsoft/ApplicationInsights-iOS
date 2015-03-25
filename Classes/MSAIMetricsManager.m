@@ -27,7 +27,6 @@
 #import "MSAIEnvelopeManager.h"
 #import "MSAIEnvelopeManagerPrivate.h"
 
-NSString *const kMSAIApplicationWasLaunched = @"MSAIApplicationWasLaunched";
 static char *const MSAIMetricEventQueue = "com.microsoft.appInsights.metricEventQueue";
 static NSString *const kMSAIApplicationDidEnterBackgroundTime = @"MSAIApplicationDidEnterBackgroundTime";
 static NSInteger const defaultSessionExpirationTime = 20;

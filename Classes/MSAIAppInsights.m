@@ -55,8 +55,12 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
     _serverURL = nil;
     _managersInitialized = NO;
     _appClient = nil;
+#if MSAI_FEATURE_CRASH_REPORTER
     _crashManagerDisabled = NO;
+#endif /* MSAI_FEATURE_CRASH_REPORTER */
+#if MSAI_FEATURE_METRICS
     _metricsManagerDisabled = NO;
+#endif /* MSAI_FEATURE_METRICS */
     _appStoreEnvironment = NO;
     _startManagerIsInvoked = NO;
     
@@ -197,7 +201,6 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 }
 
 #pragma mark - Configuring modules
-
 #if MSAI_FEATURE_METRICS
 - (void)setMetricsManagerDisabled:(BOOL)metricsManagerDisabled {
   [MSAIMetricsManager sharedManager].metricsManagerDisabled = metricsManagerDisabled;
@@ -217,7 +220,6 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
   [[self sharedInstance] setAutoPageViewTrackingDisabled:autoPageViewTrackingDisabled];
 }
 #endif /* MSAI_FEATURE_METRICS */
-
 
 #if MSAI_FEATURE_CRASH_REPORTER
 - (void)setCrashManagerDisabled:(BOOL)crashManagerDisabled {
@@ -241,7 +243,7 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
     _serverURL = [serverURL copy];
     
     if (_appClient) {
-      self.appClient.baseURL = [NSURL URLWithString:_serverURL ? _serverURL : MSAI_SDK_URL];
+      self.appClient.baseURL = [NSURL URLWithString:_serverURL ? _serverURL : MSAI_BASE_URL];
     }
   }
 }
@@ -358,9 +360,7 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 
 - (MSAIAppClient *)appClient {
   if (!_appClient) {
-    _appClient = [[MSAIAppClient alloc] initWithBaseURL:[NSURL URLWithString:_serverURL ? _serverURL : MSAI_SDK_URL]];
-    
-    _appClient.baseURL = [NSURL URLWithString:_serverURL ? _serverURL : MSAI_SDK_URL];
+    _appClient = [[MSAIAppClient alloc] initWithBaseURL:[NSURL URLWithString:_serverURL ? _serverURL : MSAI_BASE_URL]];
   }
   
   return _appClient;
