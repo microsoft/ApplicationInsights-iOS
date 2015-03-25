@@ -7,11 +7,15 @@
 #import "AppInsightsPrivate.h"
 #import "MSAIAppInsights.h"
 
+static NSUInteger const defaultRequestLimit = 10;
+
+static NSInteger const statusCodeOK = 200;
+static NSInteger const statusCodeAccepted = 202;
+static NSInteger const statusCodeBadRequest = 400;
+
 @interface MSAISender ()
 
 @end
-
-static NSUInteger const defaultRequestLimit = 10;
 
 @implementation MSAISender
 
@@ -58,7 +62,6 @@ static NSUInteger const defaultRequestLimit = 10;
 
 - (void)sendSavedData{
   
-  
   @synchronized(self){
     if(_runningRequestsCount < _maxRequestCount){
       _runningRequestsCount++;
@@ -77,8 +80,7 @@ static NSUInteger const defaultRequestLimit = 10;
 - (void)sendData:(NSData *)data withPath:(NSString *)path{
   
   if(data) {
-    NSString *urlString = MSAI_EVENT_DATA_URL;
-    NSURLRequest *request = [self requestForData:data urlString:urlString];
+    NSURLRequest *request = [self requestForData:data];
     [self sendRequest:request path:path];
     
   }else{
@@ -97,8 +99,7 @@ static NSUInteger const defaultRequestLimit = 10;
     self.runningRequestsCount -= 1;
     NSInteger statusCode = [operation.response statusCode];
 
-    if(statusCode >= 200 && statusCode <= 400) {
-      
+    if([self shouldDeleteDataWithStatusCode:statusCode]) {
       // We should delete data if it has been succesfully sent (200/202) or if its values have not been accepted (400)
       MSAILog(@"Sent data with status code: %ld", (long) statusCode);
       MSAILog(@"Response data:\n%@", [NSJSONSerialization JSONObjectWithData:responseData options:0 error:nil]);
@@ -125,9 +126,9 @@ static NSUInteger const defaultRequestLimit = 10;
 
 #pragma mark - Helper
 
-- (NSURLRequest *)requestForData:(NSData *)data urlString:(NSString *)urlString {
+- (NSURLRequest *)requestForData:(NSData *)data {
   NSMutableURLRequest *request = [self.appClient requestWithMethod:@"POST"
-                                                              path:urlString
+                                                              path:self.endpointPath
                                                         parameters:nil];
   
   [request setHTTPBody:data];
@@ -135,6 +136,11 @@ static NSUInteger const defaultRequestLimit = 10;
   NSString *contentType = @"application/json";
   [request setValue:contentType forHTTPHeaderField:@"Content-type"];
   return request;
+}
+
+- (BOOL)shouldDeleteDataWithStatusCode:(NSInteger)statusCode {
+  
+  return (statusCode >= statusCodeOK && statusCode <= statusCodeAccepted) || statusCode == statusCodeBadRequest;
 }
 
 #pragma mark - Getter/Setter

@@ -140,8 +140,47 @@ NSString *msai_encodeInstrumentationKey(NSString *inputString) {
   return (inputString ? msai_URLEncodedString(inputString) : msai_URLEncodedString(msai_mainBundleIdentifier()));
 }
 
-NSString *msai_osVersion(void){
-  return [[UIDevice currentDevice] systemVersion];
+NSString *msai_osVersionBuild(void) {
+  void *result = NULL;
+  size_t result_len = 0;
+  int ret;
+  
+  /* If our buffer is too small after allocation, loop until it succeeds -- the requested destination size
+   * may change after each iteration. */
+  do {
+    /* Fetch the expected length */
+    if ((ret = sysctlbyname("kern.osversion", NULL, &result_len, NULL, 0)) == -1) {
+      break;
+    }
+    
+    /* Allocate the destination buffer */
+    if (result != NULL) {
+      free(result);
+    }
+    result = malloc(result_len);
+    
+    /* Fetch the value */
+    ret = sysctlbyname("kern.osversion", result, &result_len, NULL, 0);
+  } while (ret == -1 && errno == ENOMEM);
+  
+  /* Handle failure */
+  if (ret == -1) {
+    int saved_errno = errno;
+    
+    if (result != NULL) {
+      free(result);
+    }
+    
+    errno = saved_errno;
+    return NULL;
+  }
+  
+  NSString *osBuild = [NSString stringWithCString:result encoding:NSUTF8StringEncoding];
+  free(result);
+  
+  NSString *osVersion = [[UIDevice currentDevice] systemVersion];
+  
+  return [NSString stringWithFormat:@"%@(%@)", osVersion, osBuild];
 }
 
 NSString *msai_osName(void){

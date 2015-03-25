@@ -18,6 +18,7 @@ NSUInteger const defaultFileCount = 50;
   BOOL _maxFileCountReached;
 }
 
+
 #pragma mark - Public
 
 + (instancetype)sharedInstance{
@@ -51,8 +52,8 @@ NSUInteger const defaultFileCount = 50;
 
 /**
  * Creates a serial background queue that saves the Bundle using NSKeyedArchiver and NSData's writeToFile:atomically
+ * In case if type MSAIPersistenceTypeCrashTemplate, we don't send out a kMSAIPersistenceSuccessNotification.
  *
- * In case if type MSAIPersistenceTypeCrashTemplate, we don't send out a MSAIPersistenceSuccessNotification.
  */
 - (void)persistBundle:(NSArray *)bundle ofType:(MSAIPersistenceType)type enableNotifications:(BOOL)sendNotifications withCompletionBlock:(void (^)(BOOL success))completionBlock {
   
@@ -362,6 +363,26 @@ NSUInteger const defaultFileCount = 50;
                                                         object:nil
                                                       userInfo:nil];
   });
+}
+
+- (BOOL)crashReportLockFilePresent {
+  NSString *analyzerInProgressFile = [msai_settingsDir() stringByAppendingPathComponent:kMSAICrashAnalyzer];
+
+  return [[NSFileManager defaultManager] fileExistsAtPath:analyzerInProgressFile];
+}
+
+- (void)createCrashReporterLockFile {
+  NSString *analyzerInProgressFile = [msai_settingsDir() stringByAppendingPathComponent:kMSAICrashAnalyzer];
+
+  [[NSFileManager defaultManager] createFileAtPath:analyzerInProgressFile contents:nil attributes:nil];
+}
+
+- (void)deleteCrashReporterLockFile {
+  NSString *analyzerInProgressFile = [msai_settingsDir() stringByAppendingPathComponent:kMSAICrashAnalyzer];
+  NSError *error = NULL;
+  if([[NSFileManager defaultManager] fileExistsAtPath:analyzerInProgressFile]) {
+    [[NSFileManager defaultManager] removeItemAtPath:analyzerInProgressFile error:&error];
+  }
 }
 
 @end
