@@ -21,12 +21,10 @@
   
   NSParameterAssert(method);
   NSParameterAssert(params == nil || [method isEqualToString:@"POST"] || [method isEqualToString:@"GET"]);
-  // TODO: Since we are currently talking to two different endpoints, we have to pass the whole address rather than just the path
-  //  NSParameterAssert(self.baseURL);
-  //  path = path ? : @"";
-  //
-  //  NSURL *endpoint = [self.baseURL URLByAppendingPathComponent:path];
-  NSURL *endpoint = [NSURL URLWithString:path];
+    NSParameterAssert(self.baseURL);
+    path = path ? : @"";
+  
+  NSURL *endpoint = [self.baseURL URLByAppendingPathComponent:path];
   NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:endpoint];
   request.HTTPMethod = method;
   
