@@ -16,6 +16,10 @@
 #import "MSAIEnvelope.h"
 #import "MSAICrashData.h"
 #import "MSAITestHelper.h"
+#import "MSAITelemetryContext.h"
+#import "MSAITelemetryContextPrivate.h"
+#import "MSAIEnvelopeManager.h"
+#import "MSAIEnvelopeManagerPrivate.h"
 
 #define kMSAICrashMetaAttachment @"MSAICrashMetaAttachment"
 
@@ -27,8 +31,6 @@
 
 
 @implementation MSAICrashManagerTests {
-  MSAICrashManager *_sut;
-  MSAIContext *_context;
   BOOL _startManagerInitialized;
 }
 
@@ -37,44 +39,45 @@
   
   _startManagerInitialized = NO;
   
-  _context = [[MSAIContext alloc]initWithInstrumentationKey:nil];
-  _sut = [MSAICrashManager sharedManager];
+  MSAIContext *context = [[MSAIContext alloc]initWithInstrumentationKey:@"123"];
+  MSAITelemetryContext *telemetryContext = [[MSAITelemetryContext alloc] initWithAppContext:context endpointPath:nil];
+  [[MSAIEnvelopeManager sharedManager] configureWithTelemetryContext:telemetryContext];
+
 }
 
 - (void)tearDown {
-  [_sut cleanCrashReports];
   [super tearDown];
 }
 
-#pragma mark - Private
+#pragma mark - Helpers for start/stop
 
 - (void)startManager {
-  [_sut startManager];
-  [NSObject cancelPreviousPerformRequestsWithTarget:_sut selector:@selector(invokeDelayedProcessing) object:nil];
+  [MSAICrashManager sharedManager].isCrashManagerDisabled = NO;
+  if(!_startManagerInitialized) {
+    [[MSAICrashManager sharedManager] startManager];
+  }
   _startManagerInitialized = YES;
 }
 
 - (void)startManagerDisabled {
-  _sut.isCrashManagerDisabled = YES;
-  if (_startManagerInitialized) return;
-  [self startManager];
+  [MSAICrashManager sharedManager].isCrashManagerDisabled = YES;
+  if(!_startManagerInitialized) {
+    [[MSAICrashManager sharedManager] startManager];
+  }
+  _startManagerInitialized = YES;
 }
 
 
 #pragma mark - Setup Tests
 
 - (void)testThatItInstantiates {
-  XCTAssertNotNil(_sut, @"Should be there");
+  XCTAssertNotNil([MSAICrashManager sharedManager], @"Should be there");
 }
 
 - (void)testThatItIsSetup {
   [self startManager];
-  XCTAssertTrue(_sut.isSetupCorrectly);
+  XCTAssertTrue([[MSAICrashManager sharedManager] isSetupCorrectly]);
 }
-
-
-#pragma mark - Helper
-
 
 #pragma mark - Debugger
 
@@ -83,24 +86,24 @@
  *  TODO: what to do if we do run this e.g. on Jenkins or Xcode bots ?
  */
 - (void)testIsDebuggerAttached {
-  assertThatBool([_sut getIsDebuggerAttached], equalToBool(YES));
+  assertThatBool([MSAICrashManager sharedManager].debuggerIsAttached, equalToBool(YES));
 }
 
+- (void)testStartManagerWithModuleDisabled {
+  [self startManagerDisabled];
+  assertThatBool([MSAICrashManager sharedManager].isCrashManagerDisabled, equalToBool(YES));
+}
 
-#pragma mark - Internals
+#pragma mark - Crash Reporting
 
 - (void)testHasPendingCrashReportWithNoFiles {
-  _sut.isCrashManagerDisabled = NO;
-  assertThatBool([_sut hasPendingCrashReport], equalToBool(NO));
-}
-
-- (void)testFirstNotApprovedCrashReportWithNoFiles {
-  _sut.isCrashManagerDisabled = NO;
-  assertThat([_sut firstNotApprovedCrashReport], equalTo(nil));
+  [MSAICrashManager sharedManager].isCrashManagerDisabled = NO;
+  assertThatBool([[MSAICrashManager sharedManager].plCrashReporter hasPendingCrashReport], equalToBool(NO));
 }
 
 - (void)testCreateCrashReportForAppKill {
-  [_sut createCrashReportForAppKill]; //just creates a crash template and hands it over to MSAIPersistence
+  //handle app kill (FakeCrashReport will be generated)
+  [[MSAICrashManager sharedManager] createCrashReportForAppKill]; //just creates a fake crash report and hands it over to MSAIPersistence
   
   NSArray *bundle = [[MSAIPersistence sharedInstance] crashTemplateBundle];
   XCTAssertNil(bundle);
@@ -115,12 +118,7 @@
 
 #pragma mark - StartManager
 
-- (void)testStartManagerWithModuleDisabled {
-  [self startManagerDisabled];
-  assertThatBool(_sut.isCrashManagerDisabled, equalToBool(YES));
-}
-
-- (void)testStartManagerWithAutoSend {
+- (void)testStartPLCrashReporterSetup {
   // since PLCR is only initialized once ever, we need to pack all tests that rely on a PLCR instance
   // in this test method. Ugly but otherwise this would require a major redesign of MSAICrashManager
   // which we can't do at this moment
@@ -129,59 +127,50 @@
   // to make this better testable with unit tests
   
   id delegateMock = mockProtocol(@protocol(MSAICrashManagerDelegate));
-  _sut.delegate = delegateMock;
+  [MSAICrashManager sharedManager].delegate = delegateMock;
 
   [self startManager];
   
-  assertThat(_sut.plCrashReporter, notNilValue());
+  assertThat([MSAICrashManager sharedManager].plCrashReporter, notNilValue());
   
   // When running from the debugger this is always nil and not the exception handler from PLCR
   NSUncaughtExceptionHandler *currentHandler = NSGetUncaughtExceptionHandler();
   
-  BOOL result = (_sut.exceptionHandler == currentHandler);
+  BOOL result = ([MSAICrashManager sharedManager].exceptionHandler == currentHandler);
   
   assertThatBool(result, equalToBool(YES));
   
   // No files at startup
-  assertThatBool([_sut hasPendingCrashReport], equalToBool(NO));
-  assertThat([_sut firstNotApprovedCrashReport], equalTo(nil));
+  assertThatBool([[MSAICrashManager sharedManager].plCrashReporter hasPendingCrashReport], equalToBool(NO));
   
-  [_sut invokeDelayedProcessing];
+  [[MSAICrashManager sharedManager] readCrashReportAndStartProcessing];
   
   // handle a new empty crash report
   assertThatBool([MSAITestHelper copyFixtureCrashReportWithFileName:@"live_report_empty"], equalToBool(YES));
   
-  [_sut handleCrashReport];
+    assertThatBool([[MSAICrashManager sharedManager].plCrashReporter hasPendingCrashReport], equalToBool(YES));
+
+  [[MSAICrashManager sharedManager] readCrashReportAndStartProcessing];
   
   // we should have 0 pending crash report
-  assertThatBool([_sut hasPendingCrashReport], equalToBool(NO));
-  assertThat([_sut firstNotApprovedCrashReport], equalTo(nil));
+  assertThatBool([[MSAICrashManager sharedManager].plCrashReporter hasPendingCrashReport], equalToBool(NO));
   
-  [_sut cleanCrashReports];
-  
-  // handle a new signal crash report
+    // handle a new signal crash report
   assertThatBool([MSAITestHelper copyFixtureCrashReportWithFileName:@"live_report_signal"], equalToBool(YES));
   
-  [_sut handleCrashReport];
-  
   // we should have now 1 pending crash report
-  assertThatBool([_sut hasPendingCrashReport], equalToBool(YES));
-  assertThat([_sut firstNotApprovedCrashReport], notNilValue());
-  
-  [_sut cleanCrashReports];
+  assertThatBool([[MSAICrashManager sharedManager].plCrashReporter hasPendingCrashReport], equalToBool(YES));
 
+  [[MSAICrashManager sharedManager] readCrashReportAndStartProcessing];
+  
   // handle a new signal crash report
   assertThatBool([MSAITestHelper copyFixtureCrashReportWithFileName:@"live_report_exception"], equalToBool(YES));
   
-  [_sut handleCrashReport];
+    // we should have now 1 pending crash report
+  assertThatBool([[MSAICrashManager sharedManager].plCrashReporter hasPendingCrashReport], equalToBool(YES));
   
-  // we should have now 1 pending crash report
-  assertThatBool([_sut hasPendingCrashReport], equalToBool(YES));
-  assertThat([_sut firstNotApprovedCrashReport], notNilValue());
-  
-  [_sut cleanCrashReports];
-  
-  }
+  [[MSAICrashManager sharedManager] readCrashReportAndStartProcessing];
+}
 
 @end
 #endif
