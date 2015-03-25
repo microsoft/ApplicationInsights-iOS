@@ -17,6 +17,7 @@
 #import "MSAIUser.h"
 #import "MSAISession.h"
 #import "MSAILocation.h"
+#import "MSAISessionHelper.h"
 
 @interface MSAITelemetryContextTests : XCTestCase
 
@@ -50,7 +51,7 @@
 }
 
 - (void)testContextDictionaryUpdateSessionContext {
-  [_sut createNewSession];
+  [_sut createNewSessionWithId:@"mySessionUUID"];
   MSAISession *session = _sut.session;
   XCTAssertTrue([session.isNew isEqualToString:@"true"]);
   #pragma clang diagnostic push
@@ -92,13 +93,13 @@
   _sut.userDefaults = userDefaults;
   [userDefaults setBool:YES forKey:kMSAIApplicationWasLaunched];
 
-  [_sut createNewSession];
+  [_sut createNewSessionWithId:@"hjdasq672323"];
   XCTAssertTrue([session.isNew isEqualToString:@"true"]);
   XCTAssertTrue([session.isFirst isEqualToString:@"false"]);
   
   NSString *firstGUID = session.sessionId;
 
-  [_sut createNewSession];
+  [_sut createNewSessionWithId:@"gdszdg76432"];
   XCTAssertFalse([firstGUID isEqualToString:session.sessionId]);
 }
 
