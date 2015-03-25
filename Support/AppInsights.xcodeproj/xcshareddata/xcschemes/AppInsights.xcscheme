@@ -31,7 +31,7 @@
             ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
             <ActionContent
                title = "Run Script"
-               scriptText = "source ${SRCROOT}/../Vendor/XcodeCoverage/run_code_coverage_post.sh"
+               scriptText = "if [ &quot;${CONFIGURATION}&quot; = &quot;CodeCoverage&quot; ]; then&#10;    source ${SRCROOT}/../Vendor/XcodeCoverage/run_code_coverage_post.sh&#10;fi"
                shellToInvoke = "/bin/bash">
                <EnvironmentBuildable>
                   <BuildableReference

@@ -1,0 +1,15 @@
+language: objective-c
+before_install:
+- gem install xcpretty -N
+notifications:
+  slack:
+    secure: WYk2YeeylqyrjTE4DtPCLmP3AA6rAn/vrgP/poH2fBvEPErnfe+vVgkZvNdVaqftciIz33dc0aCLgRjof4SCH6MrKEn4jceUsT/XhgkRLHexJxE1grQrkOSrHH7++n8YMGpTHwD3+d9cVOymSvoHmvWYATvO7sl3IONimGH+kkA=
+    on_success: change
+script:
+- set -o pipefail
+- cd Support
+- xcodebuild -project AppInsights.xcodeproj -scheme "AppInsights" -sdk iphonesimulator
+  -configuration Debug -destination "platform=iOS Simulator,name=iPhone 6" test |
+  xcpretty -c
+- xcodebuild -project AppInsights.xcodeproj -scheme "AppInsights Framework" -sdk iphonesimulator
+  -configuration Release | xcpretty -c
