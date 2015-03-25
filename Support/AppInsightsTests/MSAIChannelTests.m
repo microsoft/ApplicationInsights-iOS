@@ -16,14 +16,6 @@
 #import "MSAIPersistence.h"
 #import "MSAIEnvelope.h"
 
-@implementation MSAIPersistence (Tests)
-
-+ (instancetype)sharedInstance {
-  return OCMClassMock(MSAIPersistence.class);
-}
-
-@end
-
 @interface MSAIChannelTests : XCTestCase
 
 @property(nonatomic, strong) MSAIChannel *sut;
