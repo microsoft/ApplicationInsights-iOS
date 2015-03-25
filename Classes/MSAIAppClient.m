@@ -19,10 +19,7 @@
                                        path:(NSString *) path
                                  parameters:(NSDictionary *)params {
   
-  NSParameterAssert(method);
-  NSParameterAssert(params == nil || [method isEqualToString:@"POST"] || [method isEqualToString:@"GET"]);
-    NSParameterAssert(self.baseURL);
-    path = path ? : @"";
+  path = path ? : @"";
   
   NSURL *endpoint = [self.baseURL URLByAppendingPathComponent:path];
   NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:endpoint];
