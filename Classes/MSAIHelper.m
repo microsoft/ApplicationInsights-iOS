@@ -200,7 +200,7 @@ NSString *msai_devicePlatform(void) {
 }
 
 NSString *msai_deviceLanguage(void) {
-  return [[[NSBundle mainBundle] preferredLocalizations] objectAtIndex:0];;
+  return [[[NSBundle mainBundle] preferredLocalizations] objectAtIndex:0];
 }
 
 NSString *msai_deviceLocale(void) {

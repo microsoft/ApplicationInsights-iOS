@@ -154,7 +154,7 @@ NSUInteger const defaultFileCount = 50;
 }
 
 - (NSDictionary *)sessionIds {
-  NSDictionary *sessionIds = nil;;
+  NSDictionary *sessionIds = nil;
   NSString *path = [self newFileURLForPersitenceType:MSAIPersistenceTypeSessionIds];
   if(path) {
     sessionIds = [NSKeyedUnarchiver unarchiveObjectWithFile:path];
