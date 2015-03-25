@@ -20,6 +20,7 @@
 #import "MSAIEnums.h"
 #import "MSAICrashDataProvider.h"
 #import "MSAICrashData.h"
+#import "MSAISessionStateData.h"
 #import <pthread.h>
 #import <CrashReporter/CrashReporter.h>
 #import "MSAIEnvelope.h"
@@ -225,7 +226,6 @@ static NSInteger const defaultSessionExpirationTime = 20;
 
 #pragma mark - Session update
 
-//TODO unregister Obeservers?!
 - (void)registerObservers {
   NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
   
@@ -236,7 +236,7 @@ static NSInteger const defaultSessionExpirationTime = 20;
                                                      queue:NSOperationQueue.mainQueue
                                                 usingBlock:^(NSNotification *note) {
                                                   typeof(self) strongSelf = weakSelf;
-                                                  [strongSelf startSession];
+                                                  [strongSelf startNewSession];
                                                 }];
   }
   if (nil == _appDidEnterBackgroundObserver) {
@@ -245,7 +245,7 @@ static NSInteger const defaultSessionExpirationTime = 20;
                                                      queue:NSOperationQueue.mainQueue
                                                 usingBlock:^(NSNotification *note) {
                                                   typeof(self) strongSelf = weakSelf;
-                                                  [strongSelf updateSessionDate];
+                                                  [strongSelf updateDidEnterBackgroundTime];
                                                 }];
   }
   if (nil == _appWillEnterForegroundObserver) {
@@ -254,7 +254,7 @@ static NSInteger const defaultSessionExpirationTime = 20;
                                                       queue:NSOperationQueue.mainQueue
                                                  usingBlock:^(NSNotification *note) {
                                                    typeof(self) strongSelf = weakSelf;
-                                                   [strongSelf startSession];
+                                                   [strongSelf renewSessionIfNeeded];
                                                  }];
   }
   if (nil == _appWillTerminateObserver) {
@@ -268,22 +268,32 @@ static NSInteger const defaultSessionExpirationTime = 20;
   }
 }
 
-- (void)updateSessionDate {
+- (void)updateDidEnterBackgroundTime {
   [[NSUserDefaults standardUserDefaults] setDouble:[[NSDate date] timeIntervalSince1970] forKey:kMSAIApplicationDidEnterBackgroundTime];
   [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
-- (void)startSession {
+- (void)renewSessionIfNeeded {
   double appDidEnterBackgroundTime = [[NSUserDefaults standardUserDefaults] doubleForKey:kMSAIApplicationDidEnterBackgroundTime];
   double timeSinceLastBackground = [[NSDate date] timeIntervalSince1970] - appDidEnterBackgroundTime;
+  
   if (timeSinceLastBackground > defaultSessionExpirationTime) {
-    [[MSAIEnvelopeManager sharedManager] createNewSession];
-    [self trackEventWithName:@"Session Start Event"];
+    [self startNewSession];
   }
 }
 
+- (void)startNewSession {
+  [[MSAIEnvelopeManager sharedManager] createNewSession];
+  MSAISessionStateData *sessionState = [MSAISessionStateData new];
+  sessionState.state = MSAISessionState_start;
+  [self trackDataItem:sessionState];
+  [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kMSAIApplicationWasLaunched];
+}
+
 - (void)endSession {
-  [self trackEventWithName:@"Session End Event"];
+  MSAISessionStateData *sessionState = [MSAISessionStateData new];
+  sessionState.state = MSAISessionState_end;
+  [self trackDataItem:sessionState];
 }
 
 @end
