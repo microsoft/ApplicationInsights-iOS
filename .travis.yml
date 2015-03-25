@@ -5,6 +5,7 @@ notifications:
   slack:
     secure: WYk2YeeylqyrjTE4DtPCLmP3AA6rAn/vrgP/poH2fBvEPErnfe+vVgkZvNdVaqftciIz33dc0aCLgRjof4SCH6MrKEn4jceUsT/XhgkRLHexJxE1grQrkOSrHH7++n8YMGpTHwD3+d9cVOymSvoHmvWYATvO7sl3IONimGH+kkA=
     on_success: change
+    on_failure: always
 script:
 - set -o pipefail
 - cd Support
