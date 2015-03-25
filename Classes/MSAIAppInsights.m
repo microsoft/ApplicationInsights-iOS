@@ -55,8 +55,12 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
     _serverURL = nil;
     _managersInitialized = NO;
     _appClient = nil;
+#if MSAI_FEATURE_CRASH_REPORTER
     _crashManagerDisabled = NO;
+#endif /* MSAI_FEATURE_CRASH_REPORTER */
+#if MSAI_FEATURE_METRICS
     _metricsManagerDisabled = NO;
+#endif /* MSAI_FEATURE_METRICS */
     _appStoreEnvironment = NO;
     _startManagerIsInvoked = NO;
     
@@ -197,7 +201,6 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 }
 
 #pragma mark - Configuring modules
-
 #if MSAI_FEATURE_METRICS
 - (void)setMetricsManagerDisabled:(BOOL)metricsManagerDisabled {
   [MSAIMetricsManager sharedManager].metricsManagerDisabled = metricsManagerDisabled;
@@ -217,7 +220,6 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
   [[self sharedInstance] setAutoPageViewTrackingDisabled:autoPageViewTrackingDisabled];
 }
 #endif /* MSAI_FEATURE_METRICS */
-
 
 #if MSAI_FEATURE_CRASH_REPORTER
 - (void)setCrashManagerDisabled:(BOOL)crashManagerDisabled {
