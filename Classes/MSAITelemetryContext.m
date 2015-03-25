@@ -8,6 +8,7 @@
 
 NSString *const kMSAITelemetrySessionId = @"MSAITelemetrySessionId";
 NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
+NSString *const kMSAIApplicationWasLaunched = @"MSAIApplicationWasLaunched";
 
 @implementation MSAITelemetryContext
 
@@ -101,6 +102,8 @@ NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
   _session.sessionId = msai_UUID();
   _session.isNew = @"true";
   _session.isFirst = (firstSession ? @"true" : @"false");
+  
+  [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kMSAIApplicationWasLaunched];
 }
 
 #pragma mark - Custom getter

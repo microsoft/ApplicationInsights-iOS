@@ -937,7 +937,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/../Vendor/XcodeCoverage/exportenv.sh\"";
+			shellScript = "if [ \"${CONFIGURATION}\" = \"CodeCoverage\" ]; then\n    \"${SRCROOT}/../Vendor/XcodeCoverage/exportenv.sh\"\nfi";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -1231,6 +1231,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				"IPHONEOS_DEPLOYMENT_TARGET[arch=arm64]" = 7.0;
 				MACOSX_DEPLOYMENT_TARGET = 10.5;
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = (
 					"-Wshorten-64-to-32",
 					"-Wall",

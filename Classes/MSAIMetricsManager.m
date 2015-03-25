@@ -26,7 +26,6 @@
 #import "MSAIEnvelopeManager.h"
 #import "MSAIEnvelopeManagerPrivate.h"
 
-NSString *const kMSAIApplicationWasLaunched = @"MSAIApplicationWasLaunched";
 static char *const MSAIMetricEventQueue = "com.microsoft.appInsights.metricEventQueue";
 static NSString *const kMSAIApplicationDidEnterBackgroundTime = @"MSAIApplicationDidEnterBackgroundTime";
 static NSInteger const defaultSessionExpirationTime = 20;
@@ -280,7 +279,6 @@ static NSInteger const defaultSessionExpirationTime = 20;
   if (timeSinceLastBackground > defaultSessionExpirationTime) {
     [[MSAIEnvelopeManager sharedManager] createNewSession];
     [self trackEventWithName:@"Session Start Event"];
-    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kMSAIApplicationWasLaunched];
   }
 }
 

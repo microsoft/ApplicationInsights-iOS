@@ -73,4 +73,16 @@
   [verify(mockClient) enqeueHTTPOperation:anything()];
 }
 
+- (void)testDeleteDataWithStatusCodeWorks{
+  
+  for(NSInteger statusCode = 100; statusCode <= 510; statusCode++){
+    if((statusCode >= 200 && statusCode <= 202) || statusCode == 400){
+      assertThatBool([_sut shouldDeleteDataWithStatusCode:statusCode], equalToBool(YES));
+    }else{
+      assertThatBool([_sut shouldDeleteDataWithStatusCode:statusCode], equalToBool(NO));
+    }
+  }
+}
+
+
 @end
