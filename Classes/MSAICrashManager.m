@@ -457,6 +457,7 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
 
   if(!msai_isRunningInAppExtension() &&
       [[UIApplication sharedApplication] applicationState] != UIApplicationStateActive) {
+      [[MSAIPersistence sharedInstance] deleteCrashReporterLockFile];//TODO only do this when persisting was successful?
     return;
   }
 
