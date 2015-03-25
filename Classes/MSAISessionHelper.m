@@ -7,10 +7,22 @@
 
 static NSString *const kMSAISessionFileName = @"MSAISessions";
 static NSString *const kMSAISessionFileType = @"plist";
-
 static char *const MSAISessionOperationsQueue = "com.microsoft.appInsights.sessionQueue";
 
-@implementation MSAISessionHelper
+static NSInteger const defaultSessionExpirationTime = 20;
+static NSString *const kMSAIApplicationDidEnterBackgroundTime = @"MSAIApplicationDidEnterBackgroundTime";
+NSString *const kMSAIApplicationWasLaunched = @"MSAIApplicationWasLaunched";
+
+NSString *const MSAISessionChangedNotification = @"MSAISessionChangedNotification";
+NSString *const kMSAISessionInfoSessionId = @"MSAISessionInfoSessionId";
+NSString *const kMSAISessionInfoSessionCreated = @"MSAISessionInfoSessionCreated";
+
+@implementation MSAISessionHelper{
+  id _appDidFinishLaunchingObserver;
+  id _appWillEnterForegroundObserver;
+  id _appDidEnterBackgroundObserver;
+  id _appWillTerminateObserver;
+}
 
 #pragma mark - Initialize
 
@@ -20,6 +32,7 @@ static char *const MSAISessionOperationsQueue = "com.microsoft.appInsights.sessi
   static dispatch_once_t onceToken;
   dispatch_once(&onceToken, ^{
     sharedInstance = [self new];
+    [sharedInstance registerObservers];
   });
   
   return sharedInstance;
@@ -103,7 +116,7 @@ static char *const MSAISessionOperationsQueue = "com.microsoft.appInsights.sessi
     typeof(self) strongSelf = weakSelf;
     
     NSInteger sessionsCount = strongSelf.sessionEntries.count;
-    if (sessionsCount >= 0) {
+    if (sessionsCount > 0) {
 
       // Get most recent session
       NSArray *sortedKeys = [strongSelf sortedKeys];
@@ -115,6 +128,82 @@ static char *const MSAISessionOperationsQueue = "com.microsoft.appInsights.sessi
       [strongSelf.sessionEntries setObject:lastValue forKey:recentSessionKey];
       [[MSAIPersistence sharedInstance] persistSessionIds:strongSelf.sessionEntries];
     }
+  });
+}
+
+#pragma mark - Session update
+
+//TODO unregister Obeservers?!
+- (void)registerObservers {
+  NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+  
+  __weak typeof(self) weakSelf = self;
+  if (nil == _appDidFinishLaunchingObserver) {
+    _appDidFinishLaunchingObserver = [nc addObserverForName:UIApplicationDidFinishLaunchingNotification
+                                                     object:nil
+                                                      queue:NSOperationQueue.mainQueue
+                                                 usingBlock:^(NSNotification *note) {
+                                                   typeof(self) strongSelf = weakSelf;
+                                                   [strongSelf startSession];
+                                                 }];
+  }
+  if (nil == _appDidEnterBackgroundObserver) {
+    _appDidEnterBackgroundObserver = [nc addObserverForName:UIApplicationDidEnterBackgroundNotification
+                                                     object:nil
+                                                      queue:NSOperationQueue.mainQueue
+                                                 usingBlock:^(NSNotification *note) {
+                                                   typeof(self) strongSelf = weakSelf;
+                                                   [strongSelf updateSessionDate];
+                                                 }];
+  }
+  if (nil == _appWillEnterForegroundObserver) {
+    _appWillEnterForegroundObserver = [nc addObserverForName:UIApplicationWillEnterForegroundNotification
+                                                      object:nil
+                                                       queue:NSOperationQueue.mainQueue
+                                                  usingBlock:^(NSNotification *note) {
+                                                    typeof(self) strongSelf = weakSelf;
+                                                    [strongSelf startSession];
+                                                  }];
+  }
+  if (nil == _appWillTerminateObserver) {
+    _appWillTerminateObserver = [nc addObserverForName:UIApplicationWillTerminateNotification
+                                                object:nil
+                                                 queue:NSOperationQueue.mainQueue
+                                            usingBlock:^(NSNotification *note) {
+                                              typeof(self) strongSelf = weakSelf;
+                                              [strongSelf endSession];
+                                            }];
+  }
+}
+
+- (void)updateSessionDate {
+  [[NSUserDefaults standardUserDefaults] setDouble:[[NSDate date] timeIntervalSince1970] forKey:kMSAIApplicationDidEnterBackgroundTime];
+  [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (void)startSession {
+  double appDidEnterBackgroundTime = [[NSUserDefaults standardUserDefaults] doubleForKey:kMSAIApplicationDidEnterBackgroundTime];
+  double timeSinceLastBackground = [[NSDate date] timeIntervalSince1970] - appDidEnterBackgroundTime;
+  if (timeSinceLastBackground > defaultSessionExpirationTime) {
+    
+    NSString *newSessionId = msai_UUID();
+    [self addSessionId:newSessionId withDate:[NSDate date]];
+    NSDictionary *userInfo = @{kMSAISessionInfoSessionId:newSessionId, kMSAISessionInfoSessionCreated:@(YES)};
+    [self sendSessionChangedNotificationWithUserInfo:userInfo];
+    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kMSAIApplicationWasLaunched];
+  }
+}
+
+- (void)endSession {
+  NSDictionary *userInfo = @{kMSAISessionInfoSessionCreated:@(YES)};
+  [self sendSessionChangedNotificationWithUserInfo:userInfo];
+}
+
+- (void)sendSessionChangedNotificationWithUserInfo:(NSDictionary *)userInfo{
+  dispatch_async(dispatch_get_main_queue(), ^{
+    [[NSNotificationCenter defaultCenter] postNotificationName:MSAISessionChangedNotification
+                                                        object:nil
+                                                      userInfo:userInfo];
   });
 }
 

@@ -25,19 +25,11 @@
 #import "MSAIEnvelope.h"
 #import "MSAIEnvelopeManager.h"
 #import "MSAIEnvelopeManagerPrivate.h"
+#import "MSAISessionHelper.h"
 
-NSString *const kMSAIApplicationWasLaunched = @"MSAIApplicationWasLaunched";
 static char *const MSAIMetricEventQueue = "com.microsoft.appInsights.metricEventQueue";
-static NSString *const kMSAIApplicationDidEnterBackgroundTime = @"MSAIApplicationDidEnterBackgroundTime";
-static NSInteger const defaultSessionExpirationTime = 20;
 
-
-@implementation MSAIMetricsManager{
-  id _appDidFinishLaunchingObserver;
-  id _appWillEnterForegroundObserver;
-  id _appDidEnterBackgroundObserver;
-  id _appWillTerminateObserver;
-}
+@implementation MSAIMetricsManager
 
 #pragma mark - Configure manager
 
@@ -63,6 +55,26 @@ static NSInteger const defaultSessionExpirationTime = 20;
     [self registerObservers];
     _managerInitialised = YES;
   });
+}
+
+- (void)registerObservers {
+  NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+  __weak typeof(self) weakSelf = self;
+  [center addObserverForName:MSAISessionChangedNotification
+                      object:nil
+                       queue:NSOperationQueue.mainQueue
+                  usingBlock:^(NSNotification *notification) {
+                    typeof(self) strongSelf = weakSelf;
+                    
+                    NSDictionary *userInfo = notification.userInfo;
+                    if(userInfo[kMSAISessionInfoSessionCreated]){
+                      if([userInfo[kMSAISessionInfoSessionCreated] boolValue]){
+                        [strongSelf startSession];
+                      }else{
+                        [strongSelf endSession];
+                      }
+                    }
+                  }];
 }
 
 #pragma mark - Track data
@@ -226,62 +238,8 @@ static NSInteger const defaultSessionExpirationTime = 20;
 
 #pragma mark - Session update
 
-//TODO unregister Obeservers?!
-- (void)registerObservers {
-  NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
-  
-  __weak typeof(self) weakSelf = self;
-  if (nil == _appDidFinishLaunchingObserver) {
-    _appDidFinishLaunchingObserver = [nc addObserverForName:UIApplicationDidFinishLaunchingNotification
-                                                    object:nil
-                                                     queue:NSOperationQueue.mainQueue
-                                                usingBlock:^(NSNotification *note) {
-                                                  typeof(self) strongSelf = weakSelf;
-                                                  [strongSelf startSession];
-                                                }];
-  }
-  if (nil == _appDidEnterBackgroundObserver) {
-    _appDidEnterBackgroundObserver = [nc addObserverForName:UIApplicationDidEnterBackgroundNotification
-                                                    object:nil
-                                                     queue:NSOperationQueue.mainQueue
-                                                usingBlock:^(NSNotification *note) {
-                                                  typeof(self) strongSelf = weakSelf;
-                                                  [strongSelf updateSessionDate];
-                                                }];
-  }
-  if (nil == _appWillEnterForegroundObserver) {
-    _appWillEnterForegroundObserver = [nc addObserverForName:UIApplicationWillEnterForegroundNotification
-                                                     object:nil
-                                                      queue:NSOperationQueue.mainQueue
-                                                 usingBlock:^(NSNotification *note) {
-                                                   typeof(self) strongSelf = weakSelf;
-                                                   [strongSelf startSession];
-                                                 }];
-  }
-  if (nil == _appWillTerminateObserver) {
-    _appWillTerminateObserver = [nc addObserverForName:UIApplicationWillTerminateNotification
-                                               object:nil
-                                                queue:NSOperationQueue.mainQueue
-                                           usingBlock:^(NSNotification *note) {
-                                             typeof(self) strongSelf = weakSelf;
-                                             [strongSelf endSession];
-                                           }];
-  }
-}
-
-- (void)updateSessionDate {
-  [[NSUserDefaults standardUserDefaults] setDouble:[[NSDate date] timeIntervalSince1970] forKey:kMSAIApplicationDidEnterBackgroundTime];
-  [[NSUserDefaults standardUserDefaults] synchronize];
-}
-
 - (void)startSession {
-  double appDidEnterBackgroundTime = [[NSUserDefaults standardUserDefaults] doubleForKey:kMSAIApplicationDidEnterBackgroundTime];
-  double timeSinceLastBackground = [[NSDate date] timeIntervalSince1970] - appDidEnterBackgroundTime;
-  if (timeSinceLastBackground > defaultSessionExpirationTime) {
-    [[MSAIEnvelopeManager sharedManager] createNewSession];
-    [self trackEventWithName:@"Session Start Event"];
-    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kMSAIApplicationWasLaunched];
-  }
+  [self trackEventWithName:@"Session Start Event"];
 }
 
 - (void)endSession {

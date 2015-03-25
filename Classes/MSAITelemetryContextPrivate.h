@@ -93,9 +93,11 @@
 - (BOOL)isFirstSession;
 
 /**
- *  Creates a brand new session.
+ *  Update session context with a given session id.
+ *
+ *  @param sessionId the session id of the new session
  */
-- (void)createNewSession;
+- (void)createNewSessionWithId:(NSString *)sessionId;
 
 ///-----------------------------------------------------------------------------
 /// @name Network status

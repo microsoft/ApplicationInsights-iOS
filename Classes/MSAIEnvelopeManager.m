@@ -32,14 +32,6 @@ static NSInteger const schemaVersion = 2;
   return sharedManager;
 }
 
-#pragma mark - Update context
-
-- (void)createNewSession{
-  @synchronized(self) {
-    [_telemetryContext createNewSession];
-  }
-}
-
 #pragma mark - Create envelope objects
 
 - (MSAIEnvelope *)envelope{

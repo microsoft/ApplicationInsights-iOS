@@ -18,7 +18,7 @@ NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
                       endpointPath:(NSString *)endpointPath{
   
   if ((self = [self init])) {
-
+    
     MSAIDevice *deviceContext = [MSAIDevice new];
     deviceContext.model = appContext.deviceModel;
     deviceContext.type = appContext.deviceType;
@@ -60,6 +60,7 @@ NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
     _tags = [self tags];
     
     [self configureNetworkStatusTracking];
+    [self configureSessionTracking];
   }
   return self;
 }
@@ -96,12 +97,33 @@ NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
   return ![_userDefaults boolForKey:kMSAIApplicationWasLaunched];
 }
 
-- (void)createNewSession {
+- (void)createNewSessionWithId:(NSString *)sessionId {
   BOOL firstSession = [self isFirstSession];
-  _session.sessionId = msai_UUID();
+  _session.sessionId = sessionId;
   _session.isNew = @"true";
   _session.isFirst = (firstSession ? @"true" : @"false");
-  [MSAISessionHelper addSessionId:_session.sessionId withDate:[NSDate date]];
+  
+}
+
+- (void)configureSessionTracking{
+  NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+  __weak typeof(self) weakSelf = self;
+  [center addObserverForName:MSAISessionChangedNotification
+                      object:nil
+                       queue:nil
+                  usingBlock:^(NSNotification *notification) {
+                    typeof(self) strongSelf = weakSelf;
+                    
+                    NSDictionary *userInfo = notification.userInfo;
+                    if(userInfo[kMSAISessionInfoSessionCreated]){
+                      
+                      BOOL sessionCreated = [userInfo[kMSAISessionInfoSessionCreated] boolValue];
+                      NSString *sessionId = userInfo[kMSAISessionInfoSessionId];
+                      if(sessionCreated){
+                        [strongSelf createNewSessionWithId:sessionId];
+                      }
+                    }
+                  }];
 }
 
 #pragma mark - Custom getter
