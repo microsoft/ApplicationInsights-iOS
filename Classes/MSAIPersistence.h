@@ -10,7 +10,7 @@
 * Notification that will be send on the main thread to notifiy observers of a successfully saved bundle.
 * This is typically used to trigger sending to the server.
 */
-FOUNDATION_EXPORT NSString *const kMSAIPersistenceSuccessNotification;
+FOUNDATION_EXPORT NSString *const MSAIPersistenceSuccessNotification;
 
 
 /**
@@ -59,7 +59,7 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
 @property (nonatomic, strong) NSMutableArray *requestedBundlePaths;
 
 /**
-* Saves the bundle and sends out a kMSAIPersistenceSuccessNotification in case of success
+* Saves the bundle and sends out a MSAIPersistenceSuccessNotification in case of success
 * for all types except MSAIPersistenceTypeCrashTemplate
 * @param bundle a bundle of tracked events (telemetry, crashes, ...) that will be serialized and saved.
 * @param type The type of the bundle we want to save.

@@ -10,7 +10,7 @@ NSString *const kCrashTemplateString = @"crashTemplate";
 NSString *const kSessionIdsString = @"sessionIds";
 NSString *const kFileBaseString = @"app-insights-bundle-";
 
-NSString *const kMSAIPersistenceSuccessNotification = @"MSAIPersistenceSuccessNotification";
+NSString *const MSAIPersistenceSuccessNotification = @"MSAIPersistenceSuccessNotification";
 char const *kPersistenceQueueString = "com.microsoft.appInsights.persistenceQueue";
 NSUInteger const defaultFileCount = 50;
 
@@ -52,7 +52,7 @@ NSUInteger const defaultFileCount = 50;
 /**
  * Creates a serial background queue that saves the Bundle using NSKeyedArchiver and NSData's writeToFile:atomically
  *
- * In case if type MSAIPersistenceTypeCrashTemplate, we don't send out a kMSAIPersistenceSuccessNotification.
+ * In case if type MSAIPersistenceTypeCrashTemplate, we don't send out a MSAIPersistenceSuccessNotification.
  */
 - (void)persistBundle:(NSArray *)bundle ofType:(MSAIPersistenceType)type enableNotifications:(BOOL)sendNotifications withCompletionBlock:(void (^)(BOOL success))completionBlock {
   
@@ -353,12 +353,12 @@ NSUInteger const defaultFileCount = 50;
 }
 
 /**
- * Send a kMSAIPersistenceSuccessNotification to the main thread to notify observers that we have successfully saved a file
+ * Send a MSAIPersistenceSuccessNotification to the main thread to notify observers that we have successfully saved a file
  * This is typocally used to trigger sending.
  */
 - (void)sendBundleSavedNotification{
   dispatch_async(dispatch_get_main_queue(), ^{
-    [[NSNotificationCenter defaultCenter] postNotificationName:kMSAIPersistenceSuccessNotification
+    [[NSNotificationCenter defaultCenter] postNotificationName:MSAIPersistenceSuccessNotification
                                                         object:nil
                                                       userInfo:nil];
   });

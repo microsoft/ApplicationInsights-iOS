@@ -43,7 +43,7 @@ static NSUInteger const defaultRequestLimit = 10;
 - (void)registerObservers{
   NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
   __weak typeof(self) weakSelf = self;
-  [center addObserverForName:kMSAIPersistenceSuccessNotification
+  [center addObserverForName:MSAIPersistenceSuccessNotification
                       object:nil
                        queue:nil
                   usingBlock:^(NSNotification *notification) {
