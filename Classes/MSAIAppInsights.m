@@ -13,6 +13,8 @@
 #import "MSAITelemetryContextPrivate.h"
 #import "MSAIEnvelopeManager.h"
 #import "MSAIEnvelopeManagerPrivate.h"
+#import "MSAISessionHelper.h"
+#import "MSAISessionHelperPrivate.h"
 #include <stdint.h>
 
 #if MSAI_FEATURE_CRASH_REPORTER
@@ -108,12 +110,16 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
   MSAILog(@"INFO: Starting MSAIManager");
   _startManagerIsInvoked = YES;
   
+  // Configure Http-client and send persisted data
   MSAITelemetryContext *telemetryContext = [[MSAITelemetryContext alloc] initWithAppContext:_appContext
                                                                                endpointPath:kMSAITelemetryPath];
   [[MSAIEnvelopeManager sharedManager] configureWithTelemetryContext:telemetryContext];
   [[MSAISender sharedSender] configureWithAppClient:[self appClient]
                                        endpointPath:kMSAITelemetryPath];
   [[MSAISender sharedSender] sendSavedData];
+  
+  // Create new session
+  [MSAISessionHelper startSession];
   
 #if MSAI_FEATURE_CRASH_REPORTER
   if (![self isCrashManagerDisabled]) {

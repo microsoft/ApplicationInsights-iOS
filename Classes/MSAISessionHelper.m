@@ -18,7 +18,6 @@ NSString *const MSAISessionEndedNotification = @"MSAISessionEndedNotification";
 NSString *const kMSAISessionInfoSessionId = @"MSAISessionInfoSessionId";
 
 @implementation MSAISessionHelper{
-  id _appDidFinishLaunchingObserver;
   id _appWillEnterForegroundObserver;
   id _appDidEnterBackgroundObserver;
   id _appWillTerminateObserver;
@@ -137,15 +136,7 @@ NSString *const kMSAISessionInfoSessionId = @"MSAISessionInfoSessionId";
   NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
   
   __weak typeof(self) weakSelf = self;
-  if (nil == _appDidFinishLaunchingObserver) {
-    _appDidFinishLaunchingObserver = [nc addObserverForName:UIApplicationDidFinishLaunchingNotification
-                                                     object:nil
-                                                      queue:NSOperationQueue.mainQueue
-                                                 usingBlock:^(NSNotification *note) {
-                                                   typeof(self) strongSelf = weakSelf;
-                                                   [strongSelf startSession];
-                                                 }];
-  }
+
   if (nil == _appDidEnterBackgroundObserver) {
     _appDidEnterBackgroundObserver = [nc addObserverForName:UIApplicationDidEnterBackgroundNotification
                                                      object:nil
@@ -177,7 +168,6 @@ NSString *const kMSAISessionInfoSessionId = @"MSAISessionInfoSessionId";
 
 - (void)unregisterObservers {
   [[NSNotificationCenter defaultCenter] removeObserver:self];
-  _appDidFinishLaunchingObserver = nil;
   _appDidEnterBackgroundObserver = nil;
   _appWillEnterForegroundObserver = nil;
   _appWillTerminateObserver = nil;
