@@ -6,6 +6,8 @@
 
 #import <sys/sysctl.h>
 
+static NSString *const kMSAIUtcDateFormatter = @"utcDateFormatter";
+
 #if __IPHONE_OS_VERSION_MAX_ALLOWED < 70000
 @interface NSData (MSAIiOS7)
 - (NSString *)base64Encoding;
@@ -45,11 +47,36 @@ NSString *msai_URLDecodedString(NSString *inputString) {
 
 // Return ISO 8601 string representation of the date
 NSString *msai_utcDateString(NSDate *date){
-  NSLocale *enUSPOSIXLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
-  NSDateFormatter *dateFormatter = [NSDateFormatter new];
-  dateFormatter.locale = enUSPOSIXLocale;
-  dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
-  dateFormatter.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
+  static NSDateFormatter *dateFormatter;
+  
+  // NSDateFormatter is not thread-safe prior to iOS 7
+  if (msai_isPreiOS7Environment()) {
+    NSMutableDictionary *threadDictionary = [NSThread currentThread].threadDictionary;
+    NSDateFormatter *dateFormatter = threadDictionary[kMSAIUtcDateFormatter];
+    
+    if (!dateFormatter) {
+      dateFormatter = [NSDateFormatter new];
+      NSLocale *enUSPOSIXLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
+      dateFormatter.locale = enUSPOSIXLocale;
+      dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+      dateFormatter.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
+      threadDictionary[kMSAIUtcDateFormatter] = dateFormatter;
+    }
+    
+    NSString *dateString = [dateFormatter stringFromDate:date];
+    
+    return dateString;
+  }
+  
+  static dispatch_once_t dateFormatterToken;
+  dispatch_once(&dateFormatterToken, ^{
+    NSLocale *enUSPOSIXLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
+    dateFormatter = [NSDateFormatter new];
+    dateFormatter.locale = enUSPOSIXLocale;
+    dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+    dateFormatter.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
+  });
+  
   NSString *dateString = [dateFormatter stringFromDate:date];
   
   return dateString;
@@ -80,7 +107,7 @@ NSString *msai_settingsDir(void) {
     
     // temporary directory for crashes grabbed from PLCrashReporter
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
-    settingsDir = [paths[0] stringByAppendingPathComponent:MSAI_IDENTIFIER];
+    settingsDir = [paths[0] stringByAppendingPathComponent:kMSAIIdentifier];
     
     if (![fileManager fileExistsAtPath:settingsDir]) {
       NSDictionary *attributes = @{NSFilePosixPermissions : @0755};
@@ -113,8 +140,47 @@ NSString *msai_encodeInstrumentationKey(NSString *inputString) {
   return (inputString ? msai_URLEncodedString(inputString) : msai_URLEncodedString(msai_mainBundleIdentifier()));
 }
 
-NSString *msai_osVersion(void){
-  return [[UIDevice currentDevice] systemVersion];
+NSString *msai_osVersionBuild(void) {
+  void *result = NULL;
+  size_t result_len = 0;
+  int ret;
+  
+  /* If our buffer is too small after allocation, loop until it succeeds -- the requested destination size
+   * may change after each iteration. */
+  do {
+    /* Fetch the expected length */
+    if ((ret = sysctlbyname("kern.osversion", NULL, &result_len, NULL, 0)) == -1) {
+      break;
+    }
+    
+    /* Allocate the destination buffer */
+    if (result != NULL) {
+      free(result);
+    }
+    result = malloc(result_len);
+    
+    /* Fetch the value */
+    ret = sysctlbyname("kern.osversion", result, &result_len, NULL, 0);
+  } while (ret == -1 && errno == ENOMEM);
+  
+  /* Handle failure */
+  if (ret == -1) {
+    int saved_errno = errno;
+    
+    if (result != NULL) {
+      free(result);
+    }
+    
+    errno = saved_errno;
+    return NULL;
+  }
+  
+  NSString *osBuild = [NSString stringWithCString:result encoding:NSUTF8StringEncoding];
+  free(result);
+  
+  NSString *osVersion = [[UIDevice currentDevice] systemVersion];
+  
+  return [NSString stringWithFormat:@"%@(%@)", osVersion, osBuild];
 }
 
 NSString *msai_osName(void){
@@ -173,7 +239,7 @@ NSString *msai_devicePlatform(void) {
 }
 
 NSString *msai_deviceLanguage(void) {
-  return [[[NSBundle mainBundle] preferredLocalizations] objectAtIndex:0];;
+  return [[[NSBundle mainBundle] preferredLocalizations] objectAtIndex:0];
 }
 
 NSString *msai_deviceLocale(void) {
@@ -286,4 +352,16 @@ BOOL msai_isRunningInAppExtension(void) {
   });
   
   return isRunningInAppExtension;
+}
+
+BOOL msai_isAppStoreEnvironment(void){
+  
+  #if !TARGET_IPHONE_SIMULATOR
+  // check if we are really in an app store environment
+  if (![[NSBundle mainBundle] pathForResource:@"embedded" ofType:@"mobileprovision"]) {
+    return YES;
+  }
+  #endif
+  
+  return NO;
 }

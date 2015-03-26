@@ -30,18 +30,8 @@
 - (void)setUp {
   [super setUp];
   
-  MSAIApplication *appContext = [MSAIApplication new];
-  appContext.version = @"5";
-  
-  _telemetryContext = [[MSAITelemetryContext alloc]initWithInstrumentationKey:@"123"
-                                                                 endpointPath:nil
-                                                           applicationContext:appContext
-                                                                deviceContext:nil
-                                                              locationContext:nil
-                                                               sessionContext:nil
-                                                                  userContext:nil
-                                                              internalContext:nil
-                                                             operationContext:nil];
+  MSAIContext *context = [[MSAIContext alloc]initWithInstrumentationKey:@"123"];
+  _telemetryContext = [[MSAITelemetryContext alloc] initWithAppContext:context endpointPath:nil firstSessionId:nil];
   [[MSAIEnvelopeManager sharedManager] configureWithTelemetryContext:_telemetryContext];
   _sut = [MSAIEnvelopeManager sharedManager];
 }
@@ -57,6 +47,14 @@
   MSAIEnvelope *template = [_sut envelope];
   
   [self checkEnvelopeTemplate:template];
+}
+
+- (void)testEnvelopePerformance {
+    [self measureBlock:^{
+      for (int i = 0; i < 1000; ++i) {
+        [_sut envelope];
+      }
+    }];
 }
 
 - (void)testThatItInstantiatesEnvelopeForTelemetryData {
@@ -96,7 +94,6 @@
   assertThat(template.time, notNilValue());
   assertThat(template.tags, notNilValue());
   assertThat(template.iKey, equalTo(@"123"));
-  assertThat(template.appVer, notNilValue());
 }
 
 @end

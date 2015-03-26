@@ -13,7 +13,7 @@
 #import "MSAIPersistence.h"
 
 #ifdef DEBUG
-static NSInteger const defaultMaxBatchCount = 5;
+static NSInteger const defaultMaxBatchCount = 50;
 static NSInteger const defaultBatchInterval = 15;
 #else
 static NSInteger const defaultMaxBatchCount = 50;
@@ -41,32 +41,29 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
 
 - (instancetype)init {
   if(self = [super init]) {
-    self.dataItemQueue = [NSMutableArray array];
-    self.senderBatchSize = defaultMaxBatchCount;
-    self.senderInterval = defaultBatchInterval;
+    _dataItemQueue = [NSMutableArray array];
+    _senderBatchSize = defaultMaxBatchCount;
+    _senderInterval = defaultBatchInterval;
   }
   return self;
 }
 
 #pragma mark - Queue management
 
-- (void)enqueueEnvelope:(MSAIEnvelope *)envelope{
-  if(envelope) {
+- (void)enqueueDictionary:(MSAIOrderedDictionary *)dictionary{
+  if(dictionary) {
     
     __weak typeof(self) weakSelf = self;
     dispatch_async(self.dataItemsOperations, ^{
       typeof(self) strongSelf = weakSelf;
       
       // Enqueue item
-      [strongSelf->_dataItemQueue addObject:envelope];
+      [strongSelf->_dataItemQueue addObject:dictionary];
       
       if([strongSelf->_dataItemQueue count] >= strongSelf.senderBatchSize) {
         
         // Max batch count has been reached, so write queue to disk and delete all items.
-        [strongSelf invalidateTimer];
-        NSArray *bundle = [NSArray arrayWithArray:strongSelf->_dataItemQueue];
-        [MSAIPersistence persistBundle:bundle ofType:MSAIPersistenceTypeRegular withCompletionBlock:nil];
-        [strongSelf->_dataItemQueue removeAllObjects];
+        [strongSelf persistDataItemQueue];
       } else if([strongSelf->_dataItemQueue count] == 1) {
         
         // It is the first item, let's start the timer
@@ -76,8 +73,8 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
   }
 }
 
-- (void)processEnvelope:(MSAIEnvelope *)envelope withCompletionBlock: (void (^)(BOOL success)) completionBlock{
-  [MSAIPersistence persistBundle:[NSArray arrayWithObject:envelope]
+- (void)processDictionary:(MSAIOrderedDictionary *)dictionary withCompletionBlock: (void (^)(BOOL success)) completionBlock{
+  [[MSAIPersistence sharedInstance] persistBundle:[NSArray arrayWithObject:dictionary]
                           ofType:MSAIPersistenceTypeHighPriority withCompletionBlock:completionBlock];
 }
 
@@ -90,6 +87,17 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
     queue = [NSMutableArray arrayWithArray:strongSelf->_dataItemQueue];
   });
   return queue;
+}
+
+- (void)persistDataItemQueue {
+  [self invalidateTimer];
+  NSArray *bundle = [NSArray arrayWithArray:_dataItemQueue];
+  [[MSAIPersistence sharedInstance] persistBundle:bundle ofType:MSAIPersistenceTypeRegular withCompletionBlock:nil];
+  [_dataItemQueue removeAllObjects];
+}
+
+- (BOOL)isQueueBusy{
+  return ![[MSAIPersistence sharedInstance] isFreeSpaceAvailable];
 }
 
 #pragma mark - Batching
@@ -113,16 +121,9 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
   dispatch_source_set_event_handler(self.timerSource, ^{
     
     // On completion: Reset timer and persist items
-    [self invalidateTimer];
-    [self persistQueue];
+    [self persistDataItemQueue];
   });
   dispatch_resume(self.timerSource);
-}
-
-- (void)persistQueue {
-  NSArray *bundle = [NSArray arrayWithArray:_dataItemQueue];
-  [MSAIPersistence persistBundle:bundle ofType:MSAIPersistenceTypeRegular withCompletionBlock:nil];
-  [_dataItemQueue removeAllObjects];
 }
 
 @end

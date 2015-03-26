@@ -5,6 +5,8 @@
 #import "MSAIUser.h"
 #import "MSAISession.h"
 #import "MSAILocation.h"
+#import "MSAIContext.h"
+#import "MSAIContextPrivate.h"
 
 @interface MSAITelemetryContext()
 
@@ -61,27 +63,15 @@
 /**
  *  Initializes a telemetry context.
  *
- *  @param instrumentationKey the instrumentation key of the app
+ *  @param appContext         the context of the app, which contains several meta infos
  *  @param endpointPath       the path to the telemetry endpoint
- *  @param applicationContext the application context object
- *  @param deviceContext      the device context object
- *  @param locationContext    the location context object
- *  @param sessionContext     the session context object
- *  @param userContext        the user context object
- *  @param internalContext    the internal context object
- *  @param operationContext   the operation context object
+ *  @param sessionId          the id of the first session
  *
  *  @return the telemetry context
  */
-- (instancetype)initWithInstrumentationKey:(NSString *)instrumentationKey
-                              endpointPath:(NSString *)endpointPath
-                        applicationContext:(MSAIApplication *)applicationContext
-                             deviceContext:(MSAIDevice *)deviceContext
-                           locationContext:(MSAILocation *)locationContext
-                            sessionContext:(MSAISession *)sessionContext
-                               userContext:(MSAIUser *)userContext
-                           internalContext:(MSAIInternal *)internalContext
-                          operationContext:(MSAIOperation *)operationContext;
+- (instancetype)initWithAppContext:(MSAIContext *)appContext
+                      endpointPath:(NSString *)endpointPath
+                    firstSessionId:(NSString *)sessionId;
 
 ///-----------------------------------------------------------------------------
 /// @name Session
@@ -95,7 +85,7 @@
 /**
  *  Renews or even creates a new session if needed.
  */
-- (void)updateSessionContext;
+- (void)resetIsNewFlag;
 
 /**
  *  Checks if current session is the first one.
@@ -105,9 +95,11 @@
 - (BOOL)isFirstSession;
 
 /**
- *  Creates a brand new session.
+ *  Update session context with a given session id.
+ *
+ *  @param sessionId the session id of the new session
  */
-- (void)createNewSession;
+- (void)updateSessionContextWithId:(NSString *)sessionId;
 
 ///-----------------------------------------------------------------------------
 /// @name Network status
@@ -121,6 +113,11 @@
 ///-----------------------------------------------------------------------------
 /// @name Helper
 ///-----------------------------------------------------------------------------
+
+/**
+ *  A dictionary which holds static tag fields for the purpose of caching
+ */
+@property (nonatomic, strong)MSAIOrderedDictionary *tags;
 
 /**
  *  Returns context objects as dictionary.

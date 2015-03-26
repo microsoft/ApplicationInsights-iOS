@@ -1,18 +1,11 @@
 #import "MSAICategoryContainer.h"
 #import <objc/runtime.h>
-#import "MSAIMetricsManager.h"
-#import "MSAIMetricsManagerPrivate.h"
-
-@implementation MSAICategoryContainer
-
-+ (void)activateCategory{
-}
-
-@end
+#import "MSAITelemetryManager.h"
+#import "MSAITelemetryManagerPrivate.h"
 
 @implementation UIViewController(PageViewLogging)
 
-+ (void)load {
++ (void)swizzleViewWillAppear {
   static dispatch_once_t onceToken;
   dispatch_once(&onceToken, ^{
     Class class = [self class];
@@ -31,12 +24,27 @@
 
 - (void)msai_viewWillAppear:(BOOL)animated {
   [self msai_viewWillAppear:animated];
-  
-  NSString *pageViewName = [NSString stringWithFormat:@"%@ %@", NSStringFromClass([self class]), self.title];
-  [MSAIMetricsManager trackPageView:pageViewName];
+#if MSAI_FEATURE_TELEMETRY  
+  if(![MSAITelemetryManager sharedManager].autoPageViewTrackingDisabled){
+    NSString *pageViewName = [NSString stringWithFormat:@"%@ %@", NSStringFromClass([self class]), self.title];
+    [MSAITelemetryManager trackPageView:pageViewName];
+  }
+#endif /* MSAI_FEATURE_TELEMETRY */
 }
 
 @end
+
+@implementation MSAICategoryContainer
+
++ (void)activateCategory{
+  [UIViewController swizzleViewWillAppear];
+}
+
+@end
+
+
+
+
 
 
 

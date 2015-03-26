@@ -1,6 +1,6 @@
 #import <AppInsights/AppInsights.h>
 
-extern NSString *const __attribute__((unused)) kMSAICrashKillSignal;
+extern NSString *const __unused kMSAICrashKillSignal;
 
 @interface MSAICrashDetails () {
   

@@ -32,21 +32,13 @@ static NSInteger const schemaVersion = 2;
   return sharedManager;
 }
 
-#pragma mark - Update context
-
-- (void)createNewSession{
-  @synchronized(self) {
-    [_telemetryContext createNewSession];
-  }
-}
-
 #pragma mark - Create envelope objects
 
 - (MSAIEnvelope *)envelope{
   MSAIEnvelope *envelope = [MSAIEnvelope new];
   envelope.appId = msai_mainBundleIdentifier();
   envelope.appVer = _telemetryContext.application.version;
-  envelope.Time = msai_utcDateString([NSDate date]);
+  envelope.time = msai_utcDateString([NSDate date]);
   envelope.iKey = _telemetryContext.instrumentationKey;
   
   MSAIDevice *deviceContext = _telemetryContext.device;

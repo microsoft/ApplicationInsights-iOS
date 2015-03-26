@@ -18,21 +18,17 @@ the behaviour of `MSAICrashManager`.
 //Reason for this: http://support.hockeyapp.net/kb/client-integration-ios-mac-os-x/how-to-handle-crashes-during-startup-on-ios
 
 /** Invoked right before sending crash reports will start
-
-@param crashManager The `MSAICrashManager` instance invoking this delegate
 */
 - (void)crashManagerWillSendCrashReport; //TODO this should be part of the MSAISenderDelegate
 
 /** Invoked after sending crash reports failed
 
-@param crashManager The `MSAICrashManager` instance invoking this delegate
 @param error The error returned from the NSURLConnection call or `kMSAICrashErrorDomain`
 with reason of type `MSAICrashErrorReason`.
 */
 - (void)crashManagerDidFailWithError:(NSError *)error;
 
 /** Invoked after sending crash reports succeeded
-@param crashManager The `MSAICrashManager` instance invoking this delegate
 */
 - (void)crashManagerDidFinishSendingCrashReport;
 
@@ -51,7 +47,6 @@ The developer can use the following property to get more information about the c
 This allows only reports to be considered where at least one low memory warning notification was
 received by the app to reduce to possibility of having false positives.
 
-@param crashManager The `MSAICrashManager` instance invoking this delegate
 @return `YES` if the heuristic based detected report should be reported, otherwise `NO`
 @see `[MSAICrashManager didReceiveMemoryWarningInLastSession]`
 */

@@ -4,30 +4,22 @@
 #ifndef MSAI_Private_h
 #define MSAI_Private_h
 
-#define MSAI_NAME @"AppInsights"
-#define MSAI_IDENTIFIER @"com.microsoft.applicationinsights.ios"
-#define MSAI_CRASH_SETTINGS @"MSAICrashManager.plist"
-#define MSAI_CRASH_ANALYZER @"MSAICrashManager.analyzer"
+extern NSString *const kMSAIName;
+extern NSString *const kMSAIIdentifier;
+extern NSString *const kMSAICrashSettings;
+extern NSString *const kMSAICrashAnalyzer;
 
-#define MSAI_METRICS_DATA @"MSAIMetricsManager.plist"
-#define MSAI_METRICS_TEMP_DATA @"MSAIMetricsManagerTemp.plist"
+#if MSAI_FEATURE_TELEMETRY
 
-#define kMSAIMetaUserName  @"MSAIMetaUserName"
-#define kMSAIMetaUserEmail @"MSAIMetaUserEmail"
-#define kMSAIMetaUserID    @"MSAIMetaUserID"
-
-#if MSAI_FEATURE_METRICS
-
-extern NSString *const __attribute__((unused)) kMSAIMetricsCachesSessions;
-extern NSString *const __attribute__((unused)) kMSAIMetricsTempSessionData;
-extern NSString *const __attribute__((unused)) kMSAIMetricsLastAppVersion;
+extern NSString *const __unused kMSAITelemetryCachesSessions;
+extern NSString *const __unused kMSAITelemetryTempSessionData;
+extern NSString *const __unused kMSAITelemetryLastAppVersion;
 
 #endif
 
-#define MSAI_INTEGRATIONFLOW_TIMESTAMP  @"MSAIIntegrationFlowStartTimestamp"
+extern NSString *const kMSAIIntegrationflowTimestamp;
 
-#define MSAI_SDK_URL          MSAI_EVENT_DATA_URL
-#define MSAI_TELEMETRY_PATH   @"v2/track"
+extern NSString *const kMSAITelemetryPath;
 
 #define MSAILog(fmt, ...) do { if([MSAIAppInsights sharedInstance].isDebugLogEnabled && ![MSAIAppInsights sharedInstance].isAppStoreEnvironment) { NSLog((@"[MSAI] %s/%d " fmt), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__); }} while(0)
 

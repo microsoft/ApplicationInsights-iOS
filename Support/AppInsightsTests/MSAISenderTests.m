@@ -60,7 +60,7 @@
   [_sut configureWithAppClient:_appClient endpointPath:nil];
   MSAIEnvelope *testItem = [MSAIEnvelope new];
   NSData *expectedBodyData = [[testItem serializeToString] dataUsingEncoding:NSUTF8StringEncoding];
-  NSURLRequest *testRequest = [_sut requestForData:expectedBodyData urlString:@"http://testurl.com"];
+  NSURLRequest *testRequest = [_sut requestForData:expectedBodyData];
 
   assertThat(testRequest, notNilValue());
   assertThat([testRequest HTTPBody], equalTo(expectedBodyData));
@@ -69,8 +69,20 @@
 - (void)testEnqueueRequest {
   MSAIAppClient *mockClient = mock(MSAIAppClient.class);
   _sut.appClient = mockClient;
-  [_sut sendRequest:[NSURLRequest new]];
+  [_sut sendRequest:[NSURLRequest new] path:@""];
   [verify(mockClient) enqeueHTTPOperation:anything()];
 }
+
+- (void)testDeleteDataWithStatusCodeWorks{
+  
+  for(NSInteger statusCode = 100; statusCode <= 510; statusCode++){
+    if((statusCode >= 200 && statusCode <= 202) || statusCode == 400){
+      assertThatBool([_sut shouldDeleteDataWithStatusCode:statusCode], equalToBool(YES));
+    }else{
+      assertThatBool([_sut shouldDeleteDataWithStatusCode:statusCode], equalToBool(NO));
+    }
+  }
+}
+
 
 @end
