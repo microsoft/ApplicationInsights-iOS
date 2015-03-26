@@ -119,7 +119,7 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
   [[MSAISender sharedSender] sendSavedData];
   
   // Create new session
-  [MSAISessionHelper startSession];
+  [MSAISessionHelper startNewSession];
   
 #if MSAI_FEATURE_CRASH_REPORTER
   if (![self isCrashManagerDisabled]) {

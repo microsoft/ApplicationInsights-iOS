@@ -37,12 +37,24 @@ FOUNDATION_EXPORT NSString *const kMSAIApplicationWasLaunched;
 /**
  *  Start a new session.
  */
-+ (void)startSession;
++ (void)startNewSession;
+
+/**
+ *  Start a new session if the method is called more than 20 seconds after app went to background for the last time.
+ */
++ (void)startNewSessionIfNeeded;
+
 
 /**
  *  Start a new session.
  */
-- (void)startSession;
+- (void)startNewSession;
+
+/**
+ *  Start a new session if the method is called more than 20 seconds after app went to background for the last time.
+ */
+- (void)startNewSessionIfNeeded;
+
 
 ///-----------------------------------------------------------------------------
 /// @name Adding a session

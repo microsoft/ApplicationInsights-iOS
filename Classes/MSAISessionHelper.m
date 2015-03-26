@@ -143,7 +143,7 @@ NSString *const kMSAISessionInfoSessionId = @"MSAISessionInfoSessionId";
                                                       queue:NSOperationQueue.mainQueue
                                                  usingBlock:^(NSNotification *note) {
                                                    typeof(self) strongSelf = weakSelf;
-                                                   [strongSelf updateSessionDate];
+                                                   [strongSelf updateDidEnterBackgroundTime];
                                                  }];
   }
   if (nil == _appWillEnterForegroundObserver) {
@@ -152,7 +152,7 @@ NSString *const kMSAISessionInfoSessionId = @"MSAISessionInfoSessionId";
                                                        queue:NSOperationQueue.mainQueue
                                                   usingBlock:^(NSNotification *note) {
                                                     typeof(self) strongSelf = weakSelf;
-                                                    [strongSelf startSession];
+                                                    [strongSelf startNewSessionIfNeeded];
                                                   }];
   }
   if (nil == _appWillTerminateObserver) {
@@ -173,22 +173,35 @@ NSString *const kMSAISessionInfoSessionId = @"MSAISessionInfoSessionId";
   _appWillTerminateObserver = nil;
 }
 
-- (void)updateSessionDate {
+- (void)updateDidEnterBackgroundTime {
   [[NSUserDefaults standardUserDefaults] setDouble:[[NSDate date] timeIntervalSince1970] forKey:kMSAIApplicationDidEnterBackgroundTime];
   [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
-- (void)startSession {
+
++ (void)startNewSessionIfNeeded {
+  [[MSAISessionHelper sharedInstance] startNewSessionIfNeeded];
+}
+
+- (void)startNewSessionIfNeeded {
   double appDidEnterBackgroundTime = [[NSUserDefaults standardUserDefaults] doubleForKey:kMSAIApplicationDidEnterBackgroundTime];
   double timeSinceLastBackground = [[NSDate date] timeIntervalSince1970] - appDidEnterBackgroundTime;
   if (timeSinceLastBackground > defaultSessionExpirationTime) {
-    
-    NSString *newSessionId = msai_UUID();
-    [self addSessionId:newSessionId withDate:[NSDate date]];
-    NSDictionary *userInfo = @{kMSAISessionInfoSessionId:newSessionId};
-    [self sendSessionStartedNotificationWithUserInfo:userInfo];
-    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kMSAIApplicationWasLaunched];
+
+    [self startNewSession];
   }
+}
+
++ (void)startNewSession {
+  [[MSAISessionHelper sharedInstance] startNewSession]; 
+}
+
+- (void)startNewSession {
+  NSString *newSessionId = msai_UUID();
+  [self addSessionId:newSessionId withDate:[NSDate date]];
+  NSDictionary *userInfo = @{kMSAISessionInfoSessionId:newSessionId};
+  [self sendSessionStartedNotificationWithUserInfo:userInfo];
+  [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kMSAIApplicationWasLaunched];
 }
 
 - (void)endSession {
