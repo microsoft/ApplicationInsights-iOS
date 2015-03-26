@@ -80,7 +80,7 @@ static NSNotificationCenter *mockNotificationCenter = nil;
 - (void)testRegisterObservers {
   mockNotificationCenter = mock(NSNotificationCenter.class);
   [self.sut registerObservers];
-  [verifyCount(mockNotificationCenter, times(1)) addObserverForName:(id)anything() object:nil queue:NSOperationQueue.mainQueue usingBlock:(id)anything()];
+  [verifyCount(mockNotificationCenter, times(2)) addObserverForName:(id)anything() object:nil queue:NSOperationQueue.mainQueue usingBlock:(id)anything()];
 }
 
 @end
