@@ -70,8 +70,8 @@ static char *const MSAIMetricEventQueue = "com.microsoft.appInsights.metricEvent
                          queue:NSOperationQueue.mainQueue
                     usingBlock:^(NSNotification *notification) {
                       typeof(self) strongSelf = weakSelf;
-                      
-                      [strongSelf startSession];
+
+                      [strongSelf trackSessionStart];
                     }];
   }
   if(!_sessionEndedObserver){
@@ -80,8 +80,8 @@ static char *const MSAIMetricEventQueue = "com.microsoft.appInsights.metricEvent
                          queue:NSOperationQueue.mainQueue
                     usingBlock:^(NSNotification *notification) {
                       typeof(self) strongSelf = weakSelf;
-                      
-                      [strongSelf endSession];
+
+                      [strongSelf trackSessionEnd];
                     }];
   }
 }
@@ -253,11 +253,11 @@ static char *const MSAIMetricEventQueue = "com.microsoft.appInsights.metricEvent
 
 #pragma mark - Session update
 
-- (void)startSession {
+- (void)trackSessionStart {
   [self trackEventWithName:@"Session Start Event"];
 }
 
-- (void)endSession {
+- (void)trackSessionEnd {
   [self trackEventWithName:@"Session End Event"];
 }
 
