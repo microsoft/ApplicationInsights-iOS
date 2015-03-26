@@ -205,7 +205,7 @@ NSString *const kMSAISessionInfoSessionId = @"MSAISessionInfoSessionId";
 }
 
 - (void)endSession {
-  [self sendSessionStartedNotificationWithUserInfo:nil];
+  [self sendSessionEndedNotification];
 }
 
 - (void)sendSessionStartedNotificationWithUserInfo:(NSDictionary *)userInfo {
