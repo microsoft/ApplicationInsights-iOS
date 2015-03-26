@@ -180,12 +180,6 @@ NSString *const kMSAISessionInfoSessionId = @"MSAISessionInfoSessionId";
 
 + (NSString *)createFirstSession{
   NSString *newSessionId = msai_UUID();
-  UIAlertView *alert = [[UIAlertView alloc] initWithTitle:newSessionId
-                                                  message:@"Dee dee doo doo."
-                                                 delegate:self
-                                        cancelButtonTitle:@"OK"
-                                        otherButtonTitles:nil];
-  [alert show];
   return newSessionId;
 }
 
