@@ -10,14 +10,16 @@
 #import "MSAISessionHelperPrivate.h"
 #import "MSAIPersistence.h"
 #import "MSAIPersistencePrivate.h"
+#import "NotificationTests.h"
 
-@interface MSAISessionHelperTests : XCTestCase
+@interface MSAISessionHelperTests : NotificationTests
 
-@end
 @property (strong) MSAISessionHelper *sut;
 
+@end
 
 @implementation MSAISessionHelperTests {
+  
   MSAIPersistence *_persistence;
 }
 
@@ -111,6 +113,11 @@
 - (void)testUnixTimestampFromDate {
   NSString *timestamp = [self.sut unixTimestampFromDate:[NSDate dateWithTimeIntervalSince1970:42]];
   XCTAssertEqualObjects(timestamp, @"42");
+}
+
+- (void)testRegisterObserversOnInit {
+
+  [verifyCount(self.mockNotificationCenter, times(4)) addObserverForName:(id)anything() object:nil queue:NSOperationQueue.mainQueue usingBlock:(id)anything()];
 }
 
 #pragma mark Helper
