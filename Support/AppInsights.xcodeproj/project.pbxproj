@@ -95,7 +95,7 @@
 		1ECA8F52192B6954006B9416 /* MSAICrashMetaData.m in Sources */ = {isa = PBXBuildFile; fileRef = 1ECA8F50192B6954006B9416 /* MSAICrashMetaData.m */; };
 		594931B3422F36B9D1DA449C /* MSAIPersistence.h in Headers */ = {isa = PBXBuildFile; fileRef = 594931F0F69C22CBB67A2AD9 /* MSAIPersistence.h */; };
 		59493E4E3899627127FA6760 /* MSAIPersistence.m in Sources */ = {isa = PBXBuildFile; fileRef = 59493E91C1D38C3FC5F77D19 /* MSAIPersistence.m */; };
-		8004739C1ABB8FC200BBFE62 /* MSAIPersistencePrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 8004739B1ABB8FC200BBFE62 /* MSAIPersistencePrivate.h */; };
+		8004739C1ABB8FC200BBFE62 /* MSAIPersistencePrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 8004739B1ABB8FC200BBFE62 /* MSAIPersistencePrivate.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		803871BD1A94C0A600BF295F /* MSAIPageViewLogging_UIViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 1BC8596D1A7ACC040018FB6B /* MSAIPageViewLogging_UIViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		803871C01A94C26500BF295F /* MSAICrashManagerPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 1EFF03D717F20F8300A5F13C /* MSAICrashManagerPrivate.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		803871C21A94C26500BF295F /* MSAIContextPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B62F4DA1A692A6F00EB5AD0 /* MSAIContextPrivate.h */; settings = {ATTRIBUTES = (Private, ); }; };
@@ -791,6 +791,7 @@
 				803871C31A94C26500BF295F /* MSAITelemetryManagerPrivate.h in Headers */,
 				1ECA8F4D192B5BD8006B9416 /* MSAICrashDetailsPrivate.h in Headers */,
 				80F334B21A9C93290098026F /* MSAIAppInsightsPrivate.h in Headers */,
+				8004739C1ABB8FC200BBFE62 /* MSAIPersistencePrivate.h in Headers */,
 				803871C41A94C26500BF295F /* MSAIChannelPrivate.h in Headers */,
 				803871C51A94C26500BF295F /* MSAITelemetryContextPrivate.h in Headers */,
 				803871C61A94C26500BF295F /* MSAIEnvelopeManagerPrivate.h in Headers */,
@@ -808,7 +809,6 @@
 				807CFDBF1A712974004EA1B6 /* MSAIMessageData.h in Headers */,
 				1E90FD7318EDB86400CF0417 /* MSAICrashDetails.h in Headers */,
 				807CFDC71A712974004EA1B6 /* MSAIPageViewPerfData.h in Headers */,
-				8004739C1ABB8FC200BBFE62 /* MSAIPersistencePrivate.h in Headers */,
 				1B3FB89E1A93756100D06311 /* MSAIReachability.h in Headers */,
 				1E84DB3417E099BA00AC83FD /* AppInsightsFeatureConfig.h in Headers */,
 				807CFDCD1A712974004EA1B6 /* MSAISession.h in Headers */,
