@@ -121,16 +121,9 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
   dispatch_source_set_event_handler(self.timerSource, ^{
     
     // On completion: Reset timer and persist items
-    [self invalidateTimer];
-    [self persistQueue];
+    [self persistDataItemQueue];
   });
   dispatch_resume(self.timerSource);
-}
-
-- (void)persistQueue {
-  NSArray *bundle = [NSArray arrayWithArray:_dataItemQueue];
-  [[MSAIPersistence sharedInstance] persistBundle:bundle ofType:MSAIPersistenceTypeRegular withCompletionBlock:nil];
-  [_dataItemQueue removeAllObjects];
 }
 
 @end
