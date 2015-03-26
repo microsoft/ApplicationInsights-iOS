@@ -27,6 +27,7 @@
 #import "MSAIEnvelopeManagerPrivate.h"
 #import "MSAISessionHelper.h"
 #import "MSAISessionHelperPrivate.h"
+#import "MSAISessionStateData.h"
 
 static char *const MSAIMetricEventQueue = "com.microsoft.appInsights.metricEventQueue";
 
@@ -255,11 +256,14 @@ static char *const MSAIMetricEventQueue = "com.microsoft.appInsights.metricEvent
 #pragma mark - Session update
 
 - (void)trackSessionStart {
-  [self trackEventWithName:@"Session Start Event"];
-}
+  MSAISessionStateData *sessionState = [MSAISessionStateData new];
+  sessionState.state = MSAISessionState_start;
+  [self trackDataItem:sessionState];}
 
 - (void)trackSessionEnd {
-  [self trackEventWithName:@"Session End Event"];
+  MSAISessionStateData *sessionState = [MSAISessionStateData new];
+  sessionState.state = MSAISessionState_end;
+  [self trackDataItem:sessionState];
 }
 
 @end

@@ -196,6 +196,9 @@
 		808FB2661A7982300002872B /* live_report_signal.plcrash in Resources */ = {isa = PBXBuildFile; fileRef = 808FB2631A7982300002872B /* live_report_signal.plcrash */; };
 		808FB2671A7982B50002872B /* OCHamcrestIOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 808FB21F1A7982140002872B /* OCHamcrestIOS.framework */; };
 		808FB2681A7982B50002872B /* OCMockitoIOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 808FB2201A7982140002872B /* OCMockitoIOS.framework */; };
+		809E9E5A1AC455D9008A1AB5 /* MSAISessionState.h in Headers */ = {isa = PBXBuildFile; fileRef = 809E9E571AC455D9008A1AB5 /* MSAISessionState.h */; };
+		809E9E5B1AC455D9008A1AB5 /* MSAISessionStateData.h in Headers */ = {isa = PBXBuildFile; fileRef = 809E9E581AC455D9008A1AB5 /* MSAISessionStateData.h */; };
+		809E9E5C1AC455D9008A1AB5 /* MSAISessionStateData.m in Sources */ = {isa = PBXBuildFile; fileRef = 809E9E591AC455D9008A1AB5 /* MSAISessionStateData.m */; };
 		80F334B01A9C8A430098026F /* MSAIManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 80F334AF1A9C8A430098026F /* MSAIManagerTests.m */; };
 		80F334B21A9C93290098026F /* MSAIAppInsightsPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 80F334B11A9C93290098026F /* MSAIAppInsightsPrivate.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		B25912331A8D129C00C88800 /* MSAIPersistenceTest.m in Sources */ = {isa = PBXBuildFile; fileRef = B25912321A8D129C00C88800 /* MSAIPersistenceTest.m */; };
@@ -392,6 +395,9 @@
 		808FB2611A7982300002872B /* live_report_empty.plcrash */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = live_report_empty.plcrash; path = AppInsightsTests/Fixtures/live_report_empty.plcrash; sourceTree = SOURCE_ROOT; };
 		808FB2621A7982300002872B /* live_report_exception.plcrash */ = {isa = PBXFileReference; lastKnownFileType = file; name = live_report_exception.plcrash; path = AppInsightsTests/Fixtures/live_report_exception.plcrash; sourceTree = SOURCE_ROOT; };
 		808FB2631A7982300002872B /* live_report_signal.plcrash */ = {isa = PBXFileReference; lastKnownFileType = file; name = live_report_signal.plcrash; path = AppInsightsTests/Fixtures/live_report_signal.plcrash; sourceTree = SOURCE_ROOT; };
+		809E9E571AC455D9008A1AB5 /* MSAISessionState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAISessionState.h; sourceTree = "<group>"; };
+		809E9E581AC455D9008A1AB5 /* MSAISessionStateData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAISessionStateData.h; sourceTree = "<group>"; };
+		809E9E591AC455D9008A1AB5 /* MSAISessionStateData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAISessionStateData.m; sourceTree = "<group>"; };
 		80F334AF1A9C8A430098026F /* MSAIManagerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIManagerTests.m; path = AppInsightsTests/MSAIManagerTests.m; sourceTree = SOURCE_ROOT; };
 		80F334B11A9C93290098026F /* MSAIAppInsightsPrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAIAppInsightsPrivate.h; sourceTree = "<group>"; };
 		B25912321A8D129C00C88800 /* MSAIPersistenceTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIPersistenceTest.m; path = AppInsightsTests/MSAIPersistenceTest.m; sourceTree = SOURCE_ROOT; };
@@ -460,6 +466,10 @@
 		1BBBCEC31A65927900253031 /* Contracts */ = {
 			isa = PBXGroup;
 			children = (
+				807CFD721A712974004EA1B6 /* MSAIApplication.h */,
+				807CFD731A712974004EA1B6 /* MSAIApplication.m */,
+				807CFD741A712974004EA1B6 /* MSAIBase.h */,
+				807CFD751A712974004EA1B6 /* MSAIBase.m */,
 				1B3C386C1A82213000700081 /* MSAICrashData.h */,
 				1B3C386D1A82213000700081 /* MSAICrashData.m */,
 				1B3C386E1A82213000700081 /* MSAICrashDataBinary.h */,
@@ -470,10 +480,6 @@
 				1B3C38731A82213000700081 /* MSAICrashDataThread.m */,
 				1B3C38741A82213000700081 /* MSAICrashDataThreadFrame.h */,
 				1B3C38751A82213000700081 /* MSAICrashDataThreadFrame.m */,
-				807CFD721A712974004EA1B6 /* MSAIApplication.h */,
-				807CFD731A712974004EA1B6 /* MSAIApplication.m */,
-				807CFD741A712974004EA1B6 /* MSAIBase.h */,
-				807CFD751A712974004EA1B6 /* MSAIBase.m */,
 				807CFD761A712974004EA1B6 /* MSAIData.h */,
 				807CFD771A712974004EA1B6 /* MSAIData.m */,
 				807CFD781A712974004EA1B6 /* MSAIDataPoint.h */,
@@ -516,6 +522,9 @@
 				807CFD9B1A712974004EA1B6 /* MSAIRequestData.m */,
 				807CFD9C1A712974004EA1B6 /* MSAISession.h */,
 				807CFD9D1A712974004EA1B6 /* MSAISession.m */,
+				809E9E571AC455D9008A1AB5 /* MSAISessionState.h */,
+				809E9E581AC455D9008A1AB5 /* MSAISessionStateData.h */,
+				809E9E591AC455D9008A1AB5 /* MSAISessionStateData.m */,
 				807CFD9E1A712974004EA1B6 /* MSAISeverityLevel.h */,
 				807CFD9F1A712974004EA1B6 /* MSAIStackFrame.h */,
 				807CFDA01A712974004EA1B6 /* MSAIStackFrame.m */,
@@ -789,6 +798,7 @@
 				1E754E5E1621FBB70070AB92 /* MSAICrashManagerDelegate.h in Headers */,
 				1BBBCF361A6594AE00253031 /* MSAITelemetryContext.h in Headers */,
 				807CFDC31A712974004EA1B6 /* MSAIOperation.h in Headers */,
+				809E9E5B1AC455D9008A1AB5 /* MSAISessionStateData.h in Headers */,
 				1B3C387A1A82213000700081 /* MSAICrashDataHeaders.h in Headers */,
 				807CFDB31A712974004EA1B6 /* MSAIEnvelope.h in Headers */,
 				807CFDAD1A712974004EA1B6 /* MSAIDependencySourceType.h in Headers */,
@@ -826,6 +836,7 @@
 				807CFDCF1A712974004EA1B6 /* MSAISeverityLevel.h in Headers */,
 				807CFDBB1A712974004EA1B6 /* MSAIInternal.h in Headers */,
 				807CFDAC1A712974004EA1B6 /* MSAIDependencyKind.h in Headers */,
+				809E9E5A1AC455D9008A1AB5 /* MSAISessionState.h in Headers */,
 				1E754E601621FBB70070AB92 /* MSAICrashDataProvider.h in Headers */,
 				807CFDC11A712974004EA1B6 /* MSAIMetricData.h in Headers */,
 				1B3C38761A82213000700081 /* MSAICrashData.h in Headers */,
@@ -986,6 +997,7 @@
 				1ECA8F52192B6954006B9416 /* MSAICrashMetaData.m in Sources */,
 				807CFDA61A712974004EA1B6 /* MSAIBase.m in Sources */,
 				1B3FB89F1A93756100D06311 /* MSAIReachability.m in Sources */,
+				809E9E5C1AC455D9008A1AB5 /* MSAISessionStateData.m in Sources */,
 				807CFDBA1A712974004EA1B6 /* MSAIExceptionDetails.m in Sources */,
 				1B3C387F1A82213000700081 /* MSAICrashDataThreadFrame.m in Sources */,
 				807CFDBC1A712974004EA1B6 /* MSAIInternal.m in Sources */,
