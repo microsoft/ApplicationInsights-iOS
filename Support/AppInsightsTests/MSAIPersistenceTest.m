@@ -94,7 +94,7 @@ typedef void (^MSAIPersistenceTestBlock)(BOOL);
   XCTAssertNotNil(jsonData);
   NSArray *json = [NSJSONSerialization JSONObjectWithData:jsonData options:0 error:nil];
   XCTAssertNotNil(json);
-  XCTAssertTrue([json[0][key] isEqualToString:value]);
+  XCTAssertEqualObjects(json[0][key],value);
 }
 
 - (void)testIfIsFreeSpaceAvailableWorks{
