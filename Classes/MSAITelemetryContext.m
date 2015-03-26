@@ -87,7 +87,7 @@ NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
 
 #pragma mark - Session
 
-- (void)updateSessionContext {
+- (void)resetIsNewFlag {
   if ([_session.isNew isEqualToString:@"true"]) {
     _session.isNew = @"false";
   }
@@ -97,7 +97,7 @@ NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
   return ![_userDefaults boolForKey:kMSAIApplicationWasLaunched];
 }
 
-- (void)createNewSessionWithId:(NSString *)sessionId {
+- (void)updateSessionContextWithId:(NSString *)sessionId {
   BOOL firstSession = [self isFirstSession];
   _session.sessionId = sessionId;
   _session.isNew = @"true";
@@ -120,9 +120,9 @@ NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
                       BOOL sessionCreated = [userInfo[kMSAISessionInfoSessionCreated] boolValue];
                       NSString *sessionId = userInfo[kMSAISessionInfoSessionId];
                       if(sessionCreated){
-                        [strongSelf createNewSessionWithId:sessionId];
                       }
                     }
+                    [strongSelf updateSessionContextWithId:sessionId];
                   }];
 }
 
@@ -134,7 +134,7 @@ NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
   [contextDictionary addEntriesFromDictionary:self.tags];
   [contextDictionary addEntriesFromDictionary:[self.session serializeToDictionary]];
   [contextDictionary addEntriesFromDictionary:[self.device serializeToDictionary]];
-  [self updateSessionContext];
+  [self resetIsNewFlag];
   
   return contextDictionary;
 }
