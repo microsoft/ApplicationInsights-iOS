@@ -63,10 +63,7 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
       if([strongSelf->_dataItemQueue count] >= strongSelf.senderBatchSize) {
         
         // Max batch count has been reached, so write queue to disk and delete all items.
-        [strongSelf invalidateTimer];
-        NSArray *bundle = [NSArray arrayWithArray:strongSelf->_dataItemQueue];
-        [[MSAIPersistence sharedInstance] persistBundle:bundle ofType:MSAIPersistenceTypeRegular withCompletionBlock:nil];
-        [strongSelf->_dataItemQueue removeAllObjects];
+        [strongSelf persistDataItemQueue];
       } else if([strongSelf->_dataItemQueue count] == 1) {
         
         // It is the first item, let's start the timer
@@ -90,6 +87,13 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
     queue = [NSMutableArray arrayWithArray:strongSelf->_dataItemQueue];
   });
   return queue;
+}
+
+- (void)persistDataItemQueue {
+  [self invalidateTimer];
+  NSArray *bundle = [NSArray arrayWithArray:_dataItemQueue];
+  [[MSAIPersistence sharedInstance] persistBundle:bundle ofType:MSAIPersistenceTypeRegular withCompletionBlock:nil];
+  [_dataItemQueue removeAllObjects];
 }
 
 - (BOOL)isQueueBusy{
@@ -117,16 +121,9 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
   dispatch_source_set_event_handler(self.timerSource, ^{
     
     // On completion: Reset timer and persist items
-    [self invalidateTimer];
-    [self persistQueue];
+    [self persistDataItemQueue];
   });
   dispatch_resume(self.timerSource);
-}
-
-- (void)persistQueue {
-  NSArray *bundle = [NSArray arrayWithArray:_dataItemQueue];
-  [[MSAIPersistence sharedInstance] persistBundle:bundle ofType:MSAIPersistenceTypeRegular withCompletionBlock:nil];
-  [_dataItemQueue removeAllObjects];
 }
 
 @end
