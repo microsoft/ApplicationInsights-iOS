@@ -30,7 +30,8 @@
 static char *const MSAIMetricEventQueue = "com.microsoft.appInsights.metricEventQueue";
 
 @implementation MSAIMetricsManager{
-  id _sessionChangedObserver;
+  id _sessionStartedObserver;
+  id _sessionEndedObserver;
 }
 
 #pragma mark - Configure manager
@@ -63,28 +64,32 @@ static char *const MSAIMetricEventQueue = "com.microsoft.appInsights.metricEvent
   NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
   __weak typeof(self) weakSelf = self;
   
-  [center addObserverForName:MSAISessionStartedNotification
-                      object:nil
-                       queue:NSOperationQueue.mainQueue
-                  usingBlock:^(NSNotification *notification) {
-                    typeof(self) strongSelf = weakSelf;
-                    
-                    [strongSelf startSession];
-                  }];
-  
-  [center addObserverForName:MSAISessionEndedNotification
-                      object:nil
-                       queue:NSOperationQueue.mainQueue
-                  usingBlock:^(NSNotification *notification) {
-                    typeof(self) strongSelf = weakSelf;
-                    
-                    [strongSelf endSession];
-                  }];
+  if(!_sessionStartedObserver){
+    [center addObserverForName:MSAISessionStartedNotification
+                        object:nil
+                         queue:NSOperationQueue.mainQueue
+                    usingBlock:^(NSNotification *notification) {
+                      typeof(self) strongSelf = weakSelf;
+                      
+                      [strongSelf startSession];
+                    }];
+  }
+  if(!_sessionEndedObserver){
+    [center addObserverForName:MSAISessionEndedNotification
+                        object:nil
+                         queue:NSOperationQueue.mainQueue
+                    usingBlock:^(NSNotification *notification) {
+                      typeof(self) strongSelf = weakSelf;
+                      
+                      [strongSelf endSession];
+                    }];
+  }
 }
 
 - (void)unregisterObservers {
   [[NSNotificationCenter defaultCenter] removeObserver:self];
-  _sessionChangedObserver = nil;
+  _sessionStartedObserver = nil;
+  _sessionEndedObserver = nil;
 }
 
 #pragma mark - Track data
