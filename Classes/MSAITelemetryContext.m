@@ -103,11 +103,13 @@ NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
 }
 
 - (void)updateSessionContextWithId:(NSString *)sessionId {
-  BOOL firstSession = [self isFirstSession];
-  _session.sessionId = sessionId;
-  _session.isNew = @"true";
-  _session.isFirst = (firstSession ? @"true" : @"false");
   
+  if(![_session.sessionId isEqualToString:sessionId]){
+    BOOL firstSession = [self isFirstSession];
+    _session.sessionId = sessionId;
+    _session.isNew = @"true";
+    _session.isFirst = (firstSession ? @"true" : @"false");
+  }
 }
 
 - (void)configureSessionTracking{
