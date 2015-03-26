@@ -22,11 +22,11 @@
 #import "MSAICrashManagerPrivate.h"
 #endif /* MSAI_FEATURE_CRASH_REPORTER */
 
-#if MSAI_FEATURE_METRICS
+#if MSAI_FEATURE_TELEMETRY
 #import "MSAICategoryContainer.h"
-#import "MSAIMetricsManager.h"
-#import "MSAIMetricsManagerPrivate.h"
-#endif /* MSAI_FEATURE_METRICS */
+#import "MSAITelemetryManager.h"
+#import "MSAITelemetryManagerPrivate.h"
+#endif /* MSAI_FEATURE_TELEMETRY */
 
 NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 
@@ -60,9 +60,9 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 #if MSAI_FEATURE_CRASH_REPORTER
     _crashManagerDisabled = NO;
 #endif /* MSAI_FEATURE_CRASH_REPORTER */
-#if MSAI_FEATURE_METRICS
-    _metricsManagerDisabled = NO;
-#endif /* MSAI_FEATURE_METRICS */
+#if MSAI_FEATURE_TELEMETRY
+    _telemetryManagerDisabled = NO;
+#endif /* MSAI_FEATURE_TELEMETRY */
     _appStoreEnvironment = NO;
     _startManagerIsInvoked = NO;
     
@@ -131,19 +131,19 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
   }
 #endif /* MSAI_FEATURE_CRASH_REPORTER */
   
-#if MSAI_FEATURE_METRICS
-  if (![self isMetricsManagerDisabled]) {
+#if MSAI_FEATURE_TELEMETRY
+  if (![self isTelemetryManagerDisabled]) {
     
     if([self isAutoPageViewTrackingDisabled]){
       MSAILog(@"INFO: Auto page views disabled");
-      [MSAIMetricsManager sharedManager].autoPageViewTrackingDisabled = YES;
+      [MSAITelemetryManager sharedManager].autoPageViewTrackingDisabled = YES;
     }
     [MSAICategoryContainer activateCategory];
     
-    MSAILog(@"INFO: Starting MSAIMetricsManager");
-    [[MSAIMetricsManager sharedManager] startManager];
+    MSAILog(@"INFO: Starting MSAITelemetryManager");
+    [[MSAITelemetryManager sharedManager] startManager];
   }
-#endif /* MSAI_FEATURE_METRICS */
+#endif /* MSAI_FEATURE_TELEMETRY */
 }
 
 + (void)start {
@@ -189,9 +189,9 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
   
   if (_validInstrumentationKey) {
     
-#if MSAI_FEATURE_METRICS
-    MSAILog(@"INFO: Setup MetricsManager");
-#endif /* MSAI_FEATURE_METRICS */
+#if MSAI_FEATURE_TELEMETRY
+    MSAILog(@"INFO: Setup TelemetryManager");
+#endif /* MSAI_FEATURE_TELEMETRY */
     
     if (![self isAppStoreEnvironment]) {
       NSString *integrationFlowTime = [self integrationFlowTimeString];
@@ -208,25 +208,25 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 }
 
 #pragma mark - Configuring modules
-#if MSAI_FEATURE_METRICS
-- (void)setMetricsManagerDisabled:(BOOL)metricsManagerDisabled {
-  [MSAIMetricsManager sharedManager].metricsManagerDisabled = metricsManagerDisabled;
-  _metricsManagerDisabled = metricsManagerDisabled;
+#if MSAI_FEATURE_TELEMETRY
+- (void)setTelemetryManagerDisabled:(BOOL)telemetryManagerDisabled {
+  [MSAITelemetryManager sharedManager].telemetryManagerDisabled = telemetryManagerDisabled;
+  _telemetryManagerDisabled = telemetryManagerDisabled;
 }
 
-+ (void)setMetricsManagerDisabled:(BOOL)metricsManagerDisabled {
-  [[self sharedInstance] setMetricsManagerDisabled:metricsManagerDisabled];
++ (void)setTelemetryManagerDisabled:(BOOL)telemetryManagerDisabled {
+  [[self sharedInstance] setTelemetryManagerDisabled:telemetryManagerDisabled];
 }
 
 - (void)setAutoPageViewTrackingDisabled:(BOOL)autoPageViewTrackingDisabled {
-  [MSAIMetricsManager sharedManager].autoPageViewTrackingDisabled = autoPageViewTrackingDisabled;
+  [MSAITelemetryManager sharedManager].autoPageViewTrackingDisabled = autoPageViewTrackingDisabled;
   _autoPageViewTrackingDisabled = autoPageViewTrackingDisabled;
 }
 
 + (void)setAutoPageViewTrackingDisabled:(BOOL)autoPageViewTrackingDisabled {
   [[self sharedInstance] setAutoPageViewTrackingDisabled:autoPageViewTrackingDisabled];
 }
-#endif /* MSAI_FEATURE_METRICS */
+#endif /* MSAI_FEATURE_TELEMETRY */
 
 #if MSAI_FEATURE_CRASH_REPORTER
 - (void)setCrashManagerDisabled:(BOOL)crashManagerDisabled {

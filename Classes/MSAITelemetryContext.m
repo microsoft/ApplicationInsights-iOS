@@ -1,7 +1,7 @@
 #import <Foundation/Foundation.h>
 #import "MSAITelemetryContext.h"
 #import "MSAITelemetryContextPrivate.h"
-#import "MSAIMetricsManagerPrivate.h"
+#import "MSAITelemetryManagerPrivate.h"
 #import "MSAIHelper.h"
 #import "MSAISessionHelper.h"
 #import "MSAISessionHelperPrivate.h"

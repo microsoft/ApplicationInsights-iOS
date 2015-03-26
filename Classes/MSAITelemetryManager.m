@@ -1,11 +1,11 @@
 #import "AppInsights.h"
 
-#if MSAI_FEATURE_METRICS
+#if MSAI_FEATURE_TELEMETRY
 
 #import "AppInsightsPrivate.h"
 #import "MSAIHelper.h"
 
-#import "MSAIMetricsManagerPrivate.h"
+#import "MSAITelemetryManagerPrivate.h"
 #import "MSAIChannel.h"
 #import "MSAIChannelPrivate.h"
 #import "MSAITelemetryContext.h"
@@ -29,9 +29,9 @@
 #import "MSAISessionHelperPrivate.h"
 #import "MSAISessionStateData.h"
 
-static char *const MSAIMetricEventQueue = "com.microsoft.appInsights.metricEventQueue";
+static char *const MSAITelemetryEventQueue = "com.microsoft.appInsights.telemetryEventQueue";
 
-@implementation MSAIMetricsManager{
+@implementation MSAITelemetryManager{
   id _sessionStartedObserver;
   id _sessionEndedObserver;
 }
@@ -39,7 +39,7 @@ static char *const MSAIMetricEventQueue = "com.microsoft.appInsights.metricEvent
 #pragma mark - Configure manager
 
 + (instancetype)sharedManager {
-  static MSAIMetricsManager *sharedManager = nil;
+  static MSAITelemetryManager *sharedManager = nil;
   static dispatch_once_t onceToken;
   dispatch_once(&onceToken, ^{
     sharedManager = [self new];
@@ -49,14 +49,14 @@ static char *const MSAIMetricEventQueue = "com.microsoft.appInsights.metricEvent
 
 - (instancetype)init {
   if ((self = [super init])) {
-    _metricEventQueue = dispatch_queue_create(MSAIMetricEventQueue,DISPATCH_QUEUE_CONCURRENT);
+    _telemetryEventQueue = dispatch_queue_create(MSAITelemetryEventQueue,DISPATCH_QUEUE_CONCURRENT);
   }
   return self;
 }
 
 - (void)startManager {
-  dispatch_barrier_sync(_metricEventQueue, ^{
-    if(_metricsManagerDisabled)return;
+  dispatch_barrier_sync(_telemetryEventQueue, ^{
+    if(_telemetryManagerDisabled)return;
     [self registerObservers];
     _managerInitialised = YES;
   });
@@ -117,7 +117,7 @@ static char *const MSAIMetricEventQueue = "com.microsoft.appInsights.metricEvent
 
 - (void)trackEventWithName:(NSString *)eventName properties:(NSDictionary *)properties mesurements:(NSDictionary *)measurements{
   __weak typeof(self) weakSelf = self;
-  dispatch_async(_metricEventQueue, ^{
+  dispatch_async(_telemetryEventQueue, ^{
     if(!_managerInitialised) return;
     
     typeof(self) strongSelf = weakSelf;
@@ -143,7 +143,7 @@ static char *const MSAIMetricEventQueue = "com.microsoft.appInsights.metricEvent
 
 - (void)trackTraceWithMessage:(NSString *)message properties:(NSDictionary *)properties{
   __weak typeof(self) weakSelf = self;
-  dispatch_async(_metricEventQueue, ^{
+  dispatch_async(_telemetryEventQueue, ^{
     if(!_managerInitialised) return;
     
     typeof(self) strongSelf = weakSelf;
@@ -168,7 +168,7 @@ static char *const MSAIMetricEventQueue = "com.microsoft.appInsights.metricEvent
 
 - (void)trackMetricWithName:(NSString *)metricName value:(double)value properties:(NSDictionary *)properties{
   __weak typeof(self) weakSelf = self;
-  dispatch_async(_metricEventQueue, ^{
+  dispatch_async(_telemetryEventQueue, ^{
     if(!_managerInitialised) return;
     
     typeof(self) strongSelf = weakSelf;
@@ -192,8 +192,8 @@ static char *const MSAIMetricEventQueue = "com.microsoft.appInsights.metricEvent
 
 - (void)trackException:(NSException *)exception{
   pthread_t thread = pthread_self();
-  
-  dispatch_async(_metricEventQueue, ^{
+
+  dispatch_async(_telemetryEventQueue, ^{
     PLCrashReporterSignalHandlerType signalHandlerType = PLCrashReporterSignalHandlerTypeBSD;
     PLCrashReporterSymbolicationStrategy symbolicationStrategy = PLCrashReporterSymbolicationStrategyAll;
     MSAIPLCrashReporterConfig *config = [[MSAIPLCrashReporterConfig alloc] initWithSignalHandlerType: signalHandlerType
@@ -229,7 +229,7 @@ static char *const MSAIMetricEventQueue = "com.microsoft.appInsights.metricEvent
 
 - (void)trackPageView:(NSString *)pageName duration:(long)duration properties:(NSDictionary *)properties {
   __weak typeof(self) weakSelf = self;
-  dispatch_async(_metricEventQueue, ^{
+  dispatch_async(_telemetryEventQueue, ^{
     if(!_managerInitialised) return;
     
     typeof(self) strongSelf = weakSelf;
