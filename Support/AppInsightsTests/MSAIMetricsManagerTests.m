@@ -11,18 +11,9 @@
 #import "MSAIAppClient.h"
 #import "MSAIMetricsManager.h"
 #import "MSAIMetricsManagerPrivate.h"
+#import "NotificationTests.h"
 
-static NSNotificationCenter *mockNotificationCenter = nil;
-
-@implementation NSNotificationCenter (UnitTests)
-
-+(id)defaultCenter {
-  return mockNotificationCenter;
-}
-
-@end
-
-@interface MSAIMetricsManagerTests : XCTestCase
+@interface MSAIMetricsManagerTests : NotificationTests
 
 @property (strong) MSAIMetricsManager *sut;
 
@@ -78,9 +69,11 @@ static NSNotificationCenter *mockNotificationCenter = nil;
 }
 
 - (void)testRegisterObservers {
-  mockNotificationCenter = mock(NSNotificationCenter.class);
+  // Instance already gets registered in init(). We have to unregister again, since we can't register twice.
+  [self.sut unregisterObservers];
+  
   [self.sut registerObservers];
-  [verifyCount(mockNotificationCenter, times(5)) addObserverForName:(id)anything() object:nil queue:NSOperationQueue.mainQueue usingBlock:(id)anything()];
+  [verifyCount(self.mockNotificationCenter, times(2)) addObserverForName:(id)anything() object:nil queue:NSOperationQueue.mainQueue usingBlock:(id)anything()];
 }
 
 @end

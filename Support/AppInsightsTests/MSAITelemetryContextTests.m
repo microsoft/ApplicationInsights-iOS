@@ -17,6 +17,7 @@
 #import "MSAIUser.h"
 #import "MSAISession.h"
 #import "MSAILocation.h"
+#import "MSAISessionHelper.h"
 
 @interface MSAITelemetryContextTests : XCTestCase
 
@@ -50,7 +51,7 @@
 }
 
 - (void)testContextDictionaryUpdateSessionContext {
-  [_sut createNewSession];
+  [_sut updateSessionContextWithId:@"mySessionUUID"];
   MSAISession *session = _sut.session;
   XCTAssertTrue([session.isNew isEqualToString:@"true"]);
   #pragma clang diagnostic push
@@ -62,7 +63,7 @@
 
 - (void)testUpdateSessionContext {
   _sut.session.isNew = @"true";
-  [_sut updateSessionContext];
+  [_sut resetIsNewFlag];
   
   XCTAssertTrue([_sut.session.isNew isEqualToString:@"false"]);
 }
@@ -92,13 +93,13 @@
   _sut.userDefaults = userDefaults;
   [userDefaults setBool:YES forKey:kMSAIApplicationWasLaunched];
 
-  [_sut createNewSession];
+  [_sut updateSessionContextWithId:@"hjdasq672323"];
   XCTAssertTrue([session.isNew isEqualToString:@"true"]);
   XCTAssertTrue([session.isFirst isEqualToString:@"false"]);
   
   NSString *firstGUID = session.sessionId;
 
-  [_sut createNewSession];
+  [_sut updateSessionContextWithId:@"gdszdg76432"];
   XCTAssertFalse([firstGUID isEqualToString:session.sessionId]);
 }
 
@@ -107,7 +108,7 @@
 - (MSAITelemetryContext *)telemetryContext{
   
   MSAIContext *context = [[MSAIContext alloc]initWithInstrumentationKey:@"123"];
-  MSAITelemetryContext *telemetryContext = [[MSAITelemetryContext alloc]initWithAppContext:context endpointPath:@"path"];
+  MSAITelemetryContext *telemetryContext = [[MSAITelemetryContext alloc]initWithAppContext:context endpointPath:@"path" firstSessionId:nil];
 
   return telemetryContext;
 }

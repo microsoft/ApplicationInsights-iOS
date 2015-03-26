@@ -65,11 +65,13 @@
  *
  *  @param appContext         the context of the app, which contains several meta infos
  *  @param endpointPath       the path to the telemetry endpoint
+ *  @param sessionId          the id of the first session
  *
  *  @return the telemetry context
  */
 - (instancetype)initWithAppContext:(MSAIContext *)appContext
-                      endpointPath:(NSString *)endpointPath;
+                      endpointPath:(NSString *)endpointPath
+                    firstSessionId:(NSString *)sessionId;
 
 ///-----------------------------------------------------------------------------
 /// @name Session
@@ -83,7 +85,7 @@
 /**
  *  Renews or even creates a new session if needed.
  */
-- (void)updateSessionContext;
+- (void)resetIsNewFlag;
 
 /**
  *  Checks if current session is the first one.
@@ -93,9 +95,11 @@
 - (BOOL)isFirstSession;
 
 /**
- *  Creates a brand new session.
+ *  Update session context with a given session id.
+ *
+ *  @param sessionId the session id of the new session
  */
-- (void)createNewSession;
+- (void)updateSessionContextWithId:(NSString *)sessionId;
 
 ///-----------------------------------------------------------------------------
 /// @name Network status

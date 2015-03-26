@@ -41,9 +41,9 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
 
 - (instancetype)init {
   if(self = [super init]) {
-    self.dataItemQueue = [NSMutableArray array];
-    self.senderBatchSize = defaultMaxBatchCount;
-    self.senderInterval = defaultBatchInterval;
+    _dataItemQueue = [NSMutableArray array];
+    _senderBatchSize = defaultMaxBatchCount;
+    _senderInterval = defaultBatchInterval;
   }
   return self;
 }

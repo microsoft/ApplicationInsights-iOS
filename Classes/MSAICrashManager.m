@@ -11,6 +11,8 @@
 #import "MSAIChannel.h"
 #import "MSAIChannelPrivate.h"
 #import "MSAIPersistence.h"
+#import "MSAISessionHelper.h"
+#import "MSAISessionHelperPrivate.h"
 #import "MSAIEnvelope.h"
 #import "MSAIEnvelopeManager.h"
 #import "MSAIEnvelopeManagerPrivate.h"
@@ -86,6 +88,8 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
       if([self.plCrashReporter hasPendingCrashReport]) {
         _didCrashInLastSession = YES;
         [self readCrashReportAndStartProcessing];
+      } else {
+        [MSAISessionHelper cleanUpSessionIds];
       }
 
       // The actual signal and mach handlers are only registered when invoking `enableCrashReporterAndReturnError`
