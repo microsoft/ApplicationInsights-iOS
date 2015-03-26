@@ -209,7 +209,7 @@ NSString *const kMSAISessionInfoSessionId = @"MSAISessionInfoSessionId";
   dispatch_async(dispatch_get_main_queue(), ^{
     [[NSNotificationCenter defaultCenter] postNotificationName:MSAISessionStartedNotification
                                                         object:nil
-                                                      userInfo:nil];
+                                                      userInfo:userInfo];
   });
 }
 
