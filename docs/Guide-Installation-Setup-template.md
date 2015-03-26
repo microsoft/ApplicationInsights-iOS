@@ -27,6 +27,7 @@ This document contains the following sections:
 - [Endpoints](#endpoints)
 - [iOS 8 Extensions](#extension)
 - [Additional Options](#options)
+- [Contact](#contact)
 
 <a id="requirements"></a> 
 ## Requirements
@@ -237,7 +238,7 @@ Instead of manually adding the missing frameworks, you can also use our bundled 
 	- `UIKit`
 	- `CoreTelephony`(only required if iOS > 7.0)
 
-### Setup with cocoapods
+### Setup with CocoaPods
 
 [CocoaPods](http://cocoapods.org) is a dependency manager for Objective-C, which automates and simplifies the process of using 3rd-party libraries like ApplicationInsights in your projects. To learn how to setup cocoapods for your project, visit the [official cocoapods website](http://cocoapods.org/).
 
@@ -247,3 +248,8 @@ Instead of manually adding the missing frameworks, you can also use our bundled 
 platform :ios, '8.0'
 pod "ApplicationInsights"
 ```
+
+<a id="contact"></a>
+## Contact
+
+If you have further questions or are running into trouble that cannot be resolved by any of the steps here, feel free to contact us at [AppInsights-iOS@microsoft.com](mailto:appinsights-ios@microsoft.com)
