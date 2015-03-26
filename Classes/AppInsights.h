@@ -26,8 +26,7 @@ typedef MSAITelemetryManager MSAIMetricsManager;
 // Notification message which AppInsightsManager is listening to, to retry requesting updated from the server
 #define MSAINetworkDidBecomeReachableNotification @"MSAINetworkDidBecomeReachable"
 
-#define MSAI_CRASH_DATA_URL   @"https://dray-prod.aisvc.visualstudio.com/v2/track"
-#define MSAI_EVENT_DATA_URL   @"https://dc.services.visualstudio.com/v2/track"
+#define MSAI_BASE_URL   @"https://dc.services.visualstudio.com"
 
 #if MSAI_FEATURE_CRASH_REPORTER
 /**

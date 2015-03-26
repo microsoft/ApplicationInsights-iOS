@@ -62,11 +62,10 @@
  *  Returnes a request for sending data to the telemetry sender.
  *
  *  @param data the data which should be sent
- *  @param urlString url depending on payload
  *
  *  @return a request which contains the given data
  */
-- (NSURLRequest *)requestForData:(NSData *)data urlString:(NSString *)urlString;
+- (NSURLRequest *)requestForData:(NSData *)data;
 
 /**
  *  Returns if data should be deleted based on a given status code.

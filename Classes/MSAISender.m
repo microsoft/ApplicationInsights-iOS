@@ -80,8 +80,7 @@ static NSInteger const statusCodeBadRequest = 400;
 - (void)sendData:(NSData *)data withPath:(NSString *)path{
   
   if(data) {
-    NSString *urlString = MSAI_EVENT_DATA_URL;
-    NSURLRequest *request = [self requestForData:data urlString:urlString];
+    NSURLRequest *request = [self requestForData:data];
     [self sendRequest:request path:path];
     
   }else{
@@ -127,9 +126,9 @@ static NSInteger const statusCodeBadRequest = 400;
 
 #pragma mark - Helper
 
-- (NSURLRequest *)requestForData:(NSData *)data urlString:(NSString *)urlString {
+- (NSURLRequest *)requestForData:(NSData *)data {
   NSMutableURLRequest *request = [self.appClient requestWithMethod:@"POST"
-                                                              path:urlString
+                                                              path:self.endpointPath
                                                         parameters:nil];
   
   [request setHTTPBody:data];

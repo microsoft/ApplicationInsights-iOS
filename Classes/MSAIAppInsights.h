@@ -78,6 +78,8 @@
  */
 @property (nonatomic, strong) NSString *serverURL;
 
+#if MSAI_FEATURE_CRASH_REPORTER
+
 /**
  * Flag which determines whether the Crash Manager should be disabled. If this flag is
  * enabled, then crash reporting is disabled and no crashes will be send. Please note 
@@ -94,7 +96,9 @@
  *  @param crashManagerDisabled Flag which determines whether the Crash Manager should be disabled
  */
 + (void)setCrashManagerDisabled:(BOOL)crashManagerDisabled;
+#endif /* MSAI_FEATURE_CRASH_REPORTER */
 
+#if MSAI_FEATURE_METRICS
 /**
  * Flag the determines whether the Telemetry Manager should be disabled. 
  * If this flag is enabled, then telemetry collection is disabled and telemetry data will
@@ -132,6 +136,7 @@
  *  @param autoPageViewTrackingDisabled Flag which determines whether the page view collection should be disabled
  */
 + (void)setAutoPageViewTrackingDisabled:(BOOL)autoPageViewTrackingDisabled;
+#endif /* MSAI_FEATURE_METRICS */
 
 ///-----------------------------------------------------------------------------
 /// @name Environment

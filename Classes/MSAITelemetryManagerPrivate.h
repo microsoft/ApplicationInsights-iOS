@@ -4,8 +4,6 @@
 
 @class MSAITelemetryData;
 
-extern NSString *const kMSAIApplicationWasLaunched;
-
 @interface MSAITelemetryManager ()
 
 ///-----------------------------------------------------------------------------
