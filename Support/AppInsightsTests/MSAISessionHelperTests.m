@@ -14,18 +14,18 @@
 @interface MSAISessionHelperTests : XCTestCase
 
 @end
+@property (strong) MSAISessionHelper *sut;
 
 
 @implementation MSAISessionHelperTests {
-  MSAISessionHelper *_sut;
   MSAIPersistence *_persistence;
 }
 
 - (void)setUp {
   [super setUp];
   
-  _sut = [MSAISessionHelper sharedInstance];
-  _sut.sessionEntries = [NSMutableDictionary new];
+  self.sut = [MSAISessionHelper new];
+  self.sut.sessionEntries = [NSMutableDictionary new];
   assertThatInteger(_sut.sessionEntries.count, equalToInteger(0));
 }
 
@@ -41,12 +41,12 @@
 - (void)testAddSessionWorks {
   
   NSDate *date = [NSDate date];
-  NSString *timestamp = [_sut unixTimestampFromDate:date];
+  NSString *timestamp = [self.sut unixTimestampFromDate:date];
   NSString *sessionId = @"xyz";
-  [MSAISessionHelper addSessionId:sessionId withDate:date];
+  [self.sut addSessionId:sessionId withDate:date];
   
-  XCTAssertEqual(_sut.sessionEntries.count, 1);
-  XCTAssertEqual(_sut.sessionEntries[timestamp], sessionId);
+  XCTAssertEqual(self.sut.sessionEntries.count, 1);
+  XCTAssertEqual(self.sut.sessionEntries[timestamp], sessionId);
 }
 
 - (void)testRemoveSessionWorks {
@@ -57,59 +57,59 @@
     value = [NSString stringWithFormat:@"VALUE%d", i];
     [_sut addSessionId:value withDate:key];
   }
-  [MSAISessionHelper removeSessionId:@"VALUE1"];
+  [self.sut removeSessionId:@"VALUE1"];
   
-  XCTAssertLessThanOrEqual(_sut.sessionEntries.count, 2);
-  XCTAssertNotNil(_sut.sessionEntries[@"0"]);
-  XCTAssertNotNil(_sut.sessionEntries[@"2"]);
-  XCTAssertNil(_sut.sessionEntries[@"1"]);
+  XCTAssertLessThanOrEqual(self.sut.sessionEntries.count, 2);
+  XCTAssertNotNil(self.sut.sessionEntries[@"0"]);
+  XCTAssertNotNil(self.sut.sessionEntries[@"2"]);
+  XCTAssertNil(self.sut.sessionEntries[@"1"]);
   
 }
 
 - (void)testCleanUpSessionsWorks {
-  XCTAssertEqual(_sut.sessionEntries.count, 0);
+  XCTAssertEqual(self.sut.sessionEntries.count, 0);
   
-  [MSAISessionHelper addSessionId:@"a" withDate:msai_dateWithTimeIntervalSince1970(3)];
-  [MSAISessionHelper addSessionId:@"b" withDate:msai_dateWithTimeIntervalSince1970(33)];
-  [MSAISessionHelper addSessionId:@"c" withDate:msai_dateWithTimeIntervalSince1970(333)];
-  XCTAssertEqual(_sut.sessionEntries.count, 3);
+  [self.sut addSessionId:@"a" withDate:msai_dateWithTimeIntervalSince1970(3)];
+  [self.sut addSessionId:@"b" withDate:msai_dateWithTimeIntervalSince1970(33)];
+  [self.sut addSessionId:@"c" withDate:msai_dateWithTimeIntervalSince1970(333)];
+  XCTAssertEqual(self.sut.sessionEntries.count, 3);
   
-  [MSAISessionHelper cleanUpSessionIds];
+  [self.sut cleanUpSessionIds];
   
-  XCTAssertLessThanOrEqual(_sut.sessionEntries.count, 1);
+  XCTAssertLessThanOrEqual(self.sut.sessionEntries.count, 1);
   
-  XCTAssertNil(_sut.sessionEntries[@"3"]);
-  XCTAssertNil(_sut.sessionEntries[@"33"]);
-  XCTAssertNotNil(_sut.sessionEntries[@"333"]);
+  XCTAssertNil(self.sut.sessionEntries[@"3"]);
+  XCTAssertNil(self.sut.sessionEntries[@"33"]);
+  XCTAssertNotNil(self.sut.sessionEntries[@"333"]);
 }
 
 - (void)testReturnsCorrectsessionIdForDate {
-  [MSAISessionHelper addSessionId:@"10" withDate:msai_dateWithTimeIntervalSince1970(3)];
-  [MSAISessionHelper addSessionId:@"20" withDate:msai_dateWithTimeIntervalSince1970(33)];
-  [MSAISessionHelper addSessionId:@"30" withDate:msai_dateWithTimeIntervalSince1970(333)];
+  [self.sut addSessionId:@"10" withDate:msai_dateWithTimeIntervalSince1970(3)];
+  [self.sut addSessionId:@"20" withDate:msai_dateWithTimeIntervalSince1970(33)];
+  [self.sut addSessionId:@"30" withDate:msai_dateWithTimeIntervalSince1970(333)];
   
-  NSString *sessionId = [MSAISessionHelper sessionIdForDate:[NSDate dateWithTimeIntervalSince1970:0]];
+  NSString *sessionId = [self.sut sessionIdForDate:[NSDate dateWithTimeIntervalSince1970:0]];
   XCTAssertNil(sessionId);
   
-  sessionId = [MSAISessionHelper sessionIdForDate:msai_dateWithTimeIntervalSince1970(3)];
+  sessionId = [self.sut sessionIdForDate:msai_dateWithTimeIntervalSince1970(3)];
   XCTAssertNil(sessionId);
   
-  sessionId = [MSAISessionHelper sessionIdForDate:msai_dateWithTimeIntervalSince1970(3+23)];
+  sessionId = [self.sut sessionIdForDate:msai_dateWithTimeIntervalSince1970(3+23)];
   XCTAssertEqual(sessionId, @"10");
   
-  sessionId = [MSAISessionHelper sessionIdForDate:msai_dateWithTimeIntervalSince1970(33)];
+  sessionId = [self.sut sessionIdForDate:msai_dateWithTimeIntervalSince1970(33)];
   XCTAssertEqual(sessionId, @"10");
   
-  sessionId = [MSAISessionHelper sessionIdForDate:msai_dateWithTimeIntervalSince1970(33+42)];
+  sessionId = [self.sut sessionIdForDate:msai_dateWithTimeIntervalSince1970(33+42)];
   XCTAssertEqual(sessionId, @"20");
   
-  sessionId = [MSAISessionHelper sessionIdForDate:msai_dateWithTimeIntervalSince1970(333+1337)];
+  sessionId = [self.sut sessionIdForDate:msai_dateWithTimeIntervalSince1970(333+1337)];
   XCTAssertEqual(sessionId, @"30");
   
 }
 
 - (void)testUnixTimestampFromDate {
-  NSString *timestamp = [_sut unixTimestampFromDate:[NSDate dateWithTimeIntervalSince1970:42]];
+  NSString *timestamp = [self.sut unixTimestampFromDate:[NSDate dateWithTimeIntervalSince1970:42]];
   XCTAssertEqualObjects(timestamp, @"42");
 }
 
