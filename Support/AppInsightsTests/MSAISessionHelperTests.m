@@ -85,7 +85,7 @@
   XCTAssertNotNil(self.sut.sessionEntries[@"333"]);
 }
 
-- (void)testReturnsCorrectsessionIdForDate {
+- (void)testReturnsCorrectSessionIdForDate {
   [self.sut addSessionId:@"10" withDate:msai_dateWithTimeIntervalSince1970(3)];
   [self.sut addSessionId:@"20" withDate:msai_dateWithTimeIntervalSince1970(33)];
   [self.sut addSessionId:@"30" withDate:msai_dateWithTimeIntervalSince1970(333)];
