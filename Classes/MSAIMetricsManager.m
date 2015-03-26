@@ -29,7 +29,9 @@
 
 static char *const MSAIMetricEventQueue = "com.microsoft.appInsights.metricEventQueue";
 
-@implementation MSAIMetricsManager
+@implementation MSAIMetricsManager{
+  id _sessionChangedObserver;
+}
 
 #pragma mark - Configure manager
 
@@ -75,6 +77,9 @@ static char *const MSAIMetricEventQueue = "com.microsoft.appInsights.metricEvent
                       }
                     }
                   }];
+- (void)unregisterObservers {
+  [[NSNotificationCenter defaultCenter] removeObserver:self];
+  _sessionChangedObserver = nil;
 }
 
 #pragma mark - Track data

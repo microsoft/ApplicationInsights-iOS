@@ -32,7 +32,6 @@ NSString *const kMSAISessionInfoSessionCreated = @"MSAISessionInfoSessionCreated
   static dispatch_once_t onceToken;
   dispatch_once(&onceToken, ^{
     sharedInstance = [self new];
-    [sharedInstance registerObservers];
   });
   
   return sharedInstance;
@@ -43,6 +42,7 @@ NSString *const kMSAISessionInfoSessionCreated = @"MSAISessionInfoSessionCreated
     _operationsQueue = dispatch_queue_create(MSAISessionOperationsQueue, DISPATCH_QUEUE_SERIAL);
     NSMutableDictionary *restoredSessionIds = [[[MSAIPersistence sharedInstance] sessionIds] mutableCopy];
     _sessionEntries = restoredSessionIds ? restoredSessionIds : [NSMutableDictionary new];
+    [self registerObservers];
   }
   return self;
 }
@@ -133,7 +133,6 @@ NSString *const kMSAISessionInfoSessionCreated = @"MSAISessionInfoSessionCreated
 
 #pragma mark - Session update
 
-//TODO unregister Obeservers?!
 - (void)registerObservers {
   NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
   
@@ -174,6 +173,14 @@ NSString *const kMSAISessionInfoSessionCreated = @"MSAISessionInfoSessionCreated
                                               [strongSelf endSession];
                                             }];
   }
+}
+
+- (void)unregisterObservers {
+  [[NSNotificationCenter defaultCenter] removeObserver:self];
+  _appDidFinishLaunchingObserver = nil;
+  _appDidEnterBackgroundObserver = nil;
+  _appWillEnterForegroundObserver = nil;
+  _appWillTerminateObserver = nil;
 }
 
 - (void)updateSessionDate {

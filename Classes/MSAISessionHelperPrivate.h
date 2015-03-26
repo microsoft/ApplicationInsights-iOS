@@ -44,6 +44,10 @@
  */
 - (void)removeSessionId:(NSString *)sessionId;
 
+/**
+ *  Keep the most recent sessionId, but all other entries from the plist
+ */
+- (void)cleanUpSessionIds;
 
 /**
  *  Turn a NSDate object into a unix time timestamp
@@ -53,5 +57,15 @@
  * @returns a string containing the date as a Unix timestamp
  */
 - (NSString *)unixTimestampFromDate:(NSDate *)date;
+
+/**
+ *  Registers MSAISessionHelper for several notifications, which influence the session state.
+ */
+- (void)registerObservers;
+
+/**
+ *  Unegisters MSAISessionHelper for several notifications, which influence the session state.
+ */
+- (void)unregisterObservers;
 
 @end
