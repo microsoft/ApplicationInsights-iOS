@@ -63,6 +63,7 @@ NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
     
     if(sessionId){
       [self updateSessionContextWithId:sessionId];
+      [MSAISessionHelper addSessionId:sessionId withDate:[NSDate date]];
     }
     [self configureNetworkStatusTracking];
     [self configureSessionTracking];
