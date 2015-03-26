@@ -70,7 +70,7 @@ static NSNotificationCenter *mockNotificationCenter = nil;
   XCTAssertTrue(self.sut.managerInitialised);
 }
 
-- (void)testMetricsManagerDisabled {
+- (void)testTelemetryManagerDisabled {
   XCTAssertFalse(self.sut.telemetryManagerDisabled);
   self.sut.telemetryManagerDisabled= YES;
   [self.sut startManager];
