@@ -53,6 +53,11 @@
  */
 - (void)registerObservers;
 
+/**
+ * Disable notifications for automatic session tracking.
+ */
+- (void)unregisterObservers;
+
 @end
 
 #endif

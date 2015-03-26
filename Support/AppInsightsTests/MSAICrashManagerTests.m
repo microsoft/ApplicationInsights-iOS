@@ -40,7 +40,7 @@
   _startManagerInitialized = NO;
   
   MSAIContext *context = [[MSAIContext alloc]initWithInstrumentationKey:@"123"];
-  MSAITelemetryContext *telemetryContext = [[MSAITelemetryContext alloc] initWithAppContext:context endpointPath:nil];
+  MSAITelemetryContext *telemetryContext = [[MSAITelemetryContext alloc] initWithAppContext:context endpointPath:nil firstSessionId:nil];
   [[MSAIEnvelopeManager sharedManager] configureWithTelemetryContext:telemetryContext];
 
 }

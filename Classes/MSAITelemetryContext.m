@@ -3,22 +3,24 @@
 #import "MSAITelemetryContextPrivate.h"
 #import "MSAITelemetryManagerPrivate.h"
 #import "MSAIHelper.h"
+#import "MSAISessionHelper.h"
+#import "MSAISessionHelperPrivate.h"
 #import "MSAIReachability.h"
 #import "MSAIReachabilityPrivate.h"
 
 NSString *const kMSAITelemetrySessionId = @"MSAITelemetrySessionId";
 NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
-NSString *const kMSAIApplicationWasLaunched = @"MSAIApplicationWasLaunched";
 
 @implementation MSAITelemetryContext
 
 #pragma mark - Initialisation
 
 - (instancetype)initWithAppContext:(MSAIContext *)appContext
-                      endpointPath:(NSString *)endpointPath{
+                      endpointPath:(NSString *)endpointPath
+                    firstSessionId:(NSString *)sessionId{
   
   if ((self = [self init])) {
-
+    
     MSAIDevice *deviceContext = [MSAIDevice new];
     deviceContext.model = appContext.deviceModel;
     deviceContext.type = appContext.deviceType;
@@ -59,8 +61,11 @@ NSString *const kMSAIApplicationWasLaunched = @"MSAIApplicationWasLaunched";
     _session = sessionContext;
     _tags = [self tags];
     
-    [self createNewSession];
+    if(sessionId){
+      [self updateSessionContextWithId:sessionId];
+    }
     [self configureNetworkStatusTracking];
+    [self configureSessionTracking];
   }
   return self;
 }
@@ -87,7 +92,7 @@ NSString *const kMSAIApplicationWasLaunched = @"MSAIApplicationWasLaunched";
 
 #pragma mark - Session
 
-- (void)updateSessionContext {
+- (void)resetIsNewFlag {
   if ([_session.isNew isEqualToString:@"true"]) {
     _session.isNew = @"false";
   }
@@ -97,13 +102,29 @@ NSString *const kMSAIApplicationWasLaunched = @"MSAIApplicationWasLaunched";
   return ![_userDefaults boolForKey:kMSAIApplicationWasLaunched];
 }
 
-- (void)createNewSession {
-  BOOL firstSession = [self isFirstSession];
-  _session.sessionId = msai_UUID();
-  _session.isNew = @"true";
-  _session.isFirst = (firstSession ? @"true" : @"false");
+- (void)updateSessionContextWithId:(NSString *)sessionId {
   
-  [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kMSAIApplicationWasLaunched];
+  if(![_session.sessionId isEqualToString:sessionId]){
+    BOOL firstSession = [self isFirstSession];
+    _session.sessionId = sessionId;
+    _session.isNew = @"true";
+    _session.isFirst = (firstSession ? @"true" : @"false");
+  }
+}
+
+- (void)configureSessionTracking{
+  NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+  __weak typeof(self) weakSelf = self;
+  [center addObserverForName:MSAISessionStartedNotification
+                      object:nil
+                       queue:nil
+                  usingBlock:^(NSNotification *notification) {
+                    typeof(self) strongSelf = weakSelf;
+                    
+                    NSDictionary *userInfo = notification.userInfo;
+                    NSString *sessionId = userInfo[kMSAISessionInfoSessionId];
+                    [strongSelf updateSessionContextWithId:sessionId];
+                  }];
 }
 
 #pragma mark - Custom getter
@@ -114,7 +135,7 @@ NSString *const kMSAIApplicationWasLaunched = @"MSAIApplicationWasLaunched";
   [contextDictionary addEntriesFromDictionary:self.tags];
   [contextDictionary addEntriesFromDictionary:[self.session serializeToDictionary]];
   [contextDictionary addEntriesFromDictionary:[self.device serializeToDictionary]];
-  [self updateSessionContext];
+  [self resetIsNewFlag];
   
   return contextDictionary;
 }

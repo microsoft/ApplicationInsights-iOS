@@ -3,16 +3,9 @@
 #import "MSAITelemetryManager.h"
 #import "MSAITelemetryManagerPrivate.h"
 
-@implementation MSAICategoryContainer
-
-+ (void)activateCategory{
-}
-
-@end
-
 @implementation UIViewController(PageViewLogging)
 
-+ (void)load {
++ (void)swizzleViewWillAppear {
   static dispatch_once_t onceToken;
   dispatch_once(&onceToken, ^{
     Class class = [self class];
@@ -40,6 +33,18 @@
 }
 
 @end
+
+@implementation MSAICategoryContainer
+
++ (void)activateCategory{
+  [UIViewController swizzleViewWillAppear];
+}
+
+@end
+
+
+
+
 
 
 

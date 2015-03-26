@@ -51,6 +51,8 @@
 #import "MSAICrashDataBinary.h"
 #import "MSAICrashDataThreadFrame.h"
 #import "MSAIHelper.h"
+#import "MSAISessionHelper.h"
+#import "MSAISessionHelperPrivate.h"
 #import "MSAIEnvelope.h"
 #import "MSAIData.h"
 #import "MSAIEnvelopeManagerPrivate.h"
@@ -236,6 +238,11 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
     NSString *marketingVersion = report.applicationInfo.applicationMarketingVersion;
     NSString *appVersion = report.applicationInfo.applicationVersion;
     envelope.appVer = marketingVersion ? [NSString stringWithFormat:@"%@ (%@)", marketingVersion, appVersion] : appVersion;
+    
+    NSString *sessionId = [MSAISessionHelper sessionIdForDate:report.systemInfo.timestamp];
+    if (envelope.tags && sessionId) {
+      envelope.tags[@"ai.session.id"] = sessionId;
+    }
   }
   
   MSAICrashData *crashData = [MSAICrashData new];
