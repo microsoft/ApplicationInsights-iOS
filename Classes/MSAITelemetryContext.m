@@ -87,7 +87,7 @@ NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
 
 #pragma mark - Session
 
-- (void)updateSessionContext {
+- (void)resetIsNewFlag {
   if ([_session.isNew isEqualToString:@"true"]) {
     _session.isNew = @"false";
   }
@@ -97,7 +97,7 @@ NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
   return ![_userDefaults boolForKey:kMSAIApplicationWasLaunched];
 }
 
-- (void)createNewSessionWithId:(NSString *)sessionId {
+- (void)updateSessionContextWithId:(NSString *)sessionId {
   BOOL firstSession = [self isFirstSession];
   _session.sessionId = sessionId;
   _session.isNew = @"true";
@@ -108,21 +108,15 @@ NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
 - (void)configureSessionTracking{
   NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
   __weak typeof(self) weakSelf = self;
-  [center addObserverForName:MSAISessionChangedNotification
+  [center addObserverForName:MSAISessionStartedNotification
                       object:nil
                        queue:nil
                   usingBlock:^(NSNotification *notification) {
                     typeof(self) strongSelf = weakSelf;
                     
                     NSDictionary *userInfo = notification.userInfo;
-                    if(userInfo[kMSAISessionInfoSessionCreated]){
-                      
-                      BOOL sessionCreated = [userInfo[kMSAISessionInfoSessionCreated] boolValue];
-                      NSString *sessionId = userInfo[kMSAISessionInfoSessionId];
-                      if(sessionCreated){
-                        [strongSelf createNewSessionWithId:sessionId];
-                      }
-                    }
+                    NSString *sessionId = userInfo[kMSAISessionInfoSessionId];
+                    [strongSelf updateSessionContextWithId:sessionId];
                   }];
 }
 
@@ -134,7 +128,7 @@ NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
   [contextDictionary addEntriesFromDictionary:self.tags];
   [contextDictionary addEntriesFromDictionary:[self.session serializeToDictionary]];
   [contextDictionary addEntriesFromDictionary:[self.device serializeToDictionary]];
-  [self updateSessionContext];
+  [self resetIsNewFlag];
   
   return contextDictionary;
 }

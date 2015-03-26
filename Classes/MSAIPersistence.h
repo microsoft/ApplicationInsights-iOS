@@ -82,7 +82,7 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
 /**
  *  Saves the given dictionary to the session Ids file.
  *
- *  @param propertyList the dictionary, which should be saved
+ *  @param sessionIds a dictionary consisting of unix timestamps and session ids
  */
 - (void)persistSessionIds:(NSDictionary *)sessionIds;
 
@@ -120,7 +120,7 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
  *  Returns the path for the next item to send. The requested path is reserved as long
  *  as leaveUpRequestedPath: gets called.
  *
- *  @see leleaveUpRequestedPath:
+ *  @see giveBackRequestedPath:
  *
  *  @return the path of the item, which should be sent next
  */
@@ -198,5 +198,9 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
 * @return a crash template, wrapped as a bundle
 */
 - (NSArray *)crashTemplateBundle;
+
+- (BOOL)crashReportLockFilePresent;
+- (void)createCrashReporterLockFile;
+- (void)deleteCrashReporterLockFile;
 
 @end

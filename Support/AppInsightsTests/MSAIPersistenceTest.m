@@ -24,12 +24,13 @@ typedef void (^MSAIPersistenceTestBlock)(BOOL);
   [super setUp];
   _sut = [MSAIPersistence sharedInstance];
   _sut.maxFileCount = 20;
-}
-
-- (void)tearDown{
-  [super tearDown];
   [self deleteAllFiles];
 }
+
+//- (void)tearDown{
+//  [super tearDown];
+//  [self deleteAllFiles];
+//}
 
 - (void)testNoBundles {
   NSString *nextPath = [_sut requestNextPath];

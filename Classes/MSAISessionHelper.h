@@ -1,10 +1,13 @@
 #import <Foundation/Foundation.h>
 
+/**
+ *  A helper class that allows to persist and retrieve session IDs attached to different timestamps.
+ */
 @interface MSAISessionHelper : NSObject
 
-FOUNDATION_EXPORT NSString *const MSAISessionChangedNotification;
+FOUNDATION_EXPORT NSString *const MSAISessionStartedNotification;
+FOUNDATION_EXPORT NSString *const MSAISessionEndedNotification;
 FOUNDATION_EXPORT NSString *const kMSAISessionInfoSessionId;
-FOUNDATION_EXPORT NSString *const kMSAISessionInfoSessionCreated;
 
 FOUNDATION_EXPORT NSString *const kMSAIApplicationWasLaunched;
 ///-----------------------------------------------------------------------------
@@ -15,7 +18,7 @@ FOUNDATION_EXPORT NSString *const kMSAIApplicationWasLaunched;
  *  Adds a new sessionId (value) for a given timestamp (key) to the session plist.
  *
  *  @param sessionId the sessionId (value)
- *  @param timestamp the timestamp, which represents the creation of the session
+ *  @param date the date, which represents the creation time of the session
  */
 + (void)addSessionId:(NSString *)sessionId withDate:(NSDate *)date;
 
@@ -44,7 +47,8 @@ FOUNDATION_EXPORT NSString *const kMSAIApplicationWasLaunched;
 + (void)removeSessionId:(NSString *)sessionId;
 
 /**
- *  Keep the most recent sessionId, but all other entries from the plist
+ *  Keep the most recent sessionId, but remove all other entries from the plist. 
+ *  This should only be called after you made sure you won't need any other session IDs anymore.
  */
 + (void)cleanUpSessionIds;
 

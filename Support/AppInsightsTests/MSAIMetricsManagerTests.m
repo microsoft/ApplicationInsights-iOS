@@ -73,7 +73,7 @@
   [self.sut unregisterObservers];
   
   [self.sut registerObservers];
-  [verifyCount(self.mockNotificationCenter, times(1)) addObserverForName:(id)anything() object:nil queue:NSOperationQueue.mainQueue usingBlock:(id)anything()];
+  [verifyCount(mockNotificationCenter, times(2)) addObserverForName:(id)anything() object:nil queue:NSOperationQueue.mainQueue usingBlock:(id)anything()];
 }
 
 @end

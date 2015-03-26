@@ -83,7 +83,7 @@
 /**
  *  Renews or even creates a new session if needed.
  */
-- (void)updateSessionContext;
+- (void)resetIsNewFlag;
 
 /**
  *  Checks if current session is the first one.
@@ -97,7 +97,7 @@
  *
  *  @param sessionId the session id of the new session
  */
-- (void)createNewSessionWithId:(NSString *)sessionId;
+- (void)updateSessionContextWithId:(NSString *)sessionId;
 
 ///-----------------------------------------------------------------------------
 /// @name Network status

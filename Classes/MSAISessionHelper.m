@@ -13,9 +13,9 @@ static NSInteger const defaultSessionExpirationTime = 20;
 static NSString *const kMSAIApplicationDidEnterBackgroundTime = @"MSAIApplicationDidEnterBackgroundTime";
 NSString *const kMSAIApplicationWasLaunched = @"MSAIApplicationWasLaunched";
 
-NSString *const MSAISessionChangedNotification = @"MSAISessionChangedNotification";
+NSString *const MSAISessionStartedNotification = @"MSAISessionStartedNotification";
+NSString *const MSAISessionEndedNotification = @"MSAISessionEndedNotification";
 NSString *const kMSAISessionInfoSessionId = @"MSAISessionInfoSessionId";
-NSString *const kMSAISessionInfoSessionCreated = @"MSAISessionInfoSessionCreated";
 
 @implementation MSAISessionHelper{
   id _appDidFinishLaunchingObserver;
@@ -195,22 +195,29 @@ NSString *const kMSAISessionInfoSessionCreated = @"MSAISessionInfoSessionCreated
     
     NSString *newSessionId = msai_UUID();
     [self addSessionId:newSessionId withDate:[NSDate date]];
-    NSDictionary *userInfo = @{kMSAISessionInfoSessionId:newSessionId, kMSAISessionInfoSessionCreated:@(YES)};
-    [self sendSessionChangedNotificationWithUserInfo:userInfo];
+    NSDictionary *userInfo = @{kMSAISessionInfoSessionId:newSessionId};
+    [self sendSessionStartedNotificationWithUserInfo:userInfo];
     [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kMSAIApplicationWasLaunched];
   }
 }
 
 - (void)endSession {
-  NSDictionary *userInfo = @{kMSAISessionInfoSessionCreated:@(YES)};
-  [self sendSessionChangedNotificationWithUserInfo:userInfo];
+  [self sendSessionStartedNotificationWithUserInfo:nil];
 }
 
-- (void)sendSessionChangedNotificationWithUserInfo:(NSDictionary *)userInfo{
+- (void)sendSessionStartedNotificationWithUserInfo:(NSDictionary *)userInfo {
   dispatch_async(dispatch_get_main_queue(), ^{
-    [[NSNotificationCenter defaultCenter] postNotificationName:MSAISessionChangedNotification
+    [[NSNotificationCenter defaultCenter] postNotificationName:MSAISessionStartedNotification
                                                         object:nil
-                                                      userInfo:userInfo];
+                                                      userInfo:nil];
+  });
+}
+
+- (void)sendSessionEndedNotification {
+  dispatch_async(dispatch_get_main_queue(), ^{
+    [[NSNotificationCenter defaultCenter] postNotificationName:MSAISessionEndedNotification
+                                                        object:nil
+                                                      userInfo:nil];
   });
 }
 

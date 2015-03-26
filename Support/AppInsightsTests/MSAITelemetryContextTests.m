@@ -51,7 +51,7 @@
 }
 
 - (void)testContextDictionaryUpdateSessionContext {
-  [_sut createNewSessionWithId:@"mySessionUUID"];
+  [_sut updateSessionContextWithId:@"mySessionUUID"];
   MSAISession *session = _sut.session;
   XCTAssertTrue([session.isNew isEqualToString:@"true"]);
   #pragma clang diagnostic push
@@ -63,7 +63,7 @@
 
 - (void)testUpdateSessionContext {
   _sut.session.isNew = @"true";
-  [_sut updateSessionContext];
+  [_sut resetIsNewFlag];
   
   XCTAssertTrue([_sut.session.isNew isEqualToString:@"false"]);
 }
@@ -93,13 +93,13 @@
   _sut.userDefaults = userDefaults;
   [userDefaults setBool:YES forKey:kMSAIApplicationWasLaunched];
 
-  [_sut createNewSessionWithId:@"hjdasq672323"];
+  [_sut updateSessionContextWithId:@"hjdasq672323"];
   XCTAssertTrue([session.isNew isEqualToString:@"true"]);
   XCTAssertTrue([session.isFirst isEqualToString:@"false"]);
   
   NSString *firstGUID = session.sessionId;
 
-  [_sut createNewSessionWithId:@"gdszdg76432"];
+  [_sut updateSessionContextWithId:@"gdszdg76432"];
   XCTAssertFalse([firstGUID isEqualToString:session.sessionId]);
 }
 
