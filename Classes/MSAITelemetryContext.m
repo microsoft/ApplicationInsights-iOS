@@ -108,20 +108,14 @@ NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
 - (void)configureSessionTracking{
   NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
   __weak typeof(self) weakSelf = self;
-  [center addObserverForName:MSAISessionChangedNotification
+  [center addObserverForName:MSAISessionStartedNotification
                       object:nil
                        queue:nil
                   usingBlock:^(NSNotification *notification) {
                     typeof(self) strongSelf = weakSelf;
                     
                     NSDictionary *userInfo = notification.userInfo;
-                    if(userInfo[kMSAISessionInfoSessionCreated]){
-                      
-                      BOOL sessionCreated = [userInfo[kMSAISessionInfoSessionCreated] boolValue];
-                      NSString *sessionId = userInfo[kMSAISessionInfoSessionId];
-                      if(sessionCreated){
-                      }
-                    }
+                    NSString *sessionId = userInfo[kMSAISessionInfoSessionId];
                     [strongSelf updateSessionContextWithId:sessionId];
                   }];
 }

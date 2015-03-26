@@ -60,20 +60,23 @@ static char *const MSAIMetricEventQueue = "com.microsoft.appInsights.metricEvent
 - (void)registerObservers {
   NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
   __weak typeof(self) weakSelf = self;
-  [center addObserverForName:MSAISessionChangedNotification
+  
+  [center addObserverForName:MSAISessionStartedNotification
                       object:nil
                        queue:NSOperationQueue.mainQueue
                   usingBlock:^(NSNotification *notification) {
                     typeof(self) strongSelf = weakSelf;
                     
-                    NSDictionary *userInfo = notification.userInfo;
-                    if(userInfo[kMSAISessionInfoSessionCreated]){
-                      if([userInfo[kMSAISessionInfoSessionCreated] boolValue]){
-                        [strongSelf startSession];
-                      }else{
-                        [strongSelf endSession];
-                      }
-                    }
+                    [strongSelf startSession];
+                  }];
+  
+  [center addObserverForName:MSAISessionEndedNotification
+                      object:nil
+                       queue:NSOperationQueue.mainQueue
+                  usingBlock:^(NSNotification *notification) {
+                    typeof(self) strongSelf = weakSelf;
+                    
+                    [strongSelf endSession];
                   }];
 }
 
@@ -176,7 +179,7 @@ static char *const MSAIMetricEventQueue = "com.microsoft.appInsights.metricEvent
 
 - (void)trackException:(NSException *)exception{
   pthread_t thread = pthread_self();
-
+  
   dispatch_async(_metricEventQueue, ^{
     PLCrashReporterSignalHandlerType signalHandlerType = PLCrashReporterSignalHandlerTypeBSD;
     PLCrashReporterSymbolicationStrategy symbolicationStrategy = PLCrashReporterSymbolicationStrategyAll;

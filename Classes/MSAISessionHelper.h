@@ -2,9 +2,9 @@
 
 @interface MSAISessionHelper : NSObject
 
-FOUNDATION_EXPORT NSString *const MSAISessionChangedNotification;
+FOUNDATION_EXPORT NSString *const MSAISessionStartedNotification;
+FOUNDATION_EXPORT NSString *const MSAISessionEndedNotification;
 FOUNDATION_EXPORT NSString *const kMSAISessionInfoSessionId;
-FOUNDATION_EXPORT NSString *const kMSAISessionInfoSessionCreated;
 
 FOUNDATION_EXPORT NSString *const kMSAIApplicationWasLaunched;
 ///-----------------------------------------------------------------------------
