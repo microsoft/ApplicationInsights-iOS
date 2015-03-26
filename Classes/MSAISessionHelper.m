@@ -178,6 +178,16 @@ NSString *const kMSAISessionInfoSessionId = @"MSAISessionInfoSessionId";
   [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
++ (NSString *)createFirstSession{
+  NSString *newSessionId = msai_UUID();
+  UIAlertView *alert = [[UIAlertView alloc] initWithTitle:newSessionId
+                                                  message:@"Dee dee doo doo."
+                                                 delegate:self
+                                        cancelButtonTitle:@"OK"
+                                        otherButtonTitles:nil];
+  [alert show];
+  return newSessionId;
+}
 
 + (void)startNewSessionIfNeeded {
   [[MSAISessionHelper sharedInstance] startNewSessionIfNeeded];
@@ -193,7 +203,7 @@ NSString *const kMSAISessionInfoSessionId = @"MSAISessionInfoSessionId";
 }
 
 + (void)startNewSession {
-  [[MSAISessionHelper sharedInstance] startNewSession]; 
+  [[self sharedInstance] startNewSession];
 }
 
 - (void)startNewSession {

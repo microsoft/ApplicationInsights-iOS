@@ -16,7 +16,8 @@ NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
 #pragma mark - Initialisation
 
 - (instancetype)initWithAppContext:(MSAIContext *)appContext
-                      endpointPath:(NSString *)endpointPath{
+                      endpointPath:(NSString *)endpointPath
+                    firstSessionId:(NSString *)sessionId{
   
   if ((self = [self init])) {
     
@@ -60,6 +61,9 @@ NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
     _session = sessionContext;
     _tags = [self tags];
     
+    if(sessionId){
+      [self updateSessionContextWithId:sessionId];
+    }
     [self configureNetworkStatusTracking];
     [self configureSessionTracking];
   }

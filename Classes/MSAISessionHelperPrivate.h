@@ -35,6 +35,13 @@ FOUNDATION_EXPORT NSString *const kMSAIApplicationWasLaunched;
 ///-----------------------------------------------------------------------------
 
 /**
+ *  Returns the first session id.
+ *
+ *  @return the first session id
+ */
++ (NSString *)createFirstSession;
+
+/**
  *  Start a new session.
  */
 + (void)startNewSession;

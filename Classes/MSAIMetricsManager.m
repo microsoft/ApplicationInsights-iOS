@@ -72,7 +72,6 @@ static char *const MSAIMetricEventQueue = "com.microsoft.appInsights.metricEvent
                          queue:NSOperationQueue.mainQueue
                     usingBlock:^(NSNotification *notification) {
                       typeof(self) strongSelf = weakSelf;
-
                       [strongSelf trackSessionStart];
                     }];
   }

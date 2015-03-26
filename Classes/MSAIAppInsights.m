@@ -110,16 +110,18 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
   MSAILog(@"INFO: Starting MSAIManager");
   _startManagerIsInvoked = YES;
   
+  // Create new session
+  NSString *sessionId = [MSAISessionHelper createFirstSession];
+  
   // Configure Http-client and send persisted data
   MSAITelemetryContext *telemetryContext = [[MSAITelemetryContext alloc] initWithAppContext:_appContext
-                                                                               endpointPath:kMSAITelemetryPath];
+                                                                               endpointPath:kMSAITelemetryPath
+                                                                             firstSessionId:sessionId];
   [[MSAIEnvelopeManager sharedManager] configureWithTelemetryContext:telemetryContext];
+  
   [[MSAISender sharedSender] configureWithAppClient:[self appClient]
                                        endpointPath:kMSAITelemetryPath];
   [[MSAISender sharedSender] sendSavedData];
-  
-  // Create new session
-  [MSAISessionHelper startNewSession];
   
 #if MSAI_FEATURE_CRASH_REPORTER
   if (![self isCrashManagerDisabled]) {
@@ -189,7 +191,6 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
     
 #if MSAI_FEATURE_METRICS
     MSAILog(@"INFO: Setup MetricsManager");
-    [MSAICategoryContainer activateCategory];
 #endif /* MSAI_FEATURE_METRICS */
     
     if (![self isAppStoreEnvironment]) {
