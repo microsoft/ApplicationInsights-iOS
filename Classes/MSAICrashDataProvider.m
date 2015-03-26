@@ -52,6 +52,7 @@
 #import "MSAICrashDataThreadFrame.h"
 #import "MSAIHelper.h"
 #import "MSAISessionHelper.h"
+#import "MSAISessionHelperPrivate.h"
 #import "MSAIEnvelope.h"
 #import "MSAIData.h"
 #import "MSAIEnvelopeManagerPrivate.h"

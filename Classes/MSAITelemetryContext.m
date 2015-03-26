@@ -4,6 +4,7 @@
 #import "MSAIMetricsManagerPrivate.h"
 #import "MSAIHelper.h"
 #import "MSAISessionHelper.h"
+#import "MSAISessionHelperPrivate.h"
 #import "MSAIReachability.h"
 #import "MSAIReachabilityPrivate.h"
 

@@ -26,6 +26,7 @@
 #import "MSAIEnvelopeManager.h"
 #import "MSAIEnvelopeManagerPrivate.h"
 #import "MSAISessionHelper.h"
+#import "MSAISessionHelperPrivate.h"
 
 static char *const MSAIMetricEventQueue = "com.microsoft.appInsights.metricEventQueue";
 

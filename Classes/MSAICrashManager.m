@@ -12,6 +12,7 @@
 #import "MSAIChannelPrivate.h"
 #import "MSAIPersistence.h"
 #import "MSAISessionHelper.h"
+#import "MSAISessionHelperPrivate.h"
 #import "MSAIEnvelope.h"
 #import "MSAIEnvelopeManager.h"
 #import "MSAIEnvelopeManagerPrivate.h"
