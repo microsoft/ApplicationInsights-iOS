@@ -117,7 +117,7 @@
 
 - (void)testRegisterObserversOnInit {
 
-  [verifyCount(self.mockNotificationCenter, times(4)) addObserverForName:(id)anything() object:nil queue:NSOperationQueue.mainQueue usingBlock:(id)anything()];
+  [verifyCount(self.mockNotificationCenter, times(3)) addObserverForName:(id)anything() object:nil queue:NSOperationQueue.mainQueue usingBlock:(id)anything()];
 }
 
 #pragma mark Helper
