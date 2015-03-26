@@ -84,7 +84,7 @@
 		1E754E5E1621FBB70070AB92 /* MSAICrashManagerDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E754E581621FBB70070AB92 /* MSAICrashManagerDelegate.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1E754E601621FBB70070AB92 /* MSAICrashDataProvider.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E754E5A1621FBB70070AB92 /* MSAICrashDataProvider.h */; };
 		1E754E611621FBB70070AB92 /* MSAICrashDataProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E754E5B1621FBB70070AB92 /* MSAICrashDataProvider.m */; };
-		1E84DB3417E099BA00AC83FD /* AppInsightsFeatureConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E84DB3317E0977C00AC83FD /* AppInsightsFeatureConfig.h */; };
+		1E84DB3417E099BA00AC83FD /* AppInsightsFeatureConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E84DB3317E0977C00AC83FD /* AppInsightsFeatureConfig.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1E90FD7318EDB86400CF0417 /* MSAICrashDetails.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E90FD7118EDB86400CF0417 /* MSAICrashDetails.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1E90FD7418EDB86400CF0417 /* MSAICrashDetails.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E90FD7218EDB86400CF0417 /* MSAICrashDetails.m */; };
 		1EA1170016F4D32C001C015C /* libAppInsights.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E5954F215B6F24A00A03429 /* libAppInsights.a */; };
@@ -199,6 +199,7 @@
 		809E9E5A1AC455D9008A1AB5 /* MSAISessionState.h in Headers */ = {isa = PBXBuildFile; fileRef = 809E9E571AC455D9008A1AB5 /* MSAISessionState.h */; };
 		809E9E5B1AC455D9008A1AB5 /* MSAISessionStateData.h in Headers */ = {isa = PBXBuildFile; fileRef = 809E9E581AC455D9008A1AB5 /* MSAISessionStateData.h */; };
 		809E9E5C1AC455D9008A1AB5 /* MSAISessionStateData.m in Sources */ = {isa = PBXBuildFile; fileRef = 809E9E591AC455D9008A1AB5 /* MSAISessionStateData.m */; };
+		809E9E991AC4AA68008A1AB5 /* MSAIMetricsManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 809E9E981AC4AA68008A1AB5 /* MSAIMetricsManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		80F334B01A9C8A430098026F /* MSAIManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 80F334AF1A9C8A430098026F /* MSAIManagerTests.m */; };
 		80F334B21A9C93290098026F /* MSAIAppInsightsPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 80F334B11A9C93290098026F /* MSAIAppInsightsPrivate.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		B25912331A8D129C00C88800 /* MSAIPersistenceTest.m in Sources */ = {isa = PBXBuildFile; fileRef = B25912321A8D129C00C88800 /* MSAIPersistenceTest.m */; };
@@ -398,6 +399,7 @@
 		809E9E571AC455D9008A1AB5 /* MSAISessionState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAISessionState.h; sourceTree = "<group>"; };
 		809E9E581AC455D9008A1AB5 /* MSAISessionStateData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAISessionStateData.h; sourceTree = "<group>"; };
 		809E9E591AC455D9008A1AB5 /* MSAISessionStateData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAISessionStateData.m; sourceTree = "<group>"; };
+		809E9E981AC4AA68008A1AB5 /* MSAIMetricsManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAIMetricsManager.h; sourceTree = "<group>"; };
 		80F334AF1A9C8A430098026F /* MSAIManagerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIManagerTests.m; path = AppInsightsTests/MSAIManagerTests.m; sourceTree = SOURCE_ROOT; };
 		80F334B11A9C93290098026F /* MSAIAppInsightsPrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAIAppInsightsPrivate.h; sourceTree = "<group>"; };
 		B25912321A8D129C00C88800 /* MSAIPersistenceTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIPersistenceTest.m; path = AppInsightsTests/MSAIPersistenceTest.m; sourceTree = SOURCE_ROOT; };
@@ -663,6 +665,7 @@
 			isa = PBXGroup;
 			children = (
 				1EB2E4C418FD4CEA008BB1CF /* MSAITelemetryManager.h */,
+				809E9E981AC4AA68008A1AB5 /* MSAIMetricsManager.h */,
 				1EB2E4C518FD4CEA008BB1CF /* MSAITelemetryManager.m */,
 				1EB2E4C818FD4E90008BB1CF /* MSAITelemetryManagerPrivate.h */,
 			);
@@ -836,6 +839,7 @@
 				807CFDCF1A712974004EA1B6 /* MSAISeverityLevel.h in Headers */,
 				807CFDBB1A712974004EA1B6 /* MSAIInternal.h in Headers */,
 				807CFDAC1A712974004EA1B6 /* MSAIDependencyKind.h in Headers */,
+				809E9E991AC4AA68008A1AB5 /* MSAIMetricsManager.h in Headers */,
 				809E9E5A1AC455D9008A1AB5 /* MSAISessionState.h in Headers */,
 				1E754E601621FBB70070AB92 /* MSAICrashDataProvider.h in Headers */,
 				807CFDC11A712974004EA1B6 /* MSAIMetricData.h in Headers */,
