@@ -147,7 +147,7 @@ The SDK runs on devices with iOS 6.0 or higher.
 	MSAITelemetryManager.trackEventWithName(name:"Hello World event!", 
 									  properties:@{"Test property 1":"Some value",
 												  "Test property 2":"Some other value"},
-								    mesurements:@{"Test measurement 1":@(4.8),
+								     mesurements:@{"Test measurement 1":@(4.8),
 												  "Test measurement 2":@(15.16),
  											      "Test measurement 3":@(23.42)});
 
@@ -242,11 +242,15 @@ Instead of manually adding the missing frameworks, you can also use our bundled 
 
 [CocoaPods](http://cocoapods.org) is a dependency manager for Objective-C, which automates and simplifies the process of using 3rd-party libraries like ApplicationInsights in your projects. To learn how to setup cocoapods for your project, visit the [official cocoapods website](http://cocoapods.org/).
 
+**[NOTE]**
+When adding Application Insights to your podfile **without** specifying the version, `pod install` will throw an error because using a pre-release version of a pod has to be specified **explicitly**.
+As soon as Application Insights 1.0 is available, the version doesn't have to be specified in your podfile anymore. 
+
 #### Podfile
 
 ```ruby
-platform :ios, '8.0'
-pod "ApplicationInsights"
+platform :ios, '8.0' 
+pod "ApplicationInsights" , '1.0-alpha.3'
 ```
 
 <a id="contact"></a>
