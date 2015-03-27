@@ -88,8 +88,6 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
       if([self.plCrashReporter hasPendingCrashReport]) {
         _didCrashInLastSession = YES;
         [self readCrashReportAndStartProcessing];
-      } else {
-        [MSAISessionHelper cleanUpSessionIds];
       }
 
       // The actual signal and mach handlers are only registered when invoking `enableCrashReporterAndReturnError`
@@ -474,6 +472,7 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
   // mark the end of the routine
   [[MSAIPersistence sharedInstance] deleteCrashReporterLockFile];//TODO only do this when persisting was successful?
   [self.plCrashReporter purgePendingCrashReport]; //TODO only do this when persisting was successful?
+  [MSAISessionHelper cleanUpSessions];
 }
 
 - (void)checkForOtherExceptionHandlersAfterSetup {
