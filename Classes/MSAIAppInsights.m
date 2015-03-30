@@ -76,11 +76,22 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 #pragma mark - Setup & Start
 
 - (void)setup {
-  NSString *instrumentationKey = [[NSBundle mainBundle] objectForInfoDictionaryKey:kMSAIInstrumentationKey];
-  [self setupWithInstrumentationKey:instrumentationKey];
+  [self setupWithInstrumentationKey:nil delegate:nil];
 }
 
 - (void)setupWithInstrumentationKey:(NSString *)instrumentationKey{
+  [self setupWithInstrumentationKey:instrumentationKey delegate:nil];
+}
+
+- (void)setupWithDelegate:(id<MSAIAppInsightsDelegate>) delegate{
+  [self setupWithInstrumentationKey:nil delegate:delegate];
+}
+
+- (void)setupWithInstrumentationKey:(NSString *)instrumentationKey delegate:(id<MSAIAppInsightsDelegate>) delegate{
+  if(!instrumentationKey){
+    instrumentationKey = [[NSBundle mainBundle] objectForInfoDictionaryKey:kMSAIInstrumentationKey];
+  }
+  self.delegate = delegate;
   _appContext = [[MSAIContext alloc] initWithInstrumentationKey:instrumentationKey];
   [self initializeModules];
 }
@@ -91,6 +102,14 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 
 + (void)setupWithInstrumentationKey:(NSString *)instrumentationKey{
   [[self sharedInstance] setupWithInstrumentationKey:instrumentationKey];
+}
+
++ (void)setupWithDelegate:(id<MSAIAppInsightsDelegate>) delegate{
+  [[self sharedInstance] setupWithDelegate:delegate];
+}
+
++ (void)setupWithInstrumentationKey:(NSString *)instrumentationKey delegate:(id<MSAIAppInsightsDelegate>) delegate{
+  [[self sharedInstance] setupWithInstrumentationKey:instrumentationKey delegate:delegate];
 }
 
 - (void)start {
@@ -120,13 +139,14 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
   [[MSAIEnvelopeManager sharedManager] configureWithTelemetryContext:telemetryContext];
   
   [[MSAISender sharedSender] configureWithAppClient:[self appClient]
-                                       endpointPath:kMSAITelemetryPath];
+                                       endpointPath:kMSAITelemetryPath delegate:self.delegate];
   [[MSAISender sharedSender] sendSavedData];
   
 #if MSAI_FEATURE_CRASH_REPORTER
   if (![self isCrashManagerDisabled]) {
     MSAILog(@"INFO: Starting MSAICrashManager");
     [MSAICrashManager sharedManager].isCrashManagerDisabled = self.isCrashManagerDisabled;
+    [MSAICrashManager sharedManager].delegate = self.delegate;
     [[MSAICrashManager sharedManager] startManager];
   }
 #endif /* MSAI_FEATURE_CRASH_REPORTER */
@@ -257,6 +277,10 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 
 + (void)setServerURL:(NSString *)serverURL {
   [[self sharedInstance] setServerURL:serverURL];
+}
+
++ (void)setDelegate:(id<MSAIAppInsightsDelegate>) delegate{
+  self.delegate = delegate;
 }
 
 #pragma mark - Testing integration
