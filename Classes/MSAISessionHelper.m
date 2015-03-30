@@ -1,7 +1,7 @@
 #import "AppInsightsPrivate.h"
 #import "MSAISessionHelper.h"
 #import "MSAISessionHelperPrivate.h"
-#import "MSAIPersistence.h"
+#import "MSAIPersistencePrivate.h"
 
 #import "MSAIHelper.h"
 

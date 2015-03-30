@@ -10,7 +10,7 @@
 #import "MSAICrashData.h"
 #import "MSAIChannel.h"
 #import "MSAIChannelPrivate.h"
-#import "MSAIPersistence.h"
+#import "MSAIPersistencePrivate.h"
 #import "MSAISessionHelper.h"
 #import "MSAISessionHelperPrivate.h"
 #import "MSAIEnvelope.h"

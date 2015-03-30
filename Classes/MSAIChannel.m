@@ -10,7 +10,7 @@
 #import "MSAISender.h"
 #import "MSAISenderPrivate.h"
 #import "MSAIHelper.h"
-#import "MSAIPersistence.h"
+#import "MSAIPersistencePrivate.h"
 
 #ifdef DEBUG
 static NSInteger const defaultMaxBatchCount = 50;
