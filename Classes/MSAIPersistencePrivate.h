@@ -2,6 +2,11 @@
 
 @interface MSAIPersistence ()
 
+extern NSString *const kHighPrioString;
+extern NSString *const kRegularPrioString;
+extern NSString *const kCrashTemplateString;
+extern NSString *const kSessionIdsString;
+
 /**
  * Notification that will be send on the main thread to notifiy observers of a successfully saved bundle.
  * This is typically used to trigger sending to the server.

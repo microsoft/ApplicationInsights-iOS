@@ -171,6 +171,27 @@ typedef void (^MSAIPersistenceTestBlock)(BOOL);
   XCTAssertEqual([self fileCountForType:MSAIPersistenceTypeCrashTemplate], 1);
 }
 
+- (void)testPersistenceTypeForPathWorks {
+  
+  NSString *path = kHighPrioString;
+  XCTAssertEqual([_sut persistenceTypeForPath:path], MSAIPersistenceTypeHighPriority);
+  
+  path = kRegularPrioString;
+  XCTAssertEqual([_sut persistenceTypeForPath:path], MSAIPersistenceTypeRegular);
+  
+  path = kSessionIdsString;
+  XCTAssertEqual([_sut persistenceTypeForPath:path], MSAIPersistenceTypeSessionIds);
+  
+  path = kCrashTemplateString;
+  XCTAssertEqual([_sut persistenceTypeForPath:path], MSAIPersistenceTypeCrashTemplate);
+  
+  path = nil;
+  XCTAssertEqual([_sut persistenceTypeForPath:path], MSAIPersistenceTypeNone);
+  
+  path = @"path/to/nowhere";
+  XCTAssertEqual([_sut persistenceTypeForPath:path], MSAIPersistenceTypeNone);
+}
+
 #pragma mark - Helper
 
 -(BOOL)createFileForDict:(NSDictionary *)dict withType:(MSAIPersistenceType)type{
