@@ -81,7 +81,6 @@
 		1E5A459516F0DFC200B55C04 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E400561D148D79B500EB22B9 /* Foundation.framework */; };
 		1E754E5C1621FBB70070AB92 /* MSAICrashManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E754E561621FBB70070AB92 /* MSAICrashManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1E754E5D1621FBB70070AB92 /* MSAICrashManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E754E571621FBB70070AB92 /* MSAICrashManager.m */; };
-		1E754E5E1621FBB70070AB92 /* MSAICrashManagerDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E754E581621FBB70070AB92 /* MSAICrashManagerDelegate.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1E754E601621FBB70070AB92 /* MSAICrashDataProvider.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E754E5A1621FBB70070AB92 /* MSAICrashDataProvider.h */; };
 		1E754E611621FBB70070AB92 /* MSAICrashDataProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E754E5B1621FBB70070AB92 /* MSAICrashDataProvider.m */; };
 		1E84DB3417E099BA00AC83FD /* AppInsightsFeatureConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E84DB3317E0977C00AC83FD /* AppInsightsFeatureConfig.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -283,7 +282,6 @@
 		1E754DC61621BC170070AB92 /* AppInsights.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = AppInsights.xcconfig; sourceTree = "<group>"; };
 		1E754E561621FBB70070AB92 /* MSAICrashManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAICrashManager.h; sourceTree = "<group>"; };
 		1E754E571621FBB70070AB92 /* MSAICrashManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAICrashManager.m; sourceTree = "<group>"; };
-		1E754E581621FBB70070AB92 /* MSAICrashManagerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAICrashManagerDelegate.h; sourceTree = "<group>"; };
 		1E754E5A1621FBB70070AB92 /* MSAICrashDataProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAICrashDataProvider.h; sourceTree = "<group>"; };
 		1E754E5B1621FBB70070AB92 /* MSAICrashDataProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAICrashDataProvider.m; sourceTree = "<group>"; };
 		1E84DB3317E0977C00AC83FD /* AppInsightsFeatureConfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppInsightsFeatureConfig.h; sourceTree = "<group>"; };
@@ -641,7 +639,6 @@
 				1ECA8F4B192B5BD8006B9416 /* MSAICrashDetailsPrivate.h */,
 				1E754E561621FBB70070AB92 /* MSAICrashManager.h */,
 				1E754E571621FBB70070AB92 /* MSAICrashManager.m */,
-				1E754E581621FBB70070AB92 /* MSAICrashManagerDelegate.h */,
 				1EFF03D717F20F8300A5F13C /* MSAICrashManagerPrivate.h */,
 				1ECA8F4F192B6954006B9416 /* MSAICrashMetaData.h */,
 				1ECA8F50192B6954006B9416 /* MSAICrashMetaData.m */,
@@ -799,7 +796,6 @@
 				803871C51A94C26500BF295F /* MSAITelemetryContextPrivate.h in Headers */,
 				803871C61A94C26500BF295F /* MSAIEnvelopeManagerPrivate.h in Headers */,
 				803871C71A94C26500BF295F /* MSAISenderPrivate.h in Headers */,
-				1E754E5E1621FBB70070AB92 /* MSAICrashManagerDelegate.h in Headers */,
 				1BBBCF361A6594AE00253031 /* MSAITelemetryContext.h in Headers */,
 				807CFDC31A712974004EA1B6 /* MSAIOperation.h in Headers */,
 				809E9E5B1AC455D9008A1AB5 /* MSAISessionStateData.h in Headers */,
