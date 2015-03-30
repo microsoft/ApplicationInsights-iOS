@@ -59,6 +59,7 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
       
       // Enqueue item
       [strongSelf->_dataItemQueue addObject:dictionary];
+      msai_appendDictionaryToSafeJsonString(dictionary, &(_safeJsonString));
       
       if([strongSelf->_dataItemQueue count] >= strongSelf.senderBatchSize) {
         
@@ -71,6 +72,32 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
       }
     });
   }
+}
+
+void msai_appendDictionaryToSafeJsonString(NSDictionary *dictionary, char **string) {
+  if (*string == NULL || strlen(*string) == 0) {
+    msai_resetSafeJsonString(string);
+  }
+  
+  NSError *error;
+  NSData *json_data = [NSJSONSerialization dataWithJSONObject:dictionary options:0 error:&error];
+  if (error) {
+    MSAILog(@"JSONSerialization error: %@", error.description);
+    return;
+  }
+  NSString *json_nsstring = [[NSString alloc] initWithData:json_data encoding:NSUTF8StringEncoding];
+  char const *json_char = [json_nsstring UTF8String];
+  char *new_string = calloc(1, (strlen(*string)+strlen(json_char))+2);
+  if (new_string != NULL) {
+    strcat(new_string, *string);
+    strcat(new_string, json_char);
+    strcat(new_string, ",");
+  }
+  *string = new_string;
+}
+
+void msai_resetSafeJsonString(char **string) {
+  *string = "(";
 }
 
 - (void)processDictionary:(MSAIOrderedDictionary *)dictionary withCompletionBlock: (void (^)(BOOL success)) completionBlock{
@@ -94,6 +121,7 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
   NSArray *bundle = [NSArray arrayWithArray:_dataItemQueue];
   [[MSAIPersistence sharedInstance] persistBundle:bundle ofType:MSAIPersistenceTypeRegular withCompletionBlock:nil];
   [_dataItemQueue removeAllObjects];
+  msai_resetSafeJsonString(&(_safeJsonString));
 }
 
 - (BOOL)isQueueBusy{
