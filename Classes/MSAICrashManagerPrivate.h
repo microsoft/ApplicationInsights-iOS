@@ -15,14 +15,14 @@
 ///-----------------------------------------------------------------------------
 
 /**
-Sets the optional `MSAICrashManagerDelegate` delegate.
+Sets the optional `MSAIAppInsightsDelegate` delegate.
 
-The delegate is automatically set by using `[MSAIManager setDelegate:]`. You
+The delegate is automatically set by using `[MSAIAppInsights setDelegate:]`. You
 should not need to set this delegate individually.
 
-@see `[MSAIManager setDelegate:]`
+@see `[MSAIAppInsights setDelegate:]`
 */
-@property (nonatomic, weak) id delegate; //TODO Will be removed eventually
+@property (nonatomic, weak) id delegate;
 
 /*
 Optional callbacks that will be called when PLCrashReporter finds a crash. Hopefully users know what they do if they use

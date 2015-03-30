@@ -126,7 +126,7 @@
   // which would require us to run without a debugger anyway and which would also require a redesign
   // to make this better testable with unit tests
   
-  id delegateMock = mockProtocol(@protocol(MSAICrashManagerDelegate));
+  id delegateMock = mockProtocol(@protocol(MSAIAppInsightsDelegate));
   [MSAICrashManager sharedManager].delegate = delegateMock;
 
   [self startManager];

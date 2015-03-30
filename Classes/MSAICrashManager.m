@@ -135,7 +135,7 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
 
       if(self.delegate &&
           [self.delegate respondsToSelector:@selector(considerAppNotTerminatedCleanlyReportForCrashManager)]) {
-        //considerReport = [self.delegate considerAppNotTerminatedCleanlyReportForCrashManager];
+        considerReport = [self.delegate considerAppNotTerminatedCleanlyReportForCrashManager];
       }
 
       if(considerReport) {
