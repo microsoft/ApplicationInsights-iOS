@@ -302,6 +302,8 @@ NSUInteger const defaultFileCount = 50;
       subfolderPath = kSessionIdsString;
       break;
     }
+    default:
+      return nil;
   }
   NSString *path = [documentFolder stringByAppendingPathComponent:subfolderPath];
   
@@ -388,6 +390,23 @@ NSUInteger const defaultFileCount = 50;
   NSError *error = NULL;
   if([[NSFileManager defaultManager] fileExistsAtPath:analyzerInProgressFile]) {
     [[NSFileManager defaultManager] removeItemAtPath:analyzerInProgressFile error:&error];
+  }
+}
+
+#pragma mark - Getting the MSAIPersistenceType
+
+- (MSAIPersistenceType)persistenceTypeForPath:(NSString *)path{
+  
+  if([path containsString:kHighPrioString]){
+    return MSAIPersistenceTypeHighPriority;
+  }else if([path containsString:kRegularPrioString]){
+    return MSAIPersistenceTypeRegular;
+  }else if([path containsString:kSessionIdsString]){
+    return MSAIPersistenceTypeSessionIds;
+  }else if([path containsString:kCrashTemplateString]){
+    return MSAIPersistenceTypeCrashTemplate;
+  }else{
+    return MSAIPersistenceTypeNone;
   }
 }
 
