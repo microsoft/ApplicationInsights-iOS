@@ -43,12 +43,13 @@
 
 - (void)testConfiguredPropertiesNotNil {
   NSString *testEndpoint = @"test/endpoint";
-  [_sut configureWithAppClient:_appClient endpointPath:testEndpoint];
+  [_sut configureWithAppClient:_appClient endpointPath:testEndpoint delegate:self];
   
   assertThat([_sut endpointPath], notNilValue());
   assertThat([_sut endpointPath], equalTo(testEndpoint));
   assertThat([_sut appClient], notNilValue());
   assertThat([_sut appClient], equalTo(_appClient));
+  assertThat([_sut delegate], equalTo(self));
 }
 
 - (void)testSingletonReturnsInstanceTwice {
