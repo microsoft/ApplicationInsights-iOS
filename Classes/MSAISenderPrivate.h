@@ -13,6 +13,11 @@
 @property(nonatomic, strong)MSAIAppClient *appClient;
 
 /**
+ *  Delegate that should be informed if sending was successful or failed.
+ */
+@property (nonatomic, weak) id delegate;
+
+/**
  *  The endpoint url of the telemetry server.
  */
 @property (nonatomic, strong)NSString *endpointPath;
@@ -41,6 +46,15 @@
  *  @param endpointPath the endpoint url of the telemetry server
  */
 - (void)configureWithAppClient:(MSAIAppClient *)appClient endpointPath:(NSString *)endpointPath;
+
+/**
+ *  Configures the sender instance.
+ *
+ *  @param appClient    the app client used for sending the data
+ *  @param endpointPath the endpoint url of the telemetry server
+ *  @param delegate delegate that should be informed if sending was successful or failed
+ */
+- (void)configureWithAppClient:(MSAIAppClient *)appClient endpointPath:(NSString *)endpointPath delegate:(id) delegate;
 
 ///-----------------------------------------------------------------------------
 /// @name Sending data

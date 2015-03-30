@@ -2,6 +2,7 @@
 #import "MSAIAppClient.h"
 #import "MSAISenderPrivate.h"
 #import "MSAIPersistence.h"
+#import "MSAIPersistencePrivate.h"
 #import "MSAIEnvelope.h"
 #import "AppInsights.h"
 #import "AppInsightsPrivate.h"
@@ -36,9 +37,14 @@ static NSInteger const statusCodeBadRequest = 400;
 #pragma mark - Network status
 
 - (void)configureWithAppClient:(MSAIAppClient *)appClient endpointPath:(NSString *)endpointPath {
+  [self configureWithAppClient:appClient endpointPath:endpointPath delegate:nil];
+}
+
+- (void)configureWithAppClient:(MSAIAppClient *)appClient endpointPath:(NSString *)endpointPath delegate:(id)delegate {
   self.endpointPath = endpointPath;
   self.appClient = appClient;
   self.maxRequestCount = defaultRequestLimit;
+  self.delegate = delegate;
   [self registerObservers];
 }
 
