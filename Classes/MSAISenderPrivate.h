@@ -61,6 +61,11 @@
 ///-----------------------------------------------------------------------------
 
 /**
+ *  Triggers sending the saved data. Does nothing if nothing has been persisted, yet. This method should be called by MSAITelemetryMnager on app start.
+ */
+- (void)sendSavedData;
+
+/**
  *  Creates a HTTP operation and puts it to the queue.
  *
  *  @param request a request for sending a data object to the telemetry server
