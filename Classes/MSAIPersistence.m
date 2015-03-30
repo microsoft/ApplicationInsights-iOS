@@ -171,7 +171,7 @@ NSUInteger const defaultFileCount = 50;
 - (NSArray *)bundleAtPath:(NSString *)path withPersistenceType:(MSAIPersistenceType)persistenceType{
   NSArray *bundle = nil;
   
-  if(path ||[path rangeOfString:kFileBaseString].location != NSNotFound) {
+  if(path && [path rangeOfString:kFileBaseString].location != NSNotFound) {
     if(persistenceType == MSAIPersistenceTypeCrashTemplate){
       bundle = [NSKeyedUnarchiver unarchiveObjectWithFile:path];
     }else{
