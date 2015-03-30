@@ -9,26 +9,7 @@
 
 @optional
 
-///-----------------------------------------------------------------------------
-/// @name Networking
-///-----------------------------------------------------------------------------
-
-//Reason for this: http://support.hockeyapp.net/kb/client-integration-ios-mac-os-x/how-to-handle-crashes-during-startup-on-ios
-
-/** Invoked right before sending crash reports will start
- */
-- (void)appInsightsWillSendCrashDictionary:(NSDictionary *)crashDictionary;
-
-/** Invoked after sending crash reports failed
- 
- @param error The error returned from the NSURLConnection call or `kMSAICrashErrorDomain`
- with reason of type `MSAICrashErrorReason`.
- */
-- (void)appInsightsDidFailWithError:(NSError *)error;
-
-/** Invoked after sending crash reports succeeded
- */
-- (void)appInsightsDidFinishSendingCrashDictionary:(NSDictionary *)crashDictionary;
+#if MSAI_FEATURE_CRASH_REPORTER
 
 ///-----------------------------------------------------------------------------
 /// @name Experimental
@@ -51,5 +32,30 @@
 - (BOOL)considerAppNotTerminatedCleanlyReportForCrashManager;
 //not implemented as property as users want to implement logic
 
+///-----------------------------------------------------------------------------
+/// @name Sending crash data
+///-----------------------------------------------------------------------------
+
+//Reason for this: http://support.hockeyapp.net/kb/client-integration-ios-mac-os-x/how-to-handle-crashes-during-startup-on-ios
+
+/** Invoked right before sending crash reports will start
+ */
+- (void)appInsightsWillSendCrash;
+
+/** Invoked after sending crash reports succeeded
+ */
+- (void)appInsightsDidFinishSendingCrash;
+
+#endif /* MSAI_FEATURE_CRASH_REPORTER */
+
+///-----------------------------------------------------------------------------
+/// @name Common network failure
+///-----------------------------------------------------------------------------
+/** Invoked after sending crash reports failed
+ 
+ @param error The error returned from the NSURLConnection call or `kMSAICrashErrorDomain`
+ with reason of type `MSAICrashErrorReason`.
+ */
+- (void)appInsightsDidFailWithError:(NSError *)error;
 
 @end
