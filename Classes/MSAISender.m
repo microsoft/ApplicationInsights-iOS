@@ -95,8 +95,12 @@ static NSInteger const statusCodeBadRequest = 400;
 }
 
 - (void)sendRequest:(NSURLRequest *)request path:(NSString *)path{
-  
   if(!path || !request) return;
+  
+  MSAIPersistenceType type = [[MSAIPersistence sharedInstance] persistenceTypeForPath:path];
+  if(self.delegate && type == MSAIPersistenceTypeHighPriority && [self.delegate respondsToSelector:@selector(appInsightsWillSendCrash)]){
+    [self.delegate appInsightsWillSendCrash];
+  }
   
   __weak typeof(self) weakSelf = self;
   MSAIHTTPOperation *operation = [self.appClient operationWithURLRequest:request completion:^(MSAIHTTPOperation *operation, NSData *responseData, NSError *error) {
@@ -104,17 +108,27 @@ static NSInteger const statusCodeBadRequest = 400;
     
     self.runningRequestsCount -= 1;
     NSInteger statusCode = [operation.response statusCode];
-
+    
+    // Delete file if it has been succesfully sent (200/202) or if its values have not been accepted (400)
     if([self shouldDeleteDataWithStatusCode:statusCode]) {
-      // We should delete data if it has been succesfully sent (200/202) or if its values have not been accepted (400)
       MSAILog(@"Sent data with status code: %ld", (long) statusCode);
       MSAILog(@"Response data:\n%@", [NSJSONSerialization JSONObjectWithData:responseData options:0 error:nil]);
-      
       [[MSAIPersistence sharedInstance] deleteFileAtPath:path];
       [strongSelf sendSavedData];
     } else {
       MSAILog(@"Sending MSAIAppInsights data failed");
       [[MSAIPersistence sharedInstance] giveBackRequestedPath:path];
+    }
+    
+    // Inform delegate
+    if(statusCode >= 200 || statusCode <= 202){
+      if(self.delegate && type == MSAIPersistenceTypeHighPriority && [self.delegate respondsToSelector:@selector(appInsightsDidFinishSendingCrash)]){
+        [self.delegate appInsightsDidFinishSendingCrash];
+      }
+    }else{
+      if(self.delegate && [self.delegate respondsToSelector:@selector(appInsightsDidFailWithError:)]){
+        [self.delegate appInsightsDidFailWithError:error];
+      }
     }
   }];
   
