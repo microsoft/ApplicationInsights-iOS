@@ -8,8 +8,6 @@
 
 @optional
 
-#if MSAI_FEATURE_CRASH_REPORTER
-
 ///-----------------------------------------------------------------------------
 /// @name Experimental
 ///-----------------------------------------------------------------------------
@@ -50,8 +48,6 @@
  *  @param crashDict the crash as dictionary
  */
 - (void)appInsightsDidFinishSendingCrashDict:(NSDictionary *)crashDict;
-
-#endif /* MSAI_FEATURE_CRASH_REPORTER */
 
 ///-----------------------------------------------------------------------------
 /// @name Common network failure
