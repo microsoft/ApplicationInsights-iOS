@@ -110,7 +110,7 @@ static NSInteger const statusCodeBadRequest = 400;
   MSAIHTTPOperation *operation = [self.appClient operationWithURLRequest:request completion:^(MSAIHTTPOperation *operation, NSData *responseData, NSError *error) {
     typeof(self) strongSelf = weakSelf;
     
-    self.runningRequestsCount -= 1;
+    strongSelf.runningRequestsCount -= 1;
     NSInteger statusCode = [operation.response statusCode];
     
     // Delete file if it has been succesfully sent (200/202) or if its values have not been accepted (400)
@@ -126,13 +126,13 @@ static NSInteger const statusCodeBadRequest = 400;
     
     // Inform delegate
     if(statusCode >= 200 || statusCode <= 202){
-      if(self.delegate && type == MSAIPersistenceTypeHighPriority && [self.delegate respondsToSelector:@selector(appInsightsDidFinishSendingCrashDict:)]){
+      if(strongSelf.delegate && type == MSAIPersistenceTypeHighPriority && [strongSelf.delegate respondsToSelector:@selector(appInsightsDidFinishSendingCrashDict:)]){
         NSDictionary *crashDict = bundle.count > 0 ? bundle[0] : nil;
-        [self.delegate appInsightsDidFinishSendingCrashDict:crashDict];
+        [strongSelf.delegate appInsightsDidFinishSendingCrashDict:crashDict];
       }
     }else{
-      if(self.delegate && [self.delegate respondsToSelector:@selector(appInsightsDidFailWithError:)]){
-        [self.delegate appInsightsDidFailWithError:error];
+      if(strongSelf.delegate && [strongSelf.delegate respondsToSelector:@selector(appInsightsDidFailWithError:)]){
+        [strongSelf.delegate appInsightsDidFailWithError:error];
       }
     }
   }];
