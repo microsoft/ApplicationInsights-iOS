@@ -97,9 +97,13 @@ static NSInteger const statusCodeBadRequest = 400;
 - (void)sendRequest:(NSURLRequest *)request path:(NSString *)path{
   if(!path || !request) return;
   
+  // Inform delegate
+  NSArray *bundle;
   MSAIPersistenceType type = [[MSAIPersistence sharedInstance] persistenceTypeForPath:path];
-  if(self.delegate && type == MSAIPersistenceTypeHighPriority && [self.delegate respondsToSelector:@selector(appInsightsWillSendCrash)]){
-    [self.delegate appInsightsWillSendCrash];
+  if(self.delegate && type == MSAIPersistenceTypeHighPriority && [self.delegate respondsToSelector:@selector(appInsightsWillSendCrashDict:)]){
+    bundle = [[MSAIPersistence sharedInstance] bundleAtPath:path withPersistenceType:type];
+    NSDictionary *crashDict = bundle.count > 0 ? bundle[0] : nil;
+    [self.delegate appInsightsWillSendCrashDict:crashDict];
   }
   
   __weak typeof(self) weakSelf = self;
@@ -122,8 +126,9 @@ static NSInteger const statusCodeBadRequest = 400;
     
     // Inform delegate
     if(statusCode >= 200 || statusCode <= 202){
-      if(self.delegate && type == MSAIPersistenceTypeHighPriority && [self.delegate respondsToSelector:@selector(appInsightsDidFinishSendingCrash)]){
-        [self.delegate appInsightsDidFinishSendingCrash];
+      if(self.delegate && type == MSAIPersistenceTypeHighPriority && [self.delegate respondsToSelector:@selector(appInsightsDidFinishSendingCrashDict:)]){
+        NSDictionary *crashDict = bundle.count > 0 ? bundle[0] : nil;
+        [self.delegate appInsightsDidFinishSendingCrashDict:crashDict];
       }
     }else{
       if(self.delegate && [self.delegate respondsToSelector:@selector(appInsightsDidFailWithError:)]){

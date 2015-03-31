@@ -1,10 +1,9 @@
 #import <Foundation/Foundation.h>
 
 /**
- The `MSAIAppInsightsDelegate` formal protocol defines methods further configuring
- the behaviour of `MSAIAppInsights`.
+ *  The `MSAIAppInsightsDelegate` formal protocol defines methods further configuring the behaviour of 
+ *  `MSAIAppInsights`.
  */
-
 @protocol MSAIAppInsightsDelegate <NSObject>
 
 @optional
@@ -38,23 +37,31 @@
 
 //Reason for this: http://support.hockeyapp.net/kb/client-integration-ios-mac-os-x/how-to-handle-crashes-during-startup-on-ios
 
-/** Invoked right before sending crash reports will start
+/**
+ *  Invoked before sending crash reports succeeded.
+ *
+ *  @param crashDict the crash as dictionary
  */
-- (void)appInsightsWillSendCrash;
+- (void)appInsightsWillSendCrashDict:(NSDictionary *)crashDict;
 
-/** Invoked after sending crash reports succeeded
+/**
+ *  Invoked after sending crash reports succeeded.
+ *
+ *  @param crashDict the crash as dictionary
  */
-- (void)appInsightsDidFinishSendingCrash;
+- (void)appInsightsDidFinishSendingCrashDict:(NSDictionary *)crashDict;
 
 #endif /* MSAI_FEATURE_CRASH_REPORTER */
 
 ///-----------------------------------------------------------------------------
 /// @name Common network failure
 ///-----------------------------------------------------------------------------
-/** Invoked after sending crash reports failed
- 
- @param error The error returned from the NSURLConnection call or `kMSAICrashErrorDomain`
- with reason of type `MSAICrashErrorReason`.
+
+/**
+ *  Invoked after sending crash reports failed.
+ *
+ *  @param error The error returned from the NSURLConnection call or `kMSAICrashErrorDomain` with reason of type 
+ *  `MSAICrashErrorReason`
  */
 - (void)appInsightsDidFailWithError:(NSError *)error;
 
