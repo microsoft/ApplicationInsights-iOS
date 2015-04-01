@@ -97,7 +97,7 @@ void msai_appendDictionaryToSafeJsonString(NSDictionary *dictionary, char **stri
 }
 
 void msai_resetSafeJsonString(char **string) {
-  *string = "(";
+  *string = "[";
 }
 
 - (void)processDictionary:(MSAIOrderedDictionary *)dictionary withCompletionBlock: (void (^)(BOOL success)) completionBlock{
