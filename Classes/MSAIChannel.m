@@ -59,9 +59,8 @@ char *MSAISafeJsonEventsString;
       typeof(self) strongSelf = weakSelf;
       
       // Enqueue item
-      [strongSelf->_dataItemQueue addObject:dictionary];
-      msai_appendDictionaryToSafeJsonString(dictionary, &(MSAISafeJsonEventsString));
-      
+      [strongSelf addDictionaryToQueues:dictionary];
+
       if([strongSelf->_dataItemQueue count] >= strongSelf.senderBatchSize) {
         
         // Max batch count has been reached, so write queue to disk and delete all items.
@@ -73,6 +72,11 @@ char *MSAISafeJsonEventsString;
       }
     });
   }
+}
+
+- (void)addDictionaryToQueues:(MSAIOrderedDictionary *)dictionary {
+  [self->_dataItemQueue addObject:dictionary];
+  msai_appendDictionaryToSafeJsonString(dictionary, &(MSAISafeJsonEventsString));
 }
 
 void msai_appendDictionaryToSafeJsonString(NSDictionary *dictionary, char **string) {

@@ -61,6 +61,8 @@ void msai_resetSafeJsonString(char **string);
  */
 - (void)enqueueDictionary:(MSAIOrderedDictionary *)dictionary;
 
+- (void)addDictionaryToQueues:(MSAIOrderedDictionary *)dictionary;
+
 /**
  *  Directly process telemetry data (crashs) without enqueuing it first.
  *
