@@ -10,6 +10,8 @@
 @class MSAICrashData;
 @class MSAIOrderedDictionary;
 
+FOUNDATION_EXTERN char *MSAISafeJsonEventsString;
+
 @interface MSAIChannel ()
 
 ///-----------------------------------------------------------------------------

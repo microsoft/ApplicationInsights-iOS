@@ -21,6 +21,7 @@ static NSInteger const defaultBatchInterval = 15;
 #endif
 
 static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.senderQueue";
+char *MSAISafeJsonEventsString;
 
 @implementation MSAIChannel
 
@@ -59,7 +60,7 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
       
       // Enqueue item
       [strongSelf->_dataItemQueue addObject:dictionary];
-      msai_appendDictionaryToSafeJsonString(dictionary, &(_safeJsonString));
+      msai_appendDictionaryToSafeJsonString(dictionary, &(MSAISafeJsonEventsString));
       
       if([strongSelf->_dataItemQueue count] >= strongSelf.senderBatchSize) {
         
@@ -121,7 +122,7 @@ void msai_resetSafeJsonString(char **string) {
   NSArray *bundle = [NSArray arrayWithArray:_dataItemQueue];
   [[MSAIPersistence sharedInstance] persistBundle:bundle ofType:MSAIPersistenceTypeRegular withCompletionBlock:nil];
   [_dataItemQueue removeAllObjects];
-  msai_resetSafeJsonString(&(_safeJsonString));
+  msai_resetSafeJsonString(&(MSAISafeJsonEventsString));
 }
 
 - (BOOL)isQueueBusy{
