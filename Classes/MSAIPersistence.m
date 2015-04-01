@@ -208,8 +208,13 @@ NSUInteger const defaultFileCount = 50;
 #pragma mark - Private
 
 - (NSString *)newFileURLForPersitenceType:(MSAIPersistenceType)type {
+  static NSString *applicationSupportDir;
+  static dispatch_once_t dirToken;
   
-  NSString *applicationSupportDir = [NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES) lastObject];
+  dispatch_once(&dirToken, ^{
+    applicationSupportDir = [NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES) lastObject];
+  });
+  
   NSString *uuid = msai_UUID();
   NSString *fileName = [NSString stringWithFormat:@"%@%@", kFileBaseString, uuid];
   NSString *filePath;
