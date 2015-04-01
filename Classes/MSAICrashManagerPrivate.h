@@ -98,6 +98,19 @@ Value that indicates a low memory warning has been sent to the app. For memory w
 */
 - (void)reportError:(NSError *)error;
 
+/**
+ *  Because we can't access any Objective-C code from our default signal handler callback, we need to have all necessary data and pointers already in place once it runs.
+ *  This method sets permanent references to [MSAIChannel sharedChannel] and file path to which our data is written in case of a crash.
+ */
+- (void)configDefaultCallBack;
+
+/**
+ *  This function is used as our default callback in PLCrashReporter's signal handler.
+ *  It tries to write to disk the string kept by MSAIChannel as a backup.
+ *
+ */
+void msai_save_events_callback(siginfo_t *info, ucontext_t *uap, void *context);
+
 @end
 
 

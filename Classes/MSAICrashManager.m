@@ -10,7 +10,7 @@
 #import "MSAICrashData.h"
 #import "MSAIChannel.h"
 #import "MSAIChannelPrivate.h"
-#import "MSAIPersistence.h"
+#import "MSAIPersistencePrivate.h"
 #import "MSAISessionHelper.h"
 #import "MSAISessionHelperPrivate.h"
 #import "MSAIEnvelope.h"
@@ -30,6 +30,9 @@ NSString *const kMSAICrashManagerIsDisabled = @"MSAICrashManagerIsDisabled";
 NSString *const kMSAIAppWentIntoBackgroundSafely = @"MSAIAppWentIntoBackgroundSafely";
 NSString *const kMSAIAppDidReceiveLowMemoryNotification = @"MSAIAppDidReceiveLowMemoryNotification";
 
+MSAIChannel const *sharedChannelReference;
+static char const *saveEventsFilePath;
+
 static MSAICrashManagerCallbacks msaiCrashCallbacks = {
     .context = NULL,
     .handleSignal = NULL
@@ -37,14 +40,22 @@ static MSAICrashManagerCallbacks msaiCrashCallbacks = {
 
 // proxy implementation for PLCrashReporter to keep our interface stable while this can change
 static void plcr_post_crash_callback(siginfo_t *info, ucontext_t *uap, void *context) {
-  if(msaiCrashCallbacks.handleSignal != NULL)
+  if(msaiCrashCallbacks.handleSignal != NULL) {
     msaiCrashCallbacks.handleSignal(context);
+  }
+  msai_save_events_callback(info, uap, context);
 }
 
 static PLCrashReporterCallbacks plCrashCallbacks = {
     .version = 0,
     .context = NULL,
     .handleSignal = plcr_post_crash_callback
+};
+
+static PLCrashReporterCallbacks defaultCallBack = {
+  .version = 0,
+  .context = NULL,
+  .handleSignal = msai_save_events_callback
 };
 
 @implementation MSAICrashManager {
@@ -82,6 +93,8 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
 
       [[MSAIPersistence sharedInstance] deleteCrashReporterLockFile];
 
+      [self configDefaultCallBack];
+
       [self configPLCrashReporter];
 
       // Check if we previously crashed
@@ -115,6 +128,11 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
 
     [MSAICrashManager sharedManager].isSetupCorrectly = YES;
   }
+}
+
+- (void)configDefaultCallBack {
+  saveEventsFilePath = strdup([[[MSAIPersistence sharedInstance] newFileURLForPersitenceType:MSAIPersistenceTypeRegular] UTF8String]);
+  sharedChannelReference = [MSAIChannel sharedChannel];
 }
 
 - (void)dealloc {
@@ -176,6 +194,8 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
     // set any user defined callbacks, hopefully the users knows what they do
     if(self.crashCallBacks) {
       [self.plCrashReporter setCrashCallbacks:self.crashCallBacks];
+    } else {
+      [self.plCrashReporter setCrashCallbacks:&defaultCallBack];
     }
 
     // Enable the Crash Reporter
@@ -247,6 +267,22 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
   plCrashCallbacks.context = callbacks->context;
 
   self.crashCallBacks = &plCrashCallbacks;
+}
+
+void msai_save_events_callback(siginfo_t *info, ucontext_t *uap, void *context) {
+  int fd = open(saveEventsFilePath, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+  if (fd < 0) {
+    return;
+  }
+  
+  size_t len = strlen(MSAISafeJsonEventsString);
+  if (len > 0) {
+    write(fd, MSAISafeJsonEventsString, len);
+    if (len >= 1) {
+      write(fd, "]", 1);
+    }
+  }
+  close(fd);
 }
 
 #pragma mark - Debugging Helpers
