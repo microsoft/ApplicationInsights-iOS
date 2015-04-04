@@ -47,7 +47,7 @@
                                         andPassword:@"PanThisDeviceOnly"
                                      forServiceName:@"Test"
                                      updateExisting:YES
-                                      accessibility:kSecAttrAccessibleWhenUnlockedThisDeviceOnly
+                                      accessibility:kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly
                                               error:nil];
   assertThatBool(success, equalToBool(YES));
   NSString *pass = [MSAIKeychainUtils getPasswordForUsername:@"Peter"
