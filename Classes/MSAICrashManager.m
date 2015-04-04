@@ -108,8 +108,11 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
 
     [self checkForLowMemoryWarning];
     [self checkStateOfLastSession];
-    [self appEnteredForeground];
-
+    
+    if ([[UIApplication sharedApplication] applicationState] == UIApplicationStateActive) {
+      [self appEnteredForeground];
+    }
+    
     [[NSUserDefaults standardUserDefaults] setBool:NO forKey:kMSAIAppDidReceiveLowMemoryNotification];
     [[NSUserDefaults standardUserDefaults] synchronize];
 
