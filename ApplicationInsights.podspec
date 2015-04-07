@@ -15,7 +15,7 @@ Pod::Spec.new do |s|
   s.platform        = :ios, '6.0'
   s.requires_arc    = true
 
-  s.frameworks      = 'UIKit', 'Foundation', 'SystemConfiguration'
+  s.frameworks      = 'UIKit', 'Foundation', 'SystemConfiguration', 'Security'
   s.weak_framework  = 'CoreTelephony'
 
   s.ios.vendored_frameworks = 'AppInsights/AppInsights.framework'
