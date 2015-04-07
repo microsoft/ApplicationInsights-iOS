@@ -86,19 +86,16 @@ void msai_appendDictionaryToSafeJsonString(NSDictionary *dictionary, char **stri
     MSAILog(@"JSONSerialization error: %@", error.description);
     return;
   }
-  NSString *json_nsstring = [[NSString alloc] initWithData:json_data encoding:NSUTF8StringEncoding];
-  char const *json_char = [json_nsstring UTF8String];
-  char *new_string = calloc(1, (strlen(*string)+strlen(json_char))+2);
-  if (new_string != NULL) {
-    strcat(new_string, *string);
-    strcat(new_string, json_char);
-    strcat(new_string, ",");
-  }
+  char *new_string = NULL;
+  
+  asprintf(&new_string, "%s%.*s,", *string, (int)MIN(json_data.length, (NSUInteger)INT_MAX), json_data.bytes);
+  free(*string);
   *string = new_string;
 }
 
 void msai_resetSafeJsonString(char **string) {
-  *string = "[";
+  free(*string);
+  *string = strdup("[");
 }
 
 - (void)processDictionary:(MSAIOrderedDictionary *)dictionary withCompletionBlock: (void (^)(BOOL success)) completionBlock{
