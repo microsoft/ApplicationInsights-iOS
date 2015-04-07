@@ -54,9 +54,10 @@ The SDK runs on devices with iOS 6.0 or higher.
 6. Select the tab `Build Phases`.
 7. Expand `Link Binary With Libraries`.
 8. Add the following system frameworks, if they are missing:
+	- `UIKit`
 	- `Foundation`
 	- `SystemConfiguration`
-	- `UIKit`
+	- `Security`
 	- `CoreTelephony`(only required if iOS > 7.0)
 9. Open the info.plist of your app target and add a new field of type *String*. Name it `MSAIInstrumentationKey` and set your AppInsights instrumentation key as its value.
 
@@ -233,9 +234,10 @@ Instead of manually adding the missing frameworks, you can also use our bundled 
 	**Important note:** Check if you overwrite any of the build settings and add a missing `$(inherited)` entry on the projects build settings level, so the `AppInsights.xcconfig` settings will be passed through successfully.
 
 7. If you are getting build warnings, then the `.xcconfig` setting wasn't included successfully or its settings in `Other Linker Flags` get ignored because `$(inherited)` is missing on project or target level. Either add `$(inherited)` or link the following frameworks manually in `Link Binary With Libraries` under `Build Phases`:
+	- `UIKit`
 	- `Foundation`
 	- `SystemConfiguration`
-	- `UIKit`
+	- `Security`
 	- `CoreTelephony`(only required if iOS > 7.0)
 
 ### Setup with CocoaPods
