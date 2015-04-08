@@ -76,13 +76,18 @@ char *MSAISafeJsonEventsString;
 }
 
 void msai_appendDictionaryToSafeJsonString(NSDictionary *dictionary, char **string) {
+  if (string == 0) { return; }
+
+  if (!dictionary) { return; }
+  
   if (*string == NULL || strlen(*string) == 0) {
     msai_resetSafeJsonString(string);
   }
+
   
   NSError *error = nil;
   NSData *json_data = [NSJSONSerialization dataWithJSONObject:dictionary options:0 error:&error];
-  if (json_data == nil) {
+  if (!json_data) {
     MSAILog(@"JSONSerialization error: %@", error.description);
     return;
   }
