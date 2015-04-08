@@ -108,7 +108,7 @@
 - (MSAITelemetryContext *)telemetryContext{
   
   MSAIContext *context = [[MSAIContext alloc]initWithInstrumentationKey:@"123"];
-  MSAITelemetryContext *telemetryContext = [[MSAITelemetryContext alloc]initWithAppContext:context endpointPath:@"path" firstSessionId:nil];
+  MSAITelemetryContext *telemetryContext = [[MSAITelemetryContext alloc]initWithAppContext:context endpointPath:@"path" firstSessionId:@"abc123"];
 
   return telemetryContext;
 }
