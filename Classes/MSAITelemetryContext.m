@@ -1,8 +1,10 @@
 #import <Foundation/Foundation.h>
 #import "MSAITelemetryContext.h"
 #import "MSAITelemetryContextPrivate.h"
-#import "MSAIMetricsManagerPrivate.h"
+#import "MSAITelemetryManagerPrivate.h"
 #import "MSAIHelper.h"
+#import "MSAISessionHelper.h"
+#import "MSAISessionHelperPrivate.h"
 #import "MSAIReachability.h"
 #import "MSAIReachabilityPrivate.h"
 
@@ -14,10 +16,11 @@ NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
 #pragma mark - Initialisation
 
 - (instancetype)initWithAppContext:(MSAIContext *)appContext
-                      endpointPath:(NSString *)endpointPath{
+                      endpointPath:(NSString *)endpointPath
+                    firstSessionId:(NSString *)sessionId{
   
   if ((self = [self init])) {
-
+    
     MSAIDevice *deviceContext = [MSAIDevice new];
     deviceContext.model = appContext.deviceModel;
     deviceContext.type = appContext.deviceType;
@@ -56,9 +59,14 @@ NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
     _internal = internalContext;
     _operation = operationContext;
     _session = sessionContext;
+    _tags = [self tags];
     
-    [self createNewSession];
+    if(sessionId){
+      [self updateSessionContextWithId:sessionId];
+      [MSAISessionHelper addSessionId:sessionId withDate:[NSDate date]];
+    }
     [self configureNetworkStatusTracking];
+    [self configureSessionTracking];
   }
   return self;
 }
@@ -85,7 +93,7 @@ NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
 
 #pragma mark - Session
 
-- (void)updateSessionContext {
+- (void)resetIsNewFlag {
   if ([_session.isNew isEqualToString:@"true"]) {
     _session.isNew = @"false";
   }
@@ -95,26 +103,54 @@ NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
   return ![_userDefaults boolForKey:kMSAIApplicationWasLaunched];
 }
 
-- (void)createNewSession {
-  BOOL firstSession = [self isFirstSession];
-  _session.sessionId = msai_UUID();
-  _session.isNew = @"true";
-  _session.isFirst = (firstSession ? @"true" : @"false");
+- (void)updateSessionContextWithId:(NSString *)sessionId {
+  
+  if(![_session.sessionId isEqualToString:sessionId]){
+    BOOL firstSession = [self isFirstSession];
+    _session.sessionId = sessionId;
+    _session.isNew = @"true";
+    _session.isFirst = (firstSession ? @"true" : @"false");
+  }
 }
 
+- (void)configureSessionTracking{
+  NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+  __weak typeof(self) weakSelf = self;
+  [center addObserverForName:MSAISessionStartedNotification
+                      object:nil
+                       queue:nil
+                  usingBlock:^(NSNotification *notification) {
+                    typeof(self) strongSelf = weakSelf;
+                    
+                    NSDictionary *userInfo = notification.userInfo;
+                    NSString *sessionId = userInfo[kMSAISessionInfoSessionId];
+                    [strongSelf updateSessionContextWithId:sessionId];
+                  }];
+}
+
+#pragma mark - Custom getter
 #pragma mark - Helper
 
 - (MSAIOrderedDictionary *)contextDictionary {
-  MSAIOrderedDictionary *contextDictionary = [self.application serializeToDictionary];
+  MSAIOrderedDictionary *contextDictionary = [MSAIOrderedDictionary new];
+  [contextDictionary addEntriesFromDictionary:self.tags];
   [contextDictionary addEntriesFromDictionary:[self.session serializeToDictionary]];
   [contextDictionary addEntriesFromDictionary:[self.device serializeToDictionary]];
-  [contextDictionary addEntriesFromDictionary:[self.location serializeToDictionary]];
-  [contextDictionary addEntriesFromDictionary:[self.user serializeToDictionary]];
-  [contextDictionary addEntriesFromDictionary:[self.internal serializeToDictionary]];
-  [contextDictionary addEntriesFromDictionary:[self.operation serializeToDictionary]];
-  [self updateSessionContext];
+  [self resetIsNewFlag];
   
   return contextDictionary;
+}
+
+- (MSAIOrderedDictionary *)tags {
+  if(!_tags){
+    _tags = [self.application serializeToDictionary];
+    [_tags addEntriesFromDictionary:[self.application serializeToDictionary]];
+    [_tags addEntriesFromDictionary:[self.location serializeToDictionary]];
+    [_tags addEntriesFromDictionary:[self.user serializeToDictionary]];
+    [_tags addEntriesFromDictionary:[self.internal serializeToDictionary]];
+    [_tags addEntriesFromDictionary:[self.operation serializeToDictionary]];
+  }
+  return _tags;
 }
 
 @end

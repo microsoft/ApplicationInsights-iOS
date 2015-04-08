@@ -63,20 +63,19 @@ NS_ASSUME_NONNULL_BEGIN
  *  Returnes a request for sending data to the telemetry sender.
  *
  *  @param data the data which should be sent
- *  @param urlString url depending on payload
  *
  *  @return a request which contains the given data
  */
-- (NSURLRequest *)requestForData:(NSData *)data urlString:(NSString *)urlString;
+- (NSURLRequest *)requestForData:(NSData *)data;
 
 /**
- *  Convert a collection of envelope objects to array of dictionaries.
+ *  Returns if data should be deleted based on a given status code.
  *
- *  @param envelopeArray array of envelope objects
+ *  @param statusCode the status code which is part of the response object
  *
- *  @return a json array of envelope objects
+ *  @return YES if data should be deleted, NO if the payload should be sent at a later time again.
  */
-- (NSArray *)jsonArrayFromArray:(NSArray *)envelopeArray;
+- (BOOL)shouldDeleteDataWithStatusCode:(NSInteger)statusCode;
 
 @end
 NS_ASSUME_NONNULL_END

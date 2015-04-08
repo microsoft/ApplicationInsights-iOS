@@ -13,6 +13,8 @@
 #import "MSAITelemetryContextPrivate.h"
 #import "MSAIEnvelopeManager.h"
 #import "MSAIEnvelopeManagerPrivate.h"
+#import "MSAISessionHelper.h"
+#import "MSAISessionHelperPrivate.h"
 #include <stdint.h>
 
 #if MSAI_FEATURE_CRASH_REPORTER
@@ -20,11 +22,11 @@
 #import "MSAICrashManagerPrivate.h"
 #endif /* MSAI_FEATURE_CRASH_REPORTER */
 
-#if MSAI_FEATURE_METRICS
+#if MSAI_FEATURE_TELEMETRY
 #import "MSAICategoryContainer.h"
-#import "MSAIMetricsManager.h"
-#import "MSAIMetricsManagerPrivate.h"
-#endif /* MSAI_FEATURE_METRICS */
+#import "MSAITelemetryManager.h"
+#import "MSAITelemetryManagerPrivate.h"
+#endif /* MSAI_FEATURE_TELEMETRY */
 
 NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 
@@ -55,8 +57,12 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
     _serverURL = nil;
     _managersInitialized = NO;
     _appClient = nil;
+#if MSAI_FEATURE_CRASH_REPORTER
     _crashManagerDisabled = NO;
-    _metricsManagerDisabled = NO;
+#endif /* MSAI_FEATURE_CRASH_REPORTER */
+#if MSAI_FEATURE_TELEMETRY
+    _telemetryManagerDisabled = NO;
+#endif /* MSAI_FEATURE_TELEMETRY */
     _appStoreEnvironment = NO;
     _startManagerIsInvoked = NO;
     
@@ -71,12 +77,20 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 
 - (void)setup {
   NSString *instrumentationKey = [[NSBundle mainBundle] objectForInfoDictionaryKey:kMSAIInstrumentationKey];
+  [self setupWithInstrumentationKey:instrumentationKey];
+}
+
+- (void)setupWithInstrumentationKey:(NSString *)instrumentationKey{
   _appContext = [[MSAIContext alloc] initWithInstrumentationKey:instrumentationKey];
   [self initializeModules];
 }
 
 + (void)setup {
   [[self sharedInstance] setup];
+}
+
++ (void)setupWithInstrumentationKey:(NSString *)instrumentationKey{
+  [[self sharedInstance] setupWithInstrumentationKey:instrumentationKey];
 }
 
 - (void)start {
@@ -96,9 +110,15 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
   MSAILog(@"INFO: Starting MSAIManager");
   _startManagerIsInvoked = YES;
   
+  // Create new session
+  NSString *sessionId = [MSAISessionHelper createFirstSession];
+  
+  // Configure Http-client and send persisted data
   MSAITelemetryContext *telemetryContext = [[MSAITelemetryContext alloc] initWithAppContext:_appContext
-                                                                               endpointPath:kMSAITelemetryPath];
+                                                                               endpointPath:kMSAITelemetryPath
+                                                                             firstSessionId:sessionId];
   [[MSAIEnvelopeManager sharedManager] configureWithTelemetryContext:telemetryContext];
+  
   [[MSAISender sharedSender] configureWithAppClient:[self appClient]
                                        endpointPath:kMSAITelemetryPath];
   [[MSAISender sharedSender] sendSavedData];
@@ -111,19 +131,19 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
   }
 #endif /* MSAI_FEATURE_CRASH_REPORTER */
   
-#if MSAI_FEATURE_METRICS
-  if (![self isMetricsManagerDisabled]) {
+#if MSAI_FEATURE_TELEMETRY
+  if (![self isTelemetryManagerDisabled]) {
     
     if([self isAutoPageViewTrackingDisabled]){
       MSAILog(@"INFO: Auto page views disabled");
-      [MSAIMetricsManager sharedManager].autoPageViewTrackingDisabled = YES;
+      [MSAITelemetryManager sharedManager].autoPageViewTrackingDisabled = YES;
     }
     [MSAICategoryContainer activateCategory];
     
-    MSAILog(@"INFO: Starting MSAIMetricsManager");
-    [[MSAIMetricsManager sharedManager] startManager];
+    MSAILog(@"INFO: Starting MSAITelemetryManager");
+    [[MSAITelemetryManager sharedManager] startManager];
   }
-#endif /* MSAI_FEATURE_METRICS */
+#endif /* MSAI_FEATURE_TELEMETRY */
 }
 
 + (void)start {
@@ -169,10 +189,9 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
   
   if (_validInstrumentationKey) {
     
-#if MSAI_FEATURE_METRICS
-    MSAILog(@"INFO: Setup MetricsManager");
-    [MSAICategoryContainer activateCategory];
-#endif /* MSAI_FEATURE_METRICS */
+#if MSAI_FEATURE_TELEMETRY
+    MSAILog(@"INFO: Setup TelemetryManager");
+#endif /* MSAI_FEATURE_TELEMETRY */
     
     if (![self isAppStoreEnvironment]) {
       NSString *integrationFlowTime = [self integrationFlowTimeString];
@@ -189,27 +208,25 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 }
 
 #pragma mark - Configuring modules
-
-#if MSAI_FEATURE_METRICS
-- (void)setMetricsManagerDisabled:(BOOL)metricsManagerDisabled {
-  [MSAIMetricsManager sharedManager].metricsManagerDisabled = metricsManagerDisabled;
-  _metricsManagerDisabled = metricsManagerDisabled;
+#if MSAI_FEATURE_TELEMETRY
+- (void)setTelemetryManagerDisabled:(BOOL)telemetryManagerDisabled {
+  [MSAITelemetryManager sharedManager].telemetryManagerDisabled = telemetryManagerDisabled;
+  _telemetryManagerDisabled = telemetryManagerDisabled;
 }
 
-+ (void)setMetricsManagerDisabled:(BOOL)metricsManagerDisabled {
-  [[self sharedInstance] setMetricsManagerDisabled:metricsManagerDisabled];
++ (void)setTelemetryManagerDisabled:(BOOL)telemetryManagerDisabled {
+  [[self sharedInstance] setTelemetryManagerDisabled:telemetryManagerDisabled];
 }
 
 - (void)setAutoPageViewTrackingDisabled:(BOOL)autoPageViewTrackingDisabled {
-  [MSAIMetricsManager sharedManager].autoPageViewTrackingDisabled = autoPageViewTrackingDisabled;
+  [MSAITelemetryManager sharedManager].autoPageViewTrackingDisabled = autoPageViewTrackingDisabled;
   _autoPageViewTrackingDisabled = autoPageViewTrackingDisabled;
 }
 
 + (void)setAutoPageViewTrackingDisabled:(BOOL)autoPageViewTrackingDisabled {
   [[self sharedInstance] setAutoPageViewTrackingDisabled:autoPageViewTrackingDisabled];
 }
-#endif /* MSAI_FEATURE_METRICS */
-
+#endif /* MSAI_FEATURE_TELEMETRY */
 
 #if MSAI_FEATURE_CRASH_REPORTER
 - (void)setCrashManagerDisabled:(BOOL)crashManagerDisabled {
@@ -233,7 +250,7 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
     _serverURL = [serverURL copy];
     
     if (_appClient) {
-      self.appClient.baseURL = [NSURL URLWithString:_serverURL ? _serverURL : MSAI_SDK_URL];
+      self.appClient.baseURL = [NSURL URLWithString:_serverURL ? _serverURL : MSAI_BASE_URL];
     }
   }
 }
@@ -350,9 +367,7 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 
 - (MSAIAppClient *)appClient {
   if (!_appClient) {
-    _appClient = [[MSAIAppClient alloc] initWithBaseURL:[NSURL URLWithString:_serverURL ? _serverURL : MSAI_SDK_URL]];
-    
-    _appClient.baseURL = [NSURL URLWithString:_serverURL ? _serverURL : MSAI_SDK_URL];
+    _appClient = [[MSAIAppClient alloc] initWithBaseURL:[NSURL URLWithString:_serverURL ? _serverURL : MSAI_BASE_URL]];
   }
   
   return _appClient;

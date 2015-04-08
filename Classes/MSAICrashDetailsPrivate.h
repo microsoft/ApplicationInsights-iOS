@@ -1,7 +1,7 @@
 #import <AppInsights/AppInsights.h>
 
 NS_ASSUME_NONNULL_BEGIN
-extern NSString *const __attribute__((unused)) kMSAICrashKillSignal;
+extern NSString *const __unused kMSAICrashKillSignal;
 
 @interface MSAICrashDetails () {
   

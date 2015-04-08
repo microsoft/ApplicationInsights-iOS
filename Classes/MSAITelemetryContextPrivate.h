@@ -66,11 +66,13 @@ NS_ASSUME_NONNULL_BEGIN
  *
  *  @param appContext         the context of the app, which contains several meta infos
  *  @param endpointPath       the path to the telemetry endpoint
+ *  @param sessionId          the id of the first session
  *
  *  @return the telemetry context
  */
 - (instancetype)initWithAppContext:(MSAIContext *)appContext
-                      endpointPath:(NSString *)endpointPath;
+                      endpointPath:(NSString *)endpointPath
+                    firstSessionId:(NSString *)sessionId;
 
 ///-----------------------------------------------------------------------------
 /// @name Session
@@ -84,7 +86,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  *  Renews or even creates a new session if needed.
  */
-- (void)updateSessionContext;
+- (void)resetIsNewFlag;
 
 /**
  *  Checks if current session is the first one.
@@ -94,9 +96,11 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL)isFirstSession;
 
 /**
- *  Creates a brand new session.
+ *  Update session context with a given session id.
+ *
+ *  @param sessionId the session id of the new session
  */
-- (void)createNewSession;
+- (void)updateSessionContextWithId:(NSString *)sessionId;
 
 ///-----------------------------------------------------------------------------
 /// @name Network status
@@ -110,6 +114,11 @@ NS_ASSUME_NONNULL_BEGIN
 ///-----------------------------------------------------------------------------
 /// @name Helper
 ///-----------------------------------------------------------------------------
+
+/**
+ *  A dictionary which holds static tag fields for the purpose of caching
+ */
+@property (nonatomic, strong)MSAIOrderedDictionary *tags;
 
 /**
  *  Returns context objects as dictionary.

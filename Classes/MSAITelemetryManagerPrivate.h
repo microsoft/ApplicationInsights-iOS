@@ -1,12 +1,10 @@
 #import "AppInsights.h"
 
-#if MSAI_FEATURE_METRICS
+#if MSAI_FEATURE_TELEMETRY
 @class MSAITelemetryData;
 
 NS_ASSUME_NONNULL_BEGIN
-extern NSString *const kMSAIApplicationWasLaunched;
-
-@interface MSAIMetricsManager ()
+@interface MSAITelemetryManager ()
 
 ///-----------------------------------------------------------------------------
 /// @name Start the manager
@@ -21,7 +19,7 @@ extern NSString *const kMSAIApplicationWasLaunched;
  *  Flag which determines whether the manager is enabled or not. This can only be set before the
  *  manager has been started.
  */
-@property BOOL metricsManagerDisabled;
+@property BOOL telemetryManagerDisabled;
 
 /**
  *  This method should be called after the manager has been configured in order to create and send data.
@@ -41,7 +39,7 @@ extern NSString *const kMSAIApplicationWasLaunched;
 /**
  *  A concurrent queue which creates telemetry objects and forwards them to the channel.
  */
-@property (nonatomic, strong)dispatch_queue_t metricEventQueue;
+@property (nonatomic, strong)dispatch_queue_t telemetryEventQueue;
 
 /**
  * Converts the tracked to an envelope object and forwards it to the channel.
@@ -54,6 +52,11 @@ extern NSString *const kMSAIApplicationWasLaunched;
  * Registers the manager for all notifications that are necessary for automatic session tracking
  */
 - (void)registerObservers;
+
+/**
+ * Disable notifications for automatic session tracking.
+ */
+- (void)unregisterObservers;
 
 @end
 NS_ASSUME_NONNULL_END

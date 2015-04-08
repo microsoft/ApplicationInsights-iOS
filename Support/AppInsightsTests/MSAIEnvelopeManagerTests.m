@@ -31,7 +31,7 @@
   [super setUp];
   
   MSAIContext *context = [[MSAIContext alloc]initWithInstrumentationKey:@"123"];
-  _telemetryContext = [[MSAITelemetryContext alloc]initWithAppContext:context endpointPath:@"log"];
+  _telemetryContext = [[MSAITelemetryContext alloc] initWithAppContext:context endpointPath:nil firstSessionId:nil];
   [[MSAIEnvelopeManager sharedManager] configureWithTelemetryContext:_telemetryContext];
   _sut = [MSAIEnvelopeManager sharedManager];
 }
@@ -47,6 +47,14 @@
   MSAIEnvelope *template = [_sut envelope];
   
   [self checkEnvelopeTemplate:template];
+}
+
+- (void)testEnvelopePerformance {
+    [self measureBlock:^{
+      for (int i = 0; i < 1000; ++i) {
+        [_sut envelope];
+      }
+    }];
 }
 
 - (void)testThatItInstantiatesEnvelopeForTelemetryData {

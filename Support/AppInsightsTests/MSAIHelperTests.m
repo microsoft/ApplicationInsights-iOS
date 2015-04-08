@@ -40,7 +40,7 @@
 }
 
 - (void)testOsVersion {
-  NSString *resultString = msai_osVersion();
+  NSString *resultString = msai_osVersionBuild();
   assertThat(resultString, notNilValue());
   assertThatFloat([resultString floatValue], greaterThan(@(0.0)));
 }

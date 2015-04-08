@@ -32,17 +32,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)configureWithTelemetryContext:(MSAITelemetryContext *)telemetryContext;
 
 ///-----------------------------------------------------------------------------
-/// @name Update context
-///-----------------------------------------------------------------------------
-
-// TODO: Use Notifications instead
-
-/**
- *  Renews all session context information used to create an envelope.
- */
-- (void)createNewSession;
-
-///-----------------------------------------------------------------------------
 /// @name Create envelope objects
 ///-----------------------------------------------------------------------------
 
