@@ -11,10 +11,6 @@ static NSInteger const statusCodeOK = 200;
 static NSInteger const statusCodeAccepted = 202;
 static NSInteger const statusCodeBadRequest = 400;
 
-@interface MSAISender ()
-
-@end
-
 @implementation MSAISender
 
 @synthesize runningRequestsCount = _runningRequestsCount;
@@ -24,7 +20,7 @@ static NSInteger const statusCodeBadRequest = 400;
 + (instancetype)sharedSender {
   static MSAISender *sharedInstance = nil;
   static dispatch_once_t onceToken;
-  
+
   dispatch_once(&onceToken, ^{
     sharedInstance = [MSAISender new];
   });
