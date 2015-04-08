@@ -49,13 +49,13 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
       typeof(self) strongSelf = weakSelf;
       
       // Enqueue item
-      [strongSelf->_dataItemQueue addObject:dictionary];
+      [strongSelf.dataItemQueue addObject:dictionary];
       
-      if([strongSelf->_dataItemQueue count] >= strongSelf.senderBatchSize) {
+      if([strongSelf.dataItemQueue count] >= strongSelf.senderBatchSize) {
         
         // Max batch count has been reached, so write queue to disk and delete all items.
         [strongSelf persistDataItemQueue];
-      } else if([strongSelf->_dataItemQueue count] == 1) {
+      } else if([strongSelf.dataItemQueue count] == 1) {
         
         // It is the first item, let's start the timer
         [strongSelf startTimer];

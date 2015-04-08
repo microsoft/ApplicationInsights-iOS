@@ -30,12 +30,12 @@
 /**
  *  A queue which makes array operations thread safe.
  */
-@property (nonatomic, strong) dispatch_queue_t dataItemsOperations;
+@property (atomic, strong) dispatch_queue_t dataItemsOperations;
 
 /**
  *  An array for collecting data, which should be sent to the telemetry server.
  */
-@property(nonatomic, strong) NSMutableArray *dataItemQueue;
+@property(atomic, strong) NSMutableArray *dataItemQueue;
 
 /**
  *  Enqueue telemetry data (events, metrics, exceptions, traces) before processing it.
