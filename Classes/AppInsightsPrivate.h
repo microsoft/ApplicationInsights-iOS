@@ -17,7 +17,7 @@ extern NSString *const __unused kMSAITelemetryLastAppVersion;
 
 #endif
 
-extern NSString *const kMSAIIntegrationflowTimestamp;
+extern NSString *const kMSAIIntegrationFlowTimestamp;
 
 extern NSString *const kMSAITelemetryPath;
 

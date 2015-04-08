@@ -277,7 +277,7 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 }
 
 - (NSString *)integrationFlowTimeString {
-  NSString *timeString = [[NSBundle mainBundle] objectForInfoDictionaryKey:kMSAIIntegrationflowTimestamp];
+  NSString *timeString = [[NSBundle mainBundle] objectForInfoDictionaryKey:kMSAIIntegrationFlowTimestamp];
   
   return timeString;
 }
