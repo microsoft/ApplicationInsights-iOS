@@ -1,17 +1,16 @@
 #import "MSAIHTTPOperation.h"
 
 @interface MSAIHTTPOperation ()<NSURLConnectionDelegate>
+
+@property(nonatomic, strong) NSURLConnection *connection;
+@property(nonatomic) BOOL isExecuting;
+@property(nonatomic) BOOL isFinished;
+
 @end
 
 @implementation MSAIHTTPOperation {
-  NSURLRequest *_URLRequest;
-  NSURLConnection *_connection;
   NSMutableData *_data;
-  
-  BOOL _isExecuting;
-  BOOL _isFinished;
 }
-
 
 + (instancetype)operationWithRequest:(NSURLRequest *)urlRequest {
   MSAIHTTPOperation *op = [[self class] new];
@@ -25,7 +24,7 @@
 }
 
 - (void)cancel {
-  [_connection cancel];
+  [self.connection cancel];
   [super cancel];
 }
 
@@ -46,10 +45,10 @@
   }
 
   [self willChangeValueForKey:@"isExecuting"];
-  _isExecuting = YES;
+  self.isExecuting = YES;
   [self didChangeValueForKey:@"isExecuting"];
   
-  _connection = [[NSURLConnection alloc] initWithRequest:_URLRequest
+  self.connection = [[NSURLConnection alloc] initWithRequest:self.URLRequest
                                                 delegate:self
                                         startImmediately:YES];
 }
@@ -57,8 +56,8 @@
 - (void) finish {
   [self willChangeValueForKey:@"isExecuting"];
   [self willChangeValueForKey:@"isFinished"];
-  _isExecuting = NO;
-  _isFinished = YES;
+  self.isExecuting = NO;
+  self.isFinished = YES;
   [self didChangeValueForKey:@"isExecuting"];
   [self didChangeValueForKey:@"isFinished"];
 }
@@ -101,21 +100,13 @@
       if(strongSelf) {
         dispatch_async(dispatch_get_main_queue(), ^{
           if(!strongSelf.isCancelled) {
-            completion(strongSelf, strongSelf->_data, strongSelf->_error);
+            completion(strongSelf, strongSelf.data, strongSelf.error);
           }
           [strongSelf setCompletionBlock:nil];
         });
       }
     }];
   }
-}
-
-- (BOOL)isFinished {
-  return _isFinished;
-}
-
-- (BOOL)isExecuting {
-  return _isExecuting;
 }
 
 @end
