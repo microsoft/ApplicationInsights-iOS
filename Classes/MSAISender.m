@@ -109,8 +109,8 @@ static NSInteger const statusCodeBadRequest = 400;
       [[MSAIPersistence sharedInstance] giveBackRequestedPath:path];
     }
   }];
-  
-  [self.appClient enqeueHTTPOperation:operation];
+
+  [self.appClient enqueueHTTPOperation:operation];
 }
 
 //TODO remove this because it is never used and it's not public?
@@ -119,7 +119,7 @@ static NSInteger const statusCodeBadRequest = 400;
   MSAIHTTPOperation *operation = [_appClient
                                   operationWithURLRequest:request
                                   completion:completion];
-  [_appClient enqeueHTTPOperation:operation];
+  [_appClient enqueueHTTPOperation:operation];
 }
 
 #pragma mark - Helper
