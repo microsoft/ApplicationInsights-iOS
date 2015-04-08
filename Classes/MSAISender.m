@@ -98,7 +98,7 @@ static NSInteger const statusCodeBadRequest = 400;
     NSInteger statusCode = [operation.response statusCode];
 
     if([self shouldDeleteDataWithStatusCode:statusCode]) {
-      // We should delete data if it has been succesfully sent (200/202) or if its values have not been accepted (400)
+      // We should delete data if it has been successfully sent (200/202) or if its values have not been accepted (400)
       MSAILog(@"Sent data with status code: %ld", (long) statusCode);
       MSAILog(@"Response data:\n%@", [NSJSONSerialization JSONObjectWithData:responseData options:0 error:nil]);
       
