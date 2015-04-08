@@ -1,6 +1,7 @@
 #import <Foundation/Foundation.h>
 #import "MSAISessionHelper.h"
 
+NS_ASSUME_NONNULL_BEGIN
 @interface MSAISessionHelper()
 
 FOUNDATION_EXPORT NSString *const MSAISessionStartedNotification;
@@ -159,3 +160,4 @@ FOUNDATION_EXPORT NSString *const kMSAIApplicationWasLaunched;
 - (void)unregisterObservers;
 
 @end
+NS_ASSUME_NONNULL_END
