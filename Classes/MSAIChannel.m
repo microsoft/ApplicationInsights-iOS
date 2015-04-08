@@ -1,15 +1,6 @@
 #import "MSAIChannel.h"
 #import "MSAIChannelPrivate.h"
-#import "MSAITelemetryContext.h"
 #import "MSAITelemetryContextPrivate.h"
-#import "MSAIEnvelope.h"
-#import "MSAIHTTPOperation.h"
-#import "MSAIAppClient.h"
-#import "AppInsightsPrivate.h"
-#import "MSAIData.h"
-#import "MSAISender.h"
-#import "MSAISenderPrivate.h"
-#import "MSAIHelper.h"
 #import "MSAIPersistence.h"
 
 #ifdef DEBUG

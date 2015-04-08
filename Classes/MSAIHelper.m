@@ -1,8 +1,6 @@
 #import "MSAIHelper.h"
 #import "MSAIKeychainUtils.h"
-#import "AppInsights.h"
 #import "AppInsightsPrivate.h"
-#import <QuartzCore/QuartzCore.h>
 
 #import <sys/sysctl.h>
 
