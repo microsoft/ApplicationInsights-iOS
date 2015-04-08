@@ -51,7 +51,7 @@ NS_ASSUME_NONNULL_BEGIN
  *  @param dictionary      the dictionary object to process.
  *  @param completionBlock the block, which should be executed after the envelope has been persisted.
  */
-- (void)processDictionary:(MSAIOrderedDictionary *)dictionary withCompletionBlock: (void (^)(BOOL success)) completionBlock;
+- (void)processDictionary:(MSAIOrderedDictionary *)dictionary withCompletionBlock:(nullable void (^)(BOOL success))completionBlock;
 
 ///-----------------------------------------------------------------------------
 /// @name Batching

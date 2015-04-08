@@ -73,7 +73,7 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
   }
 }
 
-- (void)processDictionary:(MSAIOrderedDictionary *)dictionary withCompletionBlock: (void (^)(BOOL success)) completionBlock{
+- (void)processDictionary:(MSAIOrderedDictionary *)dictionary withCompletionBlock: (nullable void (^)(BOOL success)) completionBlock{
   [[MSAIPersistence sharedInstance] persistBundle:[NSArray arrayWithObject:dictionary]
                           ofType:MSAIPersistenceTypeHighPriority withCompletionBlock:completionBlock];
 }
