@@ -1,3 +1,4 @@
+#import "MSAITelemetryContext.h"
 #import "MSAIApplication.h"
 #import "MSAIDevice.h"
 #import "MSAIOperation.h"
