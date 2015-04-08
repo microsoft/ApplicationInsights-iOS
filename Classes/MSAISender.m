@@ -57,8 +57,8 @@ static NSInteger const statusCodeBadRequest = 400;
 - (void)sendSavedData{
   
   @synchronized(self){
-    if(_runningRequestsCount < _maxRequestCount){
-      _runningRequestsCount++;
+    if(self.runningRequestsCount < self.maxRequestCount){
+      self.runningRequestsCount++;
     }else{
       return;
     }
