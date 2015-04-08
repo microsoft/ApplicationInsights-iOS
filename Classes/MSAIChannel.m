@@ -69,17 +69,6 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
                           ofType:MSAIPersistenceTypeHighPriority withCompletionBlock:completionBlock];
 }
 
-- (NSMutableArray *)dataItemQueue {
-  __block NSMutableArray *queue = nil;
-  __weak typeof(self) weakSelf = self;
-  dispatch_sync(self.dataItemsOperations, ^{
-    typeof(self) strongSelf = weakSelf;
-    
-    queue = [NSMutableArray arrayWithArray:strongSelf->_dataItemQueue];
-  });
-  return queue;
-}
-
 - (void)persistDataItemQueue {
   [self invalidateTimer];
   NSArray *bundle = [NSArray arrayWithArray:_dataItemQueue];
