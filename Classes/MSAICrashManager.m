@@ -38,7 +38,7 @@ static MSAICrashManagerCallbacks msaiCrashCallbacks = {
     .handleSignal = NULL
 };
 
-// proxy implementation for PLCrashReporter to keep our interface stable while this can change
+// Proxy implementation for PLCrashReporter to keep our interface stable while this can change
 static void plcr_post_crash_callback(siginfo_t *info, ucontext_t *uap, void *context) {
   if(msaiCrashCallbacks.handleSignal != NULL) {
     msaiCrashCallbacks.handleSignal(context);
@@ -46,6 +46,8 @@ static void plcr_post_crash_callback(siginfo_t *info, ucontext_t *uap, void *con
   msai_save_events_callback(info, uap, context);
 }
 
+// Proxy that is set as a callback when the developer defined a custom callback.
+// The developer's callback will be called in plcr_post_crash_callback in addition to our default function.
 static PLCrashReporterCallbacks plCrashCallbacks = {
     .version = 0,
     .context = NULL,
@@ -53,6 +55,7 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
 };
 
 static PLCrashReporterCallbacks defaultCallBack = {
+// Our default callback that will always be executed, possibly in addition to a custom callback set by the developer.
   .version = 0,
   .context = NULL,
   .handleSignal = msai_save_events_callback
@@ -270,6 +273,7 @@ static PLCrashReporterCallbacks defaultCallBack = {
 }
 
 void msai_save_events_callback(siginfo_t *info, ucontext_t *uap, void *context) {
+  // Try to get a file descriptor with our pre-filled path
   int fd = open(saveEventsFilePath, O_WRONLY | O_CREAT | O_TRUNC, 0644);
   if (fd < 0) {
     return;
@@ -277,6 +281,7 @@ void msai_save_events_callback(siginfo_t *info, ucontext_t *uap, void *context) 
   
   size_t len = strlen(MSAISafeJsonEventsString);
   if (len > 0) {
+    // Simply write the whole string to disk and close the JSON array 
     write(fd, MSAISafeJsonEventsString, len);
     if (len >= 1) {
       write(fd, "]", 1);
