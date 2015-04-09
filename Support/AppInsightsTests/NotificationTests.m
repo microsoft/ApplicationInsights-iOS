@@ -23,8 +23,12 @@ static NSNotificationCenter *mockNotificationCenter;
 
 # pragma mark - Helper
 
-- (NSNotificationCenter *)mockNotificationCenter {
+- (void)setMockNotificationCenter:(NSNotificationCenter *)notificationCenter {
+  mockNotificationCenter = notificationCenter;
+}
 
+- (NSNotificationCenter *)mockNotificationCenter {
   return mockNotificationCenter;
 }
+
 @end

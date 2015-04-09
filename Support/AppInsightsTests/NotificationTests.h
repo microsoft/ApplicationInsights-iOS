@@ -8,6 +8,7 @@
 
 @interface NotificationTests : XCTestCase
 
+- (void)setMockNotificationCenter:(NSNotificationCenter *)notificationCenter;
 - (NSNotificationCenter *)mockNotificationCenter;
 
 @end

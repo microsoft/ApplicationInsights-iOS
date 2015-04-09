@@ -253,8 +253,7 @@ static char *const MSAITelemetryEventQueue = "com.microsoft.appInsights.telemetr
 
 #pragma mark Track DataItem
 
-- (void)trackDataItem:(MSAITelemetryData *)dataItem{
-  
+- (void)trackDataItem:(MSAITelemetryData *)dataItem {
   if(![[MSAIChannel sharedChannel] isQueueBusy]){
     MSAIEnvelope *envelope = [[MSAIEnvelopeManager sharedManager] envelopeForTelemetryData:dataItem];
     MSAIOrderedDictionary *dict = [envelope serializeToDictionary];
@@ -267,7 +266,15 @@ static char *const MSAITelemetryEventQueue = "com.microsoft.appInsights.telemetr
 - (void)trackSessionStart {
   MSAISessionStateData *sessionState = [MSAISessionStateData new];
   sessionState.state = MSAISessionState_start;
-  [self trackDataItem:sessionState];}
+
+  if(![[MSAIChannel sharedChannel] isQueueBusy]){
+    MSAIEnvelope *envelope = [[MSAIEnvelopeManager sharedManager] envelopeForTelemetryData:sessionState];
+    envelope.tags[@"ai.session.isNew"] = @"true";
+    MSAIOrderedDictionary *dict = [envelope serializeToDictionary];
+    [[MSAIChannel sharedChannel] enqueueDictionary:dict];
+  }
+}
+
 
 - (void)trackSessionEnd {
   MSAISessionStateData *sessionState = [MSAISessionStateData new];
