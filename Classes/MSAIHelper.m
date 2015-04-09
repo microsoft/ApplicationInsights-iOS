@@ -293,7 +293,7 @@ NSString *msai_appAnonID(void) {
                                andPassword:appAnonID
                             forServiceName:msai_keychainMSAIServiceName()
                             updateExisting:YES
-                             accessibility:kSecAttrAccessibleWhenUnlockedThisDeviceOnly
+                             accessibility:kSecAttrAccessibleAlwaysThisDeviceOnly
                                      error:&error];
         });
       }
