@@ -279,7 +279,7 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 }
 
 - (BOOL)integrationFlowStartedWithTimeString:(NSString *)timeString {
-  if (timeString == nil || [self isAppStoreEnvironment]) {
+  if ( (!timeString) || ([self isAppStoreEnvironment]) ) {
     return NO;
   }
   

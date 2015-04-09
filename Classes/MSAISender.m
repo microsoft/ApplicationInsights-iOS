@@ -73,7 +73,9 @@ static NSInteger const statusCodeBadRequest = 400;
   dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
     NSString *path = [[MSAIPersistence sharedInstance] requestNextPath];
     NSData *data = [[MSAIPersistence sharedInstance] dataAtPath:path];
-    [self sendData:data withPath:path];
+    if (data) {
+      [self sendData:data withPath:path];
+    }
   });
 }
 
