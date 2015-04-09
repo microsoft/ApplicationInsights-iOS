@@ -1,4 +1,4 @@
-## AppInsights SDK iOS (1.0-alpha.3)
+## Application Insights for iOS (1.0-beta.1)
 
 **Release Notes**
 
@@ -16,7 +16,7 @@
 
 ## Introduction
 
-This article describes how to integrate AppInsights into your iOS apps. The SDK  allows to send application metrics (events, traces, metrics, and pageviews) to the server. 
+This article describes how to integrate Application Insights into your iOS apps. The SDK  allows to send application metrics (events, traces, metrics, and pageviews) to the server. 
 
 This document contains the following sections:
 
@@ -37,7 +37,7 @@ The SDK runs on devices with iOS 6.0 or higher.
 <a id="download"></a> 
 ## Download & Extract
 
-1. Download the latest [AppInsights SDK for iOS](https://github.com/Microsoft/AppInsights-iOS/releases/download/v1.0-alpha.3/AppInsights-1.0-alpha.3.zip) framework.
+1. Download the latest [Application Insights for iOS](https://github.com/Microsoft/AppInsights-iOS/releases) framework.
 
 2. Unzip the file. A new folder `AppInsights` is created.
 
@@ -59,7 +59,7 @@ The SDK runs on devices with iOS 6.0 or higher.
 	- `SystemConfiguration`
 	- `Security`
 	- `CoreTelephony`(only required if iOS > 7.0)
-9. Open the info.plist of your app target and add a new field of type *String*. Name it `MSAIInstrumentationKey` and set your AppInsights instrumentation key as its value.
+9. Open the info.plist of your app target and add a new field of type *String*. Name it `MSAIInstrumentationKey` and set your Application Insights instrumentation key as its value.
 
 <a id="modify"></a> 
 ## Modify Code 
@@ -96,7 +96,7 @@ The SDK runs on devices with iOS 6.0 or higher.
 	[MSAITelemetryManager trackEventWithName:@"Hello World event!"
 								  properties:@{@"Test property 1":@"Some value",
 											 @"Test property 2":@"Some other value"}
-							     mesurements:@{@"Test measurement 1":@(4.8),
+							     measurements:@{@"Test measurement 1":@(4.8),
 											 @"Test measurement 2":@(15.16),
 		                                	 @"Test measurement 3":@(23.42)}];
 
@@ -148,7 +148,7 @@ The SDK runs on devices with iOS 6.0 or higher.
 	MSAITelemetryManager.trackEventWithName(name:"Hello World event!", 
 									  properties:@{"Test property 1":"Some value",
 												  "Test property 2":"Some other value"},
-								     mesurements:@{"Test measurement 1":@(4.8),
+								    measurements:@{"Test measurement 1":@(4.8),
 												  "Test measurement 2":@(15.16),
  											      "Test measurement 3":@(23.42)});
 
@@ -184,7 +184,7 @@ To change the URL, setup Application Insights like this:
 <a id="extensions"></a>
 ## iOS 8 Extensions
 
-The following points need to be considered to use AppInsights SDK iOS with iOS 8 Extensions:
+The following points need to be considered to use the Application Insights SDK with iOS 8 Extensions:
 
 1. Each extension is required to use the same values for version (`CFBundleShortVersionString`) and build number (`CFBundleVersion`) as the main app uses. (This is required only if you are using the same `MSAIInstrumentationKey` for your app and extensions).
 2. You need to make sure the SDK setup code is only invoked once. Since there is no `applicationDidFinishLaunching:` equivalent and `viewDidLoad` can run multiple times, you need to use a setup like the following example:
@@ -251,8 +251,8 @@ As soon as Application Insights 1.0 is available, the version doesn't have to be
 #### Podfile
 
 ```ruby
-platform :ios, '8.0' 
-pod "ApplicationInsights" , '1.0-alpha.3'
+platform :ios, '8.0'
+pod "ApplicationInsights", '1.0-beta.1'
 ```
 
 <a id="contact"></a>
