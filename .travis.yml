@@ -3,9 +3,7 @@ before_install:
 - gem install xcpretty -N
 notifications:
   slack:
-    secure: WYk2YeeylqyrjTE4DtPCLmP3AA6rAn/vrgP/poH2fBvEPErnfe+vVgkZvNdVaqftciIz33dc0aCLgRjof4SCH6MrKEn4jceUsT/XhgkRLHexJxE1grQrkOSrHH7++n8YMGpTHwD3+d9cVOymSvoHmvWYATvO7sl3IONimGH+kkA=
-    on_success: change
-    on_failure: always
+    secure: dCzA1+dtjKkHk2PK6RWBSE0Obgf0CvIejhXXH4Aba29zfVQg5Bv0yWJ34YHnPMFPA7+eyFrW2TqGqI7gA7L7Ju0RWHwu9Z0XayCcMpOCZVKTOSf/7SrAvtODKNzAT/S55HZOaj8yxK6l5a0cMGXfGM7j+NLdkjyba7ypQKsn0ug=
 script:
 - set -o pipefail
 - cd Support
