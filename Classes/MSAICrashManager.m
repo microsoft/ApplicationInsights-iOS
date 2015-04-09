@@ -54,8 +54,8 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
     .handleSignal = plcr_post_crash_callback
 };
 
-static PLCrashReporterCallbacks defaultCallBack = {
 // Our default callback that will always be executed, possibly in addition to a custom callback set by the developer.
+static PLCrashReporterCallbacks defaultCallback = {
   .version = 0,
   .context = NULL,
   .handleSignal = msai_save_events_callback
@@ -96,7 +96,7 @@ static PLCrashReporterCallbacks defaultCallBack = {
 
       [[MSAIPersistence sharedInstance] deleteCrashReporterLockFile];
 
-      [self configDefaultCallBack];
+      [self configDefaultCallback];
 
       [self configPLCrashReporter];
 
@@ -131,11 +131,6 @@ static PLCrashReporterCallbacks defaultCallBack = {
 
     [MSAICrashManager sharedManager].isSetupCorrectly = YES;
   }
-}
-
-- (void)configDefaultCallBack {
-  saveEventsFilePath = strdup([[[MSAIPersistence sharedInstance] newFileURLForPersitenceType:MSAIPersistenceTypeRegular] UTF8String]);
-  sharedChannelReference = [MSAIChannel sharedChannel];
 }
 
 - (void)dealloc {
@@ -198,7 +193,7 @@ static PLCrashReporterCallbacks defaultCallBack = {
     if(self.crashCallBacks) {
       [self.plCrashReporter setCrashCallbacks:self.crashCallBacks];
     } else {
-      [self.plCrashReporter setCrashCallbacks:&defaultCallBack];
+      [self.plCrashReporter setCrashCallbacks:&defaultCallback];
     }
 
     // Enable the Crash Reporter
@@ -270,6 +265,11 @@ static PLCrashReporterCallbacks defaultCallBack = {
   plCrashCallbacks.context = callbacks->context;
 
   self.crashCallBacks = &plCrashCallbacks;
+}
+
+- (void)configDefaultCallback {
+  saveEventsFilePath = strdup([[[MSAIPersistence sharedInstance] newFileURLForPersitenceType:MSAIPersistenceTypeRegular] UTF8String]);
+  sharedChannelReference = [MSAIChannel sharedChannel];
 }
 
 void msai_save_events_callback(siginfo_t *info, ucontext_t *uap, void *context) {
