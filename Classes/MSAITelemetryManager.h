@@ -43,7 +43,12 @@
  *  @param properties key value pairs with additional info about the event.
  *  @param measurements key value pairs, which contain custom metrics.
  */
-+ (void)trackEventWithName:(NSString *)eventName properties:(NSDictionary *)properties mesurements:(NSDictionary *)measurements;
++ (void)trackEventWithName:(NSString *)eventName properties:(NSDictionary *)properties measurements:(NSDictionary *)measurements;
+
+/**
+ *  Use correctly spelled method trackEventWithName:properties:measurements: instead.
+ */
++ (void)trackEventWithName:(NSString *)eventName properties:(NSDictionary *)properties mesurements:(NSDictionary *)measurements __deprecated_msg("Use correctly spelled version instead");
 
 /**
  *  Track by message.
@@ -130,7 +135,13 @@
  *  @param properties key value pairs with additional info about the event.
  *  @param measurements key value pairs, which contain custom metrics.
  */
-- (void)trackEventWithName:(NSString *)eventName properties:(NSDictionary *)properties mesurements:(NSDictionary *)measurements;
+- (void)trackEventWithName:(NSString *)eventName properties:(NSDictionary *)properties measurements:(NSDictionary *)measurements;
+
+/**
+ *  Use correctly spelled method trackEventWithName:properties:measurements: instead.
+ */
+- (void)trackEventWithName:(NSString *)eventName properties:(NSDictionary *)properties mesurements:(NSDictionary *)measurements
+__deprecated_msg("Use correctly spelled version instead");
 
 /**
  *  Track by message.

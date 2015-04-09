@@ -121,6 +121,7 @@ static NSInteger const statusCodeBadRequest = 400;
       [strongSelf sendSavedData];
     } else {
       MSAILog(@"Sending MSAIAppInsights data failed");
+      MSAILog(@"Error description: %@", error.localizedDescription);
       [[MSAIPersistence sharedInstance] giveBackRequestedPath:path];
     }
     
