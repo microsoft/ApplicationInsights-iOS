@@ -181,8 +181,7 @@ NSUInteger const defaultFileCount = 50;
     typeof(self) strongSelf = weakSelf;
     if([path rangeOfString:kFileBaseString].location != NSNotFound) {
       NSError *error = nil;
-      [[NSFileManager defaultManager] removeItemAtPath:path error:&error];
-      if(error) {
+      if(![[NSFileManager defaultManager] removeItemAtPath:path error:&error]) {
         MSAILog(@"Error deleting file at path %@", path);
       }
       else {
@@ -208,8 +207,13 @@ NSUInteger const defaultFileCount = 50;
 #pragma mark - Private
 
 - (NSString *)newFileURLForPersitenceType:(MSAIPersistenceType)type {
+  static NSString *applicationSupportDir;
+  static dispatch_once_t dirToken;
   
-  NSString *applicationSupportDir = [NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES) lastObject];
+  dispatch_once(&dirToken, ^{
+    applicationSupportDir = [NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES) lastObject];
+  });
+  
   NSString *uuid = msai_UUID();
   NSString *fileName = [NSString stringWithFormat:@"%@%@", kFileBaseString, uuid];
   NSString *filePath;
@@ -246,8 +250,7 @@ NSUInteger const defaultFileCount = 50;
 - (void)createFolderAtPathIfNeeded:(NSString *)path {
   if(path && ![[NSFileManager defaultManager] fileExistsAtPath:path]) {
     NSError *error = nil;
-    [[NSFileManager defaultManager] createDirectoryAtPath:path withIntermediateDirectories:NO attributes:nil error:&error];
-    if(error) {
+    if(![[NSFileManager defaultManager] createDirectoryAtPath:path withIntermediateDirectories:NO attributes:nil error:&error]) {
       MSAILog(@"Error while creating folder at: %@, with error: %@", path, error);
     }
   }
@@ -283,7 +286,7 @@ NSUInteger const defaultFileCount = 50;
 - (NSString *)nextURLWithPriority:(MSAIPersistenceType)type {
   
   NSString *directoryPath = [self folderPathForPersistenceType:type];
-  NSError *error;
+  NSError *error = nil;
   NSArray *fileNames = [[NSFileManager defaultManager] contentsOfDirectoryAtURL:[NSURL fileURLWithPath:directoryPath]
                                                      includingPropertiesForKeys:[NSArray arrayWithObject:NSURLNameKey]
                                                                         options:NSDirectoryEnumerationSkipsHiddenFiles
@@ -346,7 +349,7 @@ NSUInteger const defaultFileCount = 50;
   }else{
     NSError *error = nil;
     data = [NSJSONSerialization dataWithJSONObject:bundle options:NSJSONWritingPrettyPrinted error:&error];
-    if(error){
+    if (data == nil) {
       MSAILog(@"Unable to convert JSON to NSData: %@", [error localizedDescription]);
     }
   }

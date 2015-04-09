@@ -110,13 +110,9 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
   MSAILog(@"INFO: Starting MSAIManager");
   _startManagerIsInvoked = YES;
   
-  // Create new session
-  NSString *sessionId = [MSAISessionHelper createFirstSession];
-  
   // Configure Http-client and send persisted data
   MSAITelemetryContext *telemetryContext = [[MSAITelemetryContext alloc] initWithAppContext:_appContext
-                                                                               endpointPath:kMSAITelemetryPath
-                                                                             firstSessionId:sessionId];
+                                                                               endpointPath:kMSAITelemetryPath];
   [[MSAIEnvelopeManager sharedManager] configureWithTelemetryContext:telemetryContext];
   
   [[MSAISender sharedSender] configureWithAppClient:[self appClient]
@@ -283,7 +279,7 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 }
 
 - (BOOL)integrationFlowStartedWithTimeString:(NSString *)timeString {
-  if (timeString == nil || [self isAppStoreEnvironment]) {
+  if ( (!timeString) || ([self isAppStoreEnvironment]) ) {
     return NO;
   }
   

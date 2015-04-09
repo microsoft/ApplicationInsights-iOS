@@ -96,26 +96,36 @@ static char *const MSAITelemetryEventQueue = "com.microsoft.appInsights.telemetr
 #pragma mark - Track data
 
 + (void)trackEventWithName:(NSString *)eventName{
-  [self trackEventWithName:eventName properties:nil mesurements:nil];
+  [self trackEventWithName:eventName properties:nil measurements:nil];
 }
 
 - (void)trackEventWithName:(NSString *)eventName{
-  [self trackEventWithName:eventName properties:nil mesurements:nil];
+  [self trackEventWithName:eventName properties:nil measurements:nil];
 }
 
 + (void)trackEventWithName:(NSString *)eventName properties:(NSDictionary *)properties{
-  [self trackEventWithName:eventName properties:properties mesurements:nil];
+  [self trackEventWithName:eventName properties:properties measurements:nil];
 }
 
 - (void)trackEventWithName:(NSString *)eventName properties:(NSDictionary *)properties{
-  [self trackEventWithName:eventName properties:properties mesurements:nil];
+  [self trackEventWithName:eventName properties:properties measurements:nil];
 }
 
 + (void)trackEventWithName:(NSString *)eventName properties:(NSDictionary *)properties mesurements:(NSDictionary *)measurements{
-  [[self sharedManager] trackEventWithName:eventName properties:properties mesurements:measurements];
+  [[self sharedManager] trackEventWithName:eventName properties:properties measurements:measurements];
 }
 
+/* Deprecated method signature with spelling error. */
 - (void)trackEventWithName:(NSString *)eventName properties:(NSDictionary *)properties mesurements:(NSDictionary *)measurements{
+  [self trackEventWithName:eventName properties:properties measurements:measurements];
+}
+
+/* Deprecated method signature with spelling error. */
++ (void)trackEventWithName:(NSString *)eventName properties:(NSDictionary *)properties measurements:(NSDictionary *)measurements{
+  [[self sharedManager] trackEventWithName:eventName properties:properties measurements:measurements];
+}
+
+- (void)trackEventWithName:(NSString *)eventName properties:(NSDictionary *)properties measurements:(NSDictionary *)measurements{
   __weak typeof(self) weakSelf = self;
   dispatch_async(_telemetryEventQueue, ^{
     if(!_managerInitialised) return;
@@ -243,8 +253,7 @@ static char *const MSAITelemetryEventQueue = "com.microsoft.appInsights.telemetr
 
 #pragma mark Track DataItem
 
-- (void)trackDataItem:(MSAITelemetryData *)dataItem{
-  
+- (void)trackDataItem:(MSAITelemetryData *)dataItem {
   if(![[MSAIChannel sharedChannel] isQueueBusy]){
     MSAIEnvelope *envelope = [[MSAIEnvelopeManager sharedManager] envelopeForTelemetryData:dataItem];
     MSAIOrderedDictionary *dict = [envelope serializeToDictionary];
@@ -257,7 +266,15 @@ static char *const MSAITelemetryEventQueue = "com.microsoft.appInsights.telemetr
 - (void)trackSessionStart {
   MSAISessionStateData *sessionState = [MSAISessionStateData new];
   sessionState.state = MSAISessionState_start;
-  [self trackDataItem:sessionState];}
+
+  if(![[MSAIChannel sharedChannel] isQueueBusy]){
+    MSAIEnvelope *envelope = [[MSAIEnvelopeManager sharedManager] envelopeForTelemetryData:sessionState];
+    envelope.tags[@"ai.session.isNew"] = @"true";
+    MSAIOrderedDictionary *dict = [envelope serializeToDictionary];
+    [[MSAIChannel sharedChannel] enqueueDictionary:dict];
+  }
+}
+
 
 - (void)trackSessionEnd {
   MSAISessionStateData *sessionState = [MSAISessionStateData new];

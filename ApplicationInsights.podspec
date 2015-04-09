@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = "ApplicationInsights"
-  s.version          = "1.0-alpha.3"
+  s.version          = "1.0-beta.1"
   s.summary          = "Microsoft Application Insights SDK for iOS"
   s.description      = <<-DESC
                        Application Insights is a service that allows developers to keep their applications available, performant, and successful. 
@@ -15,7 +15,7 @@ Pod::Spec.new do |s|
   s.platform        = :ios, '6.0'
   s.requires_arc    = true
 
-  s.frameworks      = 'UIKit', 'Foundation', 'SystemConfiguration'
+  s.frameworks      = 'UIKit', 'Foundation', 'SystemConfiguration', 'Security'
   s.weak_framework  = 'CoreTelephony'
 
   s.ios.vendored_frameworks = 'AppInsights/AppInsights.framework'

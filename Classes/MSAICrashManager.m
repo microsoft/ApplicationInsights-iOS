@@ -10,7 +10,7 @@
 #import "MSAICrashData.h"
 #import "MSAIChannel.h"
 #import "MSAIChannelPrivate.h"
-#import "MSAIPersistence.h"
+#import "MSAIPersistencePrivate.h"
 #import "MSAISessionHelper.h"
 #import "MSAISessionHelperPrivate.h"
 #import "MSAIEnvelope.h"
@@ -30,21 +30,35 @@ NSString *const kMSAICrashManagerIsDisabled = @"MSAICrashManagerIsDisabled";
 NSString *const kMSAIAppWentIntoBackgroundSafely = @"MSAIAppWentIntoBackgroundSafely";
 NSString *const kMSAIAppDidReceiveLowMemoryNotification = @"MSAIAppDidReceiveLowMemoryNotification";
 
+MSAIChannel const *sharedChannelReference;
+static char const *saveEventsFilePath;
+
 static MSAICrashManagerCallbacks msaiCrashCallbacks = {
     .context = NULL,
     .handleSignal = NULL
 };
 
-// proxy implementation for PLCrashReporter to keep our interface stable while this can change
+// Proxy implementation for PLCrashReporter to keep our interface stable while this can change
 static void plcr_post_crash_callback(siginfo_t *info, ucontext_t *uap, void *context) {
-  if(msaiCrashCallbacks.handleSignal != NULL)
+  if(msaiCrashCallbacks.handleSignal != NULL) {
     msaiCrashCallbacks.handleSignal(context);
+  }
+  msai_save_events_callback(info, uap, context);
 }
 
+// Proxy that is set as a callback when the developer defined a custom callback.
+// The developer's callback will be called in plcr_post_crash_callback in addition to our default function.
 static PLCrashReporterCallbacks plCrashCallbacks = {
     .version = 0,
     .context = NULL,
     .handleSignal = plcr_post_crash_callback
+};
+
+// Our default callback that will always be executed, possibly in addition to a custom callback set by the developer.
+static PLCrashReporterCallbacks defaultCallback = {
+  .version = 0,
+  .context = NULL,
+  .handleSignal = msai_save_events_callback
 };
 
 @implementation MSAICrashManager {
@@ -82,14 +96,14 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
 
       [[MSAIPersistence sharedInstance] deleteCrashReporterLockFile];
 
+      [self configDefaultCallback];
+
       [self configPLCrashReporter];
 
       // Check if we previously crashed
       if([self.plCrashReporter hasPendingCrashReport]) {
         _didCrashInLastSession = YES;
         [self readCrashReportAndStartProcessing];
-      } else {
-        [MSAISessionHelper cleanUpSessionIds];
       }
 
       // The actual signal and mach handlers are only registered when invoking `enableCrashReporterAndReturnError`
@@ -108,8 +122,11 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
 
     [self checkForLowMemoryWarning];
     [self checkStateOfLastSession];
-    [self appEnteredForeground];
-
+    
+    if ([[UIApplication sharedApplication] applicationState] == UIApplicationStateActive) {
+      [self appEnteredForeground];
+    }
+    
     [[NSUserDefaults standardUserDefaults] setBool:NO forKey:kMSAIAppDidReceiveLowMemoryNotification];
     [[NSUserDefaults standardUserDefaults] synchronize];
 
@@ -176,6 +193,8 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
     // set any user defined callbacks, hopefully the users knows what they do
     if(self.crashCallBacks) {
       [self.plCrashReporter setCrashCallbacks:self.crashCallBacks];
+    } else {
+      [self.plCrashReporter setCrashCallbacks:&defaultCallback];
     }
 
     // Enable the Crash Reporter
@@ -247,6 +266,29 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
   plCrashCallbacks.context = callbacks->context;
 
   self.crashCallBacks = &plCrashCallbacks;
+}
+
+- (void)configDefaultCallback {
+  saveEventsFilePath = strdup([[[MSAIPersistence sharedInstance] newFileURLForPersitenceType:MSAIPersistenceTypeRegular] UTF8String]);
+  sharedChannelReference = [MSAIChannel sharedChannel];
+}
+
+void msai_save_events_callback(siginfo_t *info, ucontext_t *uap, void *context) {
+  // Try to get a file descriptor with our pre-filled path
+  int fd = open(saveEventsFilePath, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+  if (fd < 0) {
+    return;
+  }
+  
+  size_t len = strlen(MSAISafeJsonEventsString);
+  if (len > 0) {
+    // Simply write the whole string to disk and close the JSON array 
+    write(fd, MSAISafeJsonEventsString, len);
+    if (len >= 1) {
+      write(fd, "]", 1);
+    }
+  }
+  close(fd);
 }
 
 #pragma mark - Debugging Helpers
@@ -474,6 +516,7 @@ static PLCrashReporterCallbacks plCrashCallbacks = {
   // mark the end of the routine
   [[MSAIPersistence sharedInstance] deleteCrashReporterLockFile];//TODO only do this when persisting was successful?
   [self.plCrashReporter purgePendingCrashReport]; //TODO only do this when persisting was successful?
+  [MSAISessionHelper cleanUpSessions];
 }
 
 - (void)checkForOtherExceptionHandlersAfterSetup {
