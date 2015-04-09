@@ -69,13 +69,12 @@ static NSInteger const statusCodeBadRequest = 400;
       return;
     }
   }
-  
+  __weak typeof(self) weakSelf = self;
   dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    typeof(self) strongSelf = weakSelf;
     NSString *path = [[MSAIPersistence sharedInstance] requestNextPath];
     NSData *data = [[MSAIPersistence sharedInstance] dataAtPath:path];
-    if (data) {
-      [self sendData:data withPath:path];
-    }
+    [strongSelf sendData:data withPath:path];
   });
 }
 
