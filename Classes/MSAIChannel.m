@@ -80,7 +80,7 @@ char *MSAISafeJsonEventsString;
 }
 
 void msai_appendDictionaryToSafeJsonString(NSDictionary *dictionary, char **string) {
-  if (string == 0) { return; }
+  if (string == NULL) { return; }
 
   if (!dictionary) { return; }
   
@@ -103,6 +103,7 @@ void msai_appendDictionaryToSafeJsonString(NSDictionary *dictionary, char **stri
 }
 
 void msai_resetSafeJsonString(char **string) {
+  if (!string) { return; }
   free(*string);
   *string = strdup("[");
 }
