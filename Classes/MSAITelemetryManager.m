@@ -243,8 +243,7 @@ static char *const MSAITelemetryEventQueue = "com.microsoft.appInsights.telemetr
 
 #pragma mark Track DataItem
 
-- (void)trackDataItem:(MSAITelemetryData *)dataItem{
-  
+- (void)trackDataItem:(MSAITelemetryData *)dataItem {
   if(![[MSAIChannel sharedChannel] isQueueBusy]){
     MSAIEnvelope *envelope = [[MSAIEnvelopeManager sharedManager] envelopeForTelemetryData:dataItem];
     MSAIOrderedDictionary *dict = [envelope serializeToDictionary];
