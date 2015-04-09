@@ -126,7 +126,7 @@ static NSInteger const statusCodeBadRequest = 400;
     }
     
     // Inform delegate
-    if(statusCode >= 200 || statusCode <= 202){
+    if(statusCode >= 200 && statusCode <= 202){
       if(strongSelf.delegate && type == MSAIPersistenceTypeHighPriority && [strongSelf.delegate respondsToSelector:@selector(appInsightsDidFinishSendingCrashDict:)]){
         NSDictionary *crashDict = bundle.count > 0 ? bundle[0] : nil;
         [strongSelf.delegate appInsightsDidFinishSendingCrashDict:crashDict];
