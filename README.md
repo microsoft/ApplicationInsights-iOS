@@ -2,17 +2,13 @@
 
 **Release Notes**
 
-- Performance improvements
-- Expose configuarations:
-	- Set serverURL programmatically
-	- Automatic page view tracking
-	- Set instrumentation key programmatically
-- Bug fixes
-	- Use session id of previous session for crashes
-	- Session context for page views
-	- Prevent SDK from crashing if too many events are tracked
-- Add user context to payload
-- Breaking change: Rename MSAITelemetryManager to MSAITelemetryManager
+- Add a mechanism to try and save not-yet-persisted events if the containing app crashes. The events will then be sent on next app start.
+- Simplify the way session IDs are handled in the background and make it more consistent.
+- Fix spelling in different places.
+	- Please note: trackEventWithName:properties:mesurements: is now deprecated and replaced by trackEventWithName:properties:measurements:
+- Improve error logging when errors occur during sending. (Enable debug logging to see these)
+- Update the way we save data in the keychain for maximum compatibility.
+- Extend guides to add Security system framework.
 
 ## Introduction
 
