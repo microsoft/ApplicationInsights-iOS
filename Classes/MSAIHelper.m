@@ -213,8 +213,9 @@ NSString *msai_deviceType(void){
 }
 
 NSString *msai_screenSize(void){
+  CGFloat scale = [UIScreen mainScreen].scale;
   CGSize screenSize = [UIScreen mainScreen].bounds.size;
-  return [NSString stringWithFormat:@"%dx%d",(int)screenSize.height, (int)screenSize.width];
+  return [NSString stringWithFormat:@"%dx%d",(int)screenSize.height * scale, (int)screenSize.width * scale];
 }
 
 NSString *msai_sdkVersion(void){
