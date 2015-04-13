@@ -1,4 +1,4 @@
-#import "AppInsights.h"
+#import "ApplicationInsights.h"
 
 #if MSAI_FEATURE_TELEMETRY
 

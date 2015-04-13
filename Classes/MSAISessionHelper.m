@@ -1,4 +1,4 @@
-#import "AppInsightsPrivate.h"
+#import "ApplicationInsightsPrivate.h"
 #import "MSAISessionHelper.h"
 #import "MSAISessionHelperPrivate.h"
 #import "MSAIPersistence.h"
@@ -10,7 +10,7 @@
 
 static NSString *const kMSAISessionFileName = @"MSAISessions";
 static NSString *const kMSAISessionFileType = @"plist";
-static char *const MSAISessionOperationsQueue = "com.microsoft.appInsights.sessionQueue";
+static char *const MSAISessionOperationsQueue = "com.microsoft.ApplicationInsights.sessionQueue";
 
 static NSInteger const defaultSessionExpirationTime = 20;
 static NSString *const kMSAIApplicationDidEnterBackgroundTime = @"MSAIApplicationDidEnterBackgroundTime";

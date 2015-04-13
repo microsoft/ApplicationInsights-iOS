@@ -14,9 +14,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "1E8E66AD15BC3D7700632A2E"
-               BuildableName = "AppInsights Documentation"
-               BlueprintName = "AppInsights Documentation"
-               ReferencedContainer = "container:AppInsights.xcodeproj">
+               BuildableName = "ApplicationInsights Documentation"
+               BlueprintName = "ApplicationInsights Documentation"
+               ReferencedContainer = "container:ApplicationInsights.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -42,9 +42,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "1E8E66AD15BC3D7700632A2E"
-            BuildableName = "AppInsights Documentation"
-            BlueprintName = "AppInsights Documentation"
-            ReferencedContainer = "container:AppInsights.xcodeproj">
+            BuildableName = "ApplicationInsights Documentation"
+            BlueprintName = "ApplicationInsights Documentation"
+            ReferencedContainer = "container:ApplicationInsights.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>

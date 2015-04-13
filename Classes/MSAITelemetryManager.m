@@ -1,8 +1,8 @@
-#import "AppInsights.h"
+#import "ApplicationInsights.h"
 
 #if MSAI_FEATURE_TELEMETRY
 
-#import "AppInsightsPrivate.h"
+#import "ApplicationInsightsPrivate.h"
 #import "MSAIHelper.h"
 
 #import "MSAITelemetryManagerPrivate.h"
@@ -29,7 +29,7 @@
 #import "MSAISessionHelperPrivate.h"
 #import "MSAISessionStateData.h"
 
-static char *const MSAITelemetryEventQueue = "com.microsoft.appInsights.telemetryEventQueue";
+static char *const MSAITelemetryEventQueue = "com.microsoft.ApplicationInsights.telemetryEventQueue";
 
 @implementation MSAITelemetryManager{
   id _sessionStartedObserver;

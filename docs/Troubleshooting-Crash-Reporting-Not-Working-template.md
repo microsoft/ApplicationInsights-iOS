@@ -9,7 +9,7 @@ This is a checklist to help find the issue if crashes do not appear in HockeyApp
 
 3. Enable the debug logging option and check the output if the Crash Manager gets `Setup`, `Started`, returns no error message and sending the crash report to the server results in no error:
 
-        [MSAIAppInsights sharedInstance].debugLogEnabled = YES;
+        [MSAIApplicationInsights sharedInstance].debugLogEnabled = YES;
     
 
 4. Make sure Xcode debugger is not attached while causing the app to crash

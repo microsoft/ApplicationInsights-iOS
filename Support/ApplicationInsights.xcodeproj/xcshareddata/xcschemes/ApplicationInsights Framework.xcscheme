@@ -14,9 +14,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "1E4F61E91621AD970033EFC5"
-               BuildableName = "AppInsights Framework"
-               BlueprintName = "AppInsights Framework"
-               ReferencedContainer = "container:AppInsights.xcodeproj">
+               BuildableName = "ApplicationInsights Framework"
+               BlueprintName = "ApplicationInsights Framework"
+               ReferencedContainer = "container:ApplicationInsights.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -42,9 +42,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "1E4F61E91621AD970033EFC5"
-            BuildableName = "AppInsights Framework"
-            BlueprintName = "AppInsights Framework"
-            ReferencedContainer = "container:AppInsights.xcodeproj">
+            BuildableName = "ApplicationInsights Framework"
+            BlueprintName = "ApplicationInsights Framework"
+            ReferencedContainer = "container:ApplicationInsights.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>

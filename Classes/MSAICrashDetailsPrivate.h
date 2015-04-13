@@ -1,4 +1,4 @@
-#import <AppInsights/AppInsights.h>
+#import "ApplicationInsights.h"
 
 extern NSString *const __unused kMSAICrashKillSignal;
 
