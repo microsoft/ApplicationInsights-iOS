@@ -70,12 +70,6 @@
   assertThatInteger([resultString intValue], greaterThan(@(0)));
 }
 
-- (void)testUUIDPreiOS6 {
-  NSString *resultString = msai_UUIDPreiOS6();
-  assertThat(resultString, notNilValue());
-  assertThatInteger([resultString length], equalToInteger(36));
-}
-
 - (void)testUUID {
   NSString *resultString = msai_UUID();
   assertThat(resultString, notNilValue());
