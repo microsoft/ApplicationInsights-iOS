@@ -12,5 +12,6 @@ script:
   xcpretty -c
 - xcodebuild -project ApplicationInsights.xcodeproj -scheme "ApplicationInsights Framework" -sdk iphonesimulator
   -configuration Release | xcpretty -c
-- cd ../Products
-- pod lib lint
+- cd ..
+- cp -R Products/ApplicationInsights ApplicationInsights
+- pod lib lint 
