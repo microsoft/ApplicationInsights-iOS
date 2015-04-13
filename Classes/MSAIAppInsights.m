@@ -76,7 +76,7 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 #pragma mark - Setup & Start
 
 - (void)setup {
-#if TARGET_IPHONE_SIMULATOR
+#if TARGET_IPHONE_SIMULATOR || defined DEBUG
   self.debugLogEnabled = YES;
 #else
   self.debugLogEnabled = NO;
