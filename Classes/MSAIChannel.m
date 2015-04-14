@@ -5,7 +5,7 @@
 #import "MSAIEnvelope.h"
 #import "MSAIHTTPOperation.h"
 #import "MSAIAppClient.h"
-#import "AppInsightsPrivate.h"
+#import "ApplicationInsightsPrivate.h"
 #import "MSAIData.h"
 #import "MSAISender.h"
 #import "MSAISenderPrivate.h"
@@ -20,7 +20,8 @@ static NSInteger const defaultMaxBatchCount = 50;
 static NSInteger const defaultBatchInterval = 15;
 #endif
 
-static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.senderQueue";
+static char *const MSAIDataItemsOperationsQueue = "com.microsoft.ApplicationInsights.senderQueue";
+char *MSAISafeJsonEventsString;
 
 @implementation MSAIChannel
 
@@ -58,8 +59,8 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
       typeof(self) strongSelf = weakSelf;
       
       // Enqueue item
-      [strongSelf->_dataItemQueue addObject:dictionary];
-      
+      [strongSelf addDictionaryToQueues:dictionary];
+
       if([strongSelf->_dataItemQueue count] >= strongSelf.senderBatchSize) {
         
         // Max batch count has been reached, so write queue to disk and delete all items.
@@ -71,6 +72,42 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
       }
     });
   }
+}
+
+- (void)addDictionaryToQueues:(MSAIOrderedDictionary *)dictionary {
+  // Since we can't persist every event right away, we write it to a simple C string.
+  // This can then be written to disk by a signal handler in case of a crash.
+  [self->_dataItemQueue addObject:dictionary];
+  msai_appendDictionaryToSafeJsonString(dictionary, &(MSAISafeJsonEventsString));
+}
+
+void msai_appendDictionaryToSafeJsonString(NSDictionary *dictionary, char **string) {
+  if (string == NULL) { return; }
+
+  if (!dictionary) { return; }
+  
+  if (*string == NULL || strlen(*string) == 0) {
+    msai_resetSafeJsonString(string);
+  }
+
+  NSError *error = nil;
+  NSData *json_data = [NSJSONSerialization dataWithJSONObject:dictionary options:0 error:&error];
+  if (!json_data) {
+    MSAILog(@"JSONSerialization error: %@", error.description);
+    return;
+  }
+
+  char *new_string = NULL;
+  // Concatenate old string with new JSON string and add a comma.
+  asprintf(&new_string, "%s%.*s,", *string, (int)MIN(json_data.length, (NSUInteger)INT_MAX), json_data.bytes);
+  free(*string);
+  *string = new_string;
+}
+
+void msai_resetSafeJsonString(char **string) {
+  if (!string) { return; }
+  free(*string);
+  *string = strdup("[");
 }
 
 - (void)processDictionary:(MSAIOrderedDictionary *)dictionary withCompletionBlock: (nullable void (^)(BOOL success)) completionBlock{
@@ -93,7 +130,10 @@ static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.sen
   [self invalidateTimer];
   NSArray *bundle = [NSArray arrayWithArray:_dataItemQueue];
   [[MSAIPersistence sharedInstance] persistBundle:bundle ofType:MSAIPersistenceTypeRegular withCompletionBlock:nil];
+  
+  // Reset both, the async-signal-safe and normal queue.
   [_dataItemQueue removeAllObjects];
+  msai_resetSafeJsonString(&(MSAISafeJsonEventsString));
 }
 
 - (BOOL)isQueueBusy{

@@ -3,14 +3,14 @@
 
 NS_ASSUME_NONNULL_BEGIN
 /**
- *  Generic AppInsights API client
+ *  Generic ApplicationInsights API client
  */
 @interface MSAIAppClient : NSObject
 
 /**
  *	designated initializer
  *
- *	@param	baseURL	the baseURL of the AppInsights instance
+ *	@param	baseURL	the baseURL of the ApplicationInsights instance
  */
 - (instancetype)initWithBaseURL:(NSURL*)baseURL;
 

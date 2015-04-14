@@ -70,7 +70,7 @@ NS_ASSUME_NONNULL_BEGIN
  
  See `[MSAICrashManager appNotTerminatingCleanlyDetectionEnabled]` for more details about which kind of kills can be detected.
  
- @warning This property only has a correct value, once `[MSAIAppInsights start]` was
+ @warning This property only has a correct value, once `[MSAIApplicationInsights start]` was
  invoked! In addition, it is automatically disabled while a debugger session is active!
  
  @see `[MSAICrashManager appNotTerminatingCleanlyDetectionEnabled]`

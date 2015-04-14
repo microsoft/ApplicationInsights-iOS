@@ -25,7 +25,6 @@ NSString *msai_sdkBuild(void);
 NSString *msai_dec(void);
 NSString *msai_mainBundleIdentifier(void);
 NSString *msai_encodeInstrumentationKey(NSString *inputString);
-NSString *msai_UUIDPreiOS6(void);
 NSString *msai_UUID(void);
 NSString *msai_appAnonID(void);
 BOOL msai_isPreiOS7Environment(void);

@@ -44,7 +44,7 @@ NS_ASSUME_NONNULL_BEGIN
  *  @param properties key value pairs with additional info about the event.
  *  @param measurements key value pairs, which contain custom metrics.
  */
-+ (void)trackEventWithName:(NSString *)eventName properties:(nullable NSDictionary *)properties mesurements:(nullable NSDictionary *)measurements;
++ (void)trackEventWithName:(NSString *)eventName properties:(nullable NSDictionary *)properties measurements:(nullable NSDictionary *)measurements;
 
 /**
  *  Track by message.
@@ -131,7 +131,7 @@ NS_ASSUME_NONNULL_BEGIN
  *  @param properties key value pairs with additional info about the event.
  *  @param measurements key value pairs, which contain custom metrics.
  */
-- (void)trackEventWithName:(NSString *)eventName properties:(nullable NSDictionary *)properties mesurements:(nullable NSDictionary *)measurements;
+- (void)trackEventWithName:(NSString *)eventName properties:(nullable NSDictionary *)properties measurements:(nullable NSDictionary *)measurements;
 
 /**
  *  Track by message.

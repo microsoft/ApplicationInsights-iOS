@@ -1,9 +1,3 @@
-//
-//  MSAIAppClientTests
-//  AppInsightsTests
-//
-//
-
 #import <XCTest/XCTest.h>
 
 #define HC_SHORTHAND
@@ -12,7 +6,7 @@
 #define MOCKITO_SHORTHAND
 #import <OCMockitoIOS/OCMockitoIOS.h>
 
-#import "AppInsights.h"
+#import "ApplicationInsights.h"
 #import "MSAIAppClient.h"
 #import "MSAIHTTPOperation.h"
 #import "MSAITestHelper.h"

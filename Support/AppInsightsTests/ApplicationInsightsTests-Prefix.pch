@@ -1,7 +1,3 @@
-//
-// Prefix header for all source files of the 'AppInsightsSDKTests' target in the 'AppInsightsSDKTests' project
-//
-
 #ifdef __OBJC__
   #import <UIKit/UIKit.h>
   #import <Foundation/Foundation.h>

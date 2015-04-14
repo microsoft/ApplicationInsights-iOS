@@ -71,8 +71,7 @@ NS_ASSUME_NONNULL_BEGIN
  *  @return the telemetry context
  */
 - (instancetype)initWithAppContext:(MSAIContext *)appContext
-                      endpointPath:(NSString *)endpointPath
-                    firstSessionId:(NSString *)sessionId;
+                      endpointPath:(NSString *)endpointPath;
 
 ///-----------------------------------------------------------------------------
 /// @name Session
@@ -82,25 +81,6 @@ NS_ASSUME_NONNULL_BEGIN
  *  A reference to the userDefaults being used to store values
  */
 @property(nonatomic, weak) NSUserDefaults *userDefaults;
-
-/**
- *  Renews or even creates a new session if needed.
- */
-- (void)resetIsNewFlag;
-
-/**
- *  Checks if current session is the first one.
- *
- *  @return YES if current session has not been renewed or replaced by a new one
- */
-- (BOOL)isFirstSession;
-
-/**
- *  Update session context with a given session id.
- *
- *  @param sessionId the session id of the new session
- */
-- (void)updateSessionContextWithId:(NSString *)sessionId;
 
 ///-----------------------------------------------------------------------------
 /// @name Network status

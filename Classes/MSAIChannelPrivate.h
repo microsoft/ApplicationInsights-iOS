@@ -10,6 +10,7 @@
 @class MSAICrashData;
 @class MSAIOrderedDictionary;
 
+FOUNDATION_EXTERN char *MSAISafeJsonEventsString;
 NS_ASSUME_NONNULL_BEGIN
 @interface MSAIChannel ()
 
@@ -39,11 +40,28 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) NSMutableArray *dataItemQueue;
 
 /**
+ *  A C function that serializes a given dictionary to JSON and appends it to a char string
+ *
+ *  @param dictionary A dictionary which will be serialized to JSON and then appended to the string.
+ *  @param string The C string which the dictionary's JSON representation will be appended to.
+ */
+void msai_appendDictionaryToSafeJsonString(NSDictionary *dictionary, char **string);
+
+/**
+ *  Reset MSAISafeJsonEventsString so we can start appending JSON dictionaries.
+ *
+ *  @param string The string that will be reset.
+ */
+void msai_resetSafeJsonString(char **string);
+
+/**
  *  Enqueue telemetry data (events, metrics, exceptions, traces) before processing it.
  *
  *  @param dictionary   the dictionary object, which should be processed
  */
 - (void)enqueueDictionary:(MSAIOrderedDictionary *)dictionary;
+
+- (void)addDictionaryToQueues:(MSAIOrderedDictionary *)dictionary;
 
 /**
  *  Directly process telemetry data (crashs) without enqueuing it first.
@@ -89,6 +107,15 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (void)invalidateTimer;
 
+/**
+ *  A method which indicates whether the telemetry pipeline is busy and no new data should be enqueued.
+ *  Currently, we drop telemetry data if this returns YES.
+ *  This depends on defaultMaxBatchCount and defaultBatchInterval.
+ *
+ *  @see defaultMaxBatchCount
+ *  @see defaultBatchInterval
+ *  @return Returns yes if currently no new data should be enqueued on the channel.
+ */
 - (BOOL)isQueueBusy;
 
 @end

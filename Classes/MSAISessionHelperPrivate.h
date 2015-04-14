@@ -1,12 +1,13 @@
 #import <Foundation/Foundation.h>
 #import "MSAISessionHelper.h"
+#import "MSAISession.h"
 
 NS_ASSUME_NONNULL_BEGIN
 @interface MSAISessionHelper()
 
 FOUNDATION_EXPORT NSString *const MSAISessionStartedNotification;
 FOUNDATION_EXPORT NSString *const MSAISessionEndedNotification;
-FOUNDATION_EXPORT NSString *const kMSAISessionInfoSessionId;
+FOUNDATION_EXPORT NSString *const kMSAISessionInfoSession;
 
 FOUNDATION_EXPORT NSString *const kMSAIApplicationWasLaunched;
 
@@ -36,32 +37,25 @@ FOUNDATION_EXPORT NSString *const kMSAIApplicationWasLaunched;
 ///-----------------------------------------------------------------------------
 
 /**
- *  Returns the first session id.
- *
- *  @return the first session id
- */
-+ (NSString *)createFirstSession;
-
-/**
  *  Start a new session.
  */
-+ (void)startNewSession;
++ (MSAISession *)startNewSession;
 
 /**
  *  Start a new session if the method is called more than 20 seconds after app went to background for the last time.
  */
-+ (void)startNewSessionIfNeeded;
++ (MSAISession *)startNewSessionIfNeeded;
 
 
 /**
  *  Start a new session.
  */
-- (void)startNewSession;
+- (MSAISession *)startNewSession;
 
 /**
  *  Start a new session if the method is called more than 20 seconds after app went to background for the last time.
  */
-- (void)startNewSessionIfNeeded;
+- (MSAISession *)startNewSessionIfNeeded;
 
 
 ///-----------------------------------------------------------------------------
@@ -72,17 +66,9 @@ FOUNDATION_EXPORT NSString *const kMSAIApplicationWasLaunched;
  *  Adds a new sessionId (value) for a given timestamp (key) to the session plist.
  *
  *  @param sessionId the sessionId (value)
- *  @param date the date, which represents the creation time of the session
- */
-+ (void)addSessionId:(NSString *)sessionId withDate:(NSDate *)date;
-
-/**
- *  Adds a new sessionId (value) for a given timestamp (key) to the session plist.
- *
- *  @param sessionId the sessionId (value)
  *  @param timestamp the timestamp, which represents the creation of the session
  */
-- (void)addSessionId:(NSString *)sessionId withDate:(NSDate *)date;
+- (void)addSession:(MSAISession *)session withDate:(NSDate *)date;
 
 ///-----------------------------------------------------------------------------
 /// @name Getting a session
@@ -95,7 +81,7 @@ FOUNDATION_EXPORT NSString *const kMSAIApplicationWasLaunched;
  *
  *  @return the sessionId of the session, in which the crash occured
  */
-+ (NSString *)sessionIdForDate:(NSDate *)date;
++ (MSAISession *)sessionForDate:(NSDate *)date;
 
 /**
  *  Returns the best effort based on a given timestamp.
@@ -105,7 +91,7 @@ FOUNDATION_EXPORT NSString *const kMSAIApplicationWasLaunched;
  *
  *  @return the sessionId of the session, in which the crash occured
  */
-- (NSString *)sessionIdForDate:(NSDate *)date;
+- (MSAISession *)sessionForDate:(NSDate *)date;
 
 ///-----------------------------------------------------------------------------
 /// @name Removing sessions
@@ -116,29 +102,34 @@ FOUNDATION_EXPORT NSString *const kMSAIApplicationWasLaunched;
  *
  *  @param sessionId the sessionId of the plist entry, which should be removed
  */
-+ (void)removeSessionId:(NSString *)sessionId;
++ (void)removeSession:(MSAISession *)session;
 
 /**
  *  Keep the most recent sessionId, but remove all other entries from the plist.
  *  This should only be called after you made sure you won't need any other session IDs anymore.
  */
-+ (void)cleanUpSessionIds;
++ (void)cleanUpSessions;
 
 /**
  *  Removes the entry for a given sessionId.
  *
  *  @param sessionId the sessionId of the plist entry, which should be removed
  */
-- (void)removeSessionId:(NSString *)sessionId;
+- (void)removeSession:(MSAISession *)session;
 
 /**
  *  Keep the most recent sessionId, but all other entries from the plist
  */
-- (void)cleanUpSessionIds;
+- (void)cleanUpSessions;
 
 ///-----------------------------------------------------------------------------
 /// @name Helper
 ///-----------------------------------------------------------------------------
+
+/**
+ *  This is called whenever the app enters the background and saves the current time to NSUserDefaults.
+ */
+- (void)updateDidEnterBackgroundTime;
 
 /**
  *  Turn a NSDate object into a unix time timestamp

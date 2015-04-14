@@ -1,5 +1,5 @@
 #import "MSAITestHelper.h"
-#import "AppInsightsPrivate.h"
+#import "ApplicationInsightsPrivate.h"
 
 NSString *const kMSAIDummyInstrumentationKey = @"aaaaaaa-bbbb-cccc-dddd-01234567";
 

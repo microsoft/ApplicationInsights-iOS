@@ -13,8 +13,8 @@ NSString * const kMSAIReachabilityTypeChangedNotification = @"MSAIReachabilityTy
 NSString* const kMSAIReachabilityUserInfoName = @"kName";
 NSString* const kMSAIReachabilityUserInfoType = @"kType";
 
-static char *const MSAIReachabilitySingletonQueue = "com.microsoft.appInsights.singletonQueue";
-static char *const MSAIReacabilityNetworkQueue = "com.microsoft.appInsights.networkQueue";
+static char *const MSAIReachabilitySingletonQueue = "com.microsoft.ApplicationInsights.singletonQueue";
+static char *const MSAIReacabilityNetworkQueue = "com.microsoft.ApplicationInsights.networkQueue";
 
 static void MSAIReachabilityCallback(SCNetworkReachabilityRef target, SCNetworkReachabilityFlags flags, void* info){
   if(info != NULL && [(__bridge NSObject*) info isKindOfClass: [MSAIReachability class]]){

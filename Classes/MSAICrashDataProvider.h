@@ -12,7 +12,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 /**
- *  AppInsights Crash Reporter error domain
+ *  ApplicationInsights Crash Reporter error domain
  */
 typedef NS_ENUM (NSInteger, MSAIBinaryImageType) {
   /**

@@ -50,24 +50,6 @@
   assertThat(_sut.endpointPath, notNilValue());
 }
 
-- (void)testContextDictionaryUpdateSessionContext {
-  [_sut updateSessionContextWithId:@"mySessionUUID"];
-  MSAISession *session = _sut.session;
-  XCTAssertTrue([session.isNew isEqualToString:@"true"]);
-  #pragma clang diagnostic push
-  #pragma clang diagnostic ignored "-Wunused"
-  MSAIOrderedDictionary *contextDict = _sut.contextDictionary;
-  #pragma clang diagnostic pop
-  XCTAssertTrue([session.isNew isEqualToString:@"false"]);
-}
-
-- (void)testUpdateSessionContext {
-  _sut.session.isNew = @"true";
-  [_sut resetIsNewFlag];
-  
-  XCTAssertTrue([_sut.session.isNew isEqualToString:@"false"]);
-}
-
 - (void)testContextDictionaryPerformance {
     [self measureBlock:^{
       for (int i = 0; i < 1000; ++i) {
@@ -76,39 +58,12 @@
     }];
 }
 
-- (void)testIsFirstSession {
-  NSUserDefaults *userDefaults = [NSUserDefaults new];
-  _sut.userDefaults = userDefaults;
-  
-  [userDefaults setBool:NO forKey:kMSAIApplicationWasLaunched];
-  assertThatBool([_sut isFirstSession], equalToBool(YES));
-  
-  [userDefaults setBool:YES forKey:kMSAIApplicationWasLaunched];
-  assertThatBool([_sut isFirstSession], equalToBool(NO));
-}
-
-- (void)testCreateNewSession {
-  MSAISession *session = _sut.session;
-  NSUserDefaults *userDefaults = [NSUserDefaults new];
-  _sut.userDefaults = userDefaults;
-  [userDefaults setBool:YES forKey:kMSAIApplicationWasLaunched];
-
-  [_sut updateSessionContextWithId:@"hjdasq672323"];
-  XCTAssertTrue([session.isNew isEqualToString:@"true"]);
-  XCTAssertTrue([session.isFirst isEqualToString:@"false"]);
-  
-  NSString *firstGUID = session.sessionId;
-
-  [_sut updateSessionContextWithId:@"gdszdg76432"];
-  XCTAssertFalse([firstGUID isEqualToString:session.sessionId]);
-}
-
 #pragma mark - Setup helpers
 
 - (MSAITelemetryContext *)telemetryContext{
   
   MSAIContext *context = [[MSAIContext alloc]initWithInstrumentationKey:@"123"];
-  MSAITelemetryContext *telemetryContext = [[MSAITelemetryContext alloc]initWithAppContext:context endpointPath:@"path" firstSessionId:@"abc123"];
+  MSAITelemetryContext *telemetryContext = [[MSAITelemetryContext alloc] initWithAppContext:context endpointPath:@"path"];
 
   return telemetryContext;
 }
