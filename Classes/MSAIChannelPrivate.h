@@ -10,7 +10,7 @@
 @class MSAICrashData;
 @class MSAIOrderedDictionary;
 
-FOUNDATION_EXTERN char *MSAISafeJsonEventsString;
+FOUNDATION_EXTERN  char * __nonnull MSAISafeJsonEventsString;
 NS_ASSUME_NONNULL_BEGIN
 @interface MSAIChannel ()
 
@@ -45,14 +45,14 @@ NS_ASSUME_NONNULL_BEGIN
  *  @param dictionary A dictionary which will be serialized to JSON and then appended to the string.
  *  @param string The C string which the dictionary's JSON representation will be appended to.
  */
-void msai_appendDictionaryToSafeJsonString(NSDictionary *dictionary, char **string);
+void msai_appendDictionaryToSafeJsonString(NSDictionary *dictionary, char *__nonnull*__nonnull string);
 
 /**
  *  Reset MSAISafeJsonEventsString so we can start appending JSON dictionaries.
  *
  *  @param string The string that will be reset.
  */
-void msai_resetSafeJsonString(char **string);
+void msai_resetSafeJsonString(char *__nonnull*__nonnull string);
 
 /**
  *  Enqueue telemetry data (events, metrics, exceptions, traces) before processing it.
