@@ -1,7 +1,7 @@
 #import "MSAIHelper.h"
 #import "MSAIKeychainUtils.h"
-#import "AppInsights.h"
-#import "AppInsightsPrivate.h"
+#import "ApplicationInsights.h"
+#import "ApplicationInsightsPrivate.h"
 #import <QuartzCore/QuartzCore.h>
 
 #import <sys/sysctl.h>
@@ -215,7 +215,7 @@ NSString *msai_deviceType(void){
 NSString *msai_screenSize(void){
   CGFloat scale = [UIScreen mainScreen].scale;
   CGSize screenSize = [UIScreen mainScreen].bounds.size;
-  return [NSString stringWithFormat:@"%dx%d",(int)screenSize.height * scale, (int)screenSize.width * scale];
+  return [NSString stringWithFormat:@"%dx%d",(int)(screenSize.height * scale), (int)(screenSize.width * scale)];
 }
 
 NSString *msai_sdkVersion(void){

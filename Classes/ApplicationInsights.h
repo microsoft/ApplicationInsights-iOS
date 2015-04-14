@@ -1,8 +1,8 @@
 #ifndef MSAI_h
 #define MSAI_h
 
-#import "AppInsightsFeatureConfig.h"
-#import "MSAIAppInsights.h"
+#import "ApplicationInsightsFeatureConfig.h"
+#import "MSAIApplicationInsights.h"
 
 #if MSAI_FEATURE_CRASH_REPORTER
 #import "MSAICrashManager.h"
@@ -24,7 +24,7 @@ typedef MSAITelemetryManager MSAIMetricsManager;
 
 #endif /* MSAI_FEATURE_TELEMETRY */
 
-// Notification message which AppInsightsManager is listening to, to retry requesting updated from the server
+// Notification message which MSAIApplicationInsights is listening to, to retry requesting updated from the server
 #define MSAINetworkDidBecomeReachableNotification @"MSAINetworkDidBecomeReachable"
 
 #define MSAI_BASE_URL   @"https://dc.services.visualstudio.com"

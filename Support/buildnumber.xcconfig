@@ -1,4 +1,4 @@
-#include "AppInsights.xcconfig"
+#include "ApplicationInsights.xcconfig"
 
 BUILD_NUMBER = 4
 VERSION_STRING = 1.0-beta.1

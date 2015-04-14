@@ -6,14 +6,14 @@
 #define MOCKITO_SHORTHAND
 #import <OCMockitoIOS/OCMockitoIOS.h>
 
-#import "AppInsights.h"
-#import "AppInsightsPrivate.h"
+#import "ApplicationInsights.h"
+#import "ApplicationInsightsPrivate.h"
 #import "MSAIAppClient.h"
 #import "MSAITelemetryManager.h"
 #import "MSAITelemetryManagerPrivate.h"
-#import "NotificationTests.h"
+#import "MSAINotificationTests.h"
 
-@interface MSAITelemetryManagerTests : NotificationTests
+@interface MSAITelemetryManagerTests : MSAINotificationTests
 
 @property (strong) MSAITelemetryManager *sut;
 

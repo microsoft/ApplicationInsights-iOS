@@ -1,9 +1,9 @@
 #import <Foundation/Foundation.h>
 
-@interface MSAIAppInsights : NSObject
+@interface MSAIApplicationInsights : NSObject
 
 ///-----------------------------------------------------------------------------
-/// @name Setting up and start an MSAIAppInsights
+/// @name Setting up and start an MSAIApplicationInsights
 ///-----------------------------------------------------------------------------
 
 /**
@@ -16,7 +16,7 @@
  * Configures the manager with a instrumentation key and initializes all modules. 
  * This method should be called before calling `start`.
  *
- *  @param instrumentationKey the instrumentationKey of your AppInsights component
+ *  @param instrumentationKey the instrumentationKey of your Application Insights component
  */
 + (void)setupWithInstrumentationKey:(NSString *)instrumentationKey;
 
@@ -29,7 +29,7 @@
 + (void)start;
 
 ///-----------------------------------------------------------------------------
-/// @name Getting the shared MSAIAppInsights instance
+/// @name Getting the shared MSAIApplicationInsights instance
 ///-----------------------------------------------------------------------------
 
 /**
@@ -37,10 +37,10 @@
  *
  * @return a singleton MSAIManager instance ready use
  */
-+ (MSAIAppInsights *)sharedInstance;
++ (MSAIApplicationInsights *)sharedInstance;
 
 ///-----------------------------------------------------------------------------
-/// @name Setting up and start an MSAIAppInsights instance
+/// @name Setting up and start an MSAIApplicationInsights instance
 ///-----------------------------------------------------------------------------
 
 /**
@@ -53,7 +53,7 @@
  * Configures the manager with a instrumentation key and initializes all modules.
  * This method should be called before calling `start`.
  *
- *  @param instrumentationKey the instrumentationKey of your AppInsights component
+ *  @param instrumentationKey the instrumentationKey of your Application Insights component
  */
 - (void)setupWithInstrumentationKey:(NSString *)instrumentationKey;
 
@@ -66,12 +66,12 @@
 - (void)start;
 
 ///-----------------------------------------------------------------------------
-/// @name Configuring MSAIAppInsights
+/// @name Configuring MSAIApplicationInsights
 ///-----------------------------------------------------------------------------
 
 /**
  * Defines the server URL to send data to or request data from. By default this is set 
- * to the AppInsights servers and there rarely should be a need to modify that.
+ * to the Application Insights servers and there rarely should be a need to modify that.
  *
  * @warning This property needs to be set before calling `startManager`. 
  * Since there are several endpoints for different data types, you should not set it for now.
@@ -168,20 +168,20 @@
 ///-----------------------------------------------------------------------------
 
 /**
- * Pings the server with the AppInsights app identifiers used for initialization.
+ * Pings the server with the Application Insights app identifiers used for initialization.
  * Call this method once for debugging purposes to test if your SDK setup code
  * reaches the server successfully.
- * Once invoked, check the apps page on AppInsights for a verification.
+ * Once invoked, check the apps page on Application Insights for a verification.
  * If you setup the SDK with a beta and live identifier, a call to both app IDs will be done.
  * This call is ignored if the app is running in the App Store!.
  */
 + (void)testIdentifier;
 
 /**
- * Pings the server with the AppInsights app identifiers used for initialization.
+ * Pings the server with the Application Insights app identifiers used for initialization.
  * Call this method once for debugging purposes to test if your SDK setup code
  * reaches the server successfully.
- * Once invoked, check the apps page on AppInsights for a verification.
+ * Once invoked, check the apps page on Application Insights for a verification.
  * If you setup the SDK with a beta and live identifier, a call to both app IDs will be done.
  * This call is ignored if the app is running in the App Store!.
  */

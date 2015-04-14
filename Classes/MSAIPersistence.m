@@ -1,7 +1,7 @@
 #import "MSAIPersistence.h"
 #import "MSAIEnvelope.h"
 #import "MSAICrashData.h"
-#import "AppInsightsPrivate.h"
+#import "ApplicationInsightsPrivate.h"
 #import "MSAIHelper.h"
 
 NSString *const kHighPrioString = @"highPrio";
@@ -11,7 +11,7 @@ NSString *const kSessionIdsString = @"sessionIds";
 NSString *const kFileBaseString = @"app-insights-bundle-";
 
 NSString *const MSAIPersistenceSuccessNotification = @"MSAIPersistenceSuccessNotification";
-char const *kPersistenceQueueString = "com.microsoft.appInsights.persistenceQueue";
+char const *kPersistenceQueueString = "com.microsoft.ApplicationInsights.persistenceQueue";
 NSUInteger const defaultFileCount = 50;
 
 @implementation MSAIPersistence{

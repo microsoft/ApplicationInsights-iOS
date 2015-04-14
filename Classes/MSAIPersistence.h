@@ -113,7 +113,7 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
 * Between bundles of the same MSAIPersistenceType, the order is arbitrary.
 * Returns 'nil' if no bundle is available
 *
-* @return a bundle of AppInsightsData that's ready to be sent to the server
+* @return a bundle of data that's ready to be sent to the server
 */
 
 /**

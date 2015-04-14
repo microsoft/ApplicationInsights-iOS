@@ -1,6 +1,6 @@
-#import "AppInsights.h"
+#import "ApplicationInsights.h"
 
-@interface MSAIAppInsights ()
+@interface MSAIApplicationInsights ()
 
 /**
  *  Checks whether Instrumentation Key is plausible.
