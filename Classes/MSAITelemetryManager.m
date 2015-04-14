@@ -111,16 +111,6 @@ static char *const MSAITelemetryEventQueue = "com.microsoft.ApplicationInsights.
   [self trackEventWithName:eventName properties:properties measurements:nil];
 }
 
-+ (void)trackEventWithName:(NSString *)eventName properties:(NSDictionary *)properties mesurements:(NSDictionary *)measurements{
-  [[self sharedManager] trackEventWithName:eventName properties:properties measurements:measurements];
-}
-
-/* Deprecated method signature with spelling error. */
-- (void)trackEventWithName:(NSString *)eventName properties:(NSDictionary *)properties mesurements:(NSDictionary *)measurements{
-  [self trackEventWithName:eventName properties:properties measurements:measurements];
-}
-
-/* Deprecated method signature with spelling error. */
 + (void)trackEventWithName:(NSString *)eventName properties:(NSDictionary *)properties measurements:(NSDictionary *)measurements{
   [[self sharedManager] trackEventWithName:eventName properties:properties measurements:measurements];
 }

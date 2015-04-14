@@ -14,14 +14,6 @@
 #if MSAI_FEATURE_TELEMETRY
 #import "MSAICategoryContainer.h"
 #import "MSAITelemetryManager.h"
-#import "MSAIMetricsManager.h"
-
-/**
- *  MSAIMetricsManager has been renamed to MSAITelemetryManager in 1.0-alpha.3. Please use this class instead.
- */
-__attribute__((deprecated("Use MSAITelemetryManager instead")))
-typedef MSAITelemetryManager MSAIMetricsManager;
-
 #endif /* MSAI_FEATURE_TELEMETRY */
 
 // Notification message which MSAIApplicationInsights is listening to, to retry requesting updated from the server
