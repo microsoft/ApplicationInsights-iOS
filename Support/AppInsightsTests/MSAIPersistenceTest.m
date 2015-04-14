@@ -6,7 +6,7 @@
 #define MOCKITO_SHORTHAND
 #import <OCMockitoIOS/OCMockitoIOS.h>
 
-#import "AppInsights.h"
+#import "ApplicationInsights.h"
 #import "MSAIEnvelope.h"
 #import "MSAIPersistence.h"
 
@@ -205,7 +205,7 @@ typedef void (^MSAIPersistenceTestBlock)(BOOL);
 
 - (NSUInteger)fileCountForType:(MSAIPersistenceType)type{
   NSString *directoryPath = [_sut folderPathForPersistenceType:type];
-  NSError *error;
+  NSError *error = nil;
   NSArray *fileNames = [[NSFileManager defaultManager] contentsOfDirectoryAtURL:[NSURL fileURLWithPath:directoryPath]
                                                      includingPropertiesForKeys:[NSArray arrayWithObject:NSURLNameKey]
                                                                         options:NSDirectoryEnumerationSkipsHiddenFiles

@@ -43,7 +43,7 @@
  *  @param properties key value pairs with additional info about the event.
  *  @param measurements key value pairs, which contain custom metrics.
  */
-+ (void)trackEventWithName:(NSString *)eventName properties:(NSDictionary *)properties mesurements:(NSDictionary *)measurements;
++ (void)trackEventWithName:(NSString *)eventName properties:(NSDictionary *)properties measurements:(NSDictionary *)measurements;
 
 /**
  *  Track by message.
@@ -130,7 +130,7 @@
  *  @param properties key value pairs with additional info about the event.
  *  @param measurements key value pairs, which contain custom metrics.
  */
-- (void)trackEventWithName:(NSString *)eventName properties:(NSDictionary *)properties mesurements:(NSDictionary *)measurements;
+- (void)trackEventWithName:(NSString *)eventName properties:(NSDictionary *)properties measurements:(NSDictionary *)measurements;
 
 /**
  *  Track by message.

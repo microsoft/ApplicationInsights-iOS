@@ -1,13 +1,16 @@
-#import "AppInsightsPrivate.h"
+#import "ApplicationInsightsPrivate.h"
 #import "MSAISessionHelper.h"
 #import "MSAISessionHelperPrivate.h"
 #import "MSAIPersistence.h"
+#import "MSAISessionStateData.h"
+
+#import "MSAITelemetryManagerPrivate.h"
 
 #import "MSAIHelper.h"
 
 static NSString *const kMSAISessionFileName = @"MSAISessions";
 static NSString *const kMSAISessionFileType = @"plist";
-static char *const MSAISessionOperationsQueue = "com.microsoft.appInsights.sessionQueue";
+static char *const MSAISessionOperationsQueue = "com.microsoft.ApplicationInsights.sessionQueue";
 
 static NSInteger const defaultSessionExpirationTime = 20;
 static NSString *const kMSAIApplicationDidEnterBackgroundTime = @"MSAIApplicationDidEnterBackgroundTime";
@@ -15,7 +18,7 @@ NSString *const kMSAIApplicationWasLaunched = @"MSAIApplicationWasLaunched";
 
 NSString *const MSAISessionStartedNotification = @"MSAISessionStartedNotification";
 NSString *const MSAISessionEndedNotification = @"MSAISessionEndedNotification";
-NSString *const kMSAISessionInfoSessionId = @"MSAISessionInfoSessionId";
+NSString *const kMSAISessionInfoSession = @"MSAISessionInfoSession";
 
 @implementation MSAISessionHelper{
   id _appWillEnterForegroundObserver;
@@ -48,54 +51,50 @@ NSString *const kMSAISessionInfoSessionId = @"MSAISessionInfoSessionId";
 
 #pragma mark - edit property list
 
-+ (void)addSessionId:(NSString *)sessionId withDate:(NSDate *)date {
-  [[self sharedInstance] addSessionId:sessionId withDate:date];
-}
-
-- (void)addSessionId:(NSString *)sessionId withDate:(NSDate *)date {
+- (void)addSession:(MSAISession *)session withDate:(NSDate *)date {
   NSString *timestamp = [self unixTimestampFromDate:date];
   
   __weak typeof(self) weakSelf = self;
   dispatch_sync(self.operationsQueue, ^{
     typeof(self) strongSelf = weakSelf;
 
-    [strongSelf.sessionEntries setObject:sessionId forKey:timestamp];
+    [strongSelf.sessionEntries setObject:session forKey:timestamp];
     [[MSAIPersistence sharedInstance] persistSessionIds:strongSelf.sessionEntries];
   });
 }
 
-+ (NSString *)sessionIdForDate:(NSDate *)date {
-  return [[self sharedInstance] sessionIdForDate:date];
++ (MSAISession *)sessionForDate:(NSDate *)date {
+  return [[self sharedInstance] sessionForDate:date];
 }
 
-- (NSString *)sessionIdForDate:(NSDate *)date {
+- (MSAISession *)sessionForDate:(NSDate *)date {
   NSString *timestamp = [self unixTimestampFromDate:date];
 
-  __block NSString *sessionId = nil;
+  __block MSAISession *session = nil;
   
   __weak typeof(self) weakSelf = self;
   dispatch_sync(self.operationsQueue, ^{
     typeof(self) strongSelf = weakSelf;
     
     NSString *sessionKey = [strongSelf keyForTimestamp:timestamp];
-    sessionId = [strongSelf.sessionEntries valueForKey:sessionKey];
+    session = [strongSelf.sessionEntries valueForKey:sessionKey];
   });
   
-  return sessionId;
+  return session;
 }
 
-+ (void)removeSessionId:(NSString *)sessionId {
-  [[self sharedInstance] removeSessionId:sessionId];
++ (void)removeSession:(MSAISession *)session {
+  [[self sharedInstance] removeSession:session];
 }
 
-- (void)removeSessionId:(NSString *)sessionId {
+- (void)removeSession:(MSAISession *)session {
   __weak typeof(self) weakSelf = self;
 
   dispatch_sync(self.operationsQueue, ^{
     typeof(self) strongSelf = weakSelf;
     
-    [_sessionEntries enumerateKeysAndObjectsUsingBlock:^(NSString *blockTimestamp, NSString *blockSessionId, BOOL *stop) {
-      if ([blockSessionId isEqualToString:sessionId]) {
+    [_sessionEntries enumerateKeysAndObjectsUsingBlock:^(NSString *blockTimestamp, MSAISession *blockSession, BOOL *stop) {
+      if ([blockSession.sessionId isEqualToString:session.sessionId]) {
         [_sessionEntries removeObjectForKey:blockTimestamp];
         *stop = YES;
       }
@@ -104,11 +103,11 @@ NSString *const kMSAISessionInfoSessionId = @"MSAISessionInfoSessionId";
   });
 }
 
-+ (void)cleanUpSessionIds {
-  [[self sharedInstance] cleanUpSessionIds];
++ (void)cleanUpSessions {
+  [[self sharedInstance] cleanUpSessions];
 }
 
-- (void)cleanUpSessionIds {
+- (void)cleanUpSessions {
   __weak typeof(self) weakSelf = self;
   
   dispatch_sync(self.operationsQueue, ^{
@@ -178,34 +177,43 @@ NSString *const kMSAISessionInfoSessionId = @"MSAISessionInfoSessionId";
   [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
-+ (NSString *)createFirstSession{
-  NSString *newSessionId = msai_UUID();
-  return newSessionId;
++ (MSAISession *)startNewSessionIfNeeded {
+  return [[MSAISessionHelper sharedInstance] startNewSessionIfNeeded];
 }
 
-+ (void)startNewSessionIfNeeded {
-  [[MSAISessionHelper sharedInstance] startNewSessionIfNeeded];
-}
-
-- (void)startNewSessionIfNeeded {
+- (MSAISession *)startNewSessionIfNeeded {
   double appDidEnterBackgroundTime = [[NSUserDefaults standardUserDefaults] doubleForKey:kMSAIApplicationDidEnterBackgroundTime];
   double timeSinceLastBackground = [[NSDate date] timeIntervalSince1970] - appDidEnterBackgroundTime;
   if (timeSinceLastBackground > defaultSessionExpirationTime) {
 
-    [self startNewSession];
+    return [self startNewSession];
   }
+  return nil;
 }
 
-+ (void)startNewSession {
-  [[self sharedInstance] startNewSession];
++ (MSAISession *)startNewSession {
+  return [[self sharedInstance] startNewSession];
 }
 
-- (void)startNewSession {
-  NSString *newSessionId = msai_UUID();
-  [self addSessionId:newSessionId withDate:[NSDate date]];
-  NSDictionary *userInfo = @{kMSAISessionInfoSessionId:newSessionId};
+- (MSAISession *)startNewSession {
+  MSAISession *session = [MSAISession new];
+  session.sessionId = msai_UUID();
+  session.isNew = @"false";
+  
+  if (![[NSUserDefaults standardUserDefaults] boolForKey:kMSAIApplicationWasLaunched]) {
+    session.isFirst = @"true";
+    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kMSAIApplicationWasLaunched];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+  } else {
+    session.isFirst = @"false";
+  }
+  
+  [self addSession:session withDate:[NSDate date]];
+  
+  NSDictionary *userInfo = @{kMSAISessionInfoSession:session};
   [self sendSessionStartedNotificationWithUserInfo:userInfo];
-  [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kMSAIApplicationWasLaunched];
+  
+  return session;
 }
 
 - (void)endSession {
@@ -215,7 +223,7 @@ NSString *const kMSAISessionInfoSessionId = @"MSAISessionInfoSessionId";
 - (void)sendSessionStartedNotificationWithUserInfo:(NSDictionary *)userInfo {
   dispatch_async(dispatch_get_main_queue(), ^{
     [[NSNotificationCenter defaultCenter] postNotificationName:MSAISessionStartedNotification
-                                                        object:nil
+                                                        object:self
                                                       userInfo:userInfo];
   });
 }
@@ -223,7 +231,7 @@ NSString *const kMSAISessionInfoSessionId = @"MSAISessionInfoSessionId";
 - (void)sendSessionEndedNotification {
   dispatch_async(dispatch_get_main_queue(), ^{
     [[NSNotificationCenter defaultCenter] postNotificationName:MSAISessionEndedNotification
-                                                        object:nil
+                                                        object:self
                                                       userInfo:nil];
   });
 }

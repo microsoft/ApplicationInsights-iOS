@@ -2,8 +2,10 @@
 #import "MSAIAppClient.h"
 #import "MSAISenderPrivate.h"
 #import "MSAIPersistence.h"
-#import "AppInsights.h"
-#import "AppInsightsPrivate.h"
+
+#import "ApplicationInsights.h"
+#import "ApplicationInsightsPrivate.h"
+#import "MSAIApplicationInsights.h"
 
 static NSUInteger const defaultRequestLimit = 10;
 
@@ -63,11 +65,12 @@ static NSInteger const statusCodeBadRequest = 400;
       return;
     }
   }
-  
+  __weak typeof(self) weakSelf = self;
   dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    typeof(self) strongSelf = weakSelf;
     NSString *path = [[MSAIPersistence sharedInstance] requestNextPath];
     NSData *data = [[MSAIPersistence sharedInstance] dataAtPath:path];
-    [self sendData:data withPath:path];
+    [strongSelf sendData:data withPath:path];
   });
 }
 
@@ -101,7 +104,8 @@ static NSInteger const statusCodeBadRequest = 400;
       [[MSAIPersistence sharedInstance] deleteFileAtPath:path];
       [strongSelf sendSavedData];
     } else {
-      MSAILog(@"Sending MSAIAppInsights data failed");
+      MSAILog(@"Sending MSAIApplicationInsights data failed");
+      MSAILog(@"Error description: %@", error.localizedDescription);
       [[MSAIPersistence sharedInstance] giveBackRequestedPath:path];
     }
   }];

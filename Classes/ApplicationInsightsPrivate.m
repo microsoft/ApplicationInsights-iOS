@@ -1,7 +1,7 @@
-#import "AppInsights.h"
-#import "AppInsightsPrivate.h"
+#import "ApplicationInsights.h"
+#import "ApplicationInsightsPrivate.h"
 
-NSString *const kMSAIName = @"AppInsights";
+NSString *const kMSAIName = @"ApplicationInsights";
 NSString *const kMSAIIdentifier = @"com.microsoft.applicationinsights.ios";
 NSString *const kMSAICrashSettings = @"MSAICrashManager.plist";
 NSString *const kMSAICrashAnalyzer = @"MSAICrashManager.analyzer";

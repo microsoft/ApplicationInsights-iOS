@@ -239,9 +239,9 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
     NSString *appVersion = report.applicationInfo.applicationVersion;
     envelope.appVer = marketingVersion ? [NSString stringWithFormat:@"%@ (%@)", marketingVersion, appVersion] : appVersion;
     
-    NSString *sessionId = [MSAISessionHelper sessionIdForDate:report.systemInfo.timestamp];
-    if (envelope.tags && sessionId) {
-      envelope.tags[@"ai.session.id"] = sessionId;
+    MSAISession *session = [MSAISessionHelper sessionForDate:report.systemInfo.timestamp];
+    if (envelope.tags && session) {
+      [envelope.tags addEntriesFromDictionary:[session serializeToDictionary]];
     }
   }
   
