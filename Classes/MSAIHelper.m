@@ -357,12 +357,38 @@ BOOL msai_isRunningInAppExtension(void) {
 
 BOOL msai_isAppStoreEnvironment(void){
   
-  #if !TARGET_IPHONE_SIMULATOR
+#if !TARGET_IPHONE_SIMULATOR
   // check if we are really in an app store environment
   if (![[NSBundle mainBundle] pathForResource:@"embedded" ofType:@"mobileprovision"]) {
     return YES;
   }
-  #endif
+#endif
   
   return NO;
+}
+
+BOOL msai_isDebuggerAttached(void) {
+  static BOOL debuggerIsAttached = NO;
+  
+  static dispatch_once_t debuggerPredicate;
+  dispatch_once(&debuggerPredicate, ^{
+    struct kinfo_proc info;
+    size_t info_size = sizeof(info);
+    int name[4];
+    
+    name[0] = CTL_KERN;
+    name[1] = KERN_PROC;
+    name[2] = KERN_PROC_PID;
+    name[3] = getpid();
+    
+    if(sysctl(name, 4, &info, &info_size, NULL, 0) == -1) {
+      NSLog(@"[AppInsights] ERROR: Checking for a running debugger via sysctl() failed: %s", strerror(errno));
+      debuggerIsAttached = false;
+    }
+    
+    if(!debuggerIsAttached && (info.kp_proc.p_flag & P_TRACED) != 0)
+      debuggerIsAttached = true;
+  });
+  
+  return debuggerIsAttached;
 }

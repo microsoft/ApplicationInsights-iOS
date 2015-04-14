@@ -31,3 +31,4 @@ BOOL msai_isPreiOS7Environment(void);
 BOOL msai_isPreiOS8Environment(void);
 BOOL msai_isRunningInAppExtension(void);
 BOOL msai_isAppStoreEnvironment(void);
+BOOL msai_isDebuggerAttached(void);
