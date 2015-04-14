@@ -248,26 +248,8 @@ NSString *msai_deviceLocale(void) {
   return [locale objectForKey:NSLocaleIdentifier];
 }
 
-NSString *msai_UUIDPreiOS6(void) {
-  // Create a new UUID
-  CFUUIDRef uuidObj = CFUUIDCreate(nil);
-  
-  // Get the string representation of the UUID
-  NSString *resultUUID = (NSString*)CFBridgingRelease(CFUUIDCreateString(nil, uuidObj));
-  CFRelease(uuidObj);
-  
-  return resultUUID;
-}
-
 NSString *msai_UUID(void) {
-  NSString *resultUUID = nil;
-  
-  id uuidClass = NSClassFromString(@"NSUUID");
-  if (uuidClass) {
-    resultUUID = [[NSUUID UUID] UUIDString];
-  } else {
-    resultUUID = msai_UUIDPreiOS6();
-  }
+  NSString *resultUUID = [[NSUUID UUID] UUIDString];
   
   return resultUUID;
 }
