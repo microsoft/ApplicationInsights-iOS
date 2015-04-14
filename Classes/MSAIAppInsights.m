@@ -76,11 +76,11 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 #pragma mark - Setup & Start
 
 - (void)setup {
-#if TARGET_IPHONE_SIMULATOR || defined DEBUG
-  self.debugLogEnabled = YES;
-#else
-  self.debugLogEnabled = NO;
-#endif
+  if (msai_isDebuggerAttached()) {
+    self.debugLogEnabled = YES;
+  } else {
+    self.debugLogEnabled = NO;
+  }
   NSString *instrumentationKey = [[NSBundle mainBundle] objectForInfoDictionaryKey:kMSAIInstrumentationKey];
   [self setupWithInstrumentationKey:instrumentationKey];
 }
