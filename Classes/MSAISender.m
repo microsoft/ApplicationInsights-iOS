@@ -2,6 +2,7 @@
 #import "MSAIAppClient.h"
 #import "MSAISenderPrivate.h"
 #import "MSAIPersistence.h"
+#import "MSAIGZIP.h"
 #import "MSAIEnvelope.h"
 #import "ApplicationInsights.h"
 #import "ApplicationInsightsPrivate.h"
@@ -74,7 +75,8 @@ static NSInteger const statusCodeBadRequest = 400;
     typeof(self) strongSelf = weakSelf;
     NSString *path = [[MSAIPersistence sharedInstance] requestNextPath];
     NSData *data = [[MSAIPersistence sharedInstance] dataAtPath:path];
-    [strongSelf sendData:data withPath:path];
+    NSData *gzippedData = [data gzippedData];
+    [strongSelf sendData:gzippedData withPath:path];
   });
 }
 
@@ -135,6 +137,8 @@ static NSInteger const statusCodeBadRequest = 400;
   
   [request setHTTPBody:data];
   [request setCachePolicy:NSURLRequestReloadIgnoringLocalCacheData];
+  NSString *contentEncoding = @"gzip";
+  [request setValue:contentEncoding forHTTPHeaderField:@"Content-Encoding"];
   NSString *contentType = @"application/json";
   [request setValue:contentType forHTTPHeaderField:@"Content-type"];
   return request;
