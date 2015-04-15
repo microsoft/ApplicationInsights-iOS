@@ -111,8 +111,7 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
   _startManagerIsInvoked = YES;
   
   // Configure Http-client and send persisted data
-  MSAITelemetryContext *telemetryContext = [[MSAITelemetryContext alloc] initWithAppContext:_appContext
-                                                                               endpointPath:kMSAITelemetryPath];
+  MSAITelemetryContext *telemetryContext = [[MSAITelemetryContext alloc] initWithAppContext:_appContext];
   [[MSAIEnvelopeManager sharedManager] configureWithTelemetryContext:telemetryContext];
   
   [[MSAISender sharedSender] configureWithAppClient:[self appClient]

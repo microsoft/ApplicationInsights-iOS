@@ -15,8 +15,7 @@ NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
 
 #pragma mark - Initialisation
 
-- (instancetype)initWithAppContext:(MSAIContext *)appContext
-                      endpointPath:(NSString *)endpointPath {
+- (instancetype)initWithAppContext:(MSAIContext *)appContext {
   
   if ((self = [self init])) {
     
@@ -49,7 +48,6 @@ NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
     MSAILocation *locationContext = [MSAILocation new];
     
     _instrumentationKey = appContext.instrumentationKey;
-    _endpointPath = endpointPath;
     _userDefaults = NSUserDefaults.standardUserDefaults;
     _application = applicationContext;
     _device = deviceContext;
