@@ -46,11 +46,6 @@
 + (void)trackEventWithName:(NSString *)eventName properties:(NSDictionary *)properties measurements:(NSDictionary *)measurements;
 
 /**
- *  Use correctly spelled method trackEventWithName:properties:measurements: instead.
- */
-+ (void)trackEventWithName:(NSString *)eventName properties:(NSDictionary *)properties mesurements:(NSDictionary *)measurements __deprecated_msg("Use correctly spelled version instead");
-
-/**
  *  Track by message.
  *
  *  @param message a message, which should be tracked.
@@ -136,12 +131,6 @@
  *  @param measurements key value pairs, which contain custom metrics.
  */
 - (void)trackEventWithName:(NSString *)eventName properties:(NSDictionary *)properties measurements:(NSDictionary *)measurements;
-
-/**
- *  Use correctly spelled method trackEventWithName:properties:measurements: instead.
- */
-- (void)trackEventWithName:(NSString *)eventName properties:(NSDictionary *)properties mesurements:(NSDictionary *)measurements
-__deprecated_msg("Use correctly spelled version instead");
 
 /**
  *  Track by message.

@@ -1,5 +1,5 @@
 #import "MSAITestHelper.h"
-#import "AppInsightsPrivate.h"
+#import "ApplicationInsightsPrivate.h"
 
 @implementation MSAITestHelper
 

@@ -3,9 +3,9 @@
 #import "MSAISenderPrivate.h"
 #import "MSAIPersistence.h"
 #import "MSAIEnvelope.h"
-#import "AppInsights.h"
-#import "AppInsightsPrivate.h"
-#import "MSAIAppInsights.h"
+#import "ApplicationInsights.h"
+#import "ApplicationInsightsPrivate.h"
+#import "MSAIApplicationInsights.h"
 
 static NSUInteger const defaultRequestLimit = 10;
 
@@ -108,7 +108,7 @@ static NSInteger const statusCodeBadRequest = 400;
       [[MSAIPersistence sharedInstance] deleteFileAtPath:path];
       [strongSelf sendSavedData];
     } else {
-      MSAILog(@"Sending MSAIAppInsights data failed");
+      MSAILog(@"Sending MSAIApplicationInsights data failed");
       MSAILog(@"Error description: %@", error.localizedDescription);
       [[MSAIPersistence sharedInstance] giveBackRequestedPath:path];
     }

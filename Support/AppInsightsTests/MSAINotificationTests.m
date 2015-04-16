@@ -1,4 +1,4 @@
-#import "NotificationTests.h"
+#import "MSAINotificationTests.h"
 
 static NSNotificationCenter *mockNotificationCenter;
 
@@ -10,7 +10,7 @@ static NSNotificationCenter *mockNotificationCenter;
 
 @end
 
-@implementation NotificationTests
+@implementation MSAINotificationTests
 
 - (void)setUp {
   mockNotificationCenter = mock(NSNotificationCenter.class);

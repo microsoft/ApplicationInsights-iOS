@@ -5,7 +5,7 @@
 #import "MSAIEnvelope.h"
 #import "MSAIHTTPOperation.h"
 #import "MSAIAppClient.h"
-#import "AppInsightsPrivate.h"
+#import "ApplicationInsightsPrivate.h"
 #import "MSAIData.h"
 #import "MSAISender.h"
 #import "MSAISenderPrivate.h"
@@ -20,7 +20,7 @@ static NSInteger const defaultMaxBatchCount = 50;
 static NSInteger const defaultBatchInterval = 15;
 #endif
 
-static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.senderQueue";
+static char *const MSAIDataItemsOperationsQueue = "com.microsoft.ApplicationInsights.senderQueue";
 char *MSAISafeJsonEventsString;
 
 @implementation MSAIChannel
