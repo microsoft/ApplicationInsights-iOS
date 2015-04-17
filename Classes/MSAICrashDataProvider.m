@@ -465,7 +465,7 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
     threadData.crashDataThreadId = @(thread.threadNumber);
     
     int lastIndex = (int)[thread.stackFrames count] - 1;
-    for (NSInteger frame_idx = lastIndex; frame_idx >= 0; frame_idx--) {
+    for (NSInteger frame_idx = 0; frame_idx <= lastIndex; frame_idx++) {
       MSAIPLCrashReportStackFrameInfo *frameInfo = thread.stackFrames[frame_idx];
       MSAICrashDataThreadFrame *frame = [MSAICrashDataThreadFrame new];
       frame.address = [NSString stringWithFormat:@"0x%0*" PRIx64, lp64 ? 16 : 8, frameInfo.instructionPointer];
