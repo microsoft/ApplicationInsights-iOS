@@ -117,15 +117,6 @@ static NSInteger const statusCodeBadRequest = 400;
   [self.appClient enqeueHTTPOperation:operation];
 }
 
-//TODO remove this because it is never used and it's not public?
-- (void)sendRequest:(NSURLRequest *)request withCompletionBlock:(MSAINetworkCompletionBlock)completion{
-  
-  MSAIHTTPOperation *operation = [_appClient
-                                  operationWithURLRequest:request
-                                  completion:completion];
-  [_appClient enqeueHTTPOperation:operation];
-}
-
 #pragma mark - Helper
 
 - (NSURLRequest *)requestForData:(NSData *)data {
