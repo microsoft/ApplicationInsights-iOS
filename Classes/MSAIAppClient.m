@@ -64,7 +64,7 @@
   
   [postBody appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
   
-  // There's certainly a better way to check if we are supposed to send binary data here. 
+  // There's certainly a better way to check if we are supposed to send binary data here.
   if (filename){
     [postBody appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"%@\"; filename=\"%@\"\r\n", key, filename] dataUsingEncoding:NSUTF8StringEncoding]];
     [postBody appendData:[[NSString stringWithFormat:@"Content-Type: %@\r\n", contentType] dataUsingEncoding:NSUTF8StringEncoding]];
@@ -92,11 +92,11 @@
   return queryString;
 }
 
-- (MSAIHTTPOperation *) operationWithURLRequest:(NSURLRequest*) request
-                                   completion:(MSAINetworkCompletionBlock) completion {
-  MSAIHTTPOperation *operation = [MSAIHTTPOperation operationWithRequest:request
-  ];
-  [operation setCompletion:completion];
+- (MSAIHTTPOperation *) operationWithURLRequest:(NSURLRequest*)request
+                                     completion:(MSAINetworkCompletionBlock)completion
+                                        onQueue:(dispatch_queue_t)queue {
+  MSAIHTTPOperation *operation = [MSAIHTTPOperation operationWithRequest:request];
+  [operation setCompletion:completion onQueue:queue];
   
   return operation;
 }
@@ -104,14 +104,16 @@
 - (void)getPath:(NSString *)path parameters:(NSDictionary *)params completion:(MSAINetworkCompletionBlock)completion {
   NSURLRequest *request = [self requestWithMethod:@"GET" path:path parameters:params];
   MSAIHTTPOperation *op = [self operationWithURLRequest:request
-                                            completion:completion];
+                                             completion:completion
+                                                onQueue:dispatch_get_main_queue()];
   [self enqeueHTTPOperation:op];
 }
 
 - (void)postPath:(NSString *)path parameters:(NSDictionary *)params completion:(MSAINetworkCompletionBlock)completion {
   NSURLRequest *request = [self requestWithMethod:@"POST" path:path parameters:params];
   MSAIHTTPOperation *op = [self operationWithURLRequest:request
-                                            completion:completion];
+                                             completion:completion
+                                                onQueue:dispatch_get_main_queue()];
   [self enqeueHTTPOperation:op];
 }
 

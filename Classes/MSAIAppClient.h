@@ -41,14 +41,16 @@
  *	@return	operation, which can be queued via enqueueHTTPOperation:
  */
 - (MSAIHTTPOperation *) operationWithURLRequest:(NSURLRequest*) request
-                                   completion:(MSAINetworkCompletionBlock) completion;
+                                     completion:(MSAINetworkCompletionBlock) completion
+                                        onQueue:(dispatch_queue_t)queue;
 
 /**
  *	Creates an operation for the given path, and enqueues it
  *
  *	@param	path	the request path to check
  *	@param	params parameters for the request
- *	@param	completion	completionBlock that is called once the operation finished
+ *	@param	completion	completionBlock that is called once the operation finished. 
+ *          The block is executed on the main queue.
  *
  */
 - (void) getPath:(NSString*) path
@@ -60,7 +62,8 @@
  *
  *	@param	path	the request path to check
  *	@param	params parameters for the request
- *	@param	completion	completionBlock that is called once the operation finished
+ *	@param	completion	completionBlock that is called once the operation finished.
+ *          The block is executed on the main queue
  *
  */
 - (void) postPath:(NSString*) path

@@ -91,7 +91,7 @@
   return _data;
 }
 
-- (void)setCompletion:(MSAINetworkCompletionBlock)completion {
+- (void)setCompletion:(MSAINetworkCompletionBlock)completion onQueue:(dispatch_queue_t)queue {
   if(!completion) {
     [super setCompletionBlock:nil];
   } else {
@@ -99,7 +99,7 @@
     [super setCompletionBlock:^{
       typeof(self) strongSelf = weakSelf;
       if(strongSelf) {
-        dispatch_async(dispatch_get_main_queue(), ^{
+        dispatch_async(queue ? queue : dispatch_get_main_queue(), ^{
           if(!strongSelf.isCancelled) {
             completion(strongSelf, strongSelf->_data, strongSelf->_error);
           }
