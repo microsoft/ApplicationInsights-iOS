@@ -2,6 +2,7 @@
 @class PLCrashReport;
 
 #import <Foundation/Foundation.h>
+#import "ApplicationInsights.h"
 
 // Dictionary keys for array elements returned by arrayOfAppUUIDsForCrashReport:
 #ifndef kMSAIBinaryImageKeyUUID

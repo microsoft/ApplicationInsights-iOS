@@ -14,10 +14,4 @@
 #define __nonnull
 #define __null_unspecified
 #endif
-
-#define TL_CLIENT_DEBUG 1
-#if TL_CLIENT_DEBUG
-#define TLDebugLog(...) NSLog(__VA_ARGS__)
-#else
-#define TLDebugLog(...)
-#endif
+ 

@@ -1,4 +1,5 @@
 #import <Foundation/Foundation.h>
+#import "ApplicationInsights.h"
 
 extern NSString *const kMSAIApplicationWasLaunched;
 
