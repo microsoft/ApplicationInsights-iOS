@@ -1,4 +1,5 @@
 #import <XCTest/XCTest.h>
+#import "MSAITestsDependencyInjection.h"
 
 #define HC_SHORTHAND
 #import <OCHamcrestIOS/OCHamcrestIOS.h>
@@ -18,17 +19,8 @@
 #import "MSAISession.h"
 #import "MSAILocation.h"
 #import "MSAISessionHelper.h"
-static NSUserDefaults *mockUserDefaults = nil;
 
-@implementation NSUserDefaults (Tests)
-
-+ (NSUserDefaults *)standardUserDefaults {
-  return mockUserDefaults;
-}
-
-@end
-
-@interface MSAITelemetryContextTests : XCTestCase
+@interface MSAITelemetryContextTests : MSAITestsDependencyInjection
 
 @end
 
@@ -44,7 +36,6 @@ static NSUserDefaults *mockUserDefaults = nil;
 }
 
 - (void)tearDown {
-  mockUserDefaults = nil;
   [super tearDown];
 }
 

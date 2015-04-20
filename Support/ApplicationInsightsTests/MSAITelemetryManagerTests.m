@@ -11,9 +11,9 @@
 #import "MSAIAppClient.h"
 #import "MSAITelemetryManager.h"
 #import "MSAITelemetryManagerPrivate.h"
-#import "MSAINotificationTests.h"
+#import "MSAITestsDependencyInjection.h"
 
-@interface MSAITelemetryManagerTests : MSAINotificationTests
+@interface MSAITelemetryManagerTests : MSAITestsDependencyInjection
 
 @property (strong) MSAITelemetryManager *sut;
 

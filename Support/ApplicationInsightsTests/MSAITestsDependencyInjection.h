@@ -6,9 +6,11 @@
 #define MOCKITO_SHORTHAND
 #import <OCMockitoIOS/OCMockitoIOS.h>
 
-@interface MSAINotificationTests : XCTestCase
+@interface MSAITestsDependencyInjection : XCTestCase
 
 - (void)setMockNotificationCenter:(NSNotificationCenter *)notificationCenter;
 - (NSNotificationCenter *)mockNotificationCenter;
+- (void)setMockUserDefaults:(NSUserDefaults *)userDefaults;
+- (NSUserDefaults *)mockUserDefaults;
 
 @end

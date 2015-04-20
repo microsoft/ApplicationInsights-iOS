@@ -11,9 +11,9 @@
 #import "MSAISessionHelperPrivate.h"
 #import "MSAIPersistence.h"
 #import "MSAIPersistencePrivate.h"
-#import "MSAINotificationTests.h"
+#import "MSAITestsDependencyInjection.h"
 
-@interface MSAISessionHelperTests : MSAINotificationTests
+@interface MSAISessionHelperTests : MSAITestsDependencyInjection
 
 @property (strong) MSAISessionHelper *sut;
 
