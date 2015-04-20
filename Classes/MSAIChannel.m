@@ -12,13 +12,11 @@
 #import "MSAIHelper.h"
 #import "MSAIPersistence.h"
 
-#ifdef DEBUG
 static NSInteger const defaultMaxBatchCount = 50;
 static NSInteger const defaultBatchInterval = 15;
-#else
-static NSInteger const defaultMaxBatchCount = 50;
-static NSInteger const defaultBatchInterval = 15;
-#endif
+
+static NSInteger const debugMaxBatchCount = 5;
+static NSInteger const debugBatchInterval = 3;
 
 static char *const MSAIDataItemsOperationsQueue = "com.microsoft.ApplicationInsights.senderQueue";
 char *MSAISafeJsonEventsString;
@@ -43,8 +41,13 @@ char *MSAISafeJsonEventsString;
 - (instancetype)init {
   if(self = [super init]) {
     _dataItemQueue = [NSMutableArray array];
-    _senderBatchSize = defaultMaxBatchCount;
-    _senderInterval = defaultBatchInterval;
+    if (msai_isDebuggerAttached()) {
+      _senderBatchSize = debugMaxBatchCount;
+      _senderInterval = debugBatchInterval;
+    } else {
+      _senderBatchSize = defaultMaxBatchCount;
+      _senderInterval = defaultBatchInterval;
+    }
   }
   return self;
 }
