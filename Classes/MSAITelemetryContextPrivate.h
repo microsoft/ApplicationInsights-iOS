@@ -65,6 +65,7 @@
  *
  *  @param appContext         the context of the app, which contains several meta infos
  *  @param endpointPath       the path to the telemetry endpoint
+ *  @param sessionId          the id of the first session
  *
  *  @return the telemetry context
  */
@@ -73,26 +74,7 @@
 
 ///-----------------------------------------------------------------------------
 /// @name Session
-///-----------------------------------------------------------------------------
-
-/**
- *  Renews or even creates a new session if needed.
- */
-- (void)updateSessionContext;
-
-/**
- *  Checks if current session is the first one.
- *
- *  @return YES if current session has not been renewed or replaced by a new one
- */
-- (BOOL)isFirstSession;
-
-/**
- *  Creates a brand new session.
- */
-- (void)createNewSession;
-
-///-----------------------------------------------------------------------------
+///-----------------------------------------------------------------------------s;///-----------------------------------------------------------------------------
 /// @name Network status
 ///-----------------------------------------------------------------------------
 

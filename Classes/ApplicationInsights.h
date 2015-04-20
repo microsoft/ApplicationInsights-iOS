@@ -1,8 +1,8 @@
 #ifndef MSAI_h
 #define MSAI_h
 
-#import "AppInsightsFeatureConfig.h"
-#import "MSAIAppInsights.h"
+#import "ApplicationInsightsFeatureConfig.h"
+#import "MSAIApplicationInsights.h"
 
 #if MSAI_FEATURE_CRASH_REPORTER
 #import "MSAICrashManager.h"
@@ -11,16 +11,15 @@
 #import "MSAICrashMetaData.h"
 #endif /* MSAI_FEATURE_CRASH_REPORTER */
 
-#if MSAI_FEATURE_METRICS
+#if MSAI_FEATURE_TELEMETRY
 #import "MSAICategoryContainer.h"
-#import "MSAIMetricsManager.h"
-#endif /* MSAI_FEATURE_METRICS */
+#import "MSAITelemetryManager.h"
+#endif /* MSAI_FEATURE_TELEMETRY */
 
-// Notification message which AppInsightsManager is listening to, to retry requesting updated from the server
+// Notification message which MSAIApplicationInsights is listening to, to retry requesting updated from the server
 #define MSAINetworkDidBecomeReachableNotification @"MSAINetworkDidBecomeReachable"
 
-#define MSAI_CRASH_DATA_URL   @"https://dray-prod.aisvc.visualstudio.com/v2/track"
-#define MSAI_EVENT_DATA_URL   @"https://dc.services.visualstudio.com/v2/track"
+#define MSAI_BASE_URL   @"https://dc.services.visualstudio.com"
 
 #if MSAI_FEATURE_CRASH_REPORTER
 /**
@@ -44,7 +43,7 @@ typedef NS_ENUM (NSInteger, MSAICrashErrorReason) {
    */
   MSAICrashAPIErrorWithStatusCode
 };
-extern NSString *const __attribute__((unused)) kMSAICrashErrorDomain;
+FOUNDATION_EXPORT NSString *const __unused kMSAICrashErrorDomain;
 
 
 /**
@@ -56,7 +55,7 @@ typedef NS_ENUM(NSInteger, MSAIErrorReason) {
    */
   MSAIErrorUnknown
 };
-extern NSString *const __attribute__((unused)) kMSAIErrorDomain;
+FOUNDATION_EXPORT NSString *const __unused kMSAIErrorDomain;
 #endif 
 
 #endif

@@ -3,9 +3,9 @@
 #import "MSAISenderPrivate.h"
 #import "MSAIPersistence.h"
 #import "MSAIEnvelope.h"
-#import "AppInsights.h"
-#import "AppInsightsPrivate.h"
-#import "MSAIAppInsights.h"
+#import "ApplicationInsights.h"
+#import "ApplicationInsightsPrivate.h"
+#import "MSAIApplicationInsights.h"
 
 static NSUInteger const defaultRequestLimit = 10;
 
@@ -47,7 +47,7 @@ static NSInteger const statusCodeBadRequest = 400;
 - (void)registerObservers{
   NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
   __weak typeof(self) weakSelf = self;
-  [center addObserverForName:kMSAIPersistenceSuccessNotification
+  [center addObserverForName:MSAIPersistenceSuccessNotification
                       object:nil
                        queue:nil
                   usingBlock:^(NSNotification *notification) {
@@ -69,19 +69,19 @@ static NSInteger const statusCodeBadRequest = 400;
       return;
     }
   }
-  
+  __weak typeof(self) weakSelf = self;
   dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    typeof(self) strongSelf = weakSelf;
     NSString *path = [[MSAIPersistence sharedInstance] requestNextPath];
     NSData *data = [[MSAIPersistence sharedInstance] dataAtPath:path];
-    [self sendData:data withPath:path];
+    [strongSelf sendData:data withPath:path];
   });
 }
 
 - (void)sendData:(NSData *)data withPath:(NSString *)path{
   
   if(data) {
-    NSString *urlString = MSAI_EVENT_DATA_URL;
-    NSURLRequest *request = [self requestForData:data urlString:urlString];
+    NSURLRequest *request = [self requestForData:data];
     [self sendRequest:request path:path];
     
   }else{
@@ -108,7 +108,8 @@ static NSInteger const statusCodeBadRequest = 400;
       [[MSAIPersistence sharedInstance] deleteFileAtPath:path];
       [strongSelf sendSavedData];
     } else {
-      MSAILog(@"Sending MSAIAppInsights data failed");
+      MSAILog(@"Sending MSAIApplicationInsights data failed");
+      MSAILog(@"Error description: %@", error.localizedDescription);
       [[MSAIPersistence sharedInstance] giveBackRequestedPath:path];
     }
   }];
@@ -127,9 +128,9 @@ static NSInteger const statusCodeBadRequest = 400;
 
 #pragma mark - Helper
 
-- (NSURLRequest *)requestForData:(NSData *)data urlString:(NSString *)urlString {
+- (NSURLRequest *)requestForData:(NSData *)data {
   NSMutableURLRequest *request = [self.appClient requestWithMethod:@"POST"
-                                                              path:urlString
+                                                              path:self.endpointPath
                                                         parameters:nil];
   
   [request setHTTPBody:data];

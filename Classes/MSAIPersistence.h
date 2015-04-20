@@ -10,7 +10,7 @@
 * Notification that will be send on the main thread to notifiy observers of a successfully saved bundle.
 * This is typically used to trigger sending to the server.
 */
-FOUNDATION_EXPORT NSString *const kMSAIPersistenceSuccessNotification;
+FOUNDATION_EXPORT NSString *const MSAIPersistenceSuccessNotification;
 
 
 /**
@@ -21,7 +21,8 @@ FOUNDATION_EXPORT NSString *const kMSAIPersistenceSuccessNotification;
 typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
   MSAIPersistenceTypeHighPriority = 0,
   MSAIPersistenceTypeRegular = 1,
-  MSAIPersistenceTypeCrashTemplate = 2
+  MSAIPersistenceTypeCrashTemplate = 2,
+  MSAIPersistenceTypeSessionIds = 3
 };
 
 ///-----------------------------------------------------------------------------
@@ -58,7 +59,7 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
 @property (nonatomic, strong) NSMutableArray *requestedBundlePaths;
 
 /**
-* Saves the bundle and sends out a kMSAIPersistenceSuccessNotification in case of success
+* Saves the bundle and sends out a MSAIPersistenceSuccessNotification in case of success
 * for all types except MSAIPersistenceTypeCrashTemplate
 * @param bundle a bundle of tracked events (telemetry, crashes, ...) that will be serialized and saved.
 * @param type The type of the bundle we want to save.
@@ -77,6 +78,13 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
  *  @param completionBlock   a block which is executed after the bundle has been stored
  */
 - (void)persistBundle:(NSArray *)bundle ofType:(MSAIPersistenceType)type enableNotifications:(BOOL)sendNotifications withCompletionBlock:(void (^)(BOOL success))completionBlock;
+
+/**
+ *  Saves the given dictionary to the session Ids file.
+ *
+ *  @param sessionIds a dictionary consisting of unix timestamps and session ids
+ */
+- (void)persistSessionIds:(NSDictionary *)sessionIds;
 
 /**
  *  Deletes the file for the given path.
@@ -105,14 +113,14 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
 * Between bundles of the same MSAIPersistenceType, the order is arbitrary.
 * Returns 'nil' if no bundle is available
 *
-* @return a bundle of AppInsightsData that's ready to be sent to the server
+* @return a bundle of data that's ready to be sent to the server
 */
 
 /**
  *  Returns the path for the next item to send. The requested path is reserved as long
  *  as leaveUpRequestedPath: gets called.
  *
- *  @see leleaveUpRequestedPath:
+ *  @see giveBackRequestedPath:
  *
  *  @return the path of the item, which should be sent next
  */
@@ -142,6 +150,13 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
  *  @return a data object which contains telemetry data in json representation
  */
 - (NSData *)dataAtPath:(NSString *)path;
+
+/**
+ *  Returns the content of the session Ids file.
+ *
+ *  @return return a dictionary containing all session Ids
+ */
+- (NSDictionary *)sessionIds;
 
 /**
  *  Return data for a given array based on its persistence type.
@@ -183,5 +198,9 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
 * @return a crash template, wrapped as a bundle
 */
 - (NSArray *)crashTemplateBundle;
+
+- (BOOL)crashReportLockFilePresent;
+- (void)createCrashReporterLockFile;
+- (void)deleteCrashReporterLockFile;
 
 @end

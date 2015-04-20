@@ -5,7 +5,7 @@
 #import "MSAIEnvelope.h"
 #import "MSAIHTTPOperation.h"
 #import "MSAIAppClient.h"
-#import "AppInsightsPrivate.h"
+#import "ApplicationInsightsPrivate.h"
 #import "MSAIData.h"
 #import "MSAISender.h"
 #import "MSAISenderPrivate.h"
@@ -20,7 +20,8 @@ NSInteger const defaultMaxBatchCount = 50;
 NSInteger const defaultBatchInterval = 15;
 #endif
 
-static char *const MSAIDataItemsOperationsQueue = "com.microsoft.appInsights.senderQueue";
+static char *const MSAIDataItemsOperationsQueue = "com.microsoft.ApplicationInsights.senderQueue";
+char *MSAISafeJsonEventsString;
 
 @implementation MSAIChannel
 
@@ -48,9 +49,9 @@ static dispatch_once_t once_token;
 
 - (instancetype)init {
   if(self = [super init]) {
-    self.dataItemQueue = [NSMutableArray array];
-    self.senderBatchSize = defaultMaxBatchCount;
-    self.senderInterval = defaultBatchInterval;
+    _dataItemQueue = [NSMutableArray array];
+    _senderBatchSize = defaultMaxBatchCount;
+    _senderInterval = defaultBatchInterval;
   }
   return self;
 }
@@ -65,15 +66,12 @@ static dispatch_once_t once_token;
       typeof(self) strongSelf = weakSelf;
       
       // Enqueue item
-      [strongSelf->_dataItemQueue addObject:dictionary];
-      
+      [strongSelf addDictionaryToQueues:dictionary];
+
       if([strongSelf->_dataItemQueue count] >= strongSelf.senderBatchSize) {
         
         // Max batch count has been reached, so write queue to disk and delete all items.
-        [strongSelf invalidateTimer];
-        NSArray *bundle = [NSArray arrayWithArray:strongSelf->_dataItemQueue];
-        [[MSAIPersistence sharedInstance] persistBundle:bundle ofType:MSAIPersistenceTypeRegular withCompletionBlock:nil];
-        [strongSelf->_dataItemQueue removeAllObjects];
+        [strongSelf persistDataItemQueue];
       } else if([strongSelf->_dataItemQueue count] == 1) {
         
         // It is the first item, let's start the timer
@@ -81,6 +79,42 @@ static dispatch_once_t once_token;
       }
     });
   }
+}
+
+- (void)addDictionaryToQueues:(MSAIOrderedDictionary *)dictionary {
+  // Since we can't persist every event right away, we write it to a simple C string.
+  // This can then be written to disk by a signal handler in case of a crash.
+  [self->_dataItemQueue addObject:dictionary];
+  msai_appendDictionaryToSafeJsonString(dictionary, &(MSAISafeJsonEventsString));
+}
+
+void msai_appendDictionaryToSafeJsonString(NSDictionary *dictionary, char **string) {
+  if (string == NULL) { return; }
+
+  if (!dictionary) { return; }
+  
+  if (*string == NULL || strlen(*string) == 0) {
+    msai_resetSafeJsonString(string);
+  }
+
+  NSError *error = nil;
+  NSData *json_data = [NSJSONSerialization dataWithJSONObject:dictionary options:0 error:&error];
+  if (!json_data) {
+    MSAILog(@"JSONSerialization error: %@", error.description);
+    return;
+  }
+
+  char *new_string = NULL;
+  // Concatenate old string with new JSON string and add a comma.
+  asprintf(&new_string, "%s%.*s,", *string, (int)MIN(json_data.length, (NSUInteger)INT_MAX), json_data.bytes);
+  free(*string);
+  *string = new_string;
+}
+
+void msai_resetSafeJsonString(char **string) {
+  if (!string) { return; }
+  free(*string);
+  *string = strdup("[");
 }
 
 - (void)processDictionary:(MSAIOrderedDictionary *)dictionary withCompletionBlock: (void (^)(BOOL success)) completionBlock{
@@ -97,6 +131,16 @@ static dispatch_once_t once_token;
     queue = [NSMutableArray arrayWithArray:strongSelf->_dataItemQueue];
   });
   return queue;
+}
+
+- (void)persistDataItemQueue {
+  [self invalidateTimer];
+  NSArray *bundle = [NSArray arrayWithArray:_dataItemQueue];
+  [[MSAIPersistence sharedInstance] persistBundle:bundle ofType:MSAIPersistenceTypeRegular withCompletionBlock:nil];
+  
+  // Reset both, the async-signal-safe and normal queue.
+  [_dataItemQueue removeAllObjects];
+  msai_resetSafeJsonString(&(MSAISafeJsonEventsString));
 }
 
 - (BOOL)isQueueBusy{
@@ -124,16 +168,9 @@ static dispatch_once_t once_token;
   dispatch_source_set_event_handler(self.timerSource, ^{
     
     // On completion: Reset timer and persist items
-    [self invalidateTimer];
-    [self persistQueue];
+    [self persistDataItemQueue];
   });
   dispatch_resume(self.timerSource);
-}
-
-- (void)persistQueue {
-  NSArray *bundle = [NSArray arrayWithArray:_dataItemQueue];
-  [[MSAIPersistence sharedInstance] persistBundle:bundle ofType:MSAIPersistenceTypeRegular withCompletionBlock:nil];
-  [_dataItemQueue removeAllObjects];
 }
 
 @end

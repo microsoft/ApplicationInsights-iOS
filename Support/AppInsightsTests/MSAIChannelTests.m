@@ -31,6 +31,7 @@
   
   self.appClient = [[MSAIAppClient alloc]initWithBaseURL:[NSURL URLWithString:@"http://test.com/"]];
   self.sut = [MSAIChannel sharedChannel];
+  MSAISafeJsonEventsString = NULL;
 }
 
 - (void)tearDown {
@@ -112,6 +113,34 @@
   OCMVerify([self.sut invalidateTimer]);
 }
 
-//TODO more tests
+#pragma mark - Safe JSON String Tests
+
+- (void)testAppendDictionaryToSafeJsonString {
+  msai_appendDictionaryToSafeJsonString(nil, 0);
+  XCTAssertTrue(MSAISafeJsonEventsString == NULL);
+  
+  MSAISafeJsonEventsString = NULL;
+  msai_appendDictionaryToSafeJsonString(nil, &MSAISafeJsonEventsString);
+  XCTAssertTrue(MSAISafeJsonEventsString == NULL);
+  
+  msai_appendDictionaryToSafeJsonString(@{}, &MSAISafeJsonEventsString);
+  XCTAssertEqual(strcmp(MSAISafeJsonEventsString,"[{},"), 0);
+  
+  msai_appendDictionaryToSafeJsonString(@{@"Key1":@"Value1"}, &MSAISafeJsonEventsString);
+  XCTAssertEqual(strcmp(MSAISafeJsonEventsString,"[{},{\"Key1\":\"Value1\"},"), 0);
+}
+
+- (void)testResetSafeJsonString {
+  msai_resetSafeJsonString(&MSAISafeJsonEventsString);
+  XCTAssertEqual(strcmp(MSAISafeJsonEventsString,"["), 0);
+  
+  MSAISafeJsonEventsString = NULL;
+  msai_resetSafeJsonString(nil);
+  XCTAssertEqual(MSAISafeJsonEventsString, NULL);
+  
+  MSAISafeJsonEventsString = strdup("test string");
+  msai_resetSafeJsonString(&MSAISafeJsonEventsString);
+  XCTAssertEqual(strcmp(MSAISafeJsonEventsString,"["), 0);
+}
 
 @end

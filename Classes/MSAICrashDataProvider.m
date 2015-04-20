@@ -51,6 +51,8 @@
 #import "MSAICrashDataBinary.h"
 #import "MSAICrashDataThreadFrame.h"
 #import "MSAIHelper.h"
+#import "MSAISessionHelper.h"
+#import "MSAISessionHelperPrivate.h"
 #import "MSAIEnvelope.h"
 #import "MSAIData.h"
 #import "MSAIEnvelopeManagerPrivate.h"
@@ -236,6 +238,11 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
     NSString *marketingVersion = report.applicationInfo.applicationMarketingVersion;
     NSString *appVersion = report.applicationInfo.applicationVersion;
     envelope.appVer = marketingVersion ? [NSString stringWithFormat:@"%@ (%@)", marketingVersion, appVersion] : appVersion;
+    
+    MSAISession *session = [MSAISessionHelper sessionForDate:report.systemInfo.timestamp];
+    if (envelope.tags && session) {
+      [envelope.tags addEntriesFromDictionary:[session serializeToDictionary]];
+    }
   }
   
   MSAICrashData *crashData = [MSAICrashData new];
@@ -441,7 +448,7 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
     /* Write out the frames. In raw reports, Apple writes this out as a simple list of PCs. In the minimally
      * post-processed report, Apple writes this out as full frame entries. We use the latter format. */
     int lastIndex = (int)[exception.stackFrames count] - 1;
-    for (NSInteger frame_idx = lastIndex; frame_idx >= 0; frame_idx--) {
+    for (NSInteger frame_idx = 0; frame_idx <= lastIndex; frame_idx++) {
       MSAIPLCrashReportStackFrameInfo *frameInfo = exception.stackFrames[frame_idx];
       
       MSAICrashDataThreadFrame *frame = [MSAICrashDataThreadFrame new];
@@ -458,7 +465,7 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
     threadData.crashDataThreadId = @(thread.threadNumber);
     
     int lastIndex = (int)[thread.stackFrames count] - 1;
-    for (NSInteger frame_idx = lastIndex; frame_idx >= 0; frame_idx--) {
+    for (NSInteger frame_idx = 0; frame_idx <= lastIndex; frame_idx++) {
       MSAIPLCrashReportStackFrameInfo *frameInfo = thread.stackFrames[frame_idx];
       MSAICrashDataThreadFrame *frame = [MSAICrashDataThreadFrame new];
       frame.address = [NSString stringWithFormat:@"0x%0*" PRIx64, lp64 ? 16 : 8, frameInfo.instructionPointer];

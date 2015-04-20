@@ -1,11 +1,11 @@
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
-#import "MSAIAppInsightsPrivate.h"
-#import "MSAIAppInsights.h"
+#import "MSAIApplicationInsightsPrivate.h"
+#import "MSAIApplicationInsights.h"
 
 @interface MSAIManagerTests : XCTestCase
 
-@property (nonatomic, strong) MSAIAppInsights *sut;
+@property (nonatomic, strong) MSAIApplicationInsights *sut;
 
 @end
 
@@ -13,7 +13,7 @@
 
 - (void)setUp {
   [super setUp];
-  self.sut = [MSAIAppInsights new];
+  self.sut = [MSAIApplicationInsights new];
 }
 
 - (void)tearDown {
