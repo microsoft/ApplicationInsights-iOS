@@ -135,12 +135,15 @@ static NSInteger const statusCodeBadRequest = 400;
                                                               path:self.endpointPath
                                                         parameters:nil];
   
-  [request setHTTPBody:data];
-  [request setCachePolicy:NSURLRequestReloadIgnoringLocalCacheData];
-  NSString *contentEncoding = @"gzip";
-  [request setValue:contentEncoding forHTTPHeaderField:@"Content-Encoding"];
-  NSString *contentType = @"application/json";
-  [request setValue:contentType forHTTPHeaderField:@"Content-type"];
+  request.HTTPBody = data;
+  request.cachePolicy = NSURLRequestReloadIgnoringLocalCacheData;
+  
+  NSDictionary *headers = @{@"Charset": @"UTF-8",
+                            @"Content-Encoding": @"gzip",
+                            @"Content-Type": @"application/json",
+                            @"Accept-Encoding": @"gzip"};
+  [request setAllHTTPHeaderFields:headers];
+  
   return request;
 }
 
