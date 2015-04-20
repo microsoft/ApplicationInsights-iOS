@@ -16,8 +16,7 @@ NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
 #pragma mark - Initialisation
 
 - (instancetype)initWithAppContext:(MSAIContext *)appContext
-                      endpointPath:(NSString *)endpointPath
-                    firstSessionId:(NSString *)sessionId{
+                      endpointPath:(NSString *)endpointPath {
   
   if ((self = [self init])) {
     
@@ -40,7 +39,7 @@ NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
     MSAIApplication *applicationContext = [MSAIApplication new];
     applicationContext.version = appContext.appVersion;
     
-    MSAISession *sessionContext = [MSAISession new];
+    MSAISession *sessionContext = [MSAISessionHelper startNewSession];
     
     MSAIOperation *operationContext = [MSAIOperation new];
     
@@ -61,10 +60,7 @@ NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
     _session = sessionContext;
     _tags = [self tags];
     
-    if(sessionId){
-      [self updateSessionContextWithId:sessionId];
-      [MSAISessionHelper addSessionId:sessionId withDate:[NSDate date]];
-    }
+
     [self configureNetworkStatusTracking];
     [self configureSessionTracking];
   }
@@ -93,38 +89,15 @@ NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
 
 #pragma mark - Session
 
-- (void)resetIsNewFlag {
-  if ([_session.isNew isEqualToString:@"true"]) {
-    _session.isNew = @"false";
-  }
-}
-
-- (BOOL)isFirstSession{
-  return ![_userDefaults boolForKey:kMSAIApplicationWasLaunched];
-}
-
-- (void)updateSessionContextWithId:(NSString *)sessionId {
-  
-  if(![_session.sessionId isEqualToString:sessionId]){
-    BOOL firstSession = [self isFirstSession];
-    _session.sessionId = sessionId;
-    _session.isNew = @"true";
-    _session.isFirst = (firstSession ? @"true" : @"false");
-  }
-}
-
 - (void)configureSessionTracking{
   NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-  __weak typeof(self) weakSelf = self;
   [center addObserverForName:MSAISessionStartedNotification
                       object:nil
                        queue:nil
                   usingBlock:^(NSNotification *notification) {
-                    typeof(self) strongSelf = weakSelf;
-                    
                     NSDictionary *userInfo = notification.userInfo;
-                    NSString *sessionId = userInfo[kMSAISessionInfoSessionId];
-                    [strongSelf updateSessionContextWithId:sessionId];
+                    MSAISession *session = userInfo[kMSAISessionInfoSession];
+                    _session = session;
                   }];
 }
 
@@ -136,7 +109,6 @@ NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
   [contextDictionary addEntriesFromDictionary:self.tags];
   [contextDictionary addEntriesFromDictionary:[self.session serializeToDictionary]];
   [contextDictionary addEntriesFromDictionary:[self.device serializeToDictionary]];
-  [self resetIsNewFlag];
   
   return contextDictionary;
 }

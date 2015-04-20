@@ -1,5 +1,5 @@
-#import "AppInsights.h"
-#import "AppInsightsPrivate.h"
+#import "ApplicationInsights.h"
+#import "ApplicationInsightsPrivate.h"
 #import "MSAIHelper.h"
 #import "MSAIAppClient.h"
 #import "MSAIKeychainUtils.h"
@@ -30,7 +30,7 @@
 
 NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 
-@implementation MSAIAppInsights {
+@implementation MSAIApplicationInsights {
   BOOL _validInstrumentationKey;
   BOOL _startManagerIsInvoked;
   BOOL _managersInitialized;
@@ -40,12 +40,12 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 
 #pragma mark - Shared instance
 
-+ (MSAIAppInsights *)sharedInstance {
-  static MSAIAppInsights *sharedInstance = nil;
++ (MSAIApplicationInsights *)sharedInstance {
+  static MSAIApplicationInsights *sharedInstance = nil;
   static dispatch_once_t pred;
   
   dispatch_once(&pred, ^{
-    sharedInstance = [MSAIAppInsights alloc];
+    sharedInstance = [MSAIApplicationInsights alloc];
     sharedInstance = [sharedInstance init];
   });
   
@@ -118,7 +118,7 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
   }
   
   if (_startManagerIsInvoked) {
-    NSLog(@"[AppInsights] Warning: start should only be invoked once! This call is ignored.");
+    NSLog(@"[ApplicationInsights] Warning: start should only be invoked once! This call is ignored.");
     return;
   }
   
@@ -129,13 +129,9 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
   MSAILog(@"INFO: Starting MSAIManager");
   _startManagerIsInvoked = YES;
   
-  // Create new session
-  NSString *sessionId = [MSAISessionHelper createFirstSession];
-  
   // Configure Http-client and send persisted data
   MSAITelemetryContext *telemetryContext = [[MSAITelemetryContext alloc] initWithAppContext:_appContext
-                                                                               endpointPath:kMSAITelemetryPath
-                                                                             firstSessionId:sessionId];
+                                                                               endpointPath:kMSAITelemetryPath];
   [[MSAIEnvelopeManager sharedManager] configureWithTelemetryContext:telemetryContext];
   
   [[MSAISender sharedSender] configureWithAppClient:[self appClient]
@@ -173,13 +169,13 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 - (void)validateStartManagerIsInvoked {
   if (_validInstrumentationKey && !_appStoreEnvironment) {
     if (!_startManagerIsInvoked) {
-      NSLog(@"[AppInsights] ERROR: You did not call [MSAIAppInsights setup] to setup AppInsights! Please do so after setting up all properties. The SDK is NOT running.");
+      NSLog(@"[ApplicationInsights] ERROR: You did not call [MSAIApplicationInsights setup] to setup ApplicationInsights! Please do so after setting up all properties. The SDK is NOT running.");
     }
   }
 }
 
 - (BOOL)isSetUpOnMainThread {
-  NSString *errorString = @"ERROR: AppInsights has to be setup on the main thread!";
+  NSString *errorString = @"[ApplicationInsights] ERROR: ApplicationInsights has to be setup on the main thread!";
   
   if (!NSThread.isMainThread) {
     if (self.isAppStoreEnvironment) {
@@ -197,7 +193,7 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 
 - (void)initializeModules {
   if (_managersInitialized) {
-    NSLog(@"[AppInsights] Warning: The SDK should only be initialized once! This call is ignored.");
+    NSLog(@"[ApplicationInsights] Warning: The SDK should only be initialized once! This call is ignored.");
     return;
   }
   
@@ -222,7 +218,7 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
     _managersInitialized = YES;
   } else {
     if (!_appStoreEnvironment) {
-      NSLog(@"[AppInsights] ERROR: The Instrumentation Key is invalid! Please use the AppInsights instrumentation key you find on the website! The SDK is disabled!");
+      NSLog(@"[ApplicationInsights] ERROR: The Instrumentation Key is invalid! Please use the Application Insights instrumentation key you find on the website! The SDK is disabled!");
     }
   }
 }
@@ -307,7 +303,7 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 }
 
 - (BOOL)integrationFlowStartedWithTimeString:(NSString *)timeString {
-  if (timeString == nil || [self isAppStoreEnvironment]) {
+  if ( (!timeString) || ([self isAppStoreEnvironment]) ) {
     return NO;
   }
   

@@ -1,3 +1,4 @@
+#import "MSAIAppInsightsDelegate.h"
 @class MSAIEnvelope;
 @class MSAITelemetryContext;
 
@@ -15,7 +16,7 @@
 /**
  *  Delegate that should be informed if sending was successful or failed.
  */
-@property (nonatomic, weak) id delegate;
+@property (nonatomic, weak) id<MSAIAppInsightsDelegate> delegate;
 
 /**
  *  The endpoint url of the telemetry server.

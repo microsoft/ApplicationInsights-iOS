@@ -1,7 +1,8 @@
-#import "AppInsights.h"
+#import "ApplicationInsights.h"
 
 #if MSAI_FEATURE_CRASH_REPORTER
 
+#import "MSAIAppInsightsDelegate.h"
 #import <CrashReporter/CrashReporter.h>
 
 @class MSAIAppClient;
@@ -22,7 +23,7 @@ should not need to set this delegate individually.
 
 @see `[MSAIAppInsights setDelegate:]`
 */
-@property (nonatomic, weak) id delegate;
+@property (nonatomic, weak) id<MSAIAppInsightsDelegate> delegate;
 
 /*
 Optional callbacks that will be called when PLCrashReporter finds a crash. Hopefully users know what they do if they use
@@ -56,7 +57,7 @@ Value that indicates a low memory warning has been sent to the app. For memory w
 - (void)startManager;
 
 /**
-* Checks if the crashreporting module of AppInsights has been disabled
+* Checks if the crashreporting module of ApplicationInsights has been disabled
 */
 - (void)checkCrashManagerDisabled;
 
@@ -74,7 +75,7 @@ Value that indicates a low memory warning has been sent to the app. For memory w
 - (void)createCrashReportForAppKill;
 
 /**
-* Format and create the AppInsights crash report data and forward it to `MSAIChannel´for persistence and sending
+* Format and create the ApplicationInsights crash report data and forward it to `MSAIChannel´for persistence and sending
 */
 - (void)createCrashReportWithCrashData:(NSData*)crashData;
 
@@ -97,6 +98,19 @@ Value that indicates a low memory warning has been sent to the app. For memory w
 * @param error NSError
 */
 - (void)reportError:(NSError *)error;
+
+/**
+ *  Because we can't access any Objective-C code from our default signal handler callback, we need to have all necessary data and pointers already in place once it runs.
+ *  This method sets permanent references to [MSAIChannel sharedChannel] and file path to which our data is written in case of a crash.
+ */
+- (void)configDefaultCallback;
+
+/**
+ *  This function is used as our default callback in PLCrashReporter's signal handler.
+ *  It tries to write to disk the string kept by MSAIChannel as a backup.
+ *
+ */
+void msai_save_events_callback(siginfo_t *info, ucontext_t *uap, void *context);
 
 @end
 

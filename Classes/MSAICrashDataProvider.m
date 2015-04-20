@@ -239,9 +239,9 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
     NSString *appVersion = report.applicationInfo.applicationVersion;
     envelope.appVer = marketingVersion ? [NSString stringWithFormat:@"%@ (%@)", marketingVersion, appVersion] : appVersion;
     
-    NSString *sessionId = [MSAISessionHelper sessionIdForDate:report.systemInfo.timestamp];
-    if (envelope.tags && sessionId) {
-      envelope.tags[@"ai.session.id"] = sessionId;
+    MSAISession *session = [MSAISessionHelper sessionForDate:report.systemInfo.timestamp];
+    if (envelope.tags && session) {
+      [envelope.tags addEntriesFromDictionary:[session serializeToDictionary]];
     }
   }
   
@@ -448,7 +448,7 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
     /* Write out the frames. In raw reports, Apple writes this out as a simple list of PCs. In the minimally
      * post-processed report, Apple writes this out as full frame entries. We use the latter format. */
     int lastIndex = (int)[exception.stackFrames count] - 1;
-    for (NSInteger frame_idx = lastIndex; frame_idx >= 0; frame_idx--) {
+    for (NSInteger frame_idx = 0; frame_idx <= lastIndex; frame_idx++) {
       MSAIPLCrashReportStackFrameInfo *frameInfo = exception.stackFrames[frame_idx];
       
       MSAICrashDataThreadFrame *frame = [MSAICrashDataThreadFrame new];
@@ -465,7 +465,7 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
     threadData.crashDataThreadId = @(thread.threadNumber);
     
     int lastIndex = (int)[thread.stackFrames count] - 1;
-    for (NSInteger frame_idx = lastIndex; frame_idx >= 0; frame_idx--) {
+    for (NSInteger frame_idx = 0; frame_idx <= lastIndex; frame_idx++) {
       MSAIPLCrashReportStackFrameInfo *frameInfo = thread.stackFrames[frame_idx];
       MSAICrashDataThreadFrame *frame = [MSAICrashDataThreadFrame new];
       frame.address = [NSString stringWithFormat:@"0x%0*" PRIx64, lp64 ? 16 : 8, frameInfo.instructionPointer];

@@ -7,8 +7,8 @@
 #define MOCKITO_SHORTHAND
 #import <OCMockitoIOS/OCMockitoIOS.h>
 
-#import "AppInsights.h"
-#import "AppInsightsPrivate.h"
+#import "ApplicationInsights.h"
+#import "ApplicationInsightsPrivate.h"
 #import "MSAICrashManager.h"
 #import "MSAICrashManagerPrivate.h"
 #import "MSAIContextPrivate.h"
@@ -40,7 +40,7 @@
   _startManagerInitialized = NO;
   
   MSAIContext *context = [[MSAIContext alloc]initWithInstrumentationKey:@"123"];
-  MSAITelemetryContext *telemetryContext = [[MSAITelemetryContext alloc] initWithAppContext:context endpointPath:nil firstSessionId:nil];
+  MSAITelemetryContext *telemetryContext = [[MSAITelemetryContext alloc] initWithAppContext:context endpointPath:nil];
   [[MSAIEnvelopeManager sharedManager] configureWithTelemetryContext:telemetryContext];
 
 }
