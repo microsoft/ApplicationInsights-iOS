@@ -199,7 +199,7 @@
 		809E9E5A1AC455D9008A1AB5 /* MSAISessionState.h in Headers */ = {isa = PBXBuildFile; fileRef = 809E9E571AC455D9008A1AB5 /* MSAISessionState.h */; };
 		809E9E5B1AC455D9008A1AB5 /* MSAISessionStateData.h in Headers */ = {isa = PBXBuildFile; fileRef = 809E9E581AC455D9008A1AB5 /* MSAISessionStateData.h */; };
 		809E9E5C1AC455D9008A1AB5 /* MSAISessionStateData.m in Sources */ = {isa = PBXBuildFile; fileRef = 809E9E591AC455D9008A1AB5 /* MSAISessionStateData.m */; };
-		80B69EED1ADDC09900C47B0A /* MSAIGZIP.h in Headers */ = {isa = PBXBuildFile; fileRef = 80B69EEB1ADDC09900C47B0A /* MSAIGZIP.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		80B69EED1ADDC09900C47B0A /* MSAIGZIP.h in Headers */ = {isa = PBXBuildFile; fileRef = 80B69EEB1ADDC09900C47B0A /* MSAIGZIP.h */; };
 		80ECBD1F1ADE9E39005CACF4 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 80B69EEF1ADDC49100C47B0A /* libz.dylib */; };
 		80F334B01A9C8A430098026F /* MSAIManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 80F334AF1A9C8A430098026F /* MSAIManagerTests.m */; };
 		80F334B21A9C93290098026F /* MSAIApplicationInsightsPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 80F334B11A9C93290098026F /* MSAIApplicationInsightsPrivate.h */; settings = {ATTRIBUTES = (Private, ); }; };
@@ -789,7 +789,6 @@
 				807CFDA71A712974004EA1B6 /* MSAIData.h in Headers */,
 				1BBBCF341A6594AE00253031 /* MSAIChannel.h in Headers */,
 				1E754E5C1621FBB70070AB92 /* MSAICrashManager.h in Headers */,
-				80B69EED1ADDC09900C47B0A /* MSAIGZIP.h in Headers */,
 				803871BD1A94C0A600BF295F /* MSAIPageViewLogging_UIViewController.h in Headers */,
 				1B62F4D81A692A3200EB5AD0 /* MSAIContext.h in Headers */,
 				1BC8596B1A7ACA820018FB6B /* MSAICategoryContainer.h in Headers */,
@@ -806,6 +805,7 @@
 				803871C71A94C26500BF295F /* MSAISenderPrivate.h in Headers */,
 				1E754E5E1621FBB70070AB92 /* MSAICrashManagerDelegate.h in Headers */,
 				1BBBCF361A6594AE00253031 /* MSAITelemetryContext.h in Headers */,
+				80B69EED1ADDC09900C47B0A /* MSAIGZIP.h in Headers */,
 				807CFDC31A712974004EA1B6 /* MSAIOperation.h in Headers */,
 				809E9E5B1AC455D9008A1AB5 /* MSAISessionStateData.h in Headers */,
 				1B3C387A1A82213000700081 /* MSAICrashDataHeaders.h in Headers */,
