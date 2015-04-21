@@ -25,9 +25,9 @@ typedef NS_ENUM(NSInteger, MSAIReachabilityType){
   MSAIReachabilityTypeLTE
 };
 
-extern NSString* const kMSAIReachabilityTypeChangedNotification;
-extern NSString* const kMSAIReachabilityUserInfoName;
-extern NSString* const kMSAIReachabilityUserInfoType;
+FOUNDATION_EXPORT NSString* const kMSAIReachabilityTypeChangedNotification;
+FOUNDATION_EXPORT NSString* const kMSAIReachabilityUserInfoName;
+FOUNDATION_EXPORT NSString* const kMSAIReachabilityUserInfoType;
 
 /**
  *  The MSAIReachability class is responsible for keep track of the network status currently used.

@@ -12,8 +12,8 @@
 #import "MSAIHelper.h"
 #import "MSAIPersistence.h"
 
-static NSInteger const defaultMaxBatchCount = 50;
-static NSInteger const defaultBatchInterval = 15;
+NSInteger const defaultMaxBatchCount = 50;
+NSInteger const defaultBatchInterval = 15;
 
 static NSInteger const debugMaxBatchCount = 5;
 static NSInteger const debugBatchInterval = 3;
@@ -23,19 +23,26 @@ char *MSAISafeJsonEventsString;
 
 @implementation MSAIChannel
 
+static MSAIChannel *_sharedChannel = nil;
+static dispatch_once_t once_token;
+
 #pragma mark - Initialisation
 
 + (id)sharedChannel {
-  static MSAIChannel *sharedChannel = nil;
   
-  static dispatch_once_t onceToken;
-  dispatch_once(&onceToken, ^{
-    sharedChannel = [self new];
-    dispatch_queue_t serialQueue = dispatch_queue_create(MSAIDataItemsOperationsQueue, DISPATCH_QUEUE_SERIAL);
-    [sharedChannel setDataItemsOperations:serialQueue];
+  dispatch_once(&once_token, ^{
+    if (_sharedChannel == nil) {
+      _sharedChannel = [self new];
+      dispatch_queue_t serialQueue = dispatch_queue_create(MSAIDataItemsOperationsQueue, DISPATCH_QUEUE_SERIAL);
+      [_sharedChannel setDataItemsOperations:serialQueue];
+    }
   });
-  
-  return sharedChannel;
+  return _sharedChannel;
+}
+
++(void)setSharedChannel:(MSAIChannel *)channel {
+  once_token = 0;
+  _sharedChannel = channel;
 }
 
 - (instancetype)init {
@@ -153,12 +160,12 @@ void msai_resetSafeJsonString(char **string) {
 }
 
 - (void)startTimer {
-
+  
   // Reset timer, if it is already running
   if(self.timerSource) {
     [self invalidateTimer];
   }
-
+  
   self.timerSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, self.dataItemsOperations);
   dispatch_source_set_timer(self.timerSource, dispatch_walltime(NULL, NSEC_PER_SEC * self.senderInterval), 1ull * NSEC_PER_SEC, 1ull * NSEC_PER_SEC);
   dispatch_source_set_event_handler(self.timerSource, ^{

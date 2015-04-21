@@ -10,7 +10,9 @@
 @class MSAICrashData;
 @class MSAIOrderedDictionary;
 
-FOUNDATION_EXTERN char *MSAISafeJsonEventsString;
+FOUNDATION_EXPORT NSInteger const defaultBatchInterval;
+FOUNDATION_EXPORT NSInteger const defaultMaxBatchCount;
+FOUNDATION_EXPORT char *MSAISafeJsonEventsString;
 
 @interface MSAIChannel ()
 
@@ -24,6 +26,8 @@ FOUNDATION_EXTERN char *MSAISafeJsonEventsString;
 *  @return A singleton MSAIChannel instance ready use
 */
 + (instancetype)sharedChannel;
+
++ (void)setSharedChannel:(MSAIChannel *)channel;
 
 ///-----------------------------------------------------------------------------
 /// @name Queue management
