@@ -1,5 +1,7 @@
 #import <XCTest/XCTest.h>
 
+#import <OCMock/OCMock.h>
+
 #define HC_SHORTHAND
 #import <OCHamcrestIOS/OCHamcrestIOS.h>
 

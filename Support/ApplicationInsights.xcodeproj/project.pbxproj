@@ -587,6 +587,7 @@
 				80E1A40B1AE54B5300603B0A /* MSAITelemetryContextTests.m */,
 				80E1A40C1AE54B5300603B0A /* MSAITelemetryManagerTests.m */,
 				80E1A40E1AE54B5300603B0A /* MSAITestHelper.m */,
+				80E1A40F1AE54B5300603B0A /* MSAITestsDependencyInjection.h */,
 				80E1A4101AE54B5300603B0A /* MSAITestsDependencyInjection.m */,
 				80E1A4111AE54B5300603B0A /* MSAIUserTests.m */,
 				1E5A459716F0DFC200B55C04 /* Supporting Files */,
@@ -599,7 +600,6 @@
 			isa = PBXGroup;
 			children = (
 				80E1A40D1AE54B5300603B0A /* MSAITestHelper.h */,
-				80E1A40F1AE54B5300603B0A /* MSAITestsDependencyInjection.h */,
 				80E1A4381AE54B6C00603B0A /* ApplicationInsightsTests-Info.plist */,
 				80E1A4391AE54B6C00603B0A /* ApplicationInsightsTests-Prefix.pch */,
 				80E1A44D1AE54C8500603B0A /* libOCMock.a */,

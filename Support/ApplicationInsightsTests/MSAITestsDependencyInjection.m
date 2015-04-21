@@ -14,6 +14,9 @@ static NSUserDefaults *mockUserDefaults;
 @implementation NSUserDefaults (UnitTests)
 
 +(id)standardUserDefaults {
+  if (!mockUserDefaults) {
+    mockUserDefaults = OCMPartialMock([NSUserDefaults new]);
+  }
   return mockUserDefaults;
 }
 
@@ -23,7 +26,6 @@ static NSUserDefaults *mockUserDefaults;
 
 - (void)setUp {
   mockNotificationCenter = mock(NSNotificationCenter.class);
-  mockUserDefaults = mock(NSUserDefaults.class);
 }
 
 - (void)tearDown {
