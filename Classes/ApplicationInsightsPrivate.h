@@ -21,7 +21,7 @@ extern NSString *const kMSAIIntegrationflowTimestamp;
 
 extern NSString *const kMSAITelemetryPath;
 
-#define MSAILog(fmt, ...) do { if([MSAIApplicationInsights sharedInstance].isDeveloperModeEnabled && ![MSAIApplicationInsights sharedInstance].isAppStoreEnvironment) { NSLog((@"[MSAI] %s/%d " fmt), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__); }} while(0)
+#define MSAILog(fmt, ...) do { if([MSAIApplicationInsights sharedInstance].isDebugLogEnabled && ![MSAIApplicationInsights sharedInstance].isAppStoreEnvironment) { NSLog((@"[MSAI] %s/%d " fmt), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__); }} while(0)
 
 #ifndef __IPHONE_8_0
 #define __IPHONE_8_0     80000

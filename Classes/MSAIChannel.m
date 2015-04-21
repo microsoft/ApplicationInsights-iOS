@@ -11,7 +11,6 @@
 #import "MSAISenderPrivate.h"
 #import "MSAIHelper.h"
 #import "MSAIPersistence.h"
-#import "MSAIApplicationInsights.h"
 
 static NSInteger const defaultMaxBatchCount = 50;
 static NSInteger const defaultBatchInterval = 15;
@@ -42,9 +41,7 @@ char *MSAISafeJsonEventsString;
 - (instancetype)init {
   if(self = [super init]) {
     _dataItemQueue = [NSMutableArray array];
-    BOOL isDeveloperMode = [MSAIApplicationInsights sharedInstance].isDeveloperModeEnabled;
-    BOOL isAppStoreEnv = msai_isAppStoreEnvironment();
-    if (msai_isDebuggerAttached() || (isDeveloperMode && !isAppStoreEnv) ) {
+    if (msai_isDebuggerAttached()) {
       _senderBatchSize = debugMaxBatchCount;
       _senderInterval = debugBatchInterval;
     } else {
