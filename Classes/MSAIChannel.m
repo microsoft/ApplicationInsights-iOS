@@ -15,8 +15,8 @@
 NSInteger const defaultMaxBatchCount = 50;
 NSInteger const defaultBatchInterval = 15;
 
-static NSInteger const debugMaxBatchCount = 5;
-static NSInteger const debugBatchInterval = 3;
+NSInteger const debugMaxBatchCount = 5;
+NSInteger const debugBatchInterval = 3;
 
 static char *const MSAIDataItemsOperationsQueue = "com.microsoft.ApplicationInsights.senderQueue";
 char *MSAISafeJsonEventsString;
