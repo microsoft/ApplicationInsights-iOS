@@ -1,10 +1,9 @@
 #import <XCTest/XCTest.h>
 
+#import <OCMock/OCMock.h>
+
 #define HC_SHORTHAND
 #import <OCHamcrestIOS/OCHamcrestIOS.h>
-
-#define MOCKITO_SHORTHAND
-#import <OCMockitoIOS/OCMockitoIOS.h>
 
 #import "ApplicationInsights.h"
 #import "ApplicationInsightsPrivate.h"
@@ -12,6 +11,7 @@
 #import "MSAITelemetryManager.h"
 #import "MSAITelemetryManagerPrivate.h"
 #import "MSAITestsDependencyInjection.h"
+#import "MSAISessionHelperPrivate.h"
 
 @interface MSAITelemetryManagerTests : MSAITestsDependencyInjection
 
@@ -72,7 +72,8 @@
   [self.sut unregisterObservers];
   
   [self.sut registerObservers];
-  [verifyCount(self.mockNotificationCenter, times(2)) addObserverForName:(id)anything() object:nil queue:NSOperationQueue.mainQueue usingBlock:(id)anything()];
+  OCMVerify([self.mockNotificationCenter addObserverForName:MSAISessionStartedNotification object:nil queue:NSOperationQueue.mainQueue usingBlock:[OCMArg any]]);
+  OCMVerify([self.mockNotificationCenter addObserverForName:MSAISessionEndedNotification object:nil queue:NSOperationQueue.mainQueue usingBlock:[OCMArg any]]);
 }
 
 @end
