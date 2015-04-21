@@ -50,7 +50,6 @@ NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
     
     _instrumentationKey = appContext.instrumentationKey;
     _endpointPath = endpointPath;
-    _userDefaults = NSUserDefaults.standardUserDefaults;
     _application = applicationContext;
     _device = deviceContext;
     _location = locationContext;

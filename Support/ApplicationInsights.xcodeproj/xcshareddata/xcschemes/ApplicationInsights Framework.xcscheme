@@ -14,7 +14,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "1E4F61E91621AD970033EFC5"
-               BuildableName = "ApplicationInsights Framework"
+               BuildableName = "AppInsights Framework"
                BlueprintName = "ApplicationInsights Framework"
                ReferencedContainer = "container:ApplicationInsights.xcodeproj">
             </BuildableReference>
