@@ -1,6 +1,7 @@
 @class MSAIEnvelope;
 @class MSAITelemetryContext;
 
+NS_ASSUME_NONNULL_BEGIN
 @interface MSAISender ()
 
 ///-----------------------------------------------------------------------------
@@ -10,12 +11,12 @@
 /**
 *  The appClient is needed to create requests and send objects via an operation queue.
 */
-@property(nonatomic, strong)MSAIAppClient *appClient;
+@property (nonatomic, strong) MSAIAppClient *appClient;
 
 /**
  *  The endpoint url of the telemetry server.
  */
-@property (nonatomic, strong)NSString *endpointPath;
+@property (nonatomic, strong) NSString *endpointPath;
 
 /**
  *  The max number of request that can run at a time.
@@ -77,3 +78,4 @@
 - (BOOL)shouldDeleteDataWithStatusCode:(NSInteger)statusCode;
 
 @end
+NS_ASSUME_NONNULL_END

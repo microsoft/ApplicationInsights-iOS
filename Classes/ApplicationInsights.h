@@ -1,6 +1,19 @@
 #ifndef MSAI_h
 #define MSAI_h
 
+// Define nullability fallback for backwards compatibility
+#if !__has_feature(nullability)
+#define NS_ASSUME_NONNULL_BEGIN
+#define NS_ASSUME_NONNULL_END
+#define nullable
+#define nonnull
+#define null_unspecified
+#define null_resettable
+#define __nullable
+#define __nonnull
+#define __null_unspecified
+#endif
+
 #import "ApplicationInsightsFeatureConfig.h"
 #import "MSAIApplicationInsights.h"
 
@@ -22,6 +35,7 @@
 #define MSAI_BASE_URL   @"https://dc.services.visualstudio.com"
 
 #if MSAI_FEATURE_CRASH_REPORTER
+NS_ASSUME_NONNULL_BEGIN
 /**
  *  MSAI Crash Reporter error domain
  */
@@ -55,7 +69,9 @@ typedef NS_ENUM(NSInteger, MSAIErrorReason) {
    */
   MSAIErrorUnknown
 };
-FOUNDATION_EXPORT NSString *const __unused kMSAIErrorDomain;
-#endif 
+extern NSString *const __unused kMSAIErrorDomain;
+NS_ASSUME_NONNULL_END
 
-#endif
+#endif /* MSAI_FEATURE_CRASH_REPORTER */
+
+#endif /* MSAI_h */

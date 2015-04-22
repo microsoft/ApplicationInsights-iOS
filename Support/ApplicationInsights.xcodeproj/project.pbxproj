@@ -464,12 +464,12 @@
 				1BBBCF2E1A6594AE00253031 /* MSAIChannel.h */,
 				1BBBCF2F1A6594AE00253031 /* MSAIChannel.m */,
 				1B4D17E41A666EE30079D948 /* MSAIChannelPrivate.h */,
-				1BBBCF301A6594AE00253031 /* MSAITelemetryContext.h */,
-				1BBBCF311A6594AE00253031 /* MSAITelemetryContext.m */,
-				1BE129921A725797004D2AEE /* MSAITelemetryContextPrivate.h */,
 				1B47E02C1A84D3DF000B4C3D /* MSAIEnvelopeManager.h */,
 				1B47E02D1A84D3DF000B4C3D /* MSAIEnvelopeManager.m */,
 				1B47E0301A84D413000B4C3D /* MSAIEnvelopeManagerPrivate.h */,
+				1BBBCF301A6594AE00253031 /* MSAITelemetryContext.h */,
+				1BBBCF311A6594AE00253031 /* MSAITelemetryContext.m */,
+				1BE129921A725797004D2AEE /* MSAITelemetryContextPrivate.h */,
 			);
 			name = Channel;
 			sourceTree = "<group>";

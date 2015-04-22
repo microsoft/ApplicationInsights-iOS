@@ -10,6 +10,8 @@
 @class MSAICrashData;
 @class MSAIOrderedDictionary;
 
+FOUNDATION_EXTERN  char * __nonnull MSAISafeJsonEventsString;
+NS_ASSUME_NONNULL_BEGIN
 FOUNDATION_EXPORT NSInteger const debugBatchInterval;
 FOUNDATION_EXPORT NSInteger const debugMaxBatchCount;
 
@@ -52,14 +54,14 @@ FOUNDATION_EXPORT char *MSAISafeJsonEventsString;
  *  @param dictionary A dictionary which will be serialized to JSON and then appended to the string.
  *  @param string The C string which the dictionary's JSON representation will be appended to.
  */
-void msai_appendDictionaryToSafeJsonString(NSDictionary *dictionary, char **string);
+void msai_appendDictionaryToSafeJsonString(NSDictionary *dictionary, char *__nonnull*__nonnull string);
 
 /**
  *  Reset MSAISafeJsonEventsString so we can start appending JSON dictionaries.
  *
  *  @param string The string that will be reset.
  */
-void msai_resetSafeJsonString(char **string);
+void msai_resetSafeJsonString(char *__nonnull*__nonnull string);
 
 /**
  *  Enqueue telemetry data (events, metrics, exceptions, traces) before processing it.
@@ -76,7 +78,7 @@ void msai_resetSafeJsonString(char **string);
  *  @param dictionary      the dictionary object to process.
  *  @param completionBlock the block, which should be executed after the envelope has been persisted.
  */
-- (void)processDictionary:(MSAIOrderedDictionary *)dictionary withCompletionBlock: (void (^)(BOOL success)) completionBlock;
+- (void)processDictionary:(MSAIOrderedDictionary *)dictionary withCompletionBlock:(nullable void (^)(BOOL success))completionBlock;
 
 ///-----------------------------------------------------------------------------
 /// @name Batching
@@ -102,7 +104,7 @@ void msai_resetSafeJsonString(char **string);
 /**
  *  A timer source which is used to flush the queue after a cretain time.
  */
-@property (nonatomic, strong) dispatch_source_t timerSource;
+@property (nonatomic, strong, null_unspecified) dispatch_source_t timerSource;
 
 /**
  *  Starts the timer.
@@ -126,3 +128,4 @@ void msai_resetSafeJsonString(char **string);
 - (BOOL)isQueueBusy;
 
 @end
+NS_ASSUME_NONNULL_END

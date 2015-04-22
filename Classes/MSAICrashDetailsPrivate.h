@@ -1,6 +1,7 @@
 #import "ApplicationInsights.h"
 
-FOUNDATION_EXPORT NSString *const __unused kMSAICrashKillSignal;
+NS_ASSUME_NONNULL_BEGIN
+extern NSString *const __unused kMSAICrashKillSignal;
 
 @interface MSAICrashDetails () {
   
@@ -18,3 +19,4 @@ FOUNDATION_EXPORT NSString *const __unused kMSAICrashKillSignal;
                                   appBuild:(NSString *)appBuild;
 
 @end
+NS_ASSUME_NONNULL_END

@@ -37,7 +37,10 @@ NSString *const testHostName = @"www.google.com";
 }
 
 - (void)testWwanTypeForRadioAccessTechnology{
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnonnull"
   assertThatInteger([_sut wwanTypeForRadioAccessTechnology:nil], equalToInteger(MSAIReachabilityTypeNone));
+#pragma clang diagnostic pop
   assertThatInteger([_sut wwanTypeForRadioAccessTechnology:@"Foo"], equalToInteger(MSAIReachabilityTypeNone));
   
   assertThatInteger([_sut wwanTypeForRadioAccessTechnology:CTRadioAccessTechnologyGPRS], equalToInteger(MSAIReachabilityTypeGPRS));

@@ -1,6 +1,7 @@
 #import <Foundation/Foundation.h>
 #import "MSAIApplicationInsights.h"
 
+NS_ASSUME_NONNULL_BEGIN
 #ifndef MSAI_Private_h
 #define MSAI_Private_h
 
@@ -15,7 +16,7 @@ FOUNDATION_EXPORT NSString *const __unused kMSAITelemetryCachesSessions;
 FOUNDATION_EXPORT NSString *const __unused kMSAITelemetryTempSessionData;
 FOUNDATION_EXPORT NSString *const __unused kMSAITelemetryLastAppVersion;
 
-#endif
+#endif /* MSAI_FEATURE_METRICS */
 
 FOUNDATION_EXPORT NSString *const kMSAIIntegrationflowTimestamp;
 
@@ -27,4 +28,5 @@ FOUNDATION_EXPORT NSString *const kMSAITelemetryPath;
 #define __IPHONE_8_0     80000
 #endif
 
-#endif //MSAI_Private_h
+#endif /* MSAI_Private_h */
+NS_ASSUME_NONNULL_END

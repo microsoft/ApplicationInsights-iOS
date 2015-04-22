@@ -1,6 +1,8 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
+#import "ApplicationInsights.h"
 
+NS_ASSUME_NONNULL_BEGIN
 /* NSString helpers */
 NSString *msai_URLEncodedString(NSString *inputString);
 NSString *msai_URLDecodedString(NSString *inputString);
@@ -31,3 +33,4 @@ BOOL msai_isPreiOS8Environment(void);
 BOOL msai_isRunningInAppExtension(void);
 BOOL msai_isAppStoreEnvironment(void);
 BOOL msai_isDebuggerAttached(void);
+NS_ASSUME_NONNULL_END

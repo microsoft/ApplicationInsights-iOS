@@ -1,6 +1,8 @@
 #import "MSAITestHelper.h"
 #import "ApplicationInsightsPrivate.h"
 
+NSString *const kMSAIDummyInstrumentationKey = @"aaaaaaa-bbbb-cccc-dddd-01234567";
+
 @implementation MSAITestHelper
 
 // loads test fixture from json file
