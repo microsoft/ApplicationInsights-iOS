@@ -7,15 +7,15 @@
 #import <OCMockitoIOS/OCMockitoIOS.h>
 
 #import "MSAISession.h"
-#import "MSAISessionHelper.h"
-#import "MSAISessionHelperPrivate.h"
+#import "MSAIContextHelper.h"
+#import "MSAIContextHelperPrivate.h"
 #import "MSAIPersistence.h"
 #import "MSAIPersistencePrivate.h"
 #import "MSAINotificationTests.h"
 
 @interface MSAISessionHelperTests : MSAINotificationTests
 
-@property (strong) MSAISessionHelper *sut;
+@property (strong) MSAIContextHelper *sut;
 
 @end
 
@@ -26,9 +26,9 @@
 - (void)setUp {
   [super setUp];
   
-  self.sut = [MSAISessionHelper new];
-  self.sut.sessionEntries = [NSMutableDictionary new];
-  assertThatInteger(_sut.sessionEntries.count, equalToInteger(0));
+  self.sut = [MSAIContextHelper new];
+  self.sut.metaData = [NSMutableDictionary new];
+  assertThatInteger(_sut.metaData.count, equalToInteger(0));
 }
 
 - (void)teardown {
@@ -48,8 +48,8 @@
   
   [self.sut addSession:session withDate:date];
   
-  XCTAssertEqual(self.sut.sessionEntries.count, 1);
-  XCTAssertEqualObjects(self.sut.sessionEntries[timestamp], session);
+  XCTAssertEqual(self.sut.metaData.count, 1);
+  XCTAssertEqualObjects(self.sut.metaData[timestamp], session);
 }
 
 - (void)testRemoveSessionWorks {
@@ -63,15 +63,15 @@
   
   [self.sut removeSession:[self sessionWithId:@"b"]];
   
-  XCTAssertLessThanOrEqual(self.sut.sessionEntries.count, 2);
-  XCTAssertNotNil(self.sut.sessionEntries[@"0"]);
-  XCTAssertNotNil(self.sut.sessionEntries[@"2"]);
-  XCTAssertNil(self.sut.sessionEntries[@"1"]);
+  XCTAssertLessThanOrEqual(self.sut.metaData.count, 2);
+  XCTAssertNotNil(self.sut.metaData[@"0"]);
+  XCTAssertNotNil(self.sut.metaData[@"2"]);
+  XCTAssertNil(self.sut.metaData[@"1"]);
   
 }
 
 - (void)testCleanUpSessionsWorks {
-  XCTAssertEqual(self.sut.sessionEntries.count, 0);
+  XCTAssertEqual(self.sut.metaData.count, 0);
   
   MSAISession *sessionA = [self sessionWithId:@"a"];
   MSAISession *sessionB = [self sessionWithId:@"b"];
@@ -80,15 +80,15 @@
   [self.sut addSession:sessionA withDate:[NSDate dateWithTimeIntervalSince1970:3]];
   [self.sut addSession:sessionB withDate:[NSDate dateWithTimeIntervalSince1970:33]];
   [self.sut addSession:sessionC withDate:[NSDate dateWithTimeIntervalSince1970:333]];
-  XCTAssertEqual(self.sut.sessionEntries.count, 3);
+  XCTAssertEqual(self.sut.metaData.count, 3);
+
+  [self.sut cleanUpMetaData];
   
-  [self.sut cleanUpSessions];
+  XCTAssertLessThanOrEqual(self.sut.metaData.count, 1);
   
-  XCTAssertLessThanOrEqual(self.sut.sessionEntries.count, 1);
-  
-  XCTAssertNil(self.sut.sessionEntries[@"3"]);
-  XCTAssertNil(self.sut.sessionEntries[@"33"]);
-  XCTAssertEqualObjects(self.sut.sessionEntries[@"333"], sessionC);
+  XCTAssertNil(self.sut.metaData[@"3"]);
+  XCTAssertNil(self.sut.metaData[@"33"]);
+  XCTAssertEqualObjects(self.sut.metaData[@"333"], sessionC);
 }
 
 - (void)testReturnsCorrectSessionForDate {

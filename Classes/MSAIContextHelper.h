@@ -3,6 +3,6 @@
 /**
  *  A helper class that allows to persist and retrieve session IDs attached to different timestamps.
  */
-@interface MSAISessionHelper : NSObject
+@interface MSAIContextHelper : NSObject
 
 @end

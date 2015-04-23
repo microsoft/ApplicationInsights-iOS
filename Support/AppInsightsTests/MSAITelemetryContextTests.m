@@ -17,7 +17,7 @@
 #import "MSAIUser.h"
 #import "MSAISession.h"
 #import "MSAILocation.h"
-#import "MSAISessionHelper.h"
+#import "MSAIContextHelper.h"
 
 @interface MSAITelemetryContextTests : XCTestCase
 

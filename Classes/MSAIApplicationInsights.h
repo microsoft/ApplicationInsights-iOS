@@ -136,6 +136,27 @@
  *  @param autoPageViewTrackingDisabled Flag which determines whether the page view collection should be disabled
  */
 + (void)setAutoPageViewTrackingDisabled:(BOOL)autoPageViewTrackingDisabled;
+
+/**
+ *  <#Description#>
+ */
+@property (nonatomic, getter=isAutoSessionManagementDisabled) BOOL autoSessionManagementDisabled;
+
+/**
+ *  <#Description#>
+ *
+ *  @param autoSessionManagementDisabled <#autoSessionManagementDisabled description#>
+ */
++ (void)setAutoSessionManagementDisabled:(BOOL)autoSessionManagementDisabled;
+
++ (void)setUserId:(NSString *)userId;
+
+- (void)setUserId:(NSString *)userId;
+
++ (void)renewSessionWithId:(NSString *)sessionId;
+
+- (void)renewSessionWithId:(NSString *)sessionId;
+
 #endif /* MSAI_FEATURE_TELEMETRY */
 
 ///-----------------------------------------------------------------------------

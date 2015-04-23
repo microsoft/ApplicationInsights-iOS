@@ -13,8 +13,8 @@
 #import "MSAITelemetryContextPrivate.h"
 #import "MSAIEnvelopeManager.h"
 #import "MSAIEnvelopeManagerPrivate.h"
-#import "MSAISessionHelper.h"
-#import "MSAISessionHelperPrivate.h"
+#import "MSAIContextHelper.h"
+#import "MSAIContextHelperPrivate.h"
 #include <stdint.h>
 
 #if MSAI_FEATURE_CRASH_REPORTER
@@ -110,13 +110,6 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
   MSAILog(@"INFO: Starting MSAIManager");
   _startManagerIsInvoked = YES;
   
-  // Configure Http-client and send persisted data
-  MSAITelemetryContext *telemetryContext = [[MSAITelemetryContext alloc] initWithAppContext:_appContext
-                                                                               endpointPath:kMSAITelemetryPath];
-  [[MSAIEnvelopeManager sharedManager] configureWithTelemetryContext:telemetryContext];
-  
-  [[MSAISender sharedSender] configureWithAppClient:[self appClient]
-                                       endpointPath:kMSAITelemetryPath];
   [[MSAISender sharedSender] sendSavedData];
   
 #if MSAI_FEATURE_CRASH_REPORTER
@@ -185,6 +178,14 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
   
   if (_validInstrumentationKey) {
     
+    // Configure Http-client and send persisted data
+    MSAITelemetryContext *telemetryContext = [[MSAITelemetryContext alloc] initWithAppContext:_appContext
+                                                                                 endpointPath:kMSAITelemetryPath];
+    [[MSAIEnvelopeManager sharedManager] configureWithTelemetryContext:telemetryContext];
+    
+    [[MSAISender sharedSender] configureWithAppClient:[self appClient]
+                                         endpointPath:kMSAITelemetryPath];
+    
 #if MSAI_FEATURE_TELEMETRY
     MSAILog(@"INFO: Setup TelemetryManager");
 #endif /* MSAI_FEATURE_TELEMETRY */
@@ -222,6 +223,17 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 + (void)setAutoPageViewTrackingDisabled:(BOOL)autoPageViewTrackingDisabled {
   [[self sharedInstance] setAutoPageViewTrackingDisabled:autoPageViewTrackingDisabled];
 }
+
+- (void)setAutoSessionManagementDisabled:(BOOL)autoSessionManagementDisabled {
+  [MSAIContextHelper sharedInstance].autoSessionManagementDisabled = autoSessionManagementDisabled;
+  [[MSAIContextHelper sharedInstance] unregisterObservers];
+  _autoSessionManagementDisabled = autoSessionManagementDisabled;
+}
+
++ (void)setAutoSessionManagementDisabled:(BOOL)autoSessionManagementDisabled {
+  [[self sharedInstance] setAutoSessionManagementDisabled:autoSessionManagementDisabled];
+}
+
 #endif /* MSAI_FEATURE_TELEMETRY */
 
 #if MSAI_FEATURE_CRASH_REPORTER
@@ -329,7 +341,7 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
                   }];
 }
 
-#pragma mark - Meta data
+#pragma mark - SDK meta data
 
 - (NSString *)version {
   return msai_sdkVersion();
@@ -345,6 +357,26 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 
 + (NSString *)build {
   return [[self sharedInstance] build];
+}
+
+#pragma mark - Context meta data
+
++ (void)setUserId:(NSString *)userId {
+  [[self sharedInstance] setUserId:userId];
+}
+
+- (void)setUserId:(NSString *)userId {
+  [[MSAIContextHelper sharedInstance] setCurrentUserId:userId];
+}
+
++ (void)renewSessionWithId:(NSString *)sessionId {
+  [[self sharedInstance] setAutoSessionManagementDisabled:YES];
+  [[self sharedInstance] renewSessionWithId:sessionId];
+}
+
+- (void)renewSessionWithId:(NSString *)sessionId {
+  [self setAutoSessionManagementDisabled:YES];
+  [[MSAIContextHelper sharedInstance] renewSessionWithId:sessionId];
 }
 
 #pragma mark - Helper

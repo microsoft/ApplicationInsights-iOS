@@ -1,14 +1,18 @@
 #import <Foundation/Foundation.h>
-#import "MSAISessionHelper.h"
+#import "MSAIContextHelper.h"
 #import "MSAISession.h"
-
-@interface MSAISessionHelper()
+#import "MSAIUser.h"
 
 FOUNDATION_EXPORT NSString *const MSAISessionStartedNotification;
 FOUNDATION_EXPORT NSString *const MSAISessionEndedNotification;
 FOUNDATION_EXPORT NSString *const kMSAISessionInfoSession;
 
+FOUNDATION_EXPORT NSString *const MSAIUserIdChangedNotification;
+FOUNDATION_EXPORT NSString *const kMSAIUserInfoUserId;
+
 FOUNDATION_EXPORT NSString *const kMSAIApplicationWasLaunched;
+
+@interface MSAIContextHelper ()
 
 ///-----------------------------------------------------------------------------
 /// @name Getting shared instance
@@ -22,14 +26,22 @@ FOUNDATION_EXPORT NSString *const kMSAIApplicationWasLaunched;
 /**
  *  A Dictionary which holds content of property list in memory.
  */
-@property (nonatomic, strong) NSMutableDictionary *sessionEntries;
+@property (nonatomic, strong) NSMutableDictionary *metaData;
+
+/**
+ *  This flag determines if the helper automatically renews sessions.
+ */
+@property BOOL autoSessionManagementDisabled;
 
 /**
  *  Returns the shared instance.
  *
  *  @return the shared instance
  */
-+ (id)sharedInstance;
++ (instancetype)sharedInstance;
+
+- (MSAIUser *)newUser;
+- (MSAIUser *)newUserWithId:(NSString *)userId;
 
 ///-----------------------------------------------------------------------------
 /// @name Starting a session
@@ -38,28 +50,22 @@ FOUNDATION_EXPORT NSString *const kMSAIApplicationWasLaunched;
 /**
  *  Start a new session.
  */
-+ (MSAISession *)startNewSession;
+- (void)startNewSession;
 
 /**
  *  Start a new session if the method is called more than 20 seconds after app went to background for the last time.
  */
-+ (MSAISession *)startNewSessionIfNeeded;
+- (void)startNewSessionIfNeeded;
 
+- (MSAISession *)newSession;
 
-/**
- *  Start a new session.
- */
-- (MSAISession *)startNewSession;
-
-/**
- *  Start a new session if the method is called more than 20 seconds after app went to background for the last time.
- */
-- (MSAISession *)startNewSessionIfNeeded;
-
+- (MSAISession *)newSessionWithId:(NSString *)sessionId;
 
 ///-----------------------------------------------------------------------------
 /// @name Adding a session
 ///-----------------------------------------------------------------------------
+
+- (void)renewSessionWithId:(NSString *)sessionId;
 
 /**
  *  Adds a new sessionId (value) for a given timestamp (key) to the session plist.
@@ -72,15 +78,6 @@ FOUNDATION_EXPORT NSString *const kMSAIApplicationWasLaunched;
 ///-----------------------------------------------------------------------------
 /// @name Getting a session
 ///-----------------------------------------------------------------------------
-
-/**
- *  Returns the best effort based on a given timestamp.
- *
- *  @param date the creation date of a crash report
- *
- *  @return the sessionId of the session, in which the crash occured
- */
-+ (MSAISession *)sessionForDate:(NSDate *)date;
 
 /**
  *  Returns the best effort based on a given timestamp.
@@ -101,25 +98,46 @@ FOUNDATION_EXPORT NSString *const kMSAIApplicationWasLaunched;
  *
  *  @param sessionId the sessionId of the plist entry, which should be removed
  */
-+ (void)removeSession:(MSAISession *)session;
-
-/**
- *  Keep the most recent sessionId, but remove all other entries from the plist.
- *  This should only be called after you made sure you won't need any other session IDs anymore.
- */
-+ (void)cleanUpSessions;
-
-/**
- *  Removes the entry for a given sessionId.
- *
- *  @param sessionId the sessionId of the plist entry, which should be removed
- */
 - (void)removeSession:(MSAISession *)session;
+
+///-----------------------------------------------------------------------------
+/// @name Clean Up
+///-----------------------------------------------------------------------------
 
 /**
  *  Keep the most recent sessionId, but all other entries from the plist
  */
-- (void)cleanUpSessions;
+- (void)cleanUpMetaData;
+
+///-----------------------------------------------------------------------------
+/// @name User IDs
+///-----------------------------------------------------------------------------
+
+- (void)setCurrentUserId:(NSString *)userId;
+
+/**
+ *  <#Description#>
+ *
+ *  @return <#return value description#>
+ */
+- (MSAIUser *)newUser;
+
+/**
+ *  <#Description#>
+ *
+ *  @param user <#user description#>
+ */
+- (void)addUser:(MSAIUser *)user forDate:(NSDate *)date;
+
+/**
+ *  <#Description#>
+ *
+ *  @param date <#date description#>
+ *
+ *  @return <#return value description#>
+ */
+- (MSAIUser *)userForDate:(NSDate *)date;
+
 
 ///-----------------------------------------------------------------------------
 /// @name Helper
@@ -140,12 +158,12 @@ FOUNDATION_EXPORT NSString *const kMSAIApplicationWasLaunched;
 - (NSString *)unixTimestampFromDate:(NSDate *)date;
 
 /**
- *  Registers MSAISessionHelper for several notifications, which influence the session state.
+ *  Registers MSAIContextHelper for several notifications, which influence the session state.
  */
 - (void)registerObservers;
 
 /**
- *  Unegisters MSAISessionHelper for several notifications, which influence the session state.
+ *  Unegisters MSAIContextHelper for several notifications, which influence the session state.
  */
 - (void)unregisterObservers;
 

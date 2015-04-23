@@ -7,7 +7,7 @@
 NSString *const kHighPrioString = @"highPrio";
 NSString *const kRegularPrioString = @"regularPrio";
 NSString *const kCrashTemplateString = @"crashTemplate";
-NSString *const kSessionIdsString = @"sessionIds";
+NSString *const kSessionIdsString = @"metaData";
 NSString *const kFileBaseString = @"app-insights-bundle-";
 
 NSString *const MSAIPersistenceSuccessNotification = @"MSAIPersistenceSuccessNotification";
@@ -90,11 +90,11 @@ NSUInteger const defaultFileCount = 50;
   }
 }
 
-- (void)persistSessionIds:(NSDictionary *)sessionIds {
-  NSString *fileURL = [self newFileURLForPersitenceType:MSAIPersistenceTypeSessionIds];
+- (void)persistMetaData:(NSDictionary *)metaData {
+  NSString *fileURL = [self newFileURLForPersitenceType:MSAIPersistenceTypeMetaData];
   
   dispatch_async(self.persistenceQueue, ^{
-    [NSKeyedArchiver archiveRootObject:sessionIds toFile:fileURL];
+    [NSKeyedArchiver archiveRootObject:metaData toFile:fileURL];
   });
 }
 
@@ -154,13 +154,13 @@ NSUInteger const defaultFileCount = 50;
   return bundle;
 }
 
-- (NSDictionary *)sessionIds {
-  NSDictionary *sessionIds = nil;
-  NSString *path = [self newFileURLForPersitenceType:MSAIPersistenceTypeSessionIds];
+- (NSDictionary *)metaData {
+  NSDictionary *metaData = nil;
+  NSString *path = [self newFileURLForPersitenceType:MSAIPersistenceTypeMetaData];
   if(path) {
-    sessionIds = [NSKeyedUnarchiver unarchiveObjectWithFile:path];
+    metaData = [NSKeyedUnarchiver unarchiveObjectWithFile:path];
   }
-  return sessionIds;
+  return metaData;
 }
 
 - (NSData *)dataAtPath:(NSString *)path {
@@ -229,7 +229,7 @@ NSUInteger const defaultFileCount = 50;
       filePath = [[applicationSupportDir stringByAppendingPathComponent:kCrashTemplateString] stringByAppendingPathComponent:kCrashTemplateString];
       break;
     };
-    case MSAIPersistenceTypeSessionIds: {
+    case MSAIPersistenceTypeMetaData: {
       [self createFolderAtPathIfNeeded:[applicationSupportDir stringByAppendingPathComponent:kSessionIdsString]];
       filePath = [[applicationSupportDir stringByAppendingPathComponent:kSessionIdsString] stringByAppendingPathComponent:kSessionIdsString];
       break;
@@ -331,7 +331,7 @@ NSUInteger const defaultFileCount = 50;
       subfolderPath = kRegularPrioString;
       break;
     }
-    case MSAIPersistenceTypeSessionIds: {
+    case MSAIPersistenceTypeMetaData: {
       subfolderPath = kSessionIdsString;
       break;
     }
