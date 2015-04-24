@@ -30,12 +30,9 @@
   [super setUp];
   
   self.appClient = [[MSAIAppClient alloc]initWithBaseURL:[NSURL URLWithString:@"http://test.com/"]];
+  [MSAIChannel setSharedChannel:[MSAIChannel new]];
   self.sut = [MSAIChannel sharedChannel];
   MSAISafeJsonEventsString = NULL;
-}
-
-- (void)tearDown {
-  [MSAIChannel setSharedChannel:nil];
 }
 
 #pragma mark - Setup Tests
