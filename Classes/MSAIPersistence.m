@@ -207,11 +207,13 @@ NSUInteger const defaultFileCount = 50;
 #pragma mark - Private
 
 - (NSString *)newFileURLForPersitenceType:(MSAIPersistenceType)type {
-  static NSString *applicationSupportDir;
+  static NSString *fileDir;
   static dispatch_once_t dirToken;
   
   dispatch_once(&dirToken, ^{
-    applicationSupportDir = [NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES) lastObject];
+    NSString *applicationSupportDir = [NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES) lastObject];
+    fileDir = [applicationSupportDir stringByAppendingPathComponent:@"com.microsoft.ApplicationInsights/"];
+    [self createFolderAtPathIfNeeded:fileDir];
   });
   
   NSString *uuid = msai_UUID();
@@ -220,23 +222,23 @@ NSUInteger const defaultFileCount = 50;
   
   switch(type) {
     case MSAIPersistenceTypeHighPriority: {
-      [self createFolderAtPathIfNeeded:[applicationSupportDir stringByAppendingPathComponent:kHighPrioString]];
-      filePath = [[applicationSupportDir stringByAppendingPathComponent:kHighPrioString] stringByAppendingPathComponent:fileName];
+      [self createFolderAtPathIfNeeded:[fileDir stringByAppendingPathComponent:kHighPrioString]];
+      filePath = [[fileDir stringByAppendingPathComponent:kHighPrioString] stringByAppendingPathComponent:fileName];
       break;
     };
     case MSAIPersistenceTypeCrashTemplate: {
-      [self createFolderAtPathIfNeeded:[applicationSupportDir stringByAppendingPathComponent:kCrashTemplateString]];
-      filePath = [[applicationSupportDir stringByAppendingPathComponent:kCrashTemplateString] stringByAppendingPathComponent:kCrashTemplateString];
+      [self createFolderAtPathIfNeeded:[fileDir stringByAppendingPathComponent:kCrashTemplateString]];
+      filePath = [[fileDir stringByAppendingPathComponent:kCrashTemplateString] stringByAppendingPathComponent:kCrashTemplateString];
       break;
     };
     case MSAIPersistenceTypeSessionIds: {
-      [self createFolderAtPathIfNeeded:[applicationSupportDir stringByAppendingPathComponent:kSessionIdsString]];
-      filePath = [[applicationSupportDir stringByAppendingPathComponent:kSessionIdsString] stringByAppendingPathComponent:kSessionIdsString];
+      [self createFolderAtPathIfNeeded:[fileDir stringByAppendingPathComponent:kSessionIdsString]];
+      filePath = [[fileDir stringByAppendingPathComponent:kSessionIdsString] stringByAppendingPathComponent:kSessionIdsString];
       break;
     };
     default: {
-      [self createFolderAtPathIfNeeded:[applicationSupportDir stringByAppendingPathComponent:kRegularPrioString]];
-      filePath = [[applicationSupportDir stringByAppendingPathComponent:kRegularPrioString] stringByAppendingPathComponent:fileName];
+      [self createFolderAtPathIfNeeded:[fileDir stringByAppendingPathComponent:kRegularPrioString]];
+      filePath = [[fileDir stringByAppendingPathComponent:kRegularPrioString] stringByAppendingPathComponent:fileName];
       break;
     };
   }
@@ -310,10 +312,12 @@ NSUInteger const defaultFileCount = 50;
 }
 
 - (NSString *)folderPathForPersistenceType:(MSAIPersistenceType)type {
-  static NSString *documentFolder;
-  static dispatch_once_t documentFolderToken;
-  dispatch_once(&documentFolderToken, ^{
-    documentFolder = [NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES) lastObject];
+  static NSString *persistenceFolder;
+  static dispatch_once_t persistenceFolderToken;
+  dispatch_once(&persistenceFolderToken, ^{
+    NSString *documentsFolder = [NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES) lastObject];
+    persistenceFolder = [documentsFolder stringByAppendingPathComponent:@"com.microsoft.ApplicationInsights/"];
+    [self createFolderAtPathIfNeeded:persistenceFolder];
   });
   
   NSString *subfolderPath;
@@ -336,7 +340,7 @@ NSUInteger const defaultFileCount = 50;
       break;
     }
   }
-  NSString *path = [documentFolder stringByAppendingPathComponent:subfolderPath];
+  NSString *path = [persistenceFolder stringByAppendingPathComponent:subfolderPath];
   
   return path;
 }

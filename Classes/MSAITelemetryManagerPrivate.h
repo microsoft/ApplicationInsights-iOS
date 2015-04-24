@@ -1,9 +1,9 @@
 #import "ApplicationInsights.h"
 
 #if MSAI_FEATURE_TELEMETRY
-
 @class MSAITelemetryData;
 
+NS_ASSUME_NONNULL_BEGIN
 @interface MSAITelemetryManager ()
 
 ///-----------------------------------------------------------------------------
@@ -59,5 +59,6 @@
 - (void)unregisterObservers;
 
 @end
+NS_ASSUME_NONNULL_END
 
-#endif
+#endif /* MSAI_FEATURE_METRICS */
