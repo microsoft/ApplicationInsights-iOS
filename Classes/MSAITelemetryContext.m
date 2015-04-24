@@ -48,7 +48,6 @@ NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
     MSAILocation *locationContext = [MSAILocation new];
     
     _instrumentationKey = appContext.instrumentationKey;
-    _userDefaults = NSUserDefaults.standardUserDefaults;
     _application = applicationContext;
     _device = deviceContext;
     _location = locationContext;

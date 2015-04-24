@@ -4,7 +4,9 @@
 @class MSAIPLCrashReport;
 #import <Foundation/Foundation.h>
 #import "MSAIEnvelopeManager.h"
+#import "ApplicationInsights.h"
 
+NS_ASSUME_NONNULL_BEGIN
 @interface MSAIEnvelopeManager()
 
 ///-----------------------------------------------------------------------------
@@ -68,6 +70,7 @@
  *
  *  @return an envelope object that contains a handled exception
  */
-- (MSAIEnvelope *)envelopeForCrashReport:(MSAIPLCrashReport *)report exception:(NSException *)exception;
+- (MSAIEnvelope *)envelopeForCrashReport:(MSAIPLCrashReport *)report exception:(nullable NSException *)exception;
 
 @end
+NS_ASSUME_NONNULL_END
