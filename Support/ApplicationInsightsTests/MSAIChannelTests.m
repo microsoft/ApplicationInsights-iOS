@@ -111,7 +111,8 @@
 }
 
 #pragma mark - Safe JSON String Tests
-
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnonnull"
 - (void)testAppendDictionaryToSafeJsonString {
   msai_appendDictionaryToSafeJsonString(nil, 0);
   XCTAssertTrue(MSAISafeJsonEventsString == NULL);
@@ -139,5 +140,5 @@
   msai_resetSafeJsonString(&MSAISafeJsonEventsString);
   XCTAssertEqual(strcmp(MSAISafeJsonEventsString,"["), 0);
 }
-
+#pragma clang diagnostic pop
 @end
