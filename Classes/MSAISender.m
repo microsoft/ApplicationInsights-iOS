@@ -8,6 +8,7 @@
 #import "ApplicationInsightsPrivate.h"
 #import "MSAIApplicationInsights.h"
 
+static char const *kPersistenceQueueString = "com.microsoft.ApplicationInsights.senderQueue";
 static NSUInteger const defaultRequestLimit = 10;
 
 static NSInteger const statusCodeOK = 200;
@@ -32,6 +33,13 @@ static NSInteger const statusCodeBadRequest = 400;
     sharedInstance = [MSAISender new];
   });
   return sharedInstance;
+}
+
+- (instancetype)init {
+  if ((self = [super init])) {
+    _senderQueue = dispatch_queue_create(kPersistenceQueueString, DISPATCH_QUEUE_CONCURRENT);
+  }
+  return self;
 }
 
 #pragma mark - Network status
@@ -114,7 +122,7 @@ static NSInteger const statusCodeBadRequest = 400;
       MSAILog(@"Error description: %@", error.localizedDescription);
       [[MSAIPersistence sharedInstance] giveBackRequestedPath:path];
     }
-  }];
+  }  onQueue:self.senderQueue];
   
   [self.appClient enqeueHTTPOperation:operation];
 }
