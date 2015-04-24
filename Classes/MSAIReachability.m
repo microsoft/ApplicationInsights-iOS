@@ -80,15 +80,6 @@ static void MSAIReachabilityCallback(SCNetworkReachabilityRef target, SCNetworkR
   });
 }
 
-- (void)dealloc{
-  [self stopNetworkStatusTracking];
-  if (_reachability != NULL){
-    CFRelease(_reachability);
-  }
-  self.singletonQueue = nil;
-  self.networkQueue = nil;
-}
-
 #pragma mark - Register for network changes
 
 - (void)startNetworkStatusTracking{

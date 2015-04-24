@@ -1,8 +1,9 @@
 #import <Foundation/Foundation.h>
+#import "ApplicationInsights.h"
 
 @class MSAIHTTPOperation;
 
-
+NS_ASSUME_NONNULL_BEGIN
 /**
  * A typedefed block that can be used for MSAIHTTPOperation
  */
@@ -14,7 +15,7 @@ typedef void (^MSAINetworkCompletionBlock)(MSAIHTTPOperation * operation, NSData
 
 @interface MSAIHTTPOperation : NSOperation
 
-+ (instancetype) operationWithRequest:(NSURLRequest *) urlRequest;
++ (instancetype)operationWithRequest:(NSURLRequest *)urlRequest;
 
 @property (nonatomic, readonly) NSURLRequest *URLRequest;
 
@@ -28,3 +29,4 @@ typedef void (^MSAINetworkCompletionBlock)(MSAIHTTPOperation * operation, NSData
 @property (nonatomic, readonly) NSError *error;
 
 @end
+NS_ASSUME_NONNULL_END

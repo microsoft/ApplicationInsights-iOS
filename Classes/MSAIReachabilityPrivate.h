@@ -3,6 +3,7 @@
 #import <CoreTelephony/CTTelephonyNetworkInfo.h>
 #endif
 
+NS_ASSUME_NONNULL_BEGIN
 /**
  *  Enum for representing different network statuses.
  */
@@ -25,9 +26,9 @@ typedef NS_ENUM(NSInteger, MSAIReachabilityType){
   MSAIReachabilityTypeLTE
 };
 
-extern NSString* const kMSAIReachabilityTypeChangedNotification;
-extern NSString* const kMSAIReachabilityUserInfoName;
-extern NSString* const kMSAIReachabilityUserInfoType;
+FOUNDATION_EXPORT NSString* const kMSAIReachabilityTypeChangedNotification;
+FOUNDATION_EXPORT NSString* const kMSAIReachabilityUserInfoName;
+FOUNDATION_EXPORT NSString* const kMSAIReachabilityUserInfoType;
 
 /**
  *  The MSAIReachability class is responsible for keep track of the network status currently used.
@@ -128,3 +129,4 @@ extern NSString* const kMSAIReachabilityUserInfoType;
 - (NSString *)descriptionForReachabilityType:(MSAIReachabilityType)reachabilityType;
 
 @end
+NS_ASSUME_NONNULL_END

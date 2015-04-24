@@ -58,6 +58,7 @@ The SDK runs on devices with iOS 6.0 or higher.
 	- `Foundation`
 	- `SystemConfiguration`
 	- `Security`
+	- `libz`
 	- `CoreTelephony`(only required if iOS > 7.0)
 9. Open the info.plist of your app target and add a new field of type *String*. Name it `MSAIInstrumentationKey` and set your Application Insights instrumentation key as its value.
 
@@ -238,6 +239,7 @@ Instead of manually adding the missing frameworks, you can also use our bundled 
 	- `Foundation`
 	- `SystemConfiguration`
 	- `Security`
+	- `libz`
 	- `CoreTelephony`(only required if iOS > 7.0)
 
 ### Setup with CocoaPods
