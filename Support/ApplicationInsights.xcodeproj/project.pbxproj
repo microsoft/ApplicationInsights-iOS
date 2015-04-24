@@ -199,6 +199,9 @@
 		80E1A4351AE54B5300603B0A /* MSAITestHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 80E1A40E1AE54B5300603B0A /* MSAITestHelper.m */; };
 		80E1A4361AE54B5300603B0A /* MSAITestsDependencyInjection.m in Sources */ = {isa = PBXBuildFile; fileRef = 80E1A4101AE54B5300603B0A /* MSAITestsDependencyInjection.m */; };
 		80E1A4371AE54B5300603B0A /* MSAIUserTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 80E1A4111AE54B5300603B0A /* MSAIUserTests.m */; };
+		80B69EED1ADDC09900C47B0A /* MSAIGZIP.h in Headers */ = {isa = PBXBuildFile; fileRef = 80B69EEB1ADDC09900C47B0A /* MSAIGZIP.h */; };
+		80ECBD1F1ADE9E39005CACF4 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 80B69EEF1ADDC49100C47B0A /* libz.dylib */; };
+		80F334B01A9C8A430098026F /* MSAIManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 80F334AF1A9C8A430098026F /* MSAIManagerTests.m */; };
 		80E1A44A1AE54B6C00603B0A /* OCMockitoIOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 80E1A4461AE54B6C00603B0A /* OCMockitoIOS.framework */; };
 		80E1A44C1AE54C7800603B0A /* OCHamcrestIOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 80E1A44B1AE54C7800603B0A /* OCHamcrestIOS.framework */; };
 		80E1A45A1AE54D6200603B0A /* libOCMock.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 80E1A44D1AE54C8500603B0A /* libOCMock.a */; };
@@ -405,6 +408,8 @@
 		80E1A4501AE54C8500603B0A /* OCMArg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMArg.h; sourceTree = "<group>"; };
 		80E1A4511AE54C8500603B0A /* OCMConstraint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMConstraint.h; sourceTree = "<group>"; };
 		80E1A4521AE54C8500603B0A /* OCMLocation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMLocation.h; sourceTree = "<group>"; };
+		80B69EEB1ADDC09900C47B0A /* MSAIGZIP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAIGZIP.h; sourceTree = "<group>"; };
+		80B69EEF1ADDC49100C47B0A /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		80E1A4531AE54C8500603B0A /* OCMMacroState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMMacroState.h; sourceTree = "<group>"; };
 		80E1A4541AE54C8500603B0A /* OCMock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMock.h; sourceTree = "<group>"; };
 		80E1A4551AE54C8500603B0A /* OCMockObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMockObject.h; sourceTree = "<group>"; };
@@ -436,6 +441,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				80E1A45A1AE54D6200603B0A /* libOCMock.a in Frameworks */,
+				80ECBD1F1ADE9E39005CACF4 /* libz.dylib in Frameworks */,
 				1B3B73081A94BC8E008DCADA /* CoreTelephony.framework in Frameworks */,
 				1B53FEC01A6425240082F2E9 /* CrashReporter.framework in Frameworks */,
 				1EA1170016F4D32C001C015C /* libApplicationInsights.a in Frameworks */,
@@ -628,6 +634,7 @@
 				1B62F4D61A692A3200EB5AD0 /* MSAIContext.h */,
 				1B62F4D71A692A3200EB5AD0 /* MSAIContext.m */,
 				1B62F4DA1A692A6F00EB5AD0 /* MSAIContextPrivate.h */,
+				80B69EEB1ADDC09900C47B0A /* MSAIGZIP.h */,
 				1E49A4A5161222B900463151 /* MSAIHelper.h */,
 				1E49A4A6161222B900463151 /* MSAIHelper.m */,
 				1E0FEE26173BDB260061331F /* MSAIKeychainUtils.h */,
@@ -726,6 +733,7 @@
 		E400561C148D79B500EB22B9 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				80B69EEF1ADDC49100C47B0A /* libz.dylib */,
 				1B3B73071A94BC8E008DCADA /* CoreTelephony.framework */,
 				1B85606E1A7A6A9D00A54FB7 /* UIKit.framework */,
 				1B53FEBE1A6425240082F2E9 /* CrashReporter.framework */,
@@ -829,6 +837,7 @@
 				803871C71A94C26500BF295F /* MSAISenderPrivate.h in Headers */,
 				1E754E5E1621FBB70070AB92 /* MSAICrashManagerDelegate.h in Headers */,
 				1BBBCF361A6594AE00253031 /* MSAITelemetryContext.h in Headers */,
+				80B69EED1ADDC09900C47B0A /* MSAIGZIP.h in Headers */,
 				807CFDC31A712974004EA1B6 /* MSAIOperation.h in Headers */,
 				809E9E5B1AC455D9008A1AB5 /* MSAISessionStateData.h in Headers */,
 				1B3C387A1A82213000700081 /* MSAICrashDataHeaders.h in Headers */,
