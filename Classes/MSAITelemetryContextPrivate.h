@@ -8,16 +8,12 @@
 #import "MSAIContext.h"
 #import "MSAIContextPrivate.h"
 
+NS_ASSUME_NONNULL_BEGIN
 @interface MSAITelemetryContext()
 
 ///-----------------------------------------------------------------------------
 /// @name Initialisation
 ///-----------------------------------------------------------------------------
-
-/**
- *  The path to the telemetry endpoint.
- */
-@property(nonatomic, strong, readonly) NSString *endpointPath;
 
 /**
  *  The instrumentation key of the app.
@@ -69,19 +65,11 @@
  *
  *  @return the telemetry context
  */
-- (instancetype)initWithAppContext:(MSAIContext *)appContext
-                      endpointPath:(NSString *)endpointPath;
+- (instancetype)initWithAppContext:(MSAIContext *)appContext;
 
 ///-----------------------------------------------------------------------------
 /// @name Session
-///-----------------------------------------------------------------------------
-
-/**
- *  A reference to the userDefaults being used to store values
- */
-@property(nonatomic, weak) NSUserDefaults *userDefaults;
-
-///-----------------------------------------------------------------------------
+///-----------------------------------------------------------------------------s;///-----------------------------------------------------------------------------
 /// @name Network status
 ///-----------------------------------------------------------------------------
 
@@ -107,3 +95,4 @@
 - (MSAIOrderedDictionary *)contextDictionary;
 
 @end
+NS_ASSUME_NONNULL_END

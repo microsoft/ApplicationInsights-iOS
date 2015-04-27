@@ -55,7 +55,10 @@ NSString *const kMSAISessionInfoSession = @"MSAISessionInfoSession";
 #pragma mark - Edit User IDs
 
 - (MSAIUser *)newUser {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnonnull"
   return [self newUserWithId:nil];
+#pragma clang diagnostic pop
 }
 
 - (MSAIUser *)newUserWithId:(NSString *)userId {
@@ -251,7 +254,10 @@ NSString *const kMSAISessionInfoSession = @"MSAISessionInfoSession";
 #pragma mark Session Creation
 
 - (MSAISession *)newSession {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnonnull"
   return [self newSessionWithId:nil];
+#pragma clang diagnostic pop
 }
 
 - (MSAISession *)newSessionWithId:(NSString *)sessionId {
