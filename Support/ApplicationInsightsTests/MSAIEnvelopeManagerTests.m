@@ -31,7 +31,7 @@
   [super setUp];
   
   MSAIContext *context = [[MSAIContext alloc]initWithInstrumentationKey:@"123"];
-  _telemetryContext = [[MSAITelemetryContext alloc] initWithAppContext:context endpointPath:@""];
+  _telemetryContext = [[MSAITelemetryContext alloc] initWithAppContext:context];
   [[MSAIEnvelopeManager sharedManager] configureWithTelemetryContext:_telemetryContext];
   _sut = [MSAIEnvelopeManager sharedManager];
 }

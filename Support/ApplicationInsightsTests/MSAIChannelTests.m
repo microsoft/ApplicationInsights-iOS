@@ -30,12 +30,9 @@
   [super setUp];
   
   self.appClient = [[MSAIAppClient alloc]initWithBaseURL:[NSURL URLWithString:@"http://test.com/"]];
+  [MSAIChannel setSharedChannel:[MSAIChannel new]];
   self.sut = [MSAIChannel sharedChannel];
   MSAISafeJsonEventsString = NULL;
-}
-
-- (void)tearDown {
-  [MSAIChannel setSharedChannel:nil];
 }
 
 #pragma mark - Setup Tests
@@ -114,7 +111,8 @@
 }
 
 #pragma mark - Safe JSON String Tests
-
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnonnull"
 - (void)testAppendDictionaryToSafeJsonString {
   msai_appendDictionaryToSafeJsonString(nil, 0);
   XCTAssertTrue(MSAISafeJsonEventsString == NULL);
@@ -142,5 +140,5 @@
   msai_resetSafeJsonString(&MSAISafeJsonEventsString);
   XCTAssertEqual(strcmp(MSAISafeJsonEventsString,"["), 0);
 }
-
+#pragma clang diagnostic pop
 @end

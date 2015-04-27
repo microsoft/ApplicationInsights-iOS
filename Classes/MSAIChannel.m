@@ -33,8 +33,6 @@ static dispatch_once_t once_token;
   dispatch_once(&once_token, ^{
     if (_sharedChannel == nil) {
       _sharedChannel = [self new];
-      dispatch_queue_t serialQueue = dispatch_queue_create(MSAIDataItemsOperationsQueue, DISPATCH_QUEUE_SERIAL);
-      [_sharedChannel setDataItemsOperations:serialQueue];
     }
   });
   return _sharedChannel;
@@ -55,6 +53,8 @@ static dispatch_once_t once_token;
       _senderBatchSize = defaultMaxBatchCount;
       _senderInterval = defaultBatchInterval;
     }
+    dispatch_queue_t serialQueue = dispatch_queue_create(MSAIDataItemsOperationsQueue, DISPATCH_QUEUE_SERIAL);
+    _dataItemsOperations = serialQueue;
   }
   return self;
 }

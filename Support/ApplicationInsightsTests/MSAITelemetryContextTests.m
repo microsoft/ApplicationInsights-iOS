@@ -48,7 +48,6 @@
   assertThat(_sut.user, notNilValue());
   assertThat(_sut.location, notNilValue());
   assertThat(_sut.instrumentationKey, notNilValue());
-  assertThat(_sut.endpointPath, notNilValue());
 }
 
 - (void)testContextDictionaryPerformance {
@@ -64,7 +63,7 @@
 - (MSAITelemetryContext *)telemetryContext{
   
   MSAIContext *context = [[MSAIContext alloc]initWithInstrumentationKey:@"123"];
-  MSAITelemetryContext *telemetryContext = [[MSAITelemetryContext alloc] initWithAppContext:context endpointPath:@"path"];
+  MSAITelemetryContext *telemetryContext = [[MSAITelemetryContext alloc] initWithAppContext:context];
 
   return telemetryContext;
 }
