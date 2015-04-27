@@ -118,13 +118,6 @@ FOUNDATION_EXPORT NSString *const kMSAIApplicationWasLaunched;
 /**
  *  <#Description#>
  *
- *  @return <#return value description#>
- */
-- (MSAIUser *)newUser;
-
-/**
- *  <#Description#>
- *
  *  @param user <#user description#>
  */
 - (void)addUser:(MSAIUser *)user forDate:(NSDate *)date;
