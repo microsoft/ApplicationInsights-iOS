@@ -320,10 +320,11 @@ Our documentation can be found on [CocoaDocs](http://cocoadocs.org/docsets/Appli
 We're looking forward to your contributions via pull requests.
 
 **Development environment**
+
 * Mac running the latest version of OS X
 * Get the latest Xcode from the Mac App Store
-* Install [AppleDoc](https://github.com/tomaz/appledoc) 
-* 
+* [AppleDoc](https://github.com/tomaz/appledoc) 
+* [Cocoapods](https://cocoapods.org/)
 
 <a id="contact"></a>
 ## 13. Contact
