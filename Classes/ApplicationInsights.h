@@ -32,7 +32,7 @@
 // Notification message which MSAIApplicationInsights is listening to, to retry requesting updated from the server
 #define MSAINetworkDidBecomeReachableNotification @"MSAINetworkDidBecomeReachable"
 
-#define MSAI_BASE_URL   @"https://dc.services.visualstudio.com"
+#define MSAI_SERVER_URL   @"https://dc.services.visualstudio.com/v2/track"
 
 #if MSAI_FEATURE_CRASH_REPORTER
 NS_ASSUME_NONNULL_BEGIN
