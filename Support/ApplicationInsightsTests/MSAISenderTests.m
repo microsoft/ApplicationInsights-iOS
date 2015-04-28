@@ -26,7 +26,7 @@
   
   _appClient = [[MSAIAppClient alloc]initWithBaseURL:[NSURL URLWithString:@"http://test.com/"]];
   _sut = [MSAISender sharedSender];
-  [_sut configureWithAppClient:_appClient endpointPath:@"log"];
+  [_sut configureWithAppClient:_appClient];
 }
 
 - (void)tearDown {
@@ -37,16 +37,12 @@
 
 - (void)testThatItInstantiates {
   assertThat(_sut, notNilValue());
-  assertThat([_sut endpointPath], equalTo(@"log"));
   assertThat([_sut appClient], equalTo(_appClient));
 }
 
 - (void)testConfiguredPropertiesNotNil {
-  NSString *testEndpoint = @"test/endpoint";
-  [_sut configureWithAppClient:_appClient endpointPath:testEndpoint];
+  [_sut configureWithAppClient:_appClient];
   
-  assertThat([_sut endpointPath], notNilValue());
-  assertThat([_sut endpointPath], equalTo(testEndpoint));
   assertThat([_sut appClient], notNilValue());
   assertThat([_sut appClient], equalTo(_appClient));
 }
@@ -57,7 +53,7 @@
 }
 
 - (void)testRequestContainsDataItem {
-  [_sut configureWithAppClient:_appClient endpointPath:@"log"];
+  [_sut configureWithAppClient:_appClient];
   MSAIEnvelope *testItem = [MSAIEnvelope new];
   NSData *expectedBodyData = [[testItem serializeToString] dataUsingEncoding:NSUTF8StringEncoding];
   NSURLRequest *testRequest = [_sut requestForData:expectedBodyData];
