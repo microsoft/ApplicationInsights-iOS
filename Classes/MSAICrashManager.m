@@ -1,8 +1,8 @@
-#import "AppInsights.h"
+#import "ApplicationInsights.h"
 
 #if MSAI_FEATURE_CRASH_REPORTER
 
-#import "AppInsightsPrivate.h"
+#import "ApplicationInsightsPrivate.h"
 #import "MSAIHelper.h"
 #import "MSAICrashManagerPrivate.h"
 #import "MSAICrashDataProvider.h"
@@ -113,7 +113,7 @@ static PLCrashReporterCallbacks defaultCallback = {
 
       if(!msai_isAppStoreEnvironment()) {
         if(self.debuggerIsAttached) {
-          NSLog(@"[AppInsights] WARNING: Detecting crashes is NOT enabled due to running the app with a debugger attached.");
+          NSLog(@"[ApplicationInsights] WARNING: Detecting crashes is NOT enabled due to running the app with a debugger attached.");
         }
       }
 
@@ -181,7 +181,7 @@ static PLCrashReporterCallbacks defaultCallback = {
     // and can show a debug warning log message, that the dev has to make sure the "newer" error handler
     // doesn't exit the process itself, because then all subsequent handlers would never be invoked.
     //
-    // Note: ANY error handler setup BEFORE AppInsights initialization will not be processed!
+    // Note: ANY error handler setup BEFORE ApplicationInsights initialization will not be processed!
 
     // get the current top level error handler
     NSUncaughtExceptionHandler *initialHandler = NSGetUncaughtExceptionHandler();
@@ -199,7 +199,7 @@ static PLCrashReporterCallbacks defaultCallback = {
 
     // Enable the Crash Reporter
     if(![self.plCrashReporter enableCrashReporterAndReturnError:&error]) {
-      NSLog(@"[AppInsights] WARNING: Could not enable crash reporter: %@", [error localizedDescription]);
+      NSLog(@"[ApplicationInsights] WARNING: Could not enable crash reporter: %@", [error localizedDescription]);
     }
 
     // get the new current top level error handler, which should now be the one from PLCrashReporter
@@ -212,7 +212,7 @@ static PLCrashReporterCallbacks defaultCallback = {
       MSAILog(@"INFO: Exception handler successfully initialized.");
     } else {
       // this should never happen, theoretically only if NSSetUncaugtExceptionHandler() has some internal issues
-      NSLog(@"[AppInsights] ERROR: Exception handler could not be set. Make sure there is no other exception handler set up!");
+      NSLog(@"[ApplicationInsights] ERROR: Exception handler could not be set. Make sure there is no other exception handler set up!");
     }
   }
 }
@@ -293,44 +293,15 @@ void msai_save_events_callback(siginfo_t *info, ucontext_t *uap, void *context) 
 
 #pragma mark - Debugging Helpers
 
-/**
-* Check if the debugger is attached
-*
-* Taken from https://github.com/plausiblelabs/plcrashreporter/blob/2dd862ce049e6f43feb355308dfc710f3af54c4d/Source/Crash%20Demo/main.m#L96
-*
-* @return `YES` if the debugger is attached to the current process, `NO` otherwise
-*/
 - (BOOL)getIsDebuggerAttached {
-  static BOOL debuggerIsAttached = NO;
-
-  static dispatch_once_t debuggerPredicate;
-  dispatch_once(&debuggerPredicate, ^{
-    struct kinfo_proc info;
-    size_t info_size = sizeof(info);
-    int name[4];
-
-    name[0] = CTL_KERN;
-    name[1] = KERN_PROC;
-    name[2] = KERN_PROC_PID;
-    name[3] = getpid();
-
-    if(sysctl(name, 4, &info, &info_size, NULL, 0) == -1) {
-      NSLog(@"[AppInsights] ERROR: Checking for a running debugger via sysctl() failed: %s", strerror(errno));
-      debuggerIsAttached = false;
-    }
-
-    if(!debuggerIsAttached && (info.kp_proc.p_flag & P_TRACED) != 0)
-      debuggerIsAttached = true;
-  });
-
-  return debuggerIsAttached;
+  return msai_isDebuggerAttached();
 }
 
 - (void)generateTestCrash {
   if(!msai_isAppStoreEnvironment()) {
 
     if(self.debuggerIsAttached) {
-      NSLog(@"[AppInsights] WARNING: The debugger is attached. The following crash cannot be detected by the SDK!");
+      NSLog(@"[ApplicationInsights] WARNING: The debugger is attached. The following crash cannot be detected by the SDK!");
     }
 
     __builtin_trap();
@@ -528,7 +499,7 @@ void msai_save_events_callback(siginfo_t *info, ucontext_t *uap, void *context) 
     // If the top level error handler differs from our own, then at least another one was added.
     // This could cause exception crashes not to be reported to HockeyApp. See log message for details.
     if (self.exceptionHandler != currentHandler) {
-      NSLog(@"[AppInsights] ERROR: Exception handler could not be set. Make sure there is no other exception handler set up!");
+      NSLog(@"[ApplicationInsights] ERROR: Exception handler could not be set. Make sure there is no other exception handler set up!");
     }
   }
 }

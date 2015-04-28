@@ -1,3 +1,4 @@
+NS_ASSUME_NONNULL_BEGIN
 /**
 * MSAITelemetryManager is the component of the Application Insights SDK for iOS that is responsible for all things
 * that are related to metrics and tracking.
@@ -34,7 +35,7 @@
  *  @param eventName the name of the event, which should be tracked.
  *  @param properties key value pairs with additional info about the event.
  */
-+ (void)trackEventWithName:(NSString *)eventName properties:(NSDictionary *)properties;
++ (void)trackEventWithName:(NSString *)eventName properties:(nullable NSDictionary *)properties;
 
 /**
  *  Track the event by event name and customized properties and metrics.
@@ -43,12 +44,7 @@
  *  @param properties key value pairs with additional info about the event.
  *  @param measurements key value pairs, which contain custom metrics.
  */
-+ (void)trackEventWithName:(NSString *)eventName properties:(NSDictionary *)properties measurements:(NSDictionary *)measurements;
-
-/**
- *  Use correctly spelled method trackEventWithName:properties:measurements: instead.
- */
-+ (void)trackEventWithName:(NSString *)eventName properties:(NSDictionary *)properties mesurements:(NSDictionary *)measurements __deprecated_msg("Use correctly spelled version instead");
++ (void)trackEventWithName:(NSString *)eventName properties:(nullable NSDictionary *)properties measurements:(nullable NSDictionary *)measurements;
 
 /**
  *  Track by message.
@@ -63,7 +59,7 @@
  *  @param message a message, which should be tracked.
  *  @param properties key value pairs with additional info about the trace.
  */
-+ (void)trackTraceWithMessage:(NSString *)message properties:(NSDictionary *)properties;
++ (void)trackTraceWithMessage:(NSString *)message properties:(nullable NSDictionary *)properties;
 
 /**
  *  Track metric by name and value.
@@ -80,7 +76,7 @@
  *  @param value a numeric value, which should be tracked.
  *  @param properties key value pairs with additional info about the metric.
  */
-+ (void)trackMetricWithName:(NSString *)metricName value:(double)value properties:(NSDictionary *)properties;
++ (void)trackMetricWithName:(NSString *)metricName value:(double)value properties:(nullable NSDictionary *)properties;
 
 /**
  * Track pageView by name of the page.
@@ -104,7 +100,7 @@
  *  @param duration time the page has been viewed. This method is ideally called when a page view ends. The time has to be calculated by the developer.
  *  @param properties key-value pairs which can contain additional information about the page view
  */
-+ (void)trackPageView:(NSString *)pageName duration:(long)duration properties:(NSDictionary *)properties;
++ (void)trackPageView:(NSString *)pageName duration:(long)duration properties:(nullable NSDictionary *)properties;
 
 /**
  *  Track handled exception.
@@ -126,7 +122,7 @@
  *  @param eventName the name of the event, which should be tracked.
  *  @param properties key value pairs with additional info about the event.
  */
-- (void)trackEventWithName:(NSString *)eventName properties:(NSDictionary *)properties;
+- (void)trackEventWithName:(NSString *)eventName properties:(nullable NSDictionary *)properties;
 
 /**
  *  Track the event by event name and customized properties and metrics.
@@ -135,13 +131,7 @@
  *  @param properties key value pairs with additional info about the event.
  *  @param measurements key value pairs, which contain custom metrics.
  */
-- (void)trackEventWithName:(NSString *)eventName properties:(NSDictionary *)properties measurements:(NSDictionary *)measurements;
-
-/**
- *  Use correctly spelled method trackEventWithName:properties:measurements: instead.
- */
-- (void)trackEventWithName:(NSString *)eventName properties:(NSDictionary *)properties mesurements:(NSDictionary *)measurements
-__deprecated_msg("Use correctly spelled version instead");
+- (void)trackEventWithName:(NSString *)eventName properties:(nullable NSDictionary *)properties measurements:(nullable NSDictionary *)measurements;
 
 /**
  *  Track by message.
@@ -156,7 +146,7 @@ __deprecated_msg("Use correctly spelled version instead");
  *  @param message a message, which should be tracked.
  *  @param properties key value pairs with additional info about the trace.
  */
-- (void)trackTraceWithMessage:(NSString *)message properties:(NSDictionary *)properties;
+- (void)trackTraceWithMessage:(NSString *)message properties:(nullable NSDictionary *)properties;
 
 /**
  *  Track metric by name and value.
@@ -173,7 +163,7 @@ __deprecated_msg("Use correctly spelled version instead");
  *  @param value a numeric value, which should be tracked.
  *  @param properties key value pairs with additional info about the metric.
  */
-- (void)trackMetricWithName:(NSString *)metricName value:(double)value properties:(NSDictionary *)properties;
+- (void)trackMetricWithName:(NSString *)metricName value:(double)value properties:(nullable NSDictionary *)properties;
 
 /**
  * Track pageView by name of the page.
@@ -197,7 +187,7 @@ __deprecated_msg("Use correctly spelled version instead");
  *  @param duration time the page has been viewed. This method is ideally called when a page view ends. The time has to be calculated by the developer.
  *  @param properties key-value pairs which can contain additional information about the page view
  */
-- (void)trackPageView:(NSString *)pageName duration:(long)duration properties:(NSDictionary *)properties;
+- (void)trackPageView:(NSString *)pageName duration:(long)duration properties:(nullable NSDictionary *)properties;
 
 /**
  *  Track handled exception.
@@ -207,3 +197,4 @@ __deprecated_msg("Use correctly spelled version instead");
 - (void)trackException:(NSException *)exception;
 
 @end
+NS_ASSUME_NONNULL_END

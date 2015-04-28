@@ -1,7 +1,7 @@
 #import "MSAIHelper.h"
 #import "MSAIKeychainUtils.h"
-#import "AppInsights.h"
-#import "AppInsightsPrivate.h"
+#import "ApplicationInsights.h"
+#import "ApplicationInsightsPrivate.h"
 #import <QuartzCore/QuartzCore.h>
 
 #import <sys/sysctl.h>
@@ -213,8 +213,9 @@ NSString *msai_deviceType(void){
 }
 
 NSString *msai_screenSize(void){
+  CGFloat scale = [UIScreen mainScreen].scale;
   CGSize screenSize = [UIScreen mainScreen].bounds.size;
-  return [NSString stringWithFormat:@"%dx%d",(int)screenSize.height, (int)screenSize.width];
+  return [NSString stringWithFormat:@"%dx%d",(int)(screenSize.height * scale), (int)(screenSize.width * scale)];
 }
 
 NSString *msai_sdkVersion(void){
@@ -247,26 +248,8 @@ NSString *msai_deviceLocale(void) {
   return [locale objectForKey:NSLocaleIdentifier];
 }
 
-NSString *msai_UUIDPreiOS6(void) {
-  // Create a new UUID
-  CFUUIDRef uuidObj = CFUUIDCreate(nil);
-  
-  // Get the string representation of the UUID
-  NSString *resultUUID = (NSString*)CFBridgingRelease(CFUUIDCreateString(nil, uuidObj));
-  CFRelease(uuidObj);
-  
-  return resultUUID;
-}
-
 NSString *msai_UUID(void) {
-  NSString *resultUUID = nil;
-  
-  id uuidClass = NSClassFromString(@"NSUUID");
-  if (uuidClass) {
-    resultUUID = [[NSUUID UUID] UUIDString];
-  } else {
-    resultUUID = msai_UUIDPreiOS6();
-  }
+  NSString *resultUUID = [[NSUUID UUID] UUIDString];
   
   return resultUUID;
 }
@@ -365,3 +348,37 @@ BOOL msai_isAppStoreEnvironment(void){
   
   return NO;
 }
+
+/**
+ * Check if the debugger is attached
+ *
+ * Taken from https://github.com/plausiblelabs/plcrashreporter/blob/2dd862ce049e6f43feb355308dfc710f3af54c4d/Source/Crash%20Demo/main.m#L96
+ *
+ * @return `YES` if the debugger is attached to the current process, `NO` otherwise
+ */
+BOOL msai_isDebuggerAttached(void) {
+  static BOOL debuggerIsAttached = NO;
+  
+  static dispatch_once_t debuggerPredicate;
+  dispatch_once(&debuggerPredicate, ^{
+    struct kinfo_proc info;
+    size_t info_size = sizeof(info);
+    int name[4];
+    
+    name[0] = CTL_KERN;
+    name[1] = KERN_PROC;
+    name[2] = KERN_PROC_PID;
+    name[3] = getpid();
+    
+    if(sysctl(name, 4, &info, &info_size, NULL, 0) == -1) {
+      NSLog(@"[ApplicationInsights] ERROR: Checking for a running debugger via sysctl() failed: %s", strerror(errno));
+      debuggerIsAttached = false;
+    }
+    
+    if(!debuggerIsAttached && (info.kp_proc.p_flag & P_TRACED) != 0)
+      debuggerIsAttached = true;
+  });
+  
+  return debuggerIsAttached;
+}
+

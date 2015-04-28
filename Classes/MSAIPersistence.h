@@ -1,9 +1,10 @@
 #import <Foundation/Foundation.h>
+#import "ApplicationInsights.h"
 
+NS_ASSUME_NONNULL_BEGIN
 /**
 * A simple class that handles serialisation and deserialisation of bundles of data.
 */
-
 @interface MSAIPersistence : NSObject
 
 /**
@@ -43,7 +44,7 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
 /**
  *  A queue which makes file system operations thread safe.
  */
-@property (nonatomic, strong)dispatch_queue_t persistenceQueue;
+@property (nonatomic, strong) dispatch_queue_t persistenceQueue;
 
 /**
  *  Determines how many files (regular prio) can be on disk at a time.
@@ -67,7 +68,7 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
 *
 * @warning: The data within the array needs to implement NSCoding.
 */
-- (void)persistBundle:(NSArray *)bundle ofType:(MSAIPersistenceType)type withCompletionBlock:(void (^)(BOOL success))completionBlock;
+- (void)persistBundle:(NSArray *)bundle ofType:(MSAIPersistenceType)type withCompletionBlock:(nullable void (^)(BOOL success))completionBlock;
 
 /**
  *  Saves the bundle to disk.
@@ -113,7 +114,7 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
 * Between bundles of the same MSAIPersistenceType, the order is arbitrary.
 * Returns 'nil' if no bundle is available
 *
-* @return a bundle of AppInsightsData that's ready to be sent to the server
+* @return a bundle of data that's ready to be sent to the server
 */
 
 /**
@@ -131,7 +132,7 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
  *
  *  @param path the path that should be available for sending again.
  */
-- (void)giveBackRequestedPath:(NSString *) path;
+- (void)giveBackRequestedPath:(NSString *)path;
 
 /**
  *  Return the bundle for a given path.
@@ -204,3 +205,4 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
 - (void)deleteCrashReporterLockFile;
 
 @end
+NS_ASSUME_NONNULL_END

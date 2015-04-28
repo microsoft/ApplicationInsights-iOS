@@ -1,4 +1,4 @@
-#import "AppInsightsPrivate.h"
+#import "ApplicationInsightsPrivate.h"
 #import "MSAIObject.h"
 #import "MSAIDomain.h"
 

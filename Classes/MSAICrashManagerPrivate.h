@@ -1,4 +1,4 @@
-#import "AppInsights.h"
+#import "ApplicationInsights.h"
 
 #if MSAI_FEATURE_CRASH_REPORTER
 
@@ -7,8 +7,8 @@
 @class MSAIAppClient;
 @class MSAIEnvelope;
 
-@interface MSAICrashManager () {
-}
+NS_ASSUME_NONNULL_BEGIN
+@interface MSAICrashManager ()
 
 ///-----------------------------------------------------------------------------
 /// @name Properties
@@ -56,7 +56,7 @@ Value that indicates a low memory warning has been sent to the app. For memory w
 - (void)startManager;
 
 /**
-* Checks if the crashreporting module of AppInsights has been disabled
+* Checks if the crashreporting module of ApplicationInsights has been disabled
 */
 - (void)checkCrashManagerDisabled;
 
@@ -74,7 +74,7 @@ Value that indicates a low memory warning has been sent to the app. For memory w
 - (void)createCrashReportForAppKill;
 
 /**
-* Format and create the AppInsights crash report data and forward it to `MSAIChannel´for persistence and sending
+* Format and create the ApplicationInsights crash report data and forward it to `MSAIChannel´for persistence and sending
 */
 - (void)createCrashReportWithCrashData:(NSData*)crashData;
 
@@ -112,6 +112,6 @@ Value that indicates a low memory warning has been sent to the app. For memory w
 void msai_save_events_callback(siginfo_t *info, ucontext_t *uap, void *context);
 
 @end
-
+NS_ASSUME_NONNULL_END
 
 #endif /* MSAI_FEATURE_CRASH_REPORTER */
