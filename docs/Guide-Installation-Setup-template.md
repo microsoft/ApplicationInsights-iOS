@@ -1,4 +1,4 @@
-## Application Insights for iOS (1.0-beta.1)
+## Application Insights for iOS (1.0-beta.2)
 
 **Release Notes**
 
