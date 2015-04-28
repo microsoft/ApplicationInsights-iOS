@@ -15,9 +15,9 @@ The SDK runs on devices with iOS 6.0 or higher.
 5. [Advanced Setup](#advancedsetup)
 6. [Developer Mode](#developermode)
 7. [Basic Usage](#basicusage)
-8. [Automatic collection of life-cycle events](#autolifecycle]
+8. [Automatic collection of life-cycle events](#autolifecycle)
 9. [Crash Reporting](#crashreporting)
-10. [Additional Configuration](#additionalconfig)
+10. [Set Custom Server Endpoint](#additionalconfig)
 11. [Documentation](#documentation)
 12. [Contributing](#contributing)
 13. [Contact](#contact)
@@ -60,8 +60,7 @@ We recommend integration of our binary into your Xcode project to setup Applicat
 
 From our experience, 3rd-party libraries usually reside inside a subdirectory (let's call our subdirectory `Vendor`), so if you don't have your project orgainzed with a subdirectory for libraries, now would be a great start for it. To continue our example,  create a folder called "Vendor" inside your project directory and move the unzipped `ApplicationInsights`-folder into it. 
 
-### <a id="setupxcode"></a> 
-4.3 Set up the SDK in Xcode
+### <a id="setupxcode"></a> 4.3 Set up the SDK in Xcode
 
 1. We recommend to use Xcode's group-feature to create a group for 3rd-party-lobraries similar to the structure of our files on disk. For example,  similar to the file structure in 4.1 above, our projects have a group called `Vendor`.
 2. Make sure the `Project Navigator` is visible (⌘+1)
@@ -202,13 +201,12 @@ The **developer mode** is enabled automatically in case the debugger is attached
 We're all big fans of a clean debugging output without 3rd-party-SDKs messages pilling up in the debugging view, right?!
 That's why Application Insights keeps log messages to a minimum (like critical errors) unless the developer specifically enables before starting the SDK:
 
- ```objectivec
+```objectivec	
 [MSAIApplicationInsights setup]; //setup the SDK
  
 [[MSAIApplicationInsights sharedInstance] setDebugLogEnabled:YES]; //enable debug logging 
 
 [MSAIApplicationInsights start]; //start using the SDK
-
 ```
 
 This setting is ignored if the app is running in an appstore environment, so the user's console won't be littered with our log messages.
@@ -221,53 +219,51 @@ After you have setup the SDK as [described above](#setup), the ```MSAITelemetryM
 
 ### 7.1 Objective-C
 
-	```objectivec	
-	
-	// Send an event with custom properties and measurements data
-	[MSAITelemetryManager trackEventWithName:@"Hello World event!"
-								  properties:@{@"Test property 1":@"Some value",
-											 @"Test property 2":@"Some other value"}
-							     measurements:@{@"Test measurement 1":@(4.8),
-											 @"Test measurement 2":@(15.16),
-		                                	 @"Test measurement 3":@(23.42)}];
+```objectivec	
+// Send an event with custom properties and measurements data
+[MSAITelemetryManager trackEventWithName:@"Hello World event!"
+  						      properties:@{@"Test property 1":@"Some value",
+										   @"Test property 2":@"Some other value"}
+						    measurements:@{@"Test measurement 1":@(4.8),
+										   @"Test measurement 2":@(15.16),
+		                               	   @"Test measurement 3":@(23.42)}];
 
-	// Send a message
-	[MSAITelemetryManager trackTraceWithMessage:@"Test message"];
+// Send a message
+[MSAITelemetryManager trackTraceWithMessage:@"Test message"];
 
-	// Manually send pageviews (note: this will also be done automatically)
-	[MSAITelemetryManager trackPageView:@"MyViewController"
-							   duration:300
-					 	     properties:@{@"Test measurement 1":@(4.8)}];
+// Manually send pageviews (note: this will also be done automatically)
+[MSAITelemetryManager trackPageView:@"MyViewController"
+						   duration:300
+					 	 properties:@{@"Test measurement 1":@(4.8)}];
 
-	// Send custom metrics
-	[MSAITelemetryManager trackMetricWithName:@"Test metric" 
-									    value:42.2];
-	```
+// Send custom metrics
+[MSAITelemetryManager trackMetricWithName:@"Test metric" value:42.2];
+```
 
 
 ### 7.2 Swift
 	
-	```swift
-	// Send an event with custom properties and measuremnts data
-	MSAITelemetryManager.trackEventWithName(name:"Hello World event!", 
-									  properties:@{"Test property 1":"Some value",
-												  "Test property 2":"Some other value"},
-								    measurements:@{"Test measurement 1":@(4.8),
-												  "Test measurement 2":@(15.16),
- 											      "Test measurement 3":@(23.42)});
+	
+```swift
+// Send an event with custom properties and measuremnts data
+MSAITelemetryManager.trackEventWithName(name:"Hello World event!", 
+								  properties:@{"Test property 1":"Some value",
+											  "Test property 2":"Some other value"},
+							    measurements:@{"Test measurement 1":@(4.8),
+											  "Test measurement 2":@(15.16),
+										      "Test measurement 3":@(23.42)});
 
-	// Send a message
-	MSAITelemetryManager.trackTraceWithMessage(message:"Test message");
+// Send a message
+MSAITelemetryManager.trackTraceWithMessage(message:"Test message");
 
-	// Manually send pageviews
-	MSAITelemetryManager.trackPageView(pageView:"MyViewController",
-									   duration:300,
-								     properties:@{"Test measurement 1":@(4.8)});
+// Manually send pageviews
+MSAITelemetryManager.trackPageView(pageView:"MyViewController",
+								   duration:300,
+							     properties:@{"Test measurement 1":@(4.8)});
 
-	// Send a message
-	MSAITelemetryManager.trackMetricWithName(name:"Test metric",
-										    value:42.2);
-	```
+// Send a message
+MSAITelemetryManager.trackMetricWithName(name:"Test metric", value:42.2);
+```
 
 ## <a name="autolifecycle"></a>8. Automatic collection of life-cycle events (Sessions & Page Views)
 
@@ -275,10 +271,10 @@ Automatic collection of life-cycle events is **enabled by default**. This means 
 
 This feature can be disabled between setup and start of the SDK.
 
- ```objectivec
+```objectivec
 [MSAIApplicationInsights setup]; //setup the SDK
  
-  [[MSAIApplicationInsights sharedInstance] setAutoPageViewTrackingDisabled:YES]; //disable the auto collection
+[[MSAIApplicationInsights sharedInstance] setAutoPageViewTrackingDisabled:YES]; //disable the auto collection
 
 [MSAIApplicationInsights start]; //start using the SDK
 
@@ -287,7 +283,7 @@ This feature can be disabled between setup and start of the SDK.
 ## <a name="crashreporting"></a>9.  Crash Reporting
 
 The Application Insights SDK enables crash reporting **per default**. Crashes will be immediately sent to the server if a connection is available.
-To provide you with the best crash reporting, we are using [PLCrashReporter]("https://github.com/plausiblelabs/plcrashreporter") in [Version 1.2]("https://github.com/plausiblelabs/plcrashreporter/tree/release/plcrashreporter-1.2").
+To provide you with the best crash reporting, we are using [PLCrashReporter]("https://github.com/plausiblelabs/plcrashreporter") in [Version 1.2 / Commit 273a7e7cd4b77485a584ac82e77b7c857558e2f9]("https://github.com/plausiblelabs/plcrashreporter/commit/273a7e7cd4b77485a584ac82e77b7c857558e2f9").
 
 This feature can be disabled as follows:
 
@@ -313,13 +309,13 @@ You can also configure a different server endpoint for the SDK if needed using a
 
 ```
 <a id="documentation"></a>
-### 11. Documentation
+## 11. Documentation
 
 Our documentation can be found on [CocoaDocs](http://cocoadocs.org/docsets/ApplicationInsights/1.0-beta.2/)
 
 
 <a id="contributing"></a>
-### 12. Contributing
+## 12. Contributing
 
 We're looking forward to your contributions via pull requests.
 
