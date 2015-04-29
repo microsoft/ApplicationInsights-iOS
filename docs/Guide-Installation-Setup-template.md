@@ -50,17 +50,20 @@ The SDK runs on devices with iOS 6.0 or higher.
 
 We recommend integration of our binary into your Xcode project to setup Application Insights for your iOS app. For other ways to setup the SDK, see [Advanced Setup](#advancedsetup).
 
-### <a id="downloadsdk"></a> 
-### 4.1 Download the SDK
+### 4.1 Obtain an Instrumation Key
+
+Please see the "[Getting an Application Insights Instrumentation Key](https://github.com/Microsoft/ApplicationInsights-Home/wiki#getting-an-application-insights-instrumentation-key)" section of the wiki for more information on acquiring a key.
+
+### <a id="downloadsdk"></a> 4.2 Download the SDK
 
 1. Download the latest [Application Insights for iOS](https://github.com/Microsoft/AppInsights-iOS/releases) framework which is provided as a zip-File.
 2. Unzip the file and you will see a folder called `ApplicationInsights` .
 
-### 4.2 Copy the SDK  into your projects directory in Finder
+### 4.3 Copy the SDK  into your projects directory in Finder
 
 From our experience, 3rd-party libraries usually reside inside a subdirectory (let's call our subdirectory `Vendor`), so if you don't have your project orgainzed with a subdirectory for libraries, now would be a great start for it. To continue our example,  create a folder called "Vendor" inside your project directory and move the unzipped `ApplicationInsights`-folder into it. 
 
-### <a id="setupxcode"></a> 4.3 Set up the SDK in Xcode
+### <a id="setupxcode"></a> 4.4 Set up the SDK in Xcode
 
 1. We recommend to use Xcode's group-feature to create a group for 3rd-party-lobraries similar to the structure of our files on disk. For example,  similar to the file structure in 4.1 above, our projects have a group called `Vendor`.
 2. Make sure the `Project Navigator` is visible (⌘+1)
@@ -79,7 +82,7 @@ From our experience, 3rd-party libraries usually reside inside a subdirectory (l
 	- `CoreTelephony`(only required if iOS > 7.0)
 9. Open the info.plist of your app target and add a new field of type *String*. Name it `MSAIInstrumentationKey` and set your Application Insights instrumentation key as its value.
 
-### 4.4 Modify Code 
+### 4.5 Modify Code 
 
 **Objective-C**
 
