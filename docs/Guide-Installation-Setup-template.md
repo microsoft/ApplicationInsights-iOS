@@ -214,7 +214,7 @@ That's why Application Insights keeps log messages to a minimum (like critical e
 
 This setting is ignored if the app is running in an appstore environment, so the user's console won't be littered with our log messages.
 
-## <a id="basicusage"></> 7. Basic Usage
+## <a id="basicusage"></a> 7. Basic Usage
 
 **[NOTE]** The SDK is optimized to defer everything possible to a later time while making sure e.g. crashes on startup can also be caught and each module executes other code with a delay some seconds. This ensures that applicationDidFinishLaunching will process as fast as possible and the SDK will not block the startup sequence resulting in a possible kill by the watchdog process.
 
@@ -268,11 +268,12 @@ MSAITelemetryManager.trackPageView(pageView:"MyViewController",
 MSAITelemetryManager.trackMetricWithName(name:"Test metric", value:42.2);
 ```
 
-## <a name="autolifecycle"></a>8. Automatic collection of life-cycle events (Sessions & Page Views)
+## <a name="autolifecycle"></a>8. Automatic collection of pageviews
 
-Automatic collection of life-cycle events is **enabled by default**. This means that Application Insights automatically tracks the appearance of a viewcontroller for you. It also manages the user sessions for you with a background-time sat to 20 seconds, so if the user has backgrounded your app for more than 20s, it counts as a new session.
+Automatic collection of life-cycle events is **enabled by default**. This means that Application Insights automatically tracks the appearance of a viewcontroller for you.
 
-This feature can be disabled between setup and start of the SDK.
+The automatic tracking of viewcontroller appearance can be disabled between setup and start of the SDK.
+
 
 ```objectivec
 [MSAIApplicationInsights setup]; //setup the SDK
