@@ -182,8 +182,7 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
     MSAITelemetryContext *telemetryContext = [[MSAITelemetryContext alloc] initWithAppContext:_appContext];
     [[MSAIEnvelopeManager sharedManager] configureWithTelemetryContext:telemetryContext];
     
-    [[MSAISender sharedSender] configureWithAppClient:[self appClient]
-                                         endpointPath:kMSAITelemetryPath];
+    [[MSAISender sharedSender] configureWithAppClient:[self appClient]];
     
 #if MSAI_FEATURE_TELEMETRY
     MSAILog(@"INFO: Setup TelemetryManager");
@@ -257,7 +256,7 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
     _serverURL = [serverURL copy];
     
     if (_appClient) {
-      self.appClient.baseURL = [NSURL URLWithString:_serverURL ? _serverURL : MSAI_BASE_URL];
+      self.appClient.baseURL = [NSURL URLWithString:_serverURL ? _serverURL : MSAI_SERVER_URL];
     }
   }
 }
@@ -394,7 +393,7 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 
 - (MSAIAppClient *)appClient {
   if (!_appClient) {
-    _appClient = [[MSAIAppClient alloc] initWithBaseURL:[NSURL URLWithString:_serverURL ? _serverURL : MSAI_BASE_URL]];
+    _appClient = [[MSAIAppClient alloc] initWithBaseURL:[NSURL URLWithString:_serverURL ? _serverURL : MSAI_SERVER_URL]];
   }
   
   return _appClient;

@@ -36,8 +36,7 @@ static NSInteger const statusCodeBadRequest = 400;
 
 #pragma mark - Network status
 
-- (void)configureWithAppClient:(MSAIAppClient *)appClient endpointPath:(NSString *)endpointPath {
-  self.endpointPath = endpointPath;
+- (void)configureWithAppClient:(MSAIAppClient *)appClient {
   self.appClient = appClient;
   self.maxRequestCount = defaultRequestLimit;
   [self registerObservers];

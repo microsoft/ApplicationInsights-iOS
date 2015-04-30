@@ -41,7 +41,7 @@ NS_ASSUME_NONNULL_BEGIN
  *  @param appClient    the app client used for sending the data
  *  @param endpointPath the endpoint url of the telemetry server
  */
-- (void)configureWithAppClient:(MSAIAppClient *)appClient endpointPath:(NSString *)endpointPath;
+- (void)configureWithAppClient:(MSAIAppClient *)appClient;
 
 ///-----------------------------------------------------------------------------
 /// @name Sending data
