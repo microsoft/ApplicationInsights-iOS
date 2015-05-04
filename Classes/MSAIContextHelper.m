@@ -46,7 +46,9 @@ NSString *const kMSAISessionInfoSession = @"MSAISessionInfoSession";
   if (self = [super init]) {
     _operationsQueue = dispatch_queue_create(MSAISessionOperationsQueue, DISPATCH_QUEUE_SERIAL);
     NSMutableDictionary *restoredMetaData = [[[MSAIPersistence sharedInstance] metaData] mutableCopy];
-    _metaData = restoredMetaData ? restoredMetaData : [@{@"sessions" : [NSMutableDictionary new], @"users" : [NSMutableDictionary new]} mutableCopy];
+    _metaData = restoredMetaData ? restoredMetaData : @{}.mutableCopy;
+    _metaData[@"sessions"] = restoredMetaData[@"sessions"] ? :@{}.mutableCopy;
+    _metaData[@"users"] = restoredMetaData[@"users"] ? :@{}.mutableCopy;
     [self registerObservers];
   }
   return self;
