@@ -21,7 +21,7 @@ NSUInteger const defaultFileCount = 50;
 
 #pragma mark - Public
 
-+ (instancetype)sharedInstance{
++ (instancetype)sharedInstance {
   static MSAIPersistence *sharedInstance;
   static dispatch_once_t onceToken;
   
@@ -32,7 +32,7 @@ NSUInteger const defaultFileCount = 50;
   return sharedInstance;
 }
 
-- (instancetype)init{
+- (instancetype)init {
   self = [super init];
   if ( self ) {
     _persistenceQueue = dispatch_queue_create(kPersistenceQueueString, DISPATCH_QUEUE_SERIAL);

@@ -54,7 +54,8 @@ NSString *const kMSAISessionInfoSession = @"MSAISessionInfoSession";
   return self;
 }
 
-#pragma mark - Edit User IDs
+#pragma mark - Users
+#pragma mark Create New Users
 
 - (MSAIUser *)newUser {
 #pragma clang diagnostic push
@@ -99,31 +100,57 @@ NSString *const kMSAISessionInfoSession = @"MSAISessionInfoSession";
   dispatch_sync(self.operationsQueue, ^{
     typeof(self) strongSelf = weakSelf;
     
-    NSString *sessionKey = [strongSelf keyForTimestamp:timestamp inDictionary:users];
-    user = users[sessionKey];
+    NSString *userKey = [strongSelf keyForTimestamp:timestamp inDictionary:users];
+    user = users[userKey];
   });
   
   return user;
 }
 
-- (void)removeUserId:(NSString *)userId {
+- (BOOL)removeUserId:(NSString *)userId {
+  BOOL __block success = NO;
   
   __weak typeof(self) weakSelf = self;
   dispatch_sync(self.operationsQueue, ^{
     typeof(self) strongSelf = weakSelf;
     
     NSMutableDictionary *users = self.metaData[@"users"];
-    [users enumerateKeysAndObjectsUsingBlock:^(NSString *blockTimestamp, NSString *blockUserId, BOOL *stop) {
-      if ([blockUserId isEqualToString:userId]) {
+    [users enumerateKeysAndObjectsUsingBlock:^(NSString *blockTimestamp, MSAIUser *blockUser, BOOL *stop) {
+      if ([blockUser.userId isEqualToString:userId]) {
         [users removeObjectForKey:blockTimestamp];
+        success = YES;
         *stop = YES;
       }
     }];
     [[MSAIPersistence sharedInstance] persistMetaData:strongSelf.metaData];
   });
+  return success;
 }
 
 #pragma mark - Sessions
+#pragma mark Session Creation
+
+- (MSAISession *)newSession {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnonnull"
+  return [self newSessionWithId:nil];
+#pragma clang diagnostic pop
+}
+
+- (MSAISession *)newSessionWithId:(NSString *)sessionId {
+  MSAISession *session = [MSAISession new];
+  session.sessionId = sessionId ?: msai_UUID();
+  session.isNew = @"false";
+  
+  if (![[NSUserDefaults standardUserDefaults] boolForKey:kMSAIApplicationWasLaunched]) {
+    session.isFirst = @"true";
+    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kMSAIApplicationWasLaunched];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+  } else {
+    session.isFirst = @"false";
+  }
+  return session;
+}
 
 #pragma mark Automatic Session Management
 
@@ -226,7 +253,8 @@ NSString *const kMSAISessionInfoSession = @"MSAISessionInfoSession";
   return session;
 }
 
-- (void)removeSession:(MSAISession *)session {
+- (BOOL)removeSession:(MSAISession *)session {
+  BOOL __block success = NO;
   
   __weak typeof(self) weakSelf = self;
   dispatch_sync(self.operationsQueue, ^{
@@ -237,47 +265,25 @@ NSString *const kMSAISessionInfoSession = @"MSAISessionInfoSession";
       if ([blockSession.sessionId isEqualToString:session.sessionId]) {
         [sessions removeObjectForKey:blockTimestamp];
         *stop = YES;
+        success = YES;
       }
     }];
     [[MSAIPersistence sharedInstance] persistMetaData:strongSelf.metaData];
   });
+  return success;
 }
 
 #pragma mark Session Lifecycle
 
 - (void)startNewSession {
-  [self newSession];
+  [self renewSessionWithId:msai_appAnonID()];
 }
 
 - (void)endSession {
   [self sendSessionEndedNotification];
 }
 
-#pragma mark Session Creation
-
-- (MSAISession *)newSession {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wnonnull"
-  return [self newSessionWithId:nil];
-#pragma clang diagnostic pop
-}
-
-- (MSAISession *)newSessionWithId:(NSString *)sessionId {
-  MSAISession *session = [MSAISession new];
-  session.sessionId = sessionId ?: msai_UUID();
-  session.isNew = @"false";
-
-  if (![[NSUserDefaults standardUserDefaults] boolForKey:kMSAIApplicationWasLaunched]) {
-    session.isFirst = @"true";
-    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kMSAIApplicationWasLaunched];
-    [[NSUserDefaults standardUserDefaults] synchronize];
-  } else {
-    session.isFirst = @"false";
-  }
-  return session;
-}
-
-#pragma mark Notifications
+#pragma mark - Notifications
 
 - (void)sendUserIdChangedNotificationWithUserInfo:(NSDictionary *)userInfo {
   dispatch_async(dispatch_get_main_queue(), ^{
@@ -305,10 +311,6 @@ NSString *const kMSAISessionInfoSession = @"MSAISessionInfoSession";
 
 #pragma mark - Cleanup Meta Data
 
-+ (void)cleanUpMetaData {
-  [[self sharedInstance] cleanUpMetaData];
-}
-
 - (void)cleanUpMetaData {
   __weak typeof(self) weakSelf = self;
   
@@ -335,8 +337,8 @@ NSString *const kMSAISessionInfoSession = @"MSAISessionInfoSession";
       
       // Clear list and add most recent session
       MSAIUser *lastuser= users[recentUserKey];
-      [sessions removeAllObjects];
-      sessions[recentUserKey] = lastuser;
+      [users removeAllObjects];
+      users[recentUserKey] = lastuser;
     }
     [[MSAIPersistence sharedInstance] persistMetaData:strongSelf.metaData];
   });
@@ -350,7 +352,7 @@ NSString *const kMSAISessionInfoSession = @"MSAISessionInfoSession";
 
 - (NSString *)keyForTimestamp:(NSString *)timestamp inDictionary:(NSDictionary *)dict {
   for (NSString *key in [self sortedKeysOfDictionay:dict]){
-    if([timestamp doubleValue] > [key doubleValue]){
+    if([timestamp doubleValue] >= [key doubleValue]){
       return key;
     }
   }
