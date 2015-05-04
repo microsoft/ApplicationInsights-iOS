@@ -1207,10 +1207,9 @@
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				FRAMEWORK_SEARCH_PATHS = (
-					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
-					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
-					"\"$(SRCROOT)/../Vendor\"",
 					"$(inherited)",
+					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
+					"$(SRCROOT)/../Vendor",
 					"$(SRCROOT)/ApplicationInsightsTests",
 				);
 				GCC_INSTRUMENT_PROGRAM_FLOW_ARCS = YES;
@@ -1254,10 +1253,9 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = (
-					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
-					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
-					"\"$(SRCROOT)/../Vendor\"",
 					"$(inherited)",
+					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
+					"$(SRCROOT)/../Vendor",
 					"$(SRCROOT)/ApplicationInsightsTests",
 				);
 				GCC_INSTRUMENT_PROGRAM_FLOW_ARCS = YES;
@@ -1383,10 +1381,9 @@
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				FRAMEWORK_SEARCH_PATHS = (
-					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
-					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
-					"\"$(SRCROOT)/../Vendor\"",
 					"$(inherited)",
+					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
+					"$(SRCROOT)/../Vendor",
 					"$(SRCROOT)/ApplicationInsightsTests",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
