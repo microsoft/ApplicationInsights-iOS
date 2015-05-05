@@ -1,5 +1,5 @@
 @class MSAIEnvelope;
-@class PLCrashReport;
+@class MSAIPLCrashReport;
 
 #import <Foundation/Foundation.h>
 #import "ApplicationInsights.h"
@@ -27,8 +27,8 @@ typedef NS_ENUM (NSInteger, MSAIBinaryImageType) {
 @interface MSAICrashDataProvider : NSObject {
 }
 
-+ (MSAIEnvelope *)crashDataForCrashReport:(PLCrashReport *)report handledException:(nullable NSException *)exception;
-+ (MSAIEnvelope *)crashDataForCrashReport:(PLCrashReport *)report;
++ (MSAIEnvelope *)crashDataForCrashReport:(MSAIPLCrashReport *)report handledException:(nullable NSException *)exception;
++ (MSAIEnvelope *)crashDataForCrashReport:(MSAIPLCrashReport *)report;
 
 @end
 NS_ASSUME_NONNULL_END

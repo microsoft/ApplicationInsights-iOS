@@ -202,7 +202,7 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
  */
 @implementation MSAICrashDataProvider
 
-+ (MSAIEnvelope *)crashDataForCrashReport:(PLCrashReport *)report handledException:(NSException *)exception{
++ (MSAIEnvelope *)crashDataForCrashReport:(MSAIPLCrashReport *)report handledException:(NSException *)exception{
   
   NSMutableArray *addresses = [NSMutableArray new];
   
