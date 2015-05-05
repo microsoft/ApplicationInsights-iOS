@@ -16,11 +16,6 @@ NS_ASSUME_NONNULL_BEGIN
 ///-----------------------------------------------------------------------------
 
 /**
- *  The path to the telemetry endpoint.
- */
-@property(nonatomic, strong, readonly) NSString *endpointPath;
-
-/**
  *  The instrumentation key of the app.
  */
 @property(nonatomic, strong, readonly) NSString *instrumentationKey;
@@ -70,8 +65,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  *  @return the telemetry context
  */
-- (instancetype)initWithAppContext:(MSAIContext *)appContext
-                      endpointPath:(NSString *)endpointPath;
+- (instancetype)initWithAppContext:(MSAIContext *)appContext;
 
 ///-----------------------------------------------------------------------------
 /// @name Session

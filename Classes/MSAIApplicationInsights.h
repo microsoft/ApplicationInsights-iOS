@@ -75,9 +75,8 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * Defines the server URL to send data to or request data from. By default this is set 
  * to the Application Insights servers and there rarely should be a need to modify that.
- *
- * @warning This property needs to be set before calling `startManager`. 
- * Since there are several endpoints for different data types, you should not set it for now.
+ * If you set your custom server URL, make sure you set the full URL (e.g. https://yourdomain.com/track/)
+ * @warning This property needs to be set before calling `startManager`.
  */
 @property (nonatomic, strong) NSString *serverURL;
 

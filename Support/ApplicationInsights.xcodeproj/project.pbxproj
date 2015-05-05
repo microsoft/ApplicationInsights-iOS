@@ -158,6 +158,7 @@
 		809E9E5A1AC455D9008A1AB5 /* MSAISessionState.h in Headers */ = {isa = PBXBuildFile; fileRef = 809E9E571AC455D9008A1AB5 /* MSAISessionState.h */; };
 		809E9E5B1AC455D9008A1AB5 /* MSAISessionStateData.h in Headers */ = {isa = PBXBuildFile; fileRef = 809E9E581AC455D9008A1AB5 /* MSAISessionStateData.h */; };
 		809E9E5C1AC455D9008A1AB5 /* MSAISessionStateData.m in Sources */ = {isa = PBXBuildFile; fileRef = 809E9E591AC455D9008A1AB5 /* MSAISessionStateData.m */; };
+		80B69EED1ADDC09900C47B0A /* MSAIGZIP.h in Headers */ = {isa = PBXBuildFile; fileRef = 80B69EEB1ADDC09900C47B0A /* MSAIGZIP.h */; };
 		80E1A3E71AE54B4200603B0A /* live_report_empty.plcrash in Resources */ = {isa = PBXBuildFile; fileRef = 80E1A3E41AE54B4200603B0A /* live_report_empty.plcrash */; };
 		80E1A3E81AE54B4200603B0A /* live_report_exception.plcrash in Resources */ = {isa = PBXBuildFile; fileRef = 80E1A3E51AE54B4200603B0A /* live_report_exception.plcrash */; };
 		80E1A3E91AE54B4200603B0A /* live_report_signal.plcrash in Resources */ = {isa = PBXBuildFile; fileRef = 80E1A3E61AE54B4200603B0A /* live_report_signal.plcrash */; };
@@ -199,12 +200,10 @@
 		80E1A4351AE54B5300603B0A /* MSAITestHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 80E1A40E1AE54B5300603B0A /* MSAITestHelper.m */; };
 		80E1A4361AE54B5300603B0A /* MSAITestsDependencyInjection.m in Sources */ = {isa = PBXBuildFile; fileRef = 80E1A4101AE54B5300603B0A /* MSAITestsDependencyInjection.m */; };
 		80E1A4371AE54B5300603B0A /* MSAIUserTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 80E1A4111AE54B5300603B0A /* MSAIUserTests.m */; };
-		80B69EED1ADDC09900C47B0A /* MSAIGZIP.h in Headers */ = {isa = PBXBuildFile; fileRef = 80B69EEB1ADDC09900C47B0A /* MSAIGZIP.h */; };
-		80ECBD1F1ADE9E39005CACF4 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 80B69EEF1ADDC49100C47B0A /* libz.dylib */; };
-		80F334B01A9C8A430098026F /* MSAIManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 80F334AF1A9C8A430098026F /* MSAIManagerTests.m */; };
 		80E1A44A1AE54B6C00603B0A /* OCMockitoIOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 80E1A4461AE54B6C00603B0A /* OCMockitoIOS.framework */; };
 		80E1A44C1AE54C7800603B0A /* OCHamcrestIOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 80E1A44B1AE54C7800603B0A /* OCHamcrestIOS.framework */; };
 		80E1A45A1AE54D6200603B0A /* libOCMock.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 80E1A44D1AE54C8500603B0A /* libOCMock.a */; };
+		80ECBD1F1ADE9E39005CACF4 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 80B69EEF1ADDC49100C47B0A /* libz.dylib */; };
 		80F334B21A9C93290098026F /* MSAIApplicationInsightsPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 80F334B11A9C93290098026F /* MSAIApplicationInsightsPrivate.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		E40E0B0D17DA1AFF005E38C1 /* MSAIAppClient.m in Sources */ = {isa = PBXBuildFile; fileRef = E40E0B0B17DA1AFF005E38C1 /* MSAIAppClient.m */; };
 		E4933E8017B66CDA00B11ACC /* MSAIHTTPOperation.h in Headers */ = {isa = PBXBuildFile; fileRef = E4933E7E17B66CDA00B11ACC /* MSAIHTTPOperation.h */; };
@@ -356,6 +355,8 @@
 		809E9E571AC455D9008A1AB5 /* MSAISessionState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAISessionState.h; sourceTree = "<group>"; };
 		809E9E581AC455D9008A1AB5 /* MSAISessionStateData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAISessionStateData.h; sourceTree = "<group>"; };
 		809E9E591AC455D9008A1AB5 /* MSAISessionStateData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAISessionStateData.m; sourceTree = "<group>"; };
+		80B69EEB1ADDC09900C47B0A /* MSAIGZIP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAIGZIP.h; sourceTree = "<group>"; };
+		80B69EEF1ADDC49100C47B0A /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		80E1A3E41AE54B4200603B0A /* live_report_empty.plcrash */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = live_report_empty.plcrash; path = ApplicationInsightsTests/Fixtures/live_report_empty.plcrash; sourceTree = SOURCE_ROOT; };
 		80E1A3E51AE54B4200603B0A /* live_report_exception.plcrash */ = {isa = PBXFileReference; lastKnownFileType = file; name = live_report_exception.plcrash; path = ApplicationInsightsTests/Fixtures/live_report_exception.plcrash; sourceTree = SOURCE_ROOT; };
 		80E1A3E61AE54B4200603B0A /* live_report_signal.plcrash */ = {isa = PBXFileReference; lastKnownFileType = file; name = live_report_signal.plcrash; path = ApplicationInsightsTests/Fixtures/live_report_signal.plcrash; sourceTree = SOURCE_ROOT; };
@@ -408,8 +409,6 @@
 		80E1A4501AE54C8500603B0A /* OCMArg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMArg.h; sourceTree = "<group>"; };
 		80E1A4511AE54C8500603B0A /* OCMConstraint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMConstraint.h; sourceTree = "<group>"; };
 		80E1A4521AE54C8500603B0A /* OCMLocation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMLocation.h; sourceTree = "<group>"; };
-		80B69EEB1ADDC09900C47B0A /* MSAIGZIP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAIGZIP.h; sourceTree = "<group>"; };
-		80B69EEF1ADDC49100C47B0A /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		80E1A4531AE54C8500603B0A /* OCMMacroState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMMacroState.h; sourceTree = "<group>"; };
 		80E1A4541AE54C8500603B0A /* OCMock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMock.h; sourceTree = "<group>"; };
 		80E1A4551AE54C8500603B0A /* OCMockObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMockObject.h; sourceTree = "<group>"; };

@@ -111,12 +111,10 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
   _startManagerIsInvoked = YES;
   
   // Configure Http-client and send persisted data
-  MSAITelemetryContext *telemetryContext = [[MSAITelemetryContext alloc] initWithAppContext:_appContext
-                                                                               endpointPath:kMSAITelemetryPath];
+  MSAITelemetryContext *telemetryContext = [[MSAITelemetryContext alloc] initWithAppContext:_appContext];
   [[MSAIEnvelopeManager sharedManager] configureWithTelemetryContext:telemetryContext];
   
-  [[MSAISender sharedSender] configureWithAppClient:[self appClient]
-                                       endpointPath:kMSAITelemetryPath];
+  [[MSAISender sharedSender] configureWithAppClient:[self appClient]];
   [[MSAISender sharedSender] sendSavedData];
   
 #if MSAI_FEATURE_CRASH_REPORTER
@@ -240,7 +238,7 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
     _serverURL = [serverURL copy];
     
     if (_appClient) {
-      self.appClient.baseURL = [NSURL URLWithString:_serverURL ? _serverURL : MSAI_BASE_URL];
+      self.appClient.baseURL = [NSURL URLWithString:_serverURL ? _serverURL : MSAI_SERVER_URL];
     }
   }
 }
@@ -283,7 +281,7 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 
 - (MSAIAppClient *)appClient {
   if (!_appClient) {
-    _appClient = [[MSAIAppClient alloc] initWithBaseURL:[NSURL URLWithString:_serverURL ? _serverURL : MSAI_BASE_URL]];
+    _appClient = [[MSAIAppClient alloc] initWithBaseURL:[NSURL URLWithString:_serverURL ? _serverURL : MSAI_SERVER_URL]];
   }
   
   return _appClient;
