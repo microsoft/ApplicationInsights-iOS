@@ -1,7 +1,6 @@
 #import <Foundation/Foundation.h>
 
 @class MSAICrashDetails;
-@class MSAICrashMetaData;
 @class MSAIContext;
 
 NS_ASSUME_NONNULL_BEGIN

@@ -201,7 +201,7 @@ static char *const MSAITelemetryEventQueue = "com.microsoft.ApplicationInsights.
     MSAIPLCrashReporter *cm = [[MSAIPLCrashReporter alloc] initWithConfiguration:config];
     NSData *data = [cm generateLiveReportWithThread:pthread_mach_thread_np(thread)];
     MSAIPLCrashReport *report = [[MSAIPLCrashReport alloc] initWithData:data error:nil];
-    MSAIEnvelope *envelope = [[MSAIEnvelopeManager sharedManager] envelopeForCrashReport:(PLCrashReport *)report exception:exception];
+    MSAIEnvelope *envelope = [[MSAIEnvelopeManager sharedManager] envelopeForCrashReport:report exception:exception];
     MSAIOrderedDictionary *dict = [envelope serializeToDictionary];
     [[MSAIChannel sharedChannel] processDictionary:dict withCompletionBlock:nil];
   });

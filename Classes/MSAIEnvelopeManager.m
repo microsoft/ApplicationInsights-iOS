@@ -75,7 +75,7 @@ static NSInteger const schemaVersion = 2;
 }
 
 - (MSAIEnvelope *)envelopeForCrashReport:(MSAIPLCrashReport *)report exception:(NSException *)exception{
-  return [MSAICrashDataProvider crashDataForCrashReport:(PLCrashReport *)report handledException:exception];
+  return [MSAICrashDataProvider crashDataForCrashReport:report handledException:exception];
 }
 
 @end
