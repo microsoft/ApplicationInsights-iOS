@@ -156,6 +156,15 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)setUserId:(NSString *)userId;
 
 /**
+ *  Manually trigger a new session start.
+ */
++ (void)startNewSession;
+
+/**
+ *  Manually trigger a new session start.
+ */
+- (void)startNewSession;
+
 /**
  *  Set the time which the app has to have been in the background for before a new session is started.
  *  This time is only used when automatic session management is not disabled.

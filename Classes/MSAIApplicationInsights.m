@@ -367,6 +367,14 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
   [[MSAIContextHelper sharedInstance] setCurrentUserId:userId];
 }
 
++ (void)startNewSession {
+  [[self sharedInstance] startNewSession];
+}
+
+- (void)startNewSession {
+  [[MSAIContextHelper sharedInstance] startNewSession];
+}
+
 + (void)setSessionBackgroundExpirationTime:(NSUInteger)sessionBackgroundExpirationTime {
   [[self sharedInstance] setSessionBackgroundExpirationTime:sessionBackgroundExpirationTime];
 }
