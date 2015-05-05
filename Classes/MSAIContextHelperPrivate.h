@@ -17,7 +17,7 @@ FOUNDATION_EXPORT NSString *const kMSAIApplicationWasLaunched;
 @interface MSAIContextHelper ()
 
 ///-----------------------------------------------------------------------------
-/// @name Getting Shared Instance
+/// @name Shared Instance
 ///-----------------------------------------------------------------------------
 
 /**

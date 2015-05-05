@@ -102,7 +102,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 #if MSAI_FEATURE_TELEMETRY
 /**
- * Flag the determines whether the Telemetry Manager should be disabled. 
+ * Flag that determines whether the Telemetry Manager should be disabled.
  * If this flag is enabled, then telemetry collection is disabled and telemetry data will
  * not be collected and send.
  *
@@ -122,8 +122,8 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)setTelemetryManagerDisabled:(BOOL)telemetryManagerDisabled;
 
 /**
- * Flag the determines whether collecting page views automatically should be disabled.
- * If YES, auto page view collection is disabled. Y
+ * Flag that determines whether collecting page views automatically should be disabled.
+ * If YES, auto page view collection is disabled.
  *
  * @return YES, if manager is disabled
  *
@@ -140,19 +140,37 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)setAutoPageViewTrackingDisabled:(BOOL)autoPageViewTrackingDisabled;
 
 /**
- *  <#Description#>
+ *  Flag that determines whether sessions will automatically be renewed when the app starts and goes to the background for more than 20 seconds.
+ *  If YES, sessions are not automatically renewed and the developer has to manually trigger a session renewal or set a specific session ID.
+ *
+ *  @return YES, if automatic session management is disabled.
+ *
+ *  @default NO
+ * @warning This property needs to be set before calling `start` 
  */
 @property (nonatomic, getter=isAutoSessionManagementDisabled) BOOL autoSessionManagementDisabled;
 
 /**
- *  <#Description#>
+ *  Disable (YES) automatic session management and renewal.
  *
- *  @param autoSessionManagementDisabled <#autoSessionManagementDisabled description#>
+ *  @param autoSessionManagementDisabled Flag that determines whether automatic session management should be disabled.
  */
 + (void)setAutoSessionManagementDisabled:(BOOL)autoSessionManagementDisabled;
 
+/**
+ *  Manually set the current user ID. This ID will automatically be persisted and attached to all appropriate telemetry and crash events.
+ *  The user ID will stay the same until it is changed.
+ *
+ *  @param userId The string which will be used as the current user's ID.
+ */
 + (void)setUserId:(NSString *)userId;
 
+/**
+ *  Manually set the current user ID. This ID will automatically be persisted and attached to all appropriate telemetry and crash events.
+ *  The user ID will stay the same until it is changed.
+ *
+ *  @param userId The string which will be used as the current user's ID.
+ */
 - (void)setUserId:(NSString *)userId;
 
 /**
@@ -180,8 +198,25 @@ NS_ASSUME_NONNULL_BEGIN
  *  @param sessionBackgroundExpirationTime The time in seconds the app has to be in the background before a new session is started.
  */
 - (void)setSessionBackgroundExpirationTime:(NSUInteger)sessionBackgroundExpirationTime;
+
+/**
+ *  This starts a new session with the given session ID. 
+ *
+ *  @param sessionId The session ID which should be attached to all future telemetry and crash events.
+ *
+ *  @warning Using this method automatically disables automatic session management!
+ *  @see autosessionManagementDisabled
+ */
 + (void)renewSessionWithId:(NSString *)sessionId;
 
+/**
+ *  This starts a new session with the given session ID.
+ *
+ *  @param sessionId The session ID which should be attached to all future telemetry and crash events.
+ *
+ *  @warning Using this method automatically disables automatic session management!
+ *  @see autosessionManagementDisabled
+ */
 - (void)renewSessionWithId:(NSString *)sessionId;
 
 #endif /* MSAI_FEATURE_TELEMETRY */
