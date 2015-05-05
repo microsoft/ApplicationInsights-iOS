@@ -1,11 +1,11 @@
 #import <XCTest/XCTest.h>
 #import "MSAICrashDataProvider.h"
 
-@interface MSAICrashReportTextFormatterTests : XCTestCase
+@interface MSAICrashDataProviderTests : XCTestCase
 
 @end
 
-@implementation MSAICrashReportTextFormatterTests
+@implementation MSAICrashDataProviderTests
 
 - (void)setUp {
   [super setUp];
