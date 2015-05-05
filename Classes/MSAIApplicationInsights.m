@@ -367,6 +367,14 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
   [[MSAIContextHelper sharedInstance] setCurrentUserId:userId];
 }
 
++ (void)setSessionBackgroundExpirationTime:(NSUInteger)sessionBackgroundExpirationTime {
+  [[self sharedInstance] setSessionBackgroundExpirationTime:sessionBackgroundExpirationTime];
+}
+
+- (void)setSessionBackgroundExpirationTime:(NSUInteger)sessionBackgroundExpirationTime {
+  [[MSAIContextHelper sharedInstance] setSessionBackgroundExpirationTime:sessionBackgroundExpirationTime];
+}
+
 + (void)renewSessionWithId:(NSString *)sessionId {
   [[self sharedInstance] setAutoSessionManagementDisabled:YES];
   [[self sharedInstance] renewSessionWithId:sessionId];
