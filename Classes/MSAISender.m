@@ -104,17 +104,17 @@ static NSInteger const statusCodeBadRequest = 400;
   if(!path || !request) return;
   
   __weak typeof(self) weakSelf = self;
-  MSAIHTTPOperation *operation = [self.appClient operationWithURLRequest:request completion:^(MSAIHTTPOperation *operation, NSData *responseData, NSError *error) {
+  MSAIHTTPOperation *operation = [self.appClient operationWithURLRequest:request queue:self.senderQueue completion:^(MSAIHTTPOperation *operation, NSData *responseData, NSError *error) {
     typeof(self) strongSelf = weakSelf;
-    
+
     self.runningRequestsCount -= 1;
     NSInteger statusCode = [operation.response statusCode];
 
-    if([self shouldDeleteDataWithStatusCode:statusCode]) {
+    if ([self shouldDeleteDataWithStatusCode:statusCode]) {
       // We should delete data if it has been succesfully sent (200/202) or if its values have not been accepted (400)
       MSAILog(@"Sent data with status code: %ld", (long) statusCode);
       MSAILog(@"Response data:\n%@", [NSJSONSerialization JSONObjectWithData:responseData options:0 error:nil]);
-      
+
       [[MSAIPersistence sharedInstance] deleteFileAtPath:path];
       [strongSelf sendSavedData];
     } else {
@@ -122,7 +122,7 @@ static NSInteger const statusCodeBadRequest = 400;
       MSAILog(@"Error description: %@", error.localizedDescription);
       [[MSAIPersistence sharedInstance] giveBackRequestedPath:path];
     }
-  }  onQueue:self.senderQueue];
+  }];
   
   [self.appClient enqeueHTTPOperation:operation];
 }

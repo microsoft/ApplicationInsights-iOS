@@ -32,17 +32,17 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSMutableURLRequest *)requestWithMethod:(NSString*)method
                                       path:(nullable NSString *)path
                                 parameters:(nullable NSDictionary *)params;
+
 /**
  *	Creates an operation for the given NSURLRequest
  *
  *	@param	request	the request that should be handled
+ *	@param  queue Queue on which the completion block will be executed.
  *	@param	completion	completionBlock that is called once the operation finished
  *
  *	@return	operation, which can be queued via enqueueHTTPOperation:
  */
-- (MSAIHTTPOperation *) operationWithURLRequest:(NSURLRequest*) request
-                                     completion:(nullable MSAINetworkCompletionBlock) completion
-                                        onQueue:(dispatch_queue_t)queue;
+- (MSAIHTTPOperation *)operationWithURLRequest:(NSURLRequest *)request queue:(dispatch_queue_t)queue completion:(nullable MSAINetworkCompletionBlock)completion;
 
 /**
  *	Creates an operation for the given path, and enqueues it

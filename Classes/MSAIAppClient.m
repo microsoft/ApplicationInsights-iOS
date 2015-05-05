@@ -92,9 +92,7 @@
   return queryString;
 }
 
-- (MSAIHTTPOperation *) operationWithURLRequest:(NSURLRequest*)request
-                                     completion:(MSAINetworkCompletionBlock)completion
-                                        onQueue:(dispatch_queue_t)queue {
+- (MSAIHTTPOperation *)operationWithURLRequest:(NSURLRequest *)request queue:(dispatch_queue_t)queue completion:(nullable MSAINetworkCompletionBlock)completion {
   MSAIHTTPOperation *operation = [MSAIHTTPOperation operationWithRequest:request];
   [operation setCompletion:completion onQueue:queue];
   
@@ -103,17 +101,13 @@
 
 - (void)getPath:(NSString *)path parameters:(NSDictionary *)params completion:(MSAINetworkCompletionBlock)completion {
   NSURLRequest *request = [self requestWithMethod:@"GET" path:path parameters:params];
-  MSAIHTTPOperation *op = [self operationWithURLRequest:request
-                                             completion:completion
-                                                onQueue:dispatch_get_main_queue()];
+  MSAIHTTPOperation *op = [self operationWithURLRequest:request queue:dispatch_get_main_queue() completion:completion];
   [self enqeueHTTPOperation:op];
 }
 
 - (void)postPath:(NSString *)path parameters:(NSDictionary *)params completion:(MSAINetworkCompletionBlock)completion {
   NSURLRequest *request = [self requestWithMethod:@"POST" path:path parameters:params];
-  MSAIHTTPOperation *op = [self operationWithURLRequest:request
-                                             completion:completion
-                                                onQueue:dispatch_get_main_queue()];
+  MSAIHTTPOperation *op = [self operationWithURLRequest:request queue:dispatch_get_main_queue() completion:completion];
   [self enqeueHTTPOperation:op];
 }
 
