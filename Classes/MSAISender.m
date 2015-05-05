@@ -147,8 +147,9 @@ static NSInteger const statusCodeBadRequest = 400;
 }
 
 - (BOOL)shouldDeleteDataWithStatusCode:(NSInteger)statusCode {
-  
-  return (statusCode >= statusCodeOK && statusCode <= statusCodeAccepted) || statusCode == statusCodeBadRequest;
+  NSArray *acceptableStatusCodes = @[@429, @408, @500, @503, @511];
+
+  return ![acceptableStatusCodes containsObject:@(statusCode)];
 }
 
 #pragma mark - Getter/Setter
