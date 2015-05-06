@@ -218,7 +218,7 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
         break;
         case PLCrashReportOperatingSystemMacOSX:
       case PLCrashReportOperatingSystemiPhoneSimulator:
-        osName = @"Mac OS X";
+        osName = @"OS X";
         break;
       default:
         osName = [NSString stringWithFormat: @"Unknown (%d)", report.systemInfo.operatingSystem];
