@@ -12,7 +12,7 @@ NSString *const kMSAISessionFileName = @"MSAISessions";
 NSString *const kMSAISessionFileType = @"plist";
 char *const MSAISessionOperationsQueue = "com.microsoft.ApplicationInsights.sessionQueue";
 
-NSInteger const defaultSessionExpirationTime = 20;
+NSUInteger const defaultSessionExpirationTime = 20;
 NSString *const kMSAIApplicationDidEnterBackgroundTime = @"MSAIApplicationDidEnterBackgroundTime";
 NSString *const kMSAIApplicationWasLaunched = @"MSAIApplicationWasLaunched";
 
@@ -46,7 +46,7 @@ NSString *const kMSAISessionInfoSession = @"MSAISessionInfoSession";
   if (self = [super init]) {
     _operationsQueue = dispatch_queue_create(MSAISessionOperationsQueue, DISPATCH_QUEUE_SERIAL);
     
-    _sessionBackgroundExpirationTime = nil;
+    _sessionBackgroundExpirationTime = defaultSessionExpirationTime;
     
     NSMutableDictionary *restoredMetaData = [[[MSAIPersistence sharedInstance] metaData] mutableCopy];
     _metaData = restoredMetaData ? restoredMetaData : @{}.mutableCopy;
@@ -218,7 +218,7 @@ NSString *const kMSAISessionInfoSession = @"MSAISessionInfoSession";
   
   double appDidEnterBackgroundTime = [[NSUserDefaults standardUserDefaults] doubleForKey:kMSAIApplicationDidEnterBackgroundTime];
   double timeSinceLastBackground = [[NSDate date] timeIntervalSince1970] - appDidEnterBackgroundTime;
-  if (timeSinceLastBackground > self.sessionBackgroundExpirationTime? :defaultSessionExpirationTime) {
+  if (timeSinceLastBackground > self.sessionBackgroundExpirationTime) {
     [self startNewSession];
   }
 }
