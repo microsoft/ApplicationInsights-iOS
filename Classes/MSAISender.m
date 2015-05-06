@@ -10,10 +10,6 @@
 
 static NSUInteger const defaultRequestLimit = 10;
 
-static NSInteger const statusCodeOK = 200;
-static NSInteger const statusCodeAccepted = 202;
-static NSInteger const statusCodeBadRequest = 400;
-
 @interface MSAISender ()
 
 @end
