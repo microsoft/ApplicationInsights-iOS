@@ -25,8 +25,8 @@
 #import "MSAIEnvelope.h"
 #import "MSAIEnvelopeManager.h"
 #import "MSAIEnvelopeManagerPrivate.h"
-#import "MSAISessionHelper.h"
-#import "MSAISessionHelperPrivate.h"
+#import "MSAIContextHelper.h"
+#import "MSAIContextHelperPrivate.h"
 #import "MSAISessionStateData.h"
 
 static char *const MSAITelemetryEventQueue = "com.microsoft.ApplicationInsights.telemetryEventQueue";

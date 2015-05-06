@@ -4,7 +4,9 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  *  A helper class that allows to persist and retrieve session IDs attached to different timestamps.
  */
-@interface MSAISessionHelper : NSObject
+@interface MSAIContextHelper : NSObject
+
+@property NSUInteger sessionBackgroundExpirationTime;
 
 @end
 NS_ASSUME_NONNULL_END

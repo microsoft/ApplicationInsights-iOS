@@ -51,8 +51,8 @@
 #import "MSAICrashDataBinary.h"
 #import "MSAICrashDataThreadFrame.h"
 #import "MSAIHelper.h"
-#import "MSAISessionHelper.h"
-#import "MSAISessionHelperPrivate.h"
+#import "MSAIContextHelper.h"
+#import "MSAIContextHelperPrivate.h"
 #import "MSAIEnvelope.h"
 #import "MSAIData.h"
 #import "MSAIEnvelopeManagerPrivate.h"
@@ -240,9 +240,17 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
     NSString *appVersion = report.applicationInfo.applicationVersion;
     envelope.appVer = marketingVersion ? [NSString stringWithFormat:@"%@ (%@)", marketingVersion, appVersion] : appVersion;
     
-    MSAISession *session = [MSAISessionHelper sessionForDate:report.systemInfo.timestamp];
-    if (envelope.tags && session) {
-      [envelope.tags addEntriesFromDictionary:[session serializeToDictionary]];
+    NSDate *crashTimestamp = report.systemInfo.timestamp;
+    MSAISession *session = [[MSAIContextHelper sharedInstance] sessionForDate:crashTimestamp];
+    MSAIUser *user = [[MSAIContextHelper sharedInstance] userForDate:crashTimestamp];
+    
+    if (envelope.tags) {
+      if (session) {
+        [envelope.tags addEntriesFromDictionary:[session serializeToDictionary]];
+      }
+      if (user) {
+        [envelope.tags addEntriesFromDictionary:[user serializeToDictionary]];
+      }
     }
   }
   

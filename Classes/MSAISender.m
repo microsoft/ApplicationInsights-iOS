@@ -100,8 +100,9 @@ static NSUInteger const defaultRequestLimit = 10;
     if([self shouldDeleteDataWithStatusCode:statusCode]) {
       //we delete data that was either sent successfully or if we have a non-recoverable error
       MSAILog(@"Sent data with status code: %ld", (long) statusCode);
-      MSAILog(@"Response data:\n%@", [NSJSONSerialization JSONObjectWithData:responseData options:0 error:nil]);
-      
+      if (responseData) {
+        MSAILog(@"Response data:\n%@", [NSJSONSerialization JSONObjectWithData:responseData options:0 error:nil]);
+      }
       [[MSAIPersistence sharedInstance] deleteFileAtPath:path];
       [strongSelf sendSavedData];
     } else {
