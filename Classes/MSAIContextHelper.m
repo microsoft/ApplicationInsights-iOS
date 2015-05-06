@@ -49,9 +49,9 @@ NSString *const kMSAISessionInfoSession = @"MSAISessionInfoSession";
     _sessionBackgroundExpirationTime = defaultSessionExpirationTime;
     
     NSMutableDictionary *restoredMetaData = [[[MSAIPersistence sharedInstance] metaData] mutableCopy];
-    _metaData = restoredMetaData ? restoredMetaData : @{}.mutableCopy;
-    _metaData[@"sessions"] = restoredMetaData[@"sessions"] ? :@{}.mutableCopy;
-    _metaData[@"users"] = restoredMetaData[@"users"] ? :@{}.mutableCopy;
+    _metaData = restoredMetaData ?: @{}.mutableCopy;
+    _metaData[@"sessions"] = restoredMetaData[@"sessions"] ?: @{}.mutableCopy;
+    _metaData[@"users"] = restoredMetaData[@"users"] ?: @{}.mutableCopy;
     [self registerObservers];
   }
   return self;
@@ -69,7 +69,7 @@ NSString *const kMSAISessionInfoSession = @"MSAISessionInfoSession";
 
 - (MSAIUser *)newUserWithId:(NSString *)userId {
   return ({ MSAIUser *user = [MSAIUser new];
-    user.userId = userId? :msai_appAnonID();
+    user.userId = userId ?: msai_appAnonID();
     user;
   });
 }
@@ -82,7 +82,7 @@ NSString *const kMSAISessionInfoSession = @"MSAISessionInfoSession";
 }
 
 - (void)addUser:(MSAIUser *)user forDate:(NSDate *)date {
-  NSString *timestamp = [self unixTimestampFromDate:date?:[NSDate date]];
+  NSString *timestamp = [self unixTimestampFromDate:date ?: [NSDate date]];
   
   __weak typeof(self) weakSelf = self;
   dispatch_sync(self.operationsQueue, ^{
