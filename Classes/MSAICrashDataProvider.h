@@ -1,15 +1,8 @@
 @class MSAIEnvelope;
-@class PLCrashReport;
+@class MSAIPLCrashReport;
 
 #import <Foundation/Foundation.h>
 #import "ApplicationInsights.h"
-
-// Dictionary keys for array elements returned by arrayOfAppUUIDsForCrashReport:
-#ifndef kMSAIBinaryImageKeyUUID
-#define kMSAIBinaryImageKeyUUID @"uuid"
-#define kMSAIBinaryImageKeyArch @"arch"
-#define kMSAIBinaryImageKeyType @"type"
-#endif
 
 NS_ASSUME_NONNULL_BEGIN
 /**
@@ -34,11 +27,8 @@ typedef NS_ENUM (NSInteger, MSAIBinaryImageType) {
 @interface MSAICrashDataProvider : NSObject {
 }
 
-+ (MSAIEnvelope *)crashDataForCrashReport:(PLCrashReport *)report handledException:(nullable NSException *)exception;
-+ (MSAIEnvelope *)crashDataForCrashReport:(PLCrashReport *)report;
-+ (NSArray *)arrayOfAppUUIDsForCrashReport:(PLCrashReport *)report;
-+ (NSString *)msai_archNameFromCPUType:(uint64_t)cpuType subType:(uint64_t)subType;
-+ (MSAIBinaryImageType)msai_imageTypeForImagePath:(NSString *)imagePath processPath:(NSString *)processPath;
++ (MSAIEnvelope *)crashDataForCrashReport:(MSAIPLCrashReport *)report handledException:(nullable NSException *)exception;
++ (MSAIEnvelope *)crashDataForCrashReport:(MSAIPLCrashReport *)report;
 
 @end
 NS_ASSUME_NONNULL_END

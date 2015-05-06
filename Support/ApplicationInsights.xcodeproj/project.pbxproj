@@ -86,8 +86,6 @@
 		1EB2E4C618FD4CEA008BB1CF /* MSAITelemetryManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 1EB2E4C418FD4CEA008BB1CF /* MSAITelemetryManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1EB2E4C718FD4CEA008BB1CF /* MSAITelemetryManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EB2E4C518FD4CEA008BB1CF /* MSAITelemetryManager.m */; };
 		1ECA8F4D192B5BD8006B9416 /* MSAICrashDetailsPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 1ECA8F4B192B5BD8006B9416 /* MSAICrashDetailsPrivate.h */; settings = {ATTRIBUTES = (Private, ); }; };
-		1ECA8F51192B6954006B9416 /* MSAICrashMetaData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1ECA8F4F192B6954006B9416 /* MSAICrashMetaData.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		1ECA8F52192B6954006B9416 /* MSAICrashMetaData.m in Sources */ = {isa = PBXBuildFile; fileRef = 1ECA8F50192B6954006B9416 /* MSAICrashMetaData.m */; };
 		594931B3422F36B9D1DA449C /* MSAIPersistence.h in Headers */ = {isa = PBXBuildFile; fileRef = 594931F0F69C22CBB67A2AD9 /* MSAIPersistence.h */; };
 		59493E4E3899627127FA6760 /* MSAIPersistence.m in Sources */ = {isa = PBXBuildFile; fileRef = 59493E91C1D38C3FC5F77D19 /* MSAIPersistence.m */; };
 		8004739C1ABB8FC200BBFE62 /* MSAIPersistencePrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 8004739B1ABB8FC200BBFE62 /* MSAIPersistencePrivate.h */; settings = {ATTRIBUTES = (Private, ); }; };
@@ -168,7 +166,7 @@
 		80E1A4151AE54B5300603B0A /* MSAIBaseTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 80E1A3ED1AE54B5300603B0A /* MSAIBaseTests.m */; };
 		80E1A4161AE54B5300603B0A /* MSAIChannelTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 80E1A3EE1AE54B5300603B0A /* MSAIChannelTests.m */; };
 		80E1A4171AE54B5300603B0A /* MSAICrashManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 80E1A3EF1AE54B5300603B0A /* MSAICrashManagerTests.m */; };
-		80E1A4181AE54B5300603B0A /* MSAICrashReportTextFormatterTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 80E1A3F01AE54B5300603B0A /* MSAICrashReportTextFormatterTests.m */; };
+		80E1A4181AE54B5300603B0A /* MSAICrashDataProviderTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 80E1A3F01AE54B5300603B0A /* MSAICrashDataProviderTests.m */; };
 		80E1A4191AE54B5300603B0A /* MSAIDataPointTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 80E1A3F11AE54B5300603B0A /* MSAIDataPointTests.m */; };
 		80E1A41A1AE54B5300603B0A /* MSAIDataTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 80E1A3F21AE54B5300603B0A /* MSAIDataTests.m */; };
 		80E1A41B1AE54B5300603B0A /* MSAIDeviceTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 80E1A3F31AE54B5300603B0A /* MSAIDeviceTests.m */; };
@@ -290,8 +288,6 @@
 		1EB2E4C518FD4CEA008BB1CF /* MSAITelemetryManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAITelemetryManager.m; sourceTree = "<group>"; };
 		1EB2E4C818FD4E90008BB1CF /* MSAITelemetryManagerPrivate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MSAITelemetryManagerPrivate.h; sourceTree = "<group>"; };
 		1ECA8F4B192B5BD8006B9416 /* MSAICrashDetailsPrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAICrashDetailsPrivate.h; sourceTree = "<group>"; };
-		1ECA8F4F192B6954006B9416 /* MSAICrashMetaData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAICrashMetaData.h; sourceTree = "<group>"; };
-		1ECA8F50192B6954006B9416 /* MSAICrashMetaData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAICrashMetaData.m; sourceTree = "<group>"; };
 		1EDA60CF15C2C1450032D10B /* AppInsights-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "AppInsights-Info.plist"; sourceTree = "<group>"; };
 		1EFF03D717F20F8300A5F13C /* MSAICrashManagerPrivate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MSAICrashManagerPrivate.h; sourceTree = "<group>"; };
 		594931F0F69C22CBB67A2AD9 /* MSAIPersistence.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAIPersistence.h; sourceTree = "<group>"; };
@@ -366,7 +362,7 @@
 		80E1A3ED1AE54B5300603B0A /* MSAIBaseTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIBaseTests.m; path = ApplicationInsightsTests/MSAIBaseTests.m; sourceTree = SOURCE_ROOT; };
 		80E1A3EE1AE54B5300603B0A /* MSAIChannelTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIChannelTests.m; path = ApplicationInsightsTests/MSAIChannelTests.m; sourceTree = SOURCE_ROOT; };
 		80E1A3EF1AE54B5300603B0A /* MSAICrashManagerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAICrashManagerTests.m; path = ApplicationInsightsTests/MSAICrashManagerTests.m; sourceTree = SOURCE_ROOT; };
-		80E1A3F01AE54B5300603B0A /* MSAICrashReportTextFormatterTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAICrashReportTextFormatterTests.m; path = ApplicationInsightsTests/MSAICrashReportTextFormatterTests.m; sourceTree = SOURCE_ROOT; };
+		80E1A3F01AE54B5300603B0A /* MSAICrashDataProviderTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAICrashDataProviderTests.m; path = ApplicationInsightsTests/MSAICrashDataProviderTests.m; sourceTree = SOURCE_ROOT; };
 		80E1A3F11AE54B5300603B0A /* MSAIDataPointTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIDataPointTests.m; path = ApplicationInsightsTests/MSAIDataPointTests.m; sourceTree = SOURCE_ROOT; };
 		80E1A3F21AE54B5300603B0A /* MSAIDataTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIDataTests.m; path = ApplicationInsightsTests/MSAIDataTests.m; sourceTree = SOURCE_ROOT; };
 		80E1A3F31AE54B5300603B0A /* MSAIDeviceTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIDeviceTests.m; path = ApplicationInsightsTests/MSAIDeviceTests.m; sourceTree = SOURCE_ROOT; };
@@ -562,7 +558,7 @@
 				80E1A3ED1AE54B5300603B0A /* MSAIBaseTests.m */,
 				80E1A3EE1AE54B5300603B0A /* MSAIChannelTests.m */,
 				80E1A3EF1AE54B5300603B0A /* MSAICrashManagerTests.m */,
-				80E1A3F01AE54B5300603B0A /* MSAICrashReportTextFormatterTests.m */,
+				80E1A3F01AE54B5300603B0A /* MSAICrashDataProviderTests.m */,
 				80E1A3F11AE54B5300603B0A /* MSAIDataPointTests.m */,
 				80E1A3F21AE54B5300603B0A /* MSAIDataTests.m */,
 				80E1A3F31AE54B5300603B0A /* MSAIDeviceTests.m */,
@@ -660,8 +656,6 @@
 				1E754E571621FBB70070AB92 /* MSAICrashManager.m */,
 				1E754E581621FBB70070AB92 /* MSAICrashManagerDelegate.h */,
 				1EFF03D717F20F8300A5F13C /* MSAICrashManagerPrivate.h */,
-				1ECA8F4F192B6954006B9416 /* MSAICrashMetaData.h */,
-				1ECA8F50192B6954006B9416 /* MSAICrashMetaData.m */,
 				1E754E5A1621FBB70070AB92 /* MSAICrashDataProvider.h */,
 				1E754E5B1621FBB70070AB92 /* MSAICrashDataProvider.m */,
 			);
@@ -844,7 +838,6 @@
 				807CFDAD1A712974004EA1B6 /* MSAIDependencySourceType.h in Headers */,
 				1B3C387C1A82213000700081 /* MSAICrashDataThread.h in Headers */,
 				807CFDB71A712974004EA1B6 /* MSAIExceptionData.h in Headers */,
-				1ECA8F51192B6954006B9416 /* MSAICrashMetaData.h in Headers */,
 				807CFDBF1A712974004EA1B6 /* MSAIMessageData.h in Headers */,
 				1E90FD7318EDB86400CF0417 /* MSAICrashDetails.h in Headers */,
 				807CFDC71A712974004EA1B6 /* MSAIPageViewPerfData.h in Headers */,
@@ -980,7 +973,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Sets the target folders and the final framework product.\nFMK_NAME=ApplicationInsights\nFMK_VERSION=A\n\n# Documentation\nAIS_DOCSET_VERSION_NAME=\"com.microsoft.applicationinsights.${AIS_DOCSET_NAME}-${VERSION_STRING}\"\n\n# Install dir will be the final output to the framework.\n# The following line create it in the root folder of the current project.\nPRODUCTS_DIR=${SRCROOT}/../Products\nZIP_FOLDER=${FMK_NAME}\nTEMP_DIR=${PRODUCTS_DIR}/${ZIP_FOLDER}\nINSTALL_DIR=${TEMP_DIR}/${FMK_NAME}.framework\n\n# Working dir will be deleted after the framework creation.\nWRK_DIR=build\nDEVICE_DIR=${WRK_DIR}/Release-iphoneos\nSIMULATOR_DIR=${WRK_DIR}/Release-iphonesimulator\n\n# Building the full featured SDK\n\n# Building both architectures.\nxcodebuild -project \"ApplicationInsights.xcodeproj\" -configuration \"Release\" -target \"${FMK_NAME}\" -sdk iphoneos\nxcodebuild -project \"ApplicationInsights.xcodeproj\" -configuration \"Release\" -target \"${FMK_NAME}\" -sdk iphonesimulator\n\n# Cleaning the oldest.\nif [ -d \"${TEMP_DIR}\" ]\nthen\nrm -rf \"${TEMP_DIR}\"\nfi\n\n# Creates and renews the final product folder.\nmkdir -p \"${INSTALL_DIR}\"\nmkdir -p \"${INSTALL_DIR}/Modules\"\nmkdir -p \"${INSTALL_DIR}/Versions\"\nmkdir -p \"${INSTALL_DIR}/Versions/${FMK_VERSION}\"\nmkdir -p \"${INSTALL_DIR}/Versions/${FMK_VERSION}/Resources\"\nmkdir -p \"${INSTALL_DIR}/Versions/${FMK_VERSION}/Headers\"\n\n# Creates the internal links.\n# It MUST uses relative path, otherwise will not work when the folder is copied/moved.\nln -s \"${FMK_VERSION}\" \"${INSTALL_DIR}/Versions/Current\"\nln -s \"Versions/Current/Headers\" \"${INSTALL_DIR}/Headers\"\nln -s \"Versions/Current/Resources\" \"${INSTALL_DIR}/Resources\"\nln -s \"Versions/Current/${FMK_NAME}\" \"${INSTALL_DIR}/${FMK_NAME}\"\n\n# Copy the swift import file\ncp -f \"${SRCROOT}/module.modulemap\" \"${INSTALL_DIR}/Modules/\"\n\n# Copies the headers and resources files to the final product folder.\ncp -R \"${SRCROOT}/build/Release-iphoneos/include/${FMK_NAME}/\" \"${INSTALL_DIR}/Versions/${FMK_VERSION}/Headers/\"\ncp -f \"${SRCROOT}/${FMK_NAME}.xcconfig\" \"${INSTALL_DIR}/Versions/${FMK_VERSION}/Resources/\"\n\n# Uses the Lipo Tool to merge both binary files (i386 + armv6/armv7) into one Universal final product.\nlipo -create \"${DEVICE_DIR}/lib${FMK_NAME}.a\" \"${SIMULATOR_DIR}/lib${FMK_NAME}.a\" -output \"${INSTALL_DIR}/Versions/${FMK_VERSION}/${FMK_NAME}\"\n\n# Combine the CrashReporter static library into a new ApplicationInsights static library file if they are not already present and copy the public headers too\nif [ -z $(otool -L \"${INSTALL_DIR}/Versions/${FMK_VERSION}/${FMK_NAME}\" | grep 'libCrashReporter') ]\nthen\nlibtool -static -o \"${INSTALL_DIR}/Versions/${FMK_VERSION}/${FMK_NAME}\" \"${INSTALL_DIR}/Versions/${FMK_VERSION}/${FMK_NAME}\" \"${SRCROOT}/../Vendor/CrashReporter.framework/Versions/A/CrashReporter\"\nfi\n\n# Move the crash reporting only framework into a new folder\n#mkdir \"${INSTALL_DIR}/../${FMK_NAME}CrashOnly\"\n#mv \"${INSTALL_DIR}\" \"${INSTALL_DIR}/../${FMK_NAME}CrashOnly/${FMK_NAME}.framework\"\n\n#rm -r \"${WRK_DIR}\"\n\n\n# copy license, changelog, documentation, integration json\n#cp -f \"${SRCROOT}/../Docs/Changelog-template.md\" \"${TEMP_DIR}/CHANGELOG\"\ncp -f \"${SRCROOT}/../Docs/Guide-Installation-Setup-template.md\" \"${TEMP_DIR}/README.md\"\ncp -f \"${SRCROOT}/../Docs/Guide-Installation-Setup-template.md\" \"${SRCROOT}/../README.md\"\ncp -f \"${SRCROOT}/../LICENSE\" \"${TEMP_DIR}\"\n#mkdir \"${TEMP_DIR}/${AIS_DOCSET_VERSION_NAME}.docset\"\n#cp -R \"${SRCROOT}/../documentation/docset/Contents\" \"${TEMP_DIR}/${AIS_DOCSET_VERSION_NAME}.docset\"\n\n# build zip\ncd \"${PRODUCTS_DIR}\"\nrm -f \"${FMK_NAME}-${VERSION_STRING}.zip\"\nzip -yr \"${FMK_NAME}-${VERSION_STRING}.zip\" \"${ZIP_FOLDER}\" -x \\*/.*\n";
+			shellScript = "# Sets the target folders and the final framework product.\nFMK_NAME=ApplicationInsights\nFMK_VERSION=A\n\n# Documentation\nAIS_DOCSET_VERSION_NAME=\"com.microsoft.applicationinsights.${AIS_DOCSET_NAME}-${VERSION_STRING}\"\n\n# Install dir will be the final output to the framework.\n# The following line create it in the root folder of the current project.\nPRODUCTS_DIR=${SRCROOT}/../Products\nZIP_FOLDER=${FMK_NAME}\nTEMP_DIR=${PRODUCTS_DIR}/${ZIP_FOLDER}\nINSTALL_DIR=${TEMP_DIR}/${FMK_NAME}.framework\n\n# Working dir will be deleted after the framework creation.\nWRK_DIR=build\nDEVICE_DIR=${WRK_DIR}/Release-iphoneos\nSIMULATOR_DIR=${WRK_DIR}/Release-iphonesimulator\n\n# Building the full featured SDK\n\n# Building both architectures.\nxcodebuild -project \"ApplicationInsights.xcodeproj\" -configuration \"Release\" -target \"${FMK_NAME}\" -sdk iphoneos\nxcodebuild -project \"ApplicationInsights.xcodeproj\" -configuration \"Release\" -target \"${FMK_NAME}\" -sdk iphonesimulator\n\n# Cleaning the oldest.\nif [ -d \"${TEMP_DIR}\" ]\nthen\nrm -rf \"${TEMP_DIR}\"\nfi\n\n# Creates and renews the final product folder.\nmkdir -p \"${INSTALL_DIR}\"\nmkdir -p \"${INSTALL_DIR}/Modules\"\nmkdir -p \"${INSTALL_DIR}/Versions\"\nmkdir -p \"${INSTALL_DIR}/Versions/${FMK_VERSION}\"\nmkdir -p \"${INSTALL_DIR}/Versions/${FMK_VERSION}/Resources\"\nmkdir -p \"${INSTALL_DIR}/Versions/${FMK_VERSION}/Headers\"\n\n# Creates the internal links.\n# It MUST uses relative path, otherwise will not work when the folder is copied/moved.\nln -s \"${FMK_VERSION}\" \"${INSTALL_DIR}/Versions/Current\"\nln -s \"Versions/Current/Headers\" \"${INSTALL_DIR}/Headers\"\nln -s \"Versions/Current/Resources\" \"${INSTALL_DIR}/Resources\"\nln -s \"Versions/Current/${FMK_NAME}\" \"${INSTALL_DIR}/${FMK_NAME}\"\n\n# Copy the swift import file\ncp -f \"${SRCROOT}/module.modulemap\" \"${INSTALL_DIR}/Modules/\"\n\n# Copies the headers and resources files to the final product folder.\ncp -R \"${SRCROOT}/build/Release-iphoneos/include/${FMK_NAME}/\" \"${INSTALL_DIR}/Versions/${FMK_VERSION}/Headers/\"\ncp -f \"${SRCROOT}/${FMK_NAME}.xcconfig\" \"${INSTALL_DIR}/Versions/${FMK_VERSION}/Resources/\"\n\n# Uses the Lipo Tool to merge both binary files (i386 + armv6/armv7) into one Universal final product.\nlipo -create \"${DEVICE_DIR}/lib${FMK_NAME}.a\" \"${SIMULATOR_DIR}/lib${FMK_NAME}.a\" -output \"${INSTALL_DIR}/Versions/${FMK_VERSION}/${FMK_NAME}\"\n\n# Combine the CrashReporter static library into a new ApplicationInsights static library file if they are not already present and copy the public headers too\nif [ -z $(otool -L \"${INSTALL_DIR}/Versions/${FMK_VERSION}/${FMK_NAME}\" | grep 'libCrashReporter') ]\nthen\nlibtool -static -o \"${INSTALL_DIR}/Versions/${FMK_VERSION}/${FMK_NAME}\" \"${INSTALL_DIR}/Versions/${FMK_VERSION}/${FMK_NAME}\" \"${SRCROOT}/../Vendor/CrashReporter.framework/Versions/A/CrashReporter\"\nfi\n\n# Move the crash reporting only framework into a new folder\n#mkdir \"${INSTALL_DIR}/../${FMK_NAME}CrashOnly\"\n#mv \"${INSTALL_DIR}\" \"${INSTALL_DIR}/../${FMK_NAME}CrashOnly/${FMK_NAME}.framework\"\n\n#rm -r \"${WRK_DIR}\"\n\n\n# copy license, changelog, documentation, integration json\n#cp -f \"${SRCROOT}/../Docs/Changelog-template.md\" \"${TEMP_DIR}/CHANGELOG\"\ncp -f \"${SRCROOT}/../Docs/Readme-template.md\" \"${TEMP_DIR}/README.md\"\ncp -f \"${SRCROOT}/../Docs/Readme-template.md\" \"${SRCROOT}/../README.md\"\ncp -f \"${SRCROOT}/../LICENSE\" \"${TEMP_DIR}\"\nmkdir \"${TEMP_DIR}/${AIS_DOCSET_VERSION_NAME}.docset\"\ncp -R \"${SRCROOT}/../documentation/docset/Contents\" \"${TEMP_DIR}/${AIS_DOCSET_VERSION_NAME}.docset\"\n\n# build zip\ncd \"${PRODUCTS_DIR}\"\nrm -f \"${FMK_NAME}-${VERSION_STRING}.zip\"\nzip -yr \"${FMK_NAME}-${VERSION_STRING}.zip\" \"${ZIP_FOLDER}\" -x \\*/.*\n";
 		};
 		1E8E66B215BC3D8200632A2E /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1031,7 +1024,6 @@
 				1B47E02F1A84D3DF000B4C3D /* MSAIEnvelopeManager.m in Sources */,
 				807CFDB81A712974004EA1B6 /* MSAIExceptionData.m in Sources */,
 				E40E0B0D17DA1AFF005E38C1 /* MSAIAppClient.m in Sources */,
-				1ECA8F52192B6954006B9416 /* MSAICrashMetaData.m in Sources */,
 				807CFDA61A712974004EA1B6 /* MSAIBase.m in Sources */,
 				1B3FB89F1A93756100D06311 /* MSAIReachability.m in Sources */,
 				809E9E5C1AC455D9008A1AB5 /* MSAISessionStateData.m in Sources */,
@@ -1076,7 +1068,7 @@
 				80E1A4151AE54B5300603B0A /* MSAIBaseTests.m in Sources */,
 				80E1A42F1AE54B5300603B0A /* MSAISenderTests.m in Sources */,
 				80E1A4291AE54B5300603B0A /* MSAIPageViewDataTests.m in Sources */,
-				80E1A4181AE54B5300603B0A /* MSAICrashReportTextFormatterTests.m in Sources */,
+				80E1A4181AE54B5300603B0A /* MSAICrashDataProviderTests.m in Sources */,
 				80E1A4361AE54B5300603B0A /* MSAITestsDependencyInjection.m in Sources */,
 				80E1A41B1AE54B5300603B0A /* MSAIDeviceTests.m in Sources */,
 				80E1A4261AE54B5300603B0A /* MSAIMessageDataTests.m in Sources */,

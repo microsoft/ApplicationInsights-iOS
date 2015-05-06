@@ -202,7 +202,7 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
  */
 @implementation MSAICrashDataProvider
 
-+ (MSAIEnvelope *)crashDataForCrashReport:(PLCrashReport *)report handledException:(NSException *)exception{
++ (MSAIEnvelope *)crashDataForCrashReport:(MSAIPLCrashReport *)report handledException:(NSException *)exception{
   
   NSMutableArray *addresses = [NSMutableArray new];
   
@@ -218,7 +218,7 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
         break;
         case PLCrashReportOperatingSystemMacOSX:
       case PLCrashReportOperatingSystemiPhoneSimulator:
-        osName = @"Mac OS X";
+        osName = @"OS X";
         break;
       default:
         osName = [NSString stringWithFormat: @"Unknown (%d)", report.systemInfo.operatingSystem];
@@ -232,7 +232,8 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
     
     envelope.osVer = [NSString stringWithFormat:@"%@(%@)", report.systemInfo.operatingSystemVersion, osBuild];
     envelope.os = osName;
-    envelope.time = msai_utcDateString(report.systemInfo.timestamp);
+    // We add one second to the crash time to work around an issue where the timestamp has only second granularity.
+    envelope.time = msai_utcDateString([report.systemInfo.timestamp dateByAddingTimeInterval:1]);
     envelope.appId = report.applicationInfo.applicationIdentifier;
     
     NSString *marketingVersion = report.applicationInfo.applicationMarketingVersion;
@@ -616,153 +617,6 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
     }
   }
   return nil;
-}
-
-/**
- * Returns an array of app UUIDs and their architecture
- * As a dictionary for each element
- *
- * @param report The report to format.
- *
- * @return Returns the formatted result on success, or nil if an error occurs.
- */
-+ (NSArray *)arrayOfAppUUIDsForCrashReport:(MSAIPLCrashReport *)report {
-  NSMutableArray* appUUIDs = [NSMutableArray array];
-  
-  /* Images. The iPhone crash report format sorts these in ascending order, by the base address */
-  for (MSAIPLCrashReportBinaryImageInfo *imageInfo in [report.images sortedArrayUsingFunction: msai_binaryImageSort context: nil]) {
-    NSString *uuid;
-    /* Fetch the UUID if it exists */
-    if (imageInfo.hasImageUUID)
-      uuid = imageInfo.imageUUID;
-    else
-      uuid = @"???";
-    
-    /* Determine the architecture string */
-    NSString *archName = [[self class] msai_archNameFromImageInfo:imageInfo];
-    
-    /* Determine if this is the app executable or app specific framework */
-    MSAIBinaryImageType imageType = [[self class] msai_imageTypeForImagePath:imageInfo.imageName
-                                                                 processPath:report.processInfo.processPath];
-    NSString *imageTypeString = @"";
-    
-    if (imageType != MSAIBinaryImageTypeOther) {
-      if (imageType == MSAIBinaryImageTypeAppBinary) {
-        imageTypeString = @"app";
-      } else {
-        imageTypeString = @"framework";
-      }
-      
-      [appUUIDs addObject:@{kMSAIBinaryImageKeyUUID: uuid,
-                            kMSAIBinaryImageKeyArch: archName,
-                            kMSAIBinaryImageKeyType: imageTypeString}
-       ];
-    }
-  }
-  
-  return appUUIDs;
-}
-
-/* Determine if in binary image is the app executable or app specific framework */
-+ (MSAIBinaryImageType)msai_imageTypeForImagePath:(NSString *)imagePath processPath:(NSString *)processPath {
-  MSAIBinaryImageType imageType = MSAIBinaryImageTypeOther;
-  
-  NSString *standardizedImagePath = [[imagePath stringByStandardizingPath] lowercaseString];
-  imagePath = [imagePath lowercaseString];
-  processPath = [processPath lowercaseString];
-  
-  NSRange appRange = [standardizedImagePath rangeOfString: @".app/"];
-  
-  // Exclude iOS swift dylibs. These are provided as part of the app binary by Xcode for now, but we never get a dSYM for those.
-  NSRange swiftLibRange = [standardizedImagePath rangeOfString:@"frameworks/libswift"];
-  BOOL dylibSuffix = [standardizedImagePath hasSuffix:@".dylib"];
-  
-  if (appRange.location != NSNotFound && !(swiftLibRange.location != NSNotFound && dylibSuffix)) {
-    NSString *appBundleContentsPath = [standardizedImagePath substringToIndex:appRange.location + 5];
-    
-    if ([standardizedImagePath isEqual: processPath] ||
-        // Fix issue with iOS 8 `stringByStandardizingPath` removing leading `/private` path (when not running in the debugger or simulator only)
-        [imagePath hasPrefix:processPath]) {
-      imageType = MSAIBinaryImageTypeAppBinary;
-    } else if ([standardizedImagePath hasPrefix:appBundleContentsPath] ||
-               // Fix issue with iOS 8 `stringByStandardizingPath` removing leading `/private` path (when not running in the debugger or simulator only)
-               [imagePath hasPrefix:appBundleContentsPath]) {
-      imageType = MSAIBinaryImageTypeAppFramework;
-    }
-  }
-  
-  return imageType;
-}
-
-+ (NSString *)msai_archNameFromImageInfo:(MSAIPLCrashReportBinaryImageInfo *)imageInfo
-{
-  NSString *archName = @"???";
-  if (imageInfo.codeType != nil && imageInfo.codeType.typeEncoding == PLCrashReportProcessorTypeEncodingMach) {
-    archName = [[self class] msai_archNameFromCPUType:imageInfo.codeType.type subType:imageInfo.codeType.subtype];
-  }
-  
-  return archName;
-}
-
-+ (NSString *)msai_archNameFromCPUType:(uint64_t)cpuType subType:(uint64_t)subType {
-  NSString *archName = @"???";
-  switch (cpuType) {
-    case CPU_TYPE_ARM:
-      /* Apple includes subtype for ARM binaries. */
-      switch (subType) {
-        case CPU_SUBTYPE_ARM_V6:
-          archName = @"armv6";
-          break;
-          
-        case CPU_SUBTYPE_ARM_V7:
-          archName = @"armv7";
-          break;
-          
-        case CPU_SUBTYPE_ARM_V7S:
-          archName = @"armv7s";
-          break;
-          
-        default:
-          archName = @"arm-unknown";
-          break;
-      }
-      break;
-      
-    case CPU_TYPE_ARM64:
-      /* Apple includes subtype for ARM64 binaries. */
-      switch (subType) {
-        case CPU_SUBTYPE_ARM_ALL:
-          archName = @"arm64";
-          break;
-          
-        case CPU_SUBTYPE_ARM_V8:
-          archName = @"arm64";
-          break;
-          
-        default:
-          archName = @"arm64-unknown";
-          break;
-      }
-      break;
-      
-    case CPU_TYPE_X86:
-      archName = @"i386";
-      break;
-      
-    case CPU_TYPE_X86_64:
-      archName = @"x86_64";
-      break;
-      
-    case CPU_TYPE_POWERPC:
-      archName = @"powerpc";
-      break;
-      
-    default:
-      // Use the default archName value (initialized above).
-      break;
-  }
-  
-  return archName;
 }
 
 @end
