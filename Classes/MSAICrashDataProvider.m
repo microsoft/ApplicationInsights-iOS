@@ -232,7 +232,8 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
     
     envelope.osVer = [NSString stringWithFormat:@"%@(%@)", report.systemInfo.operatingSystemVersion, osBuild];
     envelope.os = osName;
-    envelope.time = msai_utcDateString(report.systemInfo.timestamp);
+    // We add one second to the crash time to work around an issue where the timestamp has only second granularity.
+    envelope.time = msai_utcDateString([report.systemInfo.timestamp dateByAddingTimeInterval:1]);
     envelope.appId = report.applicationInfo.applicationIdentifier;
     
     NSString *marketingVersion = report.applicationInfo.applicationMarketingVersion;
