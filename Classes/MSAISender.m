@@ -102,7 +102,7 @@ static NSInteger const statusCodeBadRequest = 400;
     NSInteger statusCode = [operation.response statusCode];
 
     if([self shouldDeleteDataWithStatusCode:statusCode]) {
-      // We should delete data if it has been succesfully sent (200/202) or if its values have not been accepted (400)
+      //we delete data that was either sent successfully or if we have a non-recoverable error
       MSAILog(@"Sent data with status code: %ld", (long) statusCode);
       MSAILog(@"Response data:\n%@", [NSJSONSerialization JSONObjectWithData:responseData options:0 error:nil]);
       
@@ -146,10 +146,12 @@ static NSInteger const statusCodeBadRequest = 400;
   return request;
 }
 
+//some status codes represent recoverable error codes
+//we try sending again some point later
 - (BOOL)shouldDeleteDataWithStatusCode:(NSInteger)statusCode {
-  NSArray *acceptableStatusCodes = @[@429, @408, @500, @503, @511];
+  NSArray *recoverableStatusCodes = @[@429, @408, @500, @503, @511];
 
-  return ![acceptableStatusCodes containsObject:@(statusCode)];
+  return ![recoverableStatusCodes containsObject:@(statusCode)];
 }
 
 #pragma mark - Getter/Setter
