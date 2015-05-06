@@ -10,6 +10,15 @@
 @class MSAICrashData;
 @class MSAIOrderedDictionary;
 
+FOUNDATION_EXTERN  char * __nonnull MSAISafeJsonEventsString;
+NS_ASSUME_NONNULL_BEGIN
+FOUNDATION_EXPORT NSInteger const debugBatchInterval;
+FOUNDATION_EXPORT NSInteger const debugMaxBatchCount;
+
+FOUNDATION_EXPORT NSInteger const defaultBatchInterval;
+FOUNDATION_EXPORT NSInteger const defaultMaxBatchCount;
+FOUNDATION_EXPORT char *MSAISafeJsonEventsString;
+
 @interface MSAIChannel ()
 
 ///-----------------------------------------------------------------------------
@@ -23,6 +32,8 @@
 */
 + (instancetype)sharedChannel;
 
++ (void)setSharedChannel:(MSAIChannel *)channel;
+
 ///-----------------------------------------------------------------------------
 /// @name Queue management
 ///-----------------------------------------------------------------------------
@@ -35,7 +46,22 @@
 /**
  *  An array for collecting data, which should be sent to the telemetry server.
  */
-@property(nonatomic, strong) NSMutableArray *dataItemQueue;
+@property (nonatomic, strong) NSMutableArray *dataItemQueue;
+
+/**
+ *  A C function that serializes a given dictionary to JSON and appends it to a char string
+ *
+ *  @param dictionary A dictionary which will be serialized to JSON and then appended to the string.
+ *  @param string The C string which the dictionary's JSON representation will be appended to.
+ */
+void msai_appendDictionaryToSafeJsonString(NSDictionary *dictionary, char *__nonnull*__nonnull string);
+
+/**
+ *  Reset MSAISafeJsonEventsString so we can start appending JSON dictionaries.
+ *
+ *  @param string The string that will be reset.
+ */
+void msai_resetSafeJsonString(char *__nonnull*__nonnull string);
 
 /**
  *  Enqueue telemetry data (events, metrics, exceptions, traces) before processing it.
@@ -44,13 +70,15 @@
  */
 - (void)enqueueDictionary:(MSAIOrderedDictionary *)dictionary;
 
+- (void)addDictionaryToQueues:(MSAIOrderedDictionary *)dictionary;
+
 /**
  *  Directly process telemetry data (crashs) without enqueuing it first.
  *
  *  @param dictionary      the dictionary object to process.
  *  @param completionBlock the block, which should be executed after the envelope has been persisted.
  */
-- (void)processDictionary:(MSAIOrderedDictionary *)dictionary withCompletionBlock: (void (^)(BOOL success)) completionBlock;
+- (void)processDictionary:(MSAIOrderedDictionary *)dictionary withCompletionBlock:(nullable void (^)(BOOL success))completionBlock;
 
 ///-----------------------------------------------------------------------------
 /// @name Batching
@@ -76,7 +104,7 @@
 /**
  *  A timer source which is used to flush the queue after a cretain time.
  */
-@property (nonatomic, strong) dispatch_source_t timerSource;
+@property (nonatomic, strong, null_unspecified) dispatch_source_t timerSource;
 
 /**
  *  Starts the timer.
@@ -88,6 +116,16 @@
  */
 - (void)invalidateTimer;
 
+/**
+ *  A method which indicates whether the telemetry pipeline is busy and no new data should be enqueued.
+ *  Currently, we drop telemetry data if this returns YES.
+ *  This depends on defaultMaxBatchCount and defaultBatchInterval.
+ *
+ *  @see defaultMaxBatchCount
+ *  @see defaultBatchInterval
+ *  @return Returns yes if currently no new data should be enqueued on the channel.
+ */
 - (BOOL)isQueueBusy;
 
 @end
+NS_ASSUME_NONNULL_END

@@ -2,16 +2,13 @@
 #import "MSAIAppClient.h"
 #import "MSAISenderPrivate.h"
 #import "MSAIPersistence.h"
+#import "MSAIGZIP.h"
 #import "MSAIEnvelope.h"
-#import "AppInsights.h"
-#import "AppInsightsPrivate.h"
-#import "MSAIAppInsights.h"
+#import "ApplicationInsights.h"
+#import "ApplicationInsightsPrivate.h"
+#import "MSAIApplicationInsights.h"
 
 static NSUInteger const defaultRequestLimit = 10;
-
-static NSInteger const statusCodeOK = 200;
-static NSInteger const statusCodeAccepted = 202;
-static NSInteger const statusCodeBadRequest = 400;
 
 @interface MSAISender ()
 
@@ -35,8 +32,7 @@ static NSInteger const statusCodeBadRequest = 400;
 
 #pragma mark - Network status
 
-- (void)configureWithAppClient:(MSAIAppClient *)appClient endpointPath:(NSString *)endpointPath {
-  self.endpointPath = endpointPath;
+- (void)configureWithAppClient:(MSAIAppClient *)appClient {
   self.appClient = appClient;
   self.maxRequestCount = defaultRequestLimit;
   [self registerObservers];
@@ -47,7 +43,7 @@ static NSInteger const statusCodeBadRequest = 400;
 - (void)registerObservers{
   NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
   __weak typeof(self) weakSelf = self;
-  [center addObserverForName:kMSAIPersistenceSuccessNotification
+  [center addObserverForName:MSAIPersistenceSuccessNotification
                       object:nil
                        queue:nil
                   usingBlock:^(NSNotification *notification) {
@@ -69,19 +65,20 @@ static NSInteger const statusCodeBadRequest = 400;
       return;
     }
   }
-  
+  __weak typeof(self) weakSelf = self;
   dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    typeof(self) strongSelf = weakSelf;
     NSString *path = [[MSAIPersistence sharedInstance] requestNextPath];
     NSData *data = [[MSAIPersistence sharedInstance] dataAtPath:path];
-    [self sendData:data withPath:path];
+    NSData *gzippedData = [data gzippedData];
+    [strongSelf sendData:gzippedData withPath:path];
   });
 }
 
 - (void)sendData:(NSData *)data withPath:(NSString *)path{
   
   if(data) {
-    NSString *urlString = MSAI_EVENT_DATA_URL;
-    NSURLRequest *request = [self requestForData:data urlString:urlString];
+    NSURLRequest *request = [self requestForData:data];
     [self sendRequest:request path:path];
     
   }else{
@@ -101,14 +98,15 @@ static NSInteger const statusCodeBadRequest = 400;
     NSInteger statusCode = [operation.response statusCode];
 
     if([self shouldDeleteDataWithStatusCode:statusCode]) {
-      // We should delete data if it has been succesfully sent (200/202) or if its values have not been accepted (400)
+      //we delete data that was either sent successfully or if we have a non-recoverable error
       MSAILog(@"Sent data with status code: %ld", (long) statusCode);
       MSAILog(@"Response data:\n%@", [NSJSONSerialization JSONObjectWithData:responseData options:0 error:nil]);
       
       [[MSAIPersistence sharedInstance] deleteFileAtPath:path];
       [strongSelf sendSavedData];
     } else {
-      MSAILog(@"Sending MSAIAppInsights data failed");
+      MSAILog(@"Sending MSAIApplicationInsights data failed");
+      MSAILog(@"Error description: %@", error.localizedDescription);
       [[MSAIPersistence sharedInstance] giveBackRequestedPath:path];
     }
   }];
@@ -127,21 +125,29 @@ static NSInteger const statusCodeBadRequest = 400;
 
 #pragma mark - Helper
 
-- (NSURLRequest *)requestForData:(NSData *)data urlString:(NSString *)urlString {
+- (NSURLRequest *)requestForData:(NSData *)data {
   NSMutableURLRequest *request = [self.appClient requestWithMethod:@"POST"
-                                                              path:urlString
+                                                              path:self.endpointPath
                                                         parameters:nil];
   
-  [request setHTTPBody:data];
-  [request setCachePolicy:NSURLRequestReloadIgnoringLocalCacheData];
-  NSString *contentType = @"application/json";
-  [request setValue:contentType forHTTPHeaderField:@"Content-type"];
+  request.HTTPBody = data;
+  request.cachePolicy = NSURLRequestReloadIgnoringLocalCacheData;
+  
+  NSDictionary *headers = @{@"Charset": @"UTF-8",
+                            @"Content-Encoding": @"gzip",
+                            @"Content-Type": @"application/json",
+                            @"Accept-Encoding": @"gzip"};
+  [request setAllHTTPHeaderFields:headers];
+  
   return request;
 }
 
+//some status codes represent recoverable error codes
+//we try sending again some point later
 - (BOOL)shouldDeleteDataWithStatusCode:(NSInteger)statusCode {
-  
-  return (statusCode >= statusCodeOK && statusCode <= statusCodeAccepted) || statusCode == statusCodeBadRequest;
+  NSArray *recoverableStatusCodes = @[@429, @408, @500, @503, @511];
+
+  return ![recoverableStatusCodes containsObject:@(statusCode)];
 }
 
 #pragma mark - Getter/Setter

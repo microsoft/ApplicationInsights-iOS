@@ -18,7 +18,7 @@
     _deviceModel = msai_devicePlatform();
     _deviceType = msai_deviceType();
     _osName = msai_osName();
-    _osVersion = msai_osVersion();
+    _osVersion = msai_osVersionBuild();
     _appVersion = msai_appVersion();
   }
   return self;

@@ -4,7 +4,9 @@
 @class MSAIPLCrashReport;
 #import <Foundation/Foundation.h>
 #import "MSAIEnvelopeManager.h"
+#import "ApplicationInsights.h"
 
+NS_ASSUME_NONNULL_BEGIN
 @interface MSAIEnvelopeManager()
 
 ///-----------------------------------------------------------------------------
@@ -29,17 +31,6 @@
  *  @param telemetryContext information about the client and the AI account
  */
 - (void)configureWithTelemetryContext:(MSAITelemetryContext *)telemetryContext;
-
-///-----------------------------------------------------------------------------
-/// @name Update context
-///-----------------------------------------------------------------------------
-
-// TODO: Use Notifications instead
-
-/**
- *  Renews all session context information used to create an envelope.
- */
-- (void)createNewSession;
 
 ///-----------------------------------------------------------------------------
 /// @name Create envelope objects
@@ -79,6 +70,7 @@
  *
  *  @return an envelope object that contains a handled exception
  */
-- (MSAIEnvelope *)envelopeForCrashReport:(MSAIPLCrashReport *)report exception:(NSException *)exception;
+- (MSAIEnvelope *)envelopeForCrashReport:(MSAIPLCrashReport *)report exception:(nullable NSException *)exception;
 
 @end
+NS_ASSUME_NONNULL_END

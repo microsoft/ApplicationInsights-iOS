@@ -8,16 +8,12 @@
 #import "MSAIContext.h"
 #import "MSAIContextPrivate.h"
 
+NS_ASSUME_NONNULL_BEGIN
 @interface MSAITelemetryContext()
 
 ///-----------------------------------------------------------------------------
 /// @name Initialisation
 ///-----------------------------------------------------------------------------
-
-/**
- *  The path to the telemetry endpoint.
- */
-@property(nonatomic, strong, readonly) NSString *endpointPath;
 
 /**
  *  The instrumentation key of the app.
@@ -65,39 +61,15 @@
  *
  *  @param appContext         the context of the app, which contains several meta infos
  *  @param endpointPath       the path to the telemetry endpoint
+ *  @param sessionId          the id of the first session
  *
  *  @return the telemetry context
  */
-- (instancetype)initWithAppContext:(MSAIContext *)appContext
-                      endpointPath:(NSString *)endpointPath;
+- (instancetype)initWithAppContext:(MSAIContext *)appContext;
 
 ///-----------------------------------------------------------------------------
 /// @name Session
-///-----------------------------------------------------------------------------
-
-/**
- *  A reference to the userDefaults being used to store values
- */
-@property(nonatomic, weak) NSUserDefaults *userDefaults;
-
-/**
- *  Renews or even creates a new session if needed.
- */
-- (void)updateSessionContext;
-
-/**
- *  Checks if current session is the first one.
- *
- *  @return YES if current session has not been renewed or replaced by a new one
- */
-- (BOOL)isFirstSession;
-
-/**
- *  Creates a brand new session.
- */
-- (void)createNewSession;
-
-///-----------------------------------------------------------------------------
+///-----------------------------------------------------------------------------s;///-----------------------------------------------------------------------------
 /// @name Network status
 ///-----------------------------------------------------------------------------
 
@@ -123,3 +95,4 @@
 - (MSAIOrderedDictionary *)contextDictionary;
 
 @end
+NS_ASSUME_NONNULL_END

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>AE5FFEA8-B181-488F-B659-A78FED549A1F</string>
+	<key>IDESourceControlProjectName</key>
+	<string>AppInsights</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>5B023693EFFEF2F44FB6AB33FD2AAF34F28DA39D</key>
+		<string>https://github.com/Microsoft/AppInsights-iOS</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>Support/AppInsights.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>5B023693EFFEF2F44FB6AB33FD2AAF34F28DA39D</key>
+		<string>../../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/Microsoft/AppInsights-iOS</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>5B023693EFFEF2F44FB6AB33FD2AAF34F28DA39D</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>5B023693EFFEF2F44FB6AB33FD2AAF34F28DA39D</string>
+			<key>IDESourceControlWCCName</key>
+			<string>AppInsights-iOS</string>
+		</dict>
+	</array>
+</dict>
+</plist>

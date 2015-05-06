@@ -2,7 +2,7 @@
 
 @implementation MSAIAppClient
 - (void)dealloc {
-  [self cancelOperationsWithPath:nil method:nil];
+  [self cancelAllOperations];
 }
 
 - (instancetype)initWithBaseURL:(NSURL *)baseURL {
@@ -15,18 +15,13 @@
 }
 
 #pragma mark - Networking
-- (NSMutableURLRequest *) requestWithMethod:(NSString*) method
-                                       path:(NSString *) path
-                                 parameters:(NSDictionary *)params {
+- (NSMutableURLRequest *)requestWithMethod:(NSString*)method
+                                      path:(NSString *)path
+                                parameters:(NSDictionary *)params {
   
-  NSParameterAssert(method);
-  NSParameterAssert(params == nil || [method isEqualToString:@"POST"] || [method isEqualToString:@"GET"]);
-  // TODO: Since we are currently talking to two different endpoints, we have to pass the whole address rather than just the path
-  //  NSParameterAssert(self.baseURL);
-  //  path = path ? : @"";
-  //
-  //  NSURL *endpoint = [self.baseURL URLByAppendingPathComponent:path];
-  NSURL *endpoint = [NSURL URLWithString:path];
+  path = path ? : @"";
+  
+  NSURL *endpoint = [self.baseURL URLByAppendingPathComponent:path];
   NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:endpoint];
   request.HTTPMethod = method;
   
@@ -120,32 +115,40 @@
   [self enqeueHTTPOperation:op];
 }
 
-- (void) enqeueHTTPOperation:(MSAIHTTPOperation *) operation {
+- (void)enqeueHTTPOperation:(MSAIHTTPOperation *)operation {
   [self.operationQueue addOperation:operation];
 }
 
-- (NSUInteger) cancelOperationsWithPath:(NSString*) path
-                                 method:(NSString*) method {
+- (NSUInteger)cancelOperationsWithPath:(NSString*)path method:(NSString*)method {
   NSUInteger cancelledOperations = 0;
   for(MSAIHTTPOperation *operation in self.operationQueue.operations) {
     NSURLRequest *request = operation.URLRequest;
     
-    BOOL matchedMethod = YES;
-    if(method && ![request.HTTPMethod isEqualToString:method]) {
-      matchedMethod = NO;
+    BOOL matchedMethod = NO;
+    if ([request.HTTPMethod isEqualToString:method]) {
+      matchedMethod = YES;
     }
     
-    BOOL matchedPath = YES;
-    if(path) {
+    BOOL matchedPath = NO;
+    if (path) {
       //method is not interesting here, we' just creating it to get the URL
       NSURL *url = [self requestWithMethod:@"GET" path:path parameters:nil].URL;
       matchedPath = [request.URL isEqual:url];
     }
     
-    if(matchedPath && matchedMethod) {
-      ++cancelledOperations;
+    if (matchedPath || matchedMethod) {
       [operation cancel];
+      ++cancelledOperations;
     }
+  }
+  return cancelledOperations;
+}
+
+- (NSUInteger)cancelAllOperations {
+  NSUInteger cancelledOperations = 0;
+  for(MSAIHTTPOperation *operation in self.operationQueue.operations) {
+    [operation cancel];
+    ++cancelledOperations;
   }
   return cancelledOperations;
 }

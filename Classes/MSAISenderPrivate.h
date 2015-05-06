@@ -1,6 +1,7 @@
 @class MSAIEnvelope;
 @class MSAITelemetryContext;
 
+NS_ASSUME_NONNULL_BEGIN
 @interface MSAISender ()
 
 ///-----------------------------------------------------------------------------
@@ -10,12 +11,12 @@
 /**
 *  The appClient is needed to create requests and send objects via an operation queue.
 */
-@property(nonatomic, strong)MSAIAppClient *appClient;
+@property (nonatomic, strong) MSAIAppClient *appClient;
 
 /**
  *  The endpoint url of the telemetry server.
  */
-@property (nonatomic, strong)NSString *endpointPath;
+@property (nonatomic, strong) NSString *endpointPath;
 
 /**
  *  The max number of request that can run at a time.
@@ -40,7 +41,7 @@
  *  @param appClient    the app client used for sending the data
  *  @param endpointPath the endpoint url of the telemetry server
  */
-- (void)configureWithAppClient:(MSAIAppClient *)appClient endpointPath:(NSString *)endpointPath;
+- (void)configureWithAppClient:(MSAIAppClient *)appClient;
 
 ///-----------------------------------------------------------------------------
 /// @name Sending data
@@ -62,11 +63,10 @@
  *  Returnes a request for sending data to the telemetry sender.
  *
  *  @param data the data which should be sent
- *  @param urlString url depending on payload
  *
  *  @return a request which contains the given data
  */
-- (NSURLRequest *)requestForData:(NSData *)data urlString:(NSString *)urlString;
+- (NSURLRequest *)requestForData:(NSData *)data;
 
 /**
  *  Returns if data should be deleted based on a given status code.
@@ -78,3 +78,4 @@
 - (BOOL)shouldDeleteDataWithStatusCode:(NSInteger)statusCode;
 
 @end
+NS_ASSUME_NONNULL_END

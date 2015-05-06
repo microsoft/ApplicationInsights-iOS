@@ -1,9 +1,9 @@
 #import <Foundation/Foundation.h>
 
 @class MSAICrashDetails;
-@class MSAICrashMetaData;
 @class MSAIContext;
 
+NS_ASSUME_NONNULL_BEGIN
 /**
 * Prototype of a callback function used to execute additional user code. Called upon completion of crash
 * handling, after the crash report has been written to disk.
@@ -37,7 +37,7 @@ typedef struct MSAICrashManagerCallbacks {
 /**
 The crash reporting module.
 
-This is the AppInsights module for handling crash reports, including when distributed via the App Store.
+This is the Application Insights module for handling crash reports, including when distributed via the App Store.
 As a foundation it is using the open source, reliable and async-safe crash reporting framework
 [PLCrashReporter](https://code.google.com/p/plcrashreporter/).
 
@@ -93,13 +93,13 @@ safe crash reporting: [Reliable Crash Reporting](http://goo.gl/WvTBR)
 * Indicates if the CrashManager has been disabled.
 * The CrashManager is enabled by default.
 * Set this after initialization (you can check the `isSetupCorrectly´property to find out) to disable the CrashManager.
-* Usually, this isn't done directly on MSAICrashManger but the interface provided by `MSAIAppInsights´
+* Usually, this isn't done directly on MSAICrashManger but the interface provided by `MSAIApplicationInsights´
 * @default: NO
-* @see MSAIAppInsights
+* @see MSAIApplicationInsights
 */
 @property (nonatomic, assign, setter=setCrashManagerDisabled:) BOOL isCrashManagerDisabled;
 
-//TODO move the properties to the private header to make sure developers don't use the MSAICrashmanager but MSAIAppInsights
+//TODO move the properties to the private header to make sure developers don't use the MSAICrashmanager but MSAIApplicationInsights
 
 /**
 *  Trap fatal signals via a Mach exception server.
@@ -214,7 +214,7 @@ Use this on startup, to check if the app starts the first time after it crashed
 previously. You can use this also to disable specific events, like asking
 the user to rate your app.
 
-@warning This property only has a correct value, once `[MSAIAppInsights start]` was
+@warning This property only has a correct value, once `[MSAIApplicationInsights start]` was
 invoked!
 
 @see lastSessionCrashDetails
@@ -260,7 +260,7 @@ can also be killed without the app ever receiving a low memory warning.
 Also the app could have received a low memory warning, but the reason for being killed was
 actually different.
 
-@warning This property only has a correct value, once `[MSAIAppInsights start]` was
+@warning This property only has a correct value, once `[MSAIApplicationInsights start]` was
 invoked!
 
 @see appNotTerminatingCleanlyDetectionEnabled
@@ -300,3 +300,4 @@ invoked!
 - (void)generateTestCrash;
 
 @end
+NS_ASSUME_NONNULL_END

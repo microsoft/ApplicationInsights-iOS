@@ -1,0 +1,17 @@
+language: objective-c
+before_install:
+- gem install xcpretty -N cocoapods
+notifications:
+  slack:
+    secure: dCzA1+dtjKkHk2PK6RWBSE0Obgf0CvIejhXXH4Aba29zfVQg5Bv0yWJ34YHnPMFPA7+eyFrW2TqGqI7gA7L7Ju0RWHwu9Z0XayCcMpOCZVKTOSf/7SrAvtODKNzAT/S55HZOaj8yxK6l5a0cMGXfGM7j+NLdkjyba7ypQKsn0ug=
+script:
+- set -o pipefail
+- cd Support
+- xcodebuild -project ApplicationInsights.xcodeproj -scheme "ApplicationInsights" -sdk iphonesimulator
+  -configuration Debug -destination "platform=iOS Simulator,name=iPhone 6" test |
+  xcpretty -c
+- xcodebuild -project ApplicationInsights.xcodeproj -scheme "ApplicationInsights Framework" -sdk iphonesimulator
+  -configuration Release | xcpretty -c
+- cd ..
+- cp -R Products/ApplicationInsights ApplicationInsights
+- pod lib lint 

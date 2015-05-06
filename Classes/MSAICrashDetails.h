@@ -1,5 +1,7 @@
 #import <Foundation/Foundation.h>
+#import "ApplicationInsights.h"
 
+NS_ASSUME_NONNULL_BEGIN
 /**
  *  Provides details about the crash that occured in the previous app session
  */
@@ -69,7 +71,7 @@
  
  See `[MSAICrashManager appNotTerminatingCleanlyDetectionEnabled]` for more details about which kind of kills can be detected.
  
- @warning This property only has a correct value, once `[MSAIAppInsights start]` was
+ @warning This property only has a correct value, once `[MSAIApplicationInsights start]` was
  invoked! In addition, it is automatically disabled while a debugger session is active!
  
  @see `[MSAICrashManager appNotTerminatingCleanlyDetectionEnabled]`
@@ -80,3 +82,4 @@
 - (BOOL)isAppKill;
 
 @end
+NS_ASSUME_NONNULL_END
