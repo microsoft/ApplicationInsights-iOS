@@ -33,6 +33,7 @@ static char *const MSAITelemetryEventQueue = "com.microsoft.ApplicationInsights.
 
 @implementation MSAITelemetryManager{
   id _appDidEnterBackgroundObserver;
+  id _appWillResignActiveObserver;
   id _sessionStartedObserver;
   id _sessionEndedObserver;
 }
@@ -69,6 +70,15 @@ static char *const MSAITelemetryEventQueue = "com.microsoft.ApplicationInsights.
   
   if (!_appDidEnterBackgroundObserver) {
     _appDidEnterBackgroundObserver = [center addObserverForName:UIApplicationDidEnterBackgroundNotification
+                                                         object:nil
+                                                          queue:NSOperationQueue.mainQueue
+                                                     usingBlock:^(NSNotification *notification) {
+                                                       [[MSAIChannel sharedChannel] persistDataItemQueue];
+                                                     }];
+  }
+  
+  if (!_appWillResignActiveObserver) {
+    _appWillResignActiveObserver = [center addObserverForName:UIApplicationWillResignActiveNotification
                                                          object:nil
                                                           queue:NSOperationQueue.mainQueue
                                                      usingBlock:^(NSNotification *notification) {
