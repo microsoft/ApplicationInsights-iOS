@@ -32,6 +32,8 @@
 static char *const MSAITelemetryEventQueue = "com.microsoft.ApplicationInsights.telemetryEventQueue";
 
 @implementation MSAITelemetryManager{
+  id _appDidEnterBackgroundObserver;
+  id _appWillResignActiveObserver;
   id _sessionStartedObserver;
   id _sessionEndedObserver;
 }
@@ -66,24 +68,42 @@ static char *const MSAITelemetryEventQueue = "com.microsoft.ApplicationInsights.
   NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
   __weak typeof(self) weakSelf = self;
   
+  if (!_appDidEnterBackgroundObserver) {
+    _appDidEnterBackgroundObserver = [center addObserverForName:UIApplicationDidEnterBackgroundNotification
+                                                         object:nil
+                                                          queue:NSOperationQueue.mainQueue
+                                                     usingBlock:^(NSNotification *notification) {
+                                                       [[MSAIChannel sharedChannel] persistDataItemQueue];
+                                                     }];
+  }
+  
+  if (!_appWillResignActiveObserver) {
+    _appWillResignActiveObserver = [center addObserverForName:UIApplicationWillResignActiveNotification
+                                                         object:nil
+                                                          queue:NSOperationQueue.mainQueue
+                                                     usingBlock:^(NSNotification *notification) {
+                                                       [[MSAIChannel sharedChannel] persistDataItemQueue];
+                                                     }];
+  }
+  
   if(!_sessionStartedObserver){
-    [center addObserverForName:MSAISessionStartedNotification
-                        object:nil
-                         queue:NSOperationQueue.mainQueue
-                    usingBlock:^(NSNotification *notification) {
-                      typeof(self) strongSelf = weakSelf;
-                      [strongSelf trackSessionStart];
-                    }];
+    _sessionStartedObserver = [center addObserverForName:MSAISessionStartedNotification
+                                                  object:nil
+                                                   queue:NSOperationQueue.mainQueue
+                                              usingBlock:^(NSNotification *notification) {
+                                                typeof(self) strongSelf = weakSelf;
+                                                [strongSelf trackSessionStart];
+                                              }];
   }
   if(!_sessionEndedObserver){
-    [center addObserverForName:MSAISessionEndedNotification
-                        object:nil
-                         queue:NSOperationQueue.mainQueue
-                    usingBlock:^(NSNotification *notification) {
-                      typeof(self) strongSelf = weakSelf;
-
-                      [strongSelf trackSessionEnd];
-                    }];
+    _sessionEndedObserver = [center addObserverForName:MSAISessionEndedNotification
+                                                object:nil
+                                                 queue:NSOperationQueue.mainQueue
+                                            usingBlock:^(NSNotification *notification) {
+                                              typeof(self) strongSelf = weakSelf;
+                                              
+                                              [strongSelf trackSessionEnd];
+                                            }];
   }
 }
 
@@ -192,7 +212,7 @@ static char *const MSAITelemetryEventQueue = "com.microsoft.ApplicationInsights.
 
 - (void)trackException:(NSException *)exception{
   pthread_t thread = pthread_self();
-
+  
   dispatch_async(_telemetryEventQueue, ^{
     PLCrashReporterSignalHandlerType signalHandlerType = PLCrashReporterSignalHandlerTypeBSD;
     PLCrashReporterSymbolicationStrategy symbolicationStrategy = PLCrashReporterSymbolicationStrategyAll;
@@ -256,7 +276,7 @@ static char *const MSAITelemetryEventQueue = "com.microsoft.ApplicationInsights.
 - (void)trackSessionStart {
   MSAISessionStateData *sessionState = [MSAISessionStateData new];
   sessionState.state = MSAISessionState_start;
-
+  
   if(![[MSAIChannel sharedChannel] isQueueBusy]){
     MSAIEnvelope *envelope = [[MSAIEnvelopeManager sharedManager] envelopeForTelemetryData:sessionState];
     envelope.tags[@"ai.session.isNew"] = @"true";

@@ -97,7 +97,7 @@ static NSUInteger const defaultRequestLimit = 10;
     self.runningRequestsCount -= 1;
     NSInteger statusCode = [operation.response statusCode];
 
-    if([self shouldDeleteDataWithStatusCode:statusCode]) {
+    if(responseData && [self shouldDeleteDataWithStatusCode:statusCode]) {
       //we delete data that was either sent successfully or if we have a non-recoverable error
       MSAILog(@"Sent data with status code: %ld", (long) statusCode);
       if (responseData) {
