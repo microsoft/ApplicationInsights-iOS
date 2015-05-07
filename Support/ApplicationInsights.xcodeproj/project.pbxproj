@@ -1230,6 +1230,10 @@
 					"-ObjC",
 				);
 				PRODUCT_NAME = ApplicationInsightsTests;
+				WARNING_CFLAGS = (
+					"-Wall",
+					"-Wextra",
+				);
 			};
 			name = Debug;
 		};
@@ -1273,6 +1277,10 @@
 				);
 				PRODUCT_NAME = ApplicationInsightsTests;
 				VALIDATE_PRODUCT = YES;
+				WARNING_CFLAGS = (
+					"-Wall",
+					"-Wextra",
+				);
 			};
 			name = Release;
 		};
@@ -1403,6 +1411,10 @@
 					"-ObjC",
 				);
 				PRODUCT_NAME = ApplicationInsightsTests;
+				WARNING_CFLAGS = (
+					"-Wall",
+					"-Wextra",
+				);
 			};
 			name = CodeCoverage;
 		};
