@@ -47,8 +47,8 @@
 
 - (void)testInstanceInitialised {
   XCTAssertTrue([self.sut.dataItemQueue isEqualToArray:[NSMutableArray array]]);
-  XCTAssertEqual(self.sut.senderBatchSize, debugMaxBatchCount);
-  XCTAssertEqual(self.sut.senderInterval, debugBatchInterval);
+  XCTAssertEqual((const int)self.sut.senderBatchSize, debugMaxBatchCount);
+  XCTAssertEqual((const int)self.sut.senderInterval, debugBatchInterval);
 }
 
 - (void)testSingletonReturnsSameInstanceTwice {

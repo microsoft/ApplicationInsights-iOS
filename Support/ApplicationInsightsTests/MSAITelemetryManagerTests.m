@@ -11,7 +11,7 @@
 #import "MSAITelemetryManager.h"
 #import "MSAITelemetryManagerPrivate.h"
 #import "MSAITestsDependencyInjection.h"
-#import "MSAISessionHelperPrivate.h"
+#import "MSAIContextHelperPrivate.h"
 
 @interface MSAITelemetryManagerTests : MSAITestsDependencyInjection
 

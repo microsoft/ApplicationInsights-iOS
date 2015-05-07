@@ -1,6 +1,6 @@
 ## Introduction
 
-AppInsights-iOS implements support for using HockeyApp in your iOS applications.
+This project provides an iOS SDK for Application Insights. [Application Insights](http://azure.microsoft.com/en-us/services/application-insights/) is a service that allows developers to keep their applications available, performing, and succeeding. This module allows you to send telemetry of various kinds (events, traces, exceptions, etc.) to the Application Insights service where your data can be visualized in the Azure Portal.
 
 The following features are currently supported:
 
@@ -10,25 +10,14 @@ The following features are currently supported:
 
 The main SDK class is `MSAIAppInsights`. It initializes all modules and provides access to them, so they can be further adjusted if required. Additionally all modules provide their own protocols.
 
-## Prerequisites
+## Howto
 
-1. Before you integrate Application Insights into your own app, you should add the app in the Azure Portal if you haven't already. Read [this how-to](http://azure.microsoft.com/en-us/documentation/articles/app-insights-get-started/) about generel information on how to get started with Application Insights.
-2. We also assume that you already have a project in Xcode and that this project is opened in Xcode 6.
-3. The SDK supports iOS 6.0 or newer.
+Please have a look at our [Readme](Readme)
 
-## Release Notes
+## Repository
 
-- [Changelog](Changelog)
+We're on [Github](https://github.com/Microsoft/ApplicationInsights-iOS)
 
-## Guides
+## Contact
 
-- [Installation & Setup](Guide-Installation-Setup)
-
-## HowTos
-
-- [How to do app versioning](HowTo-App-Versioning)
-- [How to upload symbols for crash reporting](HowTo-Upload-Symbols)
-
-## Troubleshooting
-
-- [Crash Reporting is not working](Troubleshooting-Crash-Reporting-Not-Working)
+If you have further questions or are running into trouble that cannot be resolved by any of the steps here, feel free to contact us at [AppInsights-iOS@microsoft.com](mailto:AppInsights-ios@microsoft.com)

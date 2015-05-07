@@ -23,7 +23,7 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
   MSAIPersistenceTypeHighPriority = 0,
   MSAIPersistenceTypeRegular = 1,
   MSAIPersistenceTypeCrashTemplate = 2,
-  MSAIPersistenceTypeSessionIds = 3
+  MSAIPersistenceTypeMetaData = 3
 };
 
 ///-----------------------------------------------------------------------------
@@ -83,9 +83,9 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
 /**
  *  Saves the given dictionary to the session Ids file.
  *
- *  @param sessionIds a dictionary consisting of unix timestamps and session ids
+ *  @param metaData a dictionary consisting of unix timestamps and session ids
  */
-- (void)persistSessionIds:(NSDictionary *)sessionIds;
+- (void)persistMetaData:(NSDictionary *)metaData;
 
 /**
  *  Deletes the file for the given path.
@@ -157,7 +157,7 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
  *
  *  @return return a dictionary containing all session Ids
  */
-- (NSDictionary *)sessionIds;
+- (NSDictionary *)metaData;
 
 /**
  *  Return data for a given array based on its persistence type.

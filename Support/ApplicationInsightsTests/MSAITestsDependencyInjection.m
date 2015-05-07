@@ -1,19 +1,12 @@
 #import "MSAITestsDependencyInjection.h"
 
-static NSNotificationCenter *mockNotificationCenter;
 static NSUserDefaults *mockUserDefaults;
-
-@implementation NSNotificationCenter (UnitTests)
-
-+(id)defaultCenter {
-  return mockNotificationCenter;
-}
-
-@end
+static id testNotificationCenter;
+static id mockCenter;
 
 @implementation NSUserDefaults (UnitTests)
 
-+(id)standardUserDefaults {
++ (instancetype)standardUserDefaults {
   if (!mockUserDefaults) {
     mockUserDefaults = OCMPartialMock([NSUserDefaults new]);
   }
@@ -25,23 +18,24 @@ static NSUserDefaults *mockUserDefaults;
 @implementation MSAITestsDependencyInjection
 
 - (void)setUp {
-  mockNotificationCenter = mock(NSNotificationCenter.class);
+  [self setMockNotificationCenter:OCMPartialMock([NSNotificationCenter new])];
 }
 
 - (void)tearDown {
   [super tearDown];
-  mockNotificationCenter = nil;
   mockUserDefaults = nil;
 }
 
 # pragma mark - Helper
 
-- (void)setMockNotificationCenter:(NSNotificationCenter *)notificationCenter {
-  mockNotificationCenter = notificationCenter;
+- (void)setMockNotificationCenter:(id)mockNotificationCenter {
+  mockCenter = OCMClassMock([NSNotificationCenter class]);
+  OCMStub([mockCenter defaultCenter]).andReturn(mockNotificationCenter);
+  testNotificationCenter = mockNotificationCenter;
 }
 
-- (NSNotificationCenter *)mockNotificationCenter {
-  return mockNotificationCenter;
+- (id)mockNotificationCenter {
+  return testNotificationCenter;
 }
 
 - (void)setMockUserDefaults:(NSUserDefaults *)userDefaults {

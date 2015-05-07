@@ -11,8 +11,8 @@
 #import "MSAIChannel.h"
 #import "MSAIChannelPrivate.h"
 #import "MSAIPersistencePrivate.h"
-#import "MSAISessionHelper.h"
-#import "MSAISessionHelperPrivate.h"
+#import "MSAIContextHelper.h"
+#import "MSAIContextHelperPrivate.h"
 #import "MSAIEnvelope.h"
 #import "MSAIEnvelopeManager.h"
 #import "MSAIEnvelopeManagerPrivate.h"
@@ -487,7 +487,7 @@ void msai_save_events_callback(siginfo_t *info, ucontext_t *uap, void *context) 
   // mark the end of the routine
   [[MSAIPersistence sharedInstance] deleteCrashReporterLockFile];//TODO only do this when persisting was successful?
   [self.plCrashReporter purgePendingCrashReport]; //TODO only do this when persisting was successful?
-  [MSAISessionHelper cleanUpSessions];
+  [[MSAIContextHelper sharedInstance] cleanUpMetaData];
 }
 
 - (void)checkForOtherExceptionHandlersAfterSetup {
