@@ -178,11 +178,15 @@ typedef void (^MSAIPersistenceTestBlock)(BOOL);
   __block BOOL success = NO;
   XCTestExpectation *documentOpenExpectation = [self expectationWithDescription:@"File saved to disk"];
   [_sut persistBundle:@[dict] ofType:type enableNotifications:NO withCompletionBlock:^(BOOL success) {
-    [documentOpenExpectation fulfill];
+    if (success) {
+      [documentOpenExpectation fulfill];
+    }
   }];
   
   [self waitForExpectationsWithTimeout:1 handler:^(NSError *error) {
-    success = YES;
+    if (!error) {
+      success = YES;
+    }
   }];
   return success;
 }
