@@ -89,7 +89,7 @@ void msai_resetSafeJsonString(char *__nonnull*__nonnull string);
  *
  * Default: 15
  */
-@property (nonatomic, assign) NSInteger senderInterval;
+@property (nonatomic, assign) NSUInteger senderInterval;
 
 /*
  * Threshold for sending data to the server. Default batch size for debugging is 150, for release
