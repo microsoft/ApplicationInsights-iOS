@@ -3,6 +3,9 @@
 #import "ApplicationInsights.h"
 
 NS_ASSUME_NONNULL_BEGIN
+/**
+ This is the main class to setup, configure and start the Application Insights SDK.
+ */
 @interface MSAIApplicationInsights : NSObject
 
 ///-----------------------------------------------------------------------------
@@ -205,7 +208,7 @@ NS_ASSUME_NONNULL_BEGIN
  *  @param sessionId The session ID which should be attached to all future telemetry and crash events.
  *
  *  @warning Using this method automatically disables automatic session management!
- *  @see autosessionManagementDisabled
+ *  @see autoSessionManagementDisabled
  */
 + (void)renewSessionWithId:(NSString *)sessionId;
 
@@ -215,7 +218,7 @@ NS_ASSUME_NONNULL_BEGIN
  *  @param sessionId The session ID which should be attached to all future telemetry and crash events.
  *
  *  @warning Using this method automatically disables automatic session management!
- *  @see autosessionManagementDisabled
+ *  @see autoSessionManagementDisabled
  */
 - (void)renewSessionWithId:(NSString *)sessionId;
 
