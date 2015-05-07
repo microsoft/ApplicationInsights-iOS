@@ -125,7 +125,7 @@ typedef void (^MSAIPersistenceTestBlock)(BOOL);
   
   // Request path for sending
   NSString *path = [_sut requestNextPath];
-  XCTAssertLessThanOrEqual(_sut.requestedBundlePaths.count, 1);
+  XCTAssertLessThanOrEqual(_sut.requestedBundlePaths.count, 1U);
   
   // Release path again (e.g. no connection)
   [_sut giveBackRequestedPath:path];
@@ -164,11 +164,11 @@ typedef void (^MSAIPersistenceTestBlock)(BOOL);
   
   // Create first crash template
   [self createFileForDict:@{} withType:MSAIPersistenceTypeCrashTemplate];
-  XCTAssertEqual([self fileCountForType:MSAIPersistenceTypeCrashTemplate], 1);
+  XCTAssertEqual([self fileCountForType:MSAIPersistenceTypeCrashTemplate], 1U);
   
   // Create a new crash template, which should overwrite the first one
   [self createFileForDict:@{} withType:MSAIPersistenceTypeCrashTemplate];
-  XCTAssertEqual([self fileCountForType:MSAIPersistenceTypeCrashTemplate], 1);
+  XCTAssertEqual([self fileCountForType:MSAIPersistenceTypeCrashTemplate], 1U);
 }
 
 #pragma mark - Helper
@@ -178,11 +178,15 @@ typedef void (^MSAIPersistenceTestBlock)(BOOL);
   __block BOOL success = NO;
   XCTestExpectation *documentOpenExpectation = [self expectationWithDescription:@"File saved to disk"];
   [_sut persistBundle:@[dict] ofType:type enableNotifications:NO withCompletionBlock:^(BOOL success) {
-    [documentOpenExpectation fulfill];
+    if (success) {
+      [documentOpenExpectation fulfill];
+    }
   }];
   
   [self waitForExpectationsWithTimeout:1 handler:^(NSError *error) {
-    success = YES;
+    if (!error) {
+      success = YES;
+    }
   }];
   return success;
 }

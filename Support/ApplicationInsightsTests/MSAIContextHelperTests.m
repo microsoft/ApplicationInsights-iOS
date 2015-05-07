@@ -52,7 +52,7 @@
 - (void)testNewUser {
   MSAIUser *newUser = [self.sut newUser];
   XCTAssertNotNil(newUser);
-  XCTAssertEqual(newUser.userId.length, 36);
+  XCTAssertEqual(newUser.userId.length, 36U);
 }
 
 - (void)testNewUserWithId {
@@ -123,8 +123,8 @@
   
   [self.sut removeUserId:@"b"];
   
-  XCTAssertEqual(self.sut.metaData.count, 2);
-  XCTAssertEqual([self.sut.metaData[@"users"] count], 2);
+  XCTAssertEqual(self.sut.metaData.count, 2U);
+  XCTAssertEqual([self.sut.metaData[@"users"] count], 2U);
   XCTAssertEqualObjects(self.sut.metaData[@"users"][@"0"], userA);
   XCTAssertEqualObjects(self.sut.metaData[@"users"][@"2"], userC);
   XCTAssertNil(self.sut.metaData[@"users"][@"1"]);
@@ -149,7 +149,7 @@
 
 - (void)testRenewSessionWithId {
   self.sut = OCMPartialMock(self.sut);
-  XCTAssertEqual([self.sut.metaData[@"sessions"] count], 0);
+  XCTAssertEqual([self.sut.metaData[@"sessions"] count], 0U);
   
   NSString *testId = @"1337";
   [self.sut renewSessionWithId:testId];
@@ -170,7 +170,7 @@
   
   [self.sut addSession:session withDate:date];
   
-  XCTAssertEqual(((NSMutableDictionary *)self.sut.metaData[@"sessions"]).count, 1);
+  XCTAssertEqual(((NSMutableDictionary *)self.sut.metaData[@"sessions"]).count, 1U);
   XCTAssertEqualObjects(self.sut.metaData[@"sessions"][timestamp], session);
 }
 
@@ -213,8 +213,8 @@
   
   [self.sut removeSession:[self sessionWithId:@"b"]];
   
-  XCTAssertEqual(self.sut.metaData.count, 2);
-  XCTAssertEqual([self.sut.metaData[@"sessions"] count], 2);
+  XCTAssertEqual(self.sut.metaData.count, 2U);
+  XCTAssertEqual([self.sut.metaData[@"sessions"] count], 2U);
   XCTAssertNotNil(self.sut.metaData[@"sessions"][@"0"]);
   XCTAssertNotNil(self.sut.metaData[@"sessions"][@"2"]);
   XCTAssertNil(self.sut.metaData[@"sessions"][@"1"]);
@@ -224,9 +224,9 @@
 #pragma mark -
 
 - (void)testCleanUpMetaData {
-  XCTAssertEqual(self.sut.metaData.count, 2);
-  XCTAssertEqual([self.sut.metaData[@"sessions"] count], 0);
-  XCTAssertEqual([self.sut.metaData[@"users"] count ], 0);
+  XCTAssertEqual(self.sut.metaData.count, 2U);
+  XCTAssertEqual([self.sut.metaData[@"sessions"] count], 0U);
+  XCTAssertEqual([self.sut.metaData[@"users"] count ], 0U);
   
   
   MSAISession *sessionA = [self sessionWithId:@"a"];
@@ -236,20 +236,20 @@
   [self.sut addSession:sessionA withDate:[NSDate dateWithTimeIntervalSince1970:3]];
   [self.sut addSession:sessionB withDate:[NSDate dateWithTimeIntervalSince1970:33]];
   [self.sut addSession:sessionC withDate:[NSDate dateWithTimeIntervalSince1970:333]];
-  XCTAssertEqual([self.sut.metaData[@"sessions"] count], 3);
+  XCTAssertEqual([self.sut.metaData[@"sessions"] count], 3U);
   
   MSAIUser *user1 = [self.sut newUserWithId:@"1"];
   MSAIUser *user2 = [self.sut newUserWithId:@"2"];
   
   [self.sut addUser:user1 forDate:[NSDate dateWithTimeIntervalSince1970:777]];
   [self.sut addUser:user2 forDate:[NSDate dateWithTimeIntervalSince1970:7777]];
-  XCTAssertEqual([self.sut.metaData[@"users"] count], 2);
+  XCTAssertEqual([self.sut.metaData[@"users"] count], 2U);
   
   [self.sut cleanUpMetaData];
   
-  XCTAssertEqual(self.sut.metaData.count, 2);
-  XCTAssertEqual([self.sut.metaData[@"sessions"] count], 1);
-  XCTAssertEqual([self.sut.metaData[@"users"] count ], 1);
+  XCTAssertEqual(self.sut.metaData.count, 2U);
+  XCTAssertEqual([self.sut.metaData[@"sessions"] count], 1U);
+  XCTAssertEqual([self.sut.metaData[@"users"] count ], 1U);
   
   XCTAssertNil(self.sut.metaData[@"sessions"][@"3"]);
   XCTAssertNil(self.sut.metaData[@"sessions"][@"33"]);
