@@ -6,7 +6,7 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @interface MSAIContextHelper : NSObject
 
-@property NSUInteger sessionBackgroundExpirationTime;
+@property NSUInteger appBackgroundTimeBeforeSessionExpires;
 
 @end
 NS_ASSUME_NONNULL_END

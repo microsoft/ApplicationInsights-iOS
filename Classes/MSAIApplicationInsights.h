@@ -187,17 +187,17 @@ NS_ASSUME_NONNULL_BEGIN
  *  Set the time which the app has to have been in the background for before a new session is started.
  *  This time is only used when automatic session management is not disabled.
  *
- *  @param sessionBackgroundExpirationTime The time in seconds the app has to be in the background before a new session is started.
+ *  @param appBackgroundTimeBeforeSessionExpires The time in seconds the app has to be in the background before a new session is started.
  */
-+ (void)setSessionBackgroundExpirationTime:(NSUInteger)sessionBackgroundExpirationTime;
++ (void)setAppBackgroundTimeBeforeSessionExpires:(NSUInteger)appBackgroundTimeBeforeSessionExpires;
 
 /**
  *  Set the time which the app has to have been in the background for before a new session is started.
  *  This time is only used when automatic session management is not disabled.
  *
- *  @param sessionBackgroundExpirationTime The time in seconds the app has to be in the background before a new session is started.
+ *  @param appBackgroundTimeBeforeSessionExpires The time in seconds the app has to be in the background before a new session is started.
  */
-- (void)setSessionBackgroundExpirationTime:(NSUInteger)sessionBackgroundExpirationTime;
+- (void)setAppBackgroundTimeBeforeSessionExpires:(NSUInteger)appBackgroundTimeBeforeSessionExpires;
 
 /**
  *  This starts a new session with the given session ID. 
