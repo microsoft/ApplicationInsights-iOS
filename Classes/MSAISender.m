@@ -11,10 +11,6 @@
 static char const *kPersistenceQueueString = "com.microsoft.ApplicationInsights.senderQueue";
 static NSUInteger const defaultRequestLimit = 10;
 
-static NSInteger const statusCodeOK = 200;
-static NSInteger const statusCodeAccepted = 202;
-static NSInteger const statusCodeBadRequest = 400;
-
 @interface MSAISender ()
 
 @end
@@ -109,11 +105,12 @@ static NSInteger const statusCodeBadRequest = 400;
     self.runningRequestsCount -= 1;
     NSInteger statusCode = [operation.response statusCode];
 
-    if ([self shouldDeleteDataWithStatusCode:statusCode]) {
-      // We should delete data if it has been succesfully sent (200/202) or if its values have not been accepted (400)
+    if(responseData && [self shouldDeleteDataWithStatusCode:statusCode]) {
+      //we delete data that was either sent successfully or if we have a non-recoverable error
       MSAILog(@"Sent data with status code: %ld", (long) statusCode);
-      MSAILog(@"Response data:\n%@", [NSJSONSerialization JSONObjectWithData:responseData options:0 error:nil]);
-
+      if (responseData) {
+        MSAILog(@"Response data:\n%@", [NSJSONSerialization JSONObjectWithData:responseData options:0 error:nil]);
+      }
       [[MSAIPersistence sharedInstance] deleteFileAtPath:path];
       [strongSelf sendSavedData];
     } else {
@@ -145,9 +142,12 @@ static NSInteger const statusCodeBadRequest = 400;
   return request;
 }
 
+//some status codes represent recoverable error codes
+//we try sending again some point later
 - (BOOL)shouldDeleteDataWithStatusCode:(NSInteger)statusCode {
-  
-  return (statusCode >= statusCodeOK && statusCode <= statusCodeAccepted) || statusCode == statusCodeBadRequest;
+  NSArray *recoverableStatusCodes = @[@429, @408, @500, @503, @511];
+
+  return ![recoverableStatusCodes containsObject:@(statusCode)];
 }
 
 #pragma mark - Getter/Setter

@@ -72,10 +72,10 @@
 - (void)testDeleteDataWithStatusCodeWorks{
   
   for(NSInteger statusCode = 100; statusCode <= 510; statusCode++){
-    if((statusCode >= 200 && statusCode <= 202) || statusCode == 400){
-      assertThatBool([_sut shouldDeleteDataWithStatusCode:statusCode], isTrue());
-    }else{
+    if((statusCode == 429) || (statusCode == 408) || (statusCode == 500) || (statusCode == 503) || (statusCode == 511)) {
       assertThatBool([_sut shouldDeleteDataWithStatusCode:statusCode], isFalse());
+    }else{
+      assertThatBool([_sut shouldDeleteDataWithStatusCode:statusCode], isTrue());
     }
   }
 }

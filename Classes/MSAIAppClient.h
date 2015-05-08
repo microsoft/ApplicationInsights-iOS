@@ -94,7 +94,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  *  @returns number of operations cancelled
  *
- *  @see cancelOperationsWithPath:method
+ *  @see cancelOperationsWithPath:method:
  */
 - (NSUInteger)cancelAllOperations;
  

@@ -3,8 +3,8 @@
 #import "MSAITelemetryContextPrivate.h"
 #import "MSAITelemetryManagerPrivate.h"
 #import "MSAIHelper.h"
-#import "MSAISessionHelper.h"
-#import "MSAISessionHelperPrivate.h"
+#import "MSAIContextHelper.h"
+#import "MSAIContextHelperPrivate.h"
 #import "MSAIReachability.h"
 #import "MSAIReachabilityPrivate.h"
 
@@ -38,12 +38,16 @@ NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
     MSAIApplication *applicationContext = [MSAIApplication new];
     applicationContext.version = appContext.appVersion;
     
-    MSAISession *sessionContext = [MSAISessionHelper startNewSession];
+    MSAISession *sessionContext = [[MSAIContextHelper sharedInstance] newSession];
+    [[MSAIContextHelper sharedInstance] addSession:sessionContext withDate:[NSDate date]];
     
     MSAIOperation *operationContext = [MSAIOperation new];
     
-    MSAIUser *userContext = [MSAIUser new];
-    userContext.userId = msai_appAnonID();
+    MSAIUser *userContext = [[MSAIContextHelper sharedInstance] userForDate:[NSDate date]];
+    if (!userContext) {
+      userContext = [[MSAIContextHelper sharedInstance] newUser];
+      [[MSAIContextHelper sharedInstance] addUser:userContext forDate:[NSDate date]];
+    }
     
     MSAILocation *locationContext = [MSAILocation new];
     
@@ -57,7 +61,8 @@ NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
     _session = sessionContext;
     _tags = [self tags];
     
-
+    
+    [self configureUserTracking];
     [self configureNetworkStatusTracking];
     [self configureSessionTracking];
   }
@@ -80,13 +85,13 @@ NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
 -(void)updateNetworkType:(NSNotification *)notification{
   
   @synchronized(self){
-    _device.network = [[notification userInfo]objectForKey:kMSAIReachabilityUserInfoName];
+    _device.network = [notification userInfo][kMSAIReachabilityUserInfoName];
   }
 }
 
 #pragma mark - Session
 
-- (void)configureSessionTracking{
+- (void)configureSessionTracking {
   NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
   [center addObserverForName:MSAISessionStartedNotification
                       object:nil
@@ -98,6 +103,25 @@ NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
                   }];
 }
 
+#pragma mark - User
+
+- (void)configureUserTracking {
+  NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+  [center addObserverForName:MSAIUserIdChangedNotification
+                      object:nil
+                       queue:nil
+                  usingBlock:^(NSNotification *note) {
+                    NSDictionary *userInfo = note.userInfo;
+                    NSString *userId = userInfo[kMSAIUserInfoUserId];
+                    if (_user) {
+                      _user.userId = userId;
+                    } else {
+                      _user = [[MSAIContextHelper sharedInstance] newUserWithId:userId];
+                    }
+                  }];
+  
+}
+
 #pragma mark - Custom getter
 #pragma mark - Helper
 
@@ -105,6 +129,7 @@ NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
   MSAIOrderedDictionary *contextDictionary = [MSAIOrderedDictionary new];
   [contextDictionary addEntriesFromDictionary:self.tags];
   [contextDictionary addEntriesFromDictionary:[self.session serializeToDictionary]];
+  [contextDictionary addEntriesFromDictionary:[self.user serializeToDictionary]];
   [contextDictionary addEntriesFromDictionary:[self.device serializeToDictionary]];
   
   return contextDictionary;
@@ -115,7 +140,6 @@ NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
     _tags = [self.application serializeToDictionary];
     [_tags addEntriesFromDictionary:[self.application serializeToDictionary]];
     [_tags addEntriesFromDictionary:[self.location serializeToDictionary]];
-    [_tags addEntriesFromDictionary:[self.user serializeToDictionary]];
     [_tags addEntriesFromDictionary:[self.internal serializeToDictionary]];
     [_tags addEntriesFromDictionary:[self.operation serializeToDictionary]];
   }
