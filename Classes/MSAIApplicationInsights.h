@@ -250,30 +250,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign, getter=isDebugLogEnabled) BOOL debugLogEnabled;
 
 ///-----------------------------------------------------------------------------
-/// @name Testing integration
-///-----------------------------------------------------------------------------
-
-/**
- * Pings the server with the Application Insights app identifiers used for initialization.
- * Call this method once for debugging purposes to test if your SDK setup code
- * reaches the server successfully.
- * Once invoked, check the apps page on Application Insights for a verification.
- * If you setup the SDK with a beta and live identifier, a call to both app IDs will be done.
- * This call is ignored if the app is running in the App Store!.
- */
-+ (void)testIdentifier;
-
-/**
- * Pings the server with the Application Insights app identifiers used for initialization.
- * Call this method once for debugging purposes to test if your SDK setup code
- * reaches the server successfully.
- * Once invoked, check the apps page on Application Insights for a verification.
- * If you setup the SDK with a beta and live identifier, a call to both app IDs will be done.
- * This call is ignored if the app is running in the App Store!.
- */
-- (void)testIdentifier;
-
-///-----------------------------------------------------------------------------
 /// @name Getting SDK meta data
 ///-----------------------------------------------------------------------------
 

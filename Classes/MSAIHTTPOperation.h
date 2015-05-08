@@ -20,9 +20,10 @@ typedef void (^MSAINetworkCompletionBlock)(MSAIHTTPOperation * operation, NSData
 @property (nonatomic, readonly) NSURLRequest *URLRequest;
 
 /**
-* @param completionBlock block of type MSAINetworkCompletionBlock that will be called in case the MSAIHTTPOperation is not cancelled
+ * @param completionBlock block of type MSAINetworkCompletionBlock that will be called in case the MSAIHTTPOperation is not cancelled
+ * @param queue Dispatch Queue on which the completionBlock will be executed
 */
-- (void)setCompletion:(MSAINetworkCompletionBlock)completionBlock;
+- (void) setCompletion:(MSAINetworkCompletionBlock) completionBlock onQueue:(dispatch_queue_t)queue;
 
 @property (nonatomic, readonly) NSHTTPURLResponse *response;
 @property (nonatomic, readonly) NSData *data;

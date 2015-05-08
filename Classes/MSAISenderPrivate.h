@@ -14,6 +14,11 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) MSAIAppClient *appClient;
 
 /**
+ *  A queue which is used to handle MSAIHTTPOperation completion blocks.
+ */
+@property (nonatomic, strong) dispatch_queue_t senderQueue;
+
+/**
  *  The endpoint url of the telemetry server.
  */
 @property (nonatomic, strong) NSString *endpointPath;

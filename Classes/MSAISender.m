@@ -8,6 +8,7 @@
 #import "ApplicationInsightsPrivate.h"
 #import "MSAIApplicationInsights.h"
 
+static char const *kPersistenceQueueString = "com.microsoft.ApplicationInsights.senderQueue";
 static NSUInteger const defaultRequestLimit = 10;
 
 @interface MSAISender ()
@@ -28,6 +29,13 @@ static NSUInteger const defaultRequestLimit = 10;
     sharedInstance = [MSAISender new];
   });
   return sharedInstance;
+}
+
+- (instancetype)init {
+  if ((self = [super init])) {
+    _senderQueue = dispatch_queue_create(kPersistenceQueueString, DISPATCH_QUEUE_CONCURRENT);
+  }
+  return self;
 }
 
 #pragma mark - Network status
@@ -91,9 +99,9 @@ static NSUInteger const defaultRequestLimit = 10;
   if(!path || !request) return;
   
   __weak typeof(self) weakSelf = self;
-  MSAIHTTPOperation *operation = [self.appClient operationWithURLRequest:request completion:^(MSAIHTTPOperation *operation, NSData *responseData, NSError *error) {
+  MSAIHTTPOperation *operation = [self.appClient operationWithURLRequest:request queue:self.senderQueue completion:^(MSAIHTTPOperation *operation, NSData *responseData, NSError *error) {
     typeof(self) strongSelf = weakSelf;
-    
+
     self.runningRequestsCount -= 1;
     NSInteger statusCode = [operation.response statusCode];
 
@@ -113,15 +121,6 @@ static NSUInteger const defaultRequestLimit = 10;
   }];
   
   [self.appClient enqeueHTTPOperation:operation];
-}
-
-//TODO remove this because it is never used and it's not public?
-- (void)sendRequest:(NSURLRequest *)request withCompletionBlock:(MSAINetworkCompletionBlock)completion{
-  
-  MSAIHTTPOperation *operation = [_appClient
-                                  operationWithURLRequest:request
-                                  completion:completion];
-  [_appClient enqeueHTTPOperation:operation];
 }
 
 #pragma mark - Helper
