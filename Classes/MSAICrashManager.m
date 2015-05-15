@@ -284,7 +284,7 @@ void msai_save_events_callback(siginfo_t *info, ucontext_t *uap, void *context) 
   if (len > 0) {
     // Simply write the whole string to disk and close the JSON array 
     write(fd, MSAISafeJsonEventsString, len);
-    if (len >= 1) {
+    if ((len >= 1) && strncmp(MSAISafeJsonEventsString, "[", 1) == 0) {
       write(fd, "]", 1);
     }
   }
