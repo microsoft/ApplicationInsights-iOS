@@ -10,8 +10,8 @@
 @class MSAICrashData;
 @class MSAIOrderedDictionary;
 
-FOUNDATION_EXTERN  char * __nonnull MSAISafeJsonEventsString;
 NS_ASSUME_NONNULL_BEGIN
+
 FOUNDATION_EXPORT NSInteger const debugBatchInterval;
 FOUNDATION_EXPORT NSInteger const debugMaxBatchCount;
 
