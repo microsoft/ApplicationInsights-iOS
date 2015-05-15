@@ -133,7 +133,7 @@ NSUInteger const defaultFileCount = 50;
  */
 - (NSArray *)crashTemplateBundle {
   NSString *path = [self nextURLWithPriority:MSAIPersistenceTypeCrashTemplate];
-  if(path && [path isKindOfClass:[NSString class]] && path.length > 0) {
+  if(path && path.length > 0) {
     NSArray *bundle = [self bundleAtPath:path];
     if(bundle) {
       return bundle;
@@ -290,7 +290,7 @@ NSUInteger const defaultFileCount = 50;
   NSString *directoryPath = [self folderPathForPersistenceType:type];
   NSError *error = nil;
   NSArray *fileNames = [[NSFileManager defaultManager] contentsOfDirectoryAtURL:[NSURL fileURLWithPath:directoryPath]
-                                                     includingPropertiesForKeys:[NSArray arrayWithObject:NSURLNameKey]
+                                                     includingPropertiesForKeys:@[NSURLNameKey]
                                                                         options:NSDirectoryEnumerationSkipsHiddenFiles
                                                                           error:&error];
   

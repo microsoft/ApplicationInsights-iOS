@@ -28,7 +28,7 @@ static dispatch_once_t once_token;
 
 #pragma mark - Initialisation
 
-+ (id)sharedChannel {
++ (instancetype)sharedChannel {
   
   dispatch_once(&once_token, ^{
     if (_sharedChannel == nil) {
