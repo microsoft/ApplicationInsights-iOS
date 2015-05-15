@@ -46,7 +46,7 @@ NSUInteger const defaultFileCount = 50;
 }
 
 //TODO remove the completion block and implement notification-handling in MSAICrashManager
-- (void)persistBundle:(NSArray *)bundle ofType:(MSAIPersistenceType)type withCompletionBlock:(void (^)(BOOL success))completionBlock {
+- (void)persistBundle:(NSData *)bundle ofType:(MSAIPersistenceType)type withCompletionBlock:(nullable void (^)(BOOL success))completionBlock {
   [self persistBundle:bundle ofType:type enableNotifications:YES withCompletionBlock:completionBlock];
 }
 
@@ -55,18 +55,15 @@ NSUInteger const defaultFileCount = 50;
  * In case if type MSAIPersistenceTypeCrashTemplate, we don't send out a kMSAIPersistenceSuccessNotification.
  *
  */
-- (void)persistBundle:(NSArray *)bundle ofType:(MSAIPersistenceType)type enableNotifications:(BOOL)sendNotifications withCompletionBlock:(void (^)(BOOL success))completionBlock {
+- (void)persistBundle:(NSData *)bundle ofType:(MSAIPersistenceType)type enableNotifications:(BOOL)sendNotifications withCompletionBlock:(void (^)(BOOL success))completionBlock {
   
-  if(bundle && bundle.count > 0) {
     NSString *fileURL = [self newFileURLForPersitenceType:type];
     
-    NSData *data = [self dataForBundle:bundle withPersistenceTye:type];
-    
-    if(data) {
+    if(bundle) {
       __weak typeof(self) weakSelf = self;
       dispatch_async(self.persistenceQueue, ^{
         typeof(self) strongSelf = weakSelf;
-        BOOL success = [data writeToFile:fileURL atomically:YES];
+        BOOL success = [bundle writeToFile:fileURL atomically:YES];
         if(success) {
           MSAILog(@"Wrote %@", fileURL);
           if(sendNotifications && type != MSAIPersistenceTypeCrashTemplate) {
@@ -87,7 +84,6 @@ NSUInteger const defaultFileCount = 50;
       MSAILog(@"Unable to write %@", fileURL);
       //TODO send out a fail notification?
     }
-  }
 }
 
 - (void)persistMetaData:(NSDictionary *)metaData {
@@ -124,7 +120,7 @@ NSUInteger const defaultFileCount = 50;
  * Method used to persist the "fake" crash reports. Crash templates are handled but are similar to the other bundle
  * types under the hood.
  */
-- (void)persistCrashTemplateBundle:(NSArray *)bundle {
+- (void)persistCrashTemplateBundle:(NSData *)bundle {
   [self persistBundle:bundle ofType:MSAIPersistenceTypeCrashTemplate withCompletionBlock:nil];
 }
 
@@ -343,21 +339,6 @@ NSUInteger const defaultFileCount = 50;
   NSString *path = [persistenceFolder stringByAppendingPathComponent:subfolderPath];
   
   return path;
-}
-
-- (NSData *)dataForBundle:(NSArray *)bundle withPersistenceTye:(MSAIPersistenceType)persistenceType{
-  NSData *data = nil;
-  
-  if(persistenceType == MSAIPersistenceTypeCrashTemplate){
-    data = [NSKeyedArchiver archivedDataWithRootObject:bundle];
-  }else{
-    NSError *error = nil;
-    data = [NSJSONSerialization dataWithJSONObject:bundle options:NSJSONWritingPrettyPrinted error:&error];
-    if (data == nil) {
-      MSAILog(@"Unable to convert JSON to NSData: %@", [error localizedDescription]);
-    }
-  }
-  return data;
 }
 
 /**

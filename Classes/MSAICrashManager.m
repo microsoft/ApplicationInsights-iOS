@@ -527,7 +527,8 @@ void msai_save_events_callback(siginfo_t *info, ucontext_t *uap, void *context) 
   crashTemplate.data = data;
   crashTemplate.name = crashData.envelopeTypeName;
 
-  [[MSAIPersistence sharedInstance] persistCrashTemplateBundle:@[crashTemplate]];
+  NSData *bundle = [NSKeyedArchiver archivedDataWithRootObject:@[crashTemplate]];
+  [[MSAIPersistence sharedInstance] persistCrashTemplateBundle:bundle];
 }
 
 /***
