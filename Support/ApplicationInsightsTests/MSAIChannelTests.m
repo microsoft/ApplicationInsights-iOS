@@ -74,10 +74,9 @@
 
 #pragma mark - Queue management
 
-- (void)testEnqueueEnvelopeWithOneEnvelope {
+- (void)testEnqueueEnvelopeWithOneEnvelopeAndNormalJSON {
   self.sut = OCMPartialMock(self.sut);
   MSAIOrderedDictionary *dictionary = [MSAIOrderedDictionary new];
-  OCMStub([self.sut startTimer]);
   
   [self.sut enqueueDictionary:dictionary];
   
@@ -88,7 +87,21 @@
   OCMVerify([self.sut startTimer]);
 }
 
-- (void)testEnqueueEnvelopeWithMultipleEnvelopes {
+- (void)testEnqueueEnvelopeWithOneEnvelopeAndJSONStream {
+  self.sut = OCMPartialMock(self.sut);
+  MSAIOrderedDictionary *dictionary = [MSAIOrderedDictionary new];
+  self.sut.emitLineDelimitedJson = YES;
+  
+  [self.sut enqueueDictionary:dictionary];
+  
+  dispatch_async(self.sut.dataItemsOperations, ^{
+    assertThatUnsignedInteger(self.sut.dataItemCount, equalToUnsignedInteger(1));
+    XCTAssertTrue(strcmp(MSAISafeJsonEventsString, "{}\n") == 0);
+    OCMVerify([self.sut startTimer]);
+  });
+}
+
+- (void)testEnqueueEnvelopeWithMultipleEnvelopesAndNormalJSON {
   self.sut = OCMPartialMock(self.sut);
   OCMStub([self.sut invalidateTimer]);
   
@@ -110,22 +123,56 @@
   OCMVerify([self.sut invalidateTimer]);
 }
 
+- (void)testEnqueueEnvelopeWithMultipleEnvelopesAndJSONStream {
+  self.sut = OCMPartialMock(self.sut);
+  self.sut.emitLineDelimitedJson = YES;
+  
+  self.sut.senderBatchSize = 3;
+  
+  MSAIOrderedDictionary *dictionary = [MSAIOrderedDictionary new];
+  
+  assertThatUnsignedInteger(self.sut.dataItemCount, equalToUnsignedInteger(0));
+  
+  [self.sut enqueueDictionary:dictionary];
+  [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.2]];
+  assertThatUnsignedInteger(self.sut.dataItemCount, equalToUnsignedInteger(1));
+  XCTAssertTrue(strcmp(MSAISafeJsonEventsString, "{}\n") == 0);
+  
+  [self.sut enqueueDictionary:dictionary];
+  dispatch_async(self.sut.dataItemsOperations, ^{
+    assertThatUnsignedInteger(self.sut.dataItemCount, equalToUnsignedInteger(2));
+    XCTAssertTrue(strcmp(MSAISafeJsonEventsString, "{}\n{}\n") == 0);
+  });
+  
+  [self.sut enqueueDictionary:dictionary];
+  dispatch_async(self.sut.dataItemsOperations, ^{
+    OCMVerify([self.sut invalidateTimer]);
+    assertThatUnsignedInteger(self.sut.dataItemCount, equalToUnsignedInteger(0));
+    XCTAssertTrue(strcmp(MSAISafeJsonEventsString, "") == 0);
+  });
+}
+
 #pragma mark - Safe JSON String Tests
+
+- (void)testAppendStringToSafeJsonString {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wnonnull"
-- (void)testAppendDictionaryToSafeJsonString {
-  msai_appendDictionaryToSafeJsonString(nil, 0);
+  msai_appendStringToSafeJsonString(nil, 0);
+#pragma clang diagnostic pop
   XCTAssertTrue(MSAISafeJsonEventsString == NULL);
   
   MSAISafeJsonEventsString = NULL;
-  msai_appendDictionaryToSafeJsonString(nil, &MSAISafeJsonEventsString);
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnonnull"
+  msai_appendStringToSafeJsonString(nil, &MSAISafeJsonEventsString);
+#pragma clang diagnostic pop
   XCTAssertTrue(MSAISafeJsonEventsString == NULL);
   
-  msai_appendDictionaryToSafeJsonString(@{}, &MSAISafeJsonEventsString);
-  XCTAssertEqual(strcmp(MSAISafeJsonEventsString,"[{},"), 0);
+  msai_appendStringToSafeJsonString(@"", &MSAISafeJsonEventsString);
+  XCTAssertEqual(strcmp(MSAISafeJsonEventsString,"[,"), 0);
   
-  msai_appendDictionaryToSafeJsonString(@{@"Key1":@"Value1"}, &MSAISafeJsonEventsString);
-  XCTAssertEqual(strcmp(MSAISafeJsonEventsString,"[{},{\"Key1\":\"Value1\"},"), 0);
+  msai_appendStringToSafeJsonString(@"{\"Key1\":\"Value1\"}", &MSAISafeJsonEventsString);
+  XCTAssertEqual(strcmp(MSAISafeJsonEventsString,"[,{\"Key1\":\"Value1\"},"), 0);
 }
 
 - (void)testResetSafeJsonString {
@@ -133,12 +180,54 @@
   XCTAssertEqual(strcmp(MSAISafeJsonEventsString,"["), 0);
   
   MSAISafeJsonEventsString = NULL;
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnonnull"
   msai_resetSafeJsonString(nil);
+#pragma clang diagnostic pop
   XCTAssertEqual(MSAISafeJsonEventsString, NULL);
   
   MSAISafeJsonEventsString = strdup("test string");
   msai_resetSafeJsonString(&MSAISafeJsonEventsString);
   XCTAssertEqual(strcmp(MSAISafeJsonEventsString,"["), 0);
 }
+
+#pragma mark - Safe JSON Stream Tests
+
+- (void)testAppendStringToSafeJsonStream {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnonnull"
+  msai_appendStringToSafeJsonStream(nil, 0);
 #pragma clang diagnostic pop
+  XCTAssertTrue(MSAISafeJsonEventsString == NULL);
+  
+  MSAISafeJsonEventsString = NULL;
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnonnull"
+  msai_appendStringToSafeJsonStream(nil, &MSAISafeJsonEventsString);
+#pragma clang diagnostic pop
+  XCTAssertTrue(MSAISafeJsonEventsString == NULL);
+  
+  msai_appendStringToSafeJsonStream(@"", &MSAISafeJsonEventsString);
+  XCTAssertEqual(strcmp(MSAISafeJsonEventsString,""), 0);
+  
+  msai_appendStringToSafeJsonStream(@"{\"Key1\":\"Value1\"}", &MSAISafeJsonEventsString);
+  XCTAssertEqual(strcmp(MSAISafeJsonEventsString,"{\"Key1\":\"Value1\"}\n"), 0);
+}
+
+- (void)testResetSafeJsonStream {
+  msai_resetSafeJsonStream(&MSAISafeJsonEventsString);
+  XCTAssertEqual(strcmp(MSAISafeJsonEventsString,""), 0);
+  
+  MSAISafeJsonEventsString = NULL;
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnonnull"
+  msai_resetSafeJsonStream(nil);
+#pragma clang diagnostic pop
+  XCTAssertEqual(MSAISafeJsonEventsString, NULL);
+  
+  MSAISafeJsonEventsString = strdup("test string");
+  msai_resetSafeJsonStream(&MSAISafeJsonEventsString);
+  XCTAssertEqual(strcmp(MSAISafeJsonEventsString,""), 0);
+}
+
 @end

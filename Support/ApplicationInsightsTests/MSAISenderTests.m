@@ -56,7 +56,7 @@
   [_sut configureWithAppClient:_appClient];
   MSAIEnvelope *testItem = [MSAIEnvelope new];
   NSData *expectedBodyData = [[testItem serializeToString] dataUsingEncoding:NSUTF8StringEncoding];
-  NSURLRequest *testRequest = [_sut requestForData:expectedBodyData];
+  NSURLRequest *testRequest = [_sut requestForData:expectedBodyData withContentType:@"application/json"];
 
   assertThat(testRequest, notNilValue());
   assertThat([testRequest HTTPBody], equalTo(expectedBodyData));
