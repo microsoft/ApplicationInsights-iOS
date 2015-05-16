@@ -40,7 +40,7 @@ static NSUInteger const defaultRequestLimit = 10;
 
 #pragma mark - Network status
 
-- (void)configureWithAppClient:(MSAIAppClient *)appClient {
+- (void)configureWithAppClient:(MSAIAppClient * __nonnull)appClient {
   self.appClient = appClient;
   self.maxRequestCount = defaultRequestLimit;
   [self registerObservers];
@@ -65,7 +65,6 @@ static NSUInteger const defaultRequestLimit = 10;
 #pragma mark - Sending
 
 - (void)sendSavedData{
-  
   @synchronized(self){
     if(_runningRequestsCount < _maxRequestCount){
       _runningRequestsCount++;
@@ -78,23 +77,36 @@ static NSUInteger const defaultRequestLimit = 10;
     typeof(self) strongSelf = weakSelf;
     NSString *path = [[MSAIPersistence sharedInstance] requestNextPath];
     NSData *data = [[MSAIPersistence sharedInstance] dataAtPath:path];
-    NSData *gzippedData = [data gzippedData];
-    [strongSelf sendData:gzippedData withPath:path];
+    
+    [strongSelf sendData:data withPath:path];
   });
 }
 
-- (void)sendData:(NSData *)data withPath:(NSString *)path{
+- (void)sendData:(NSData * __nonnull)data withPath:(NSString * __nonnull)path {
   
   if(data) {
-    NSURLRequest *request = [self requestForData:data];
+    NSString *contentType;
+    static const uint8_t LINEBREAK_SIGNATURE = (0x0a);
+    UInt8 lastByte;
+    [data getBytes:&lastByte range:NSMakeRange(data.length-1, 1)];
+    
+    if ((data.length > sizeof(uint8_t)) && (lastByte == LINEBREAK_SIGNATURE)) {
+      contentType = @"application/x-json-stream";
+    } else {
+      contentType = @"application/json";
+    }
+    
+    NSData *gzippedData = [data gzippedData];
+    NSURLRequest *request = [self requestForData:gzippedData withContentType:contentType];
+    
     [self sendRequest:request path:path];
     
-  }else{
+  } else {
     self.runningRequestsCount -= 1;
   }
 }
 
-- (void)sendRequest:(NSURLRequest *)request path:(NSString *)path{
+- (void)sendRequest:(NSURLRequest * __nonnull)request path:(NSString * __nonnull)path {
   
   if(!path || !request) return;
   
@@ -108,9 +120,7 @@ static NSUInteger const defaultRequestLimit = 10;
     if(responseData && [self shouldDeleteDataWithStatusCode:statusCode]) {
       //we delete data that was either sent successfully or if we have a non-recoverable error
       MSAILog(@"Sent data with status code: %ld", (long) statusCode);
-      if (responseData) {
-        MSAILog(@"Response data:\n%@", [NSJSONSerialization JSONObjectWithData:responseData options:0 error:nil]);
-      }
+      MSAILog(@"Response data:\n%@", [NSJSONSerialization JSONObjectWithData:responseData options:0 error:nil]);
       [[MSAIPersistence sharedInstance] deleteFileAtPath:path];
       [strongSelf sendSavedData];
     } else {
@@ -125,7 +135,7 @@ static NSUInteger const defaultRequestLimit = 10;
 
 #pragma mark - Helper
 
-- (NSURLRequest *)requestForData:(NSData *)data {
+- (NSURLRequest *)requestForData:(NSData * __nonnull)data withContentType:(NSString * __nonnull)contentType {
   NSMutableURLRequest *request = [self.appClient requestWithMethod:@"POST"
                                                               path:self.endpointPath
                                                         parameters:nil];
@@ -135,7 +145,7 @@ static NSUInteger const defaultRequestLimit = 10;
   
   NSDictionary *headers = @{@"Charset": @"UTF-8",
                             @"Content-Encoding": @"gzip",
-                            @"Content-Type": @"application/json",
+                            @"Content-Type": contentType,
                             @"Accept-Encoding": @"gzip"};
   [request setAllHTTPHeaderFields:headers];
   

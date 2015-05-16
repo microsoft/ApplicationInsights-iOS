@@ -71,7 +71,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  *  @return a request which contains the given data
  */
-- (NSURLRequest *)requestForData:(NSData *)data;
+- (NSURLRequest *)requestForData:(NSData *)data withContentType:(NSString *)contentType;
 
 /**
  *  Returns if data should be deleted based on a given status code.
