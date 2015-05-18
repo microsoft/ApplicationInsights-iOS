@@ -12,39 +12,49 @@
 #import "MSAIHelper.h"
 #import "MSAIPersistencePrivate.h"
 
-#ifdef DEBUG
-static NSInteger const defaultMaxBatchCount = 50;
-static NSInteger const defaultBatchInterval = 15;
-#else
-static NSInteger const defaultMaxBatchCount = 50;
-static NSInteger const defaultBatchInterval = 15;
-#endif
+NSInteger const defaultMaxBatchCount = 50;
+NSInteger const defaultBatchInterval = 15;
+
+NSInteger const debugMaxBatchCount = 5;
+NSInteger const debugBatchInterval = 3;
 
 static char *const MSAIDataItemsOperationsQueue = "com.microsoft.ApplicationInsights.senderQueue";
 char *MSAISafeJsonEventsString;
 
 @implementation MSAIChannel
 
+static MSAIChannel *_sharedChannel = nil;
+static dispatch_once_t once_token;
+
 #pragma mark - Initialisation
 
 + (id)sharedChannel {
-  static MSAIChannel *sharedChannel = nil;
   
-  static dispatch_once_t onceToken;
-  dispatch_once(&onceToken, ^{
-    sharedChannel = [self new];
-    dispatch_queue_t serialQueue = dispatch_queue_create(MSAIDataItemsOperationsQueue, DISPATCH_QUEUE_SERIAL);
-    [sharedChannel setDataItemsOperations:serialQueue];
+  dispatch_once(&once_token, ^{
+    if (_sharedChannel == nil) {
+      _sharedChannel = [self new];
+    }
   });
-  
-  return sharedChannel;
+  return _sharedChannel;
+}
+
++(void)setSharedChannel:(MSAIChannel *)channel {
+  once_token = 0;
+  _sharedChannel = channel;
 }
 
 - (instancetype)init {
   if(self = [super init]) {
     _dataItemQueue = [NSMutableArray array];
-    _senderBatchSize = defaultMaxBatchCount;
-    _senderInterval = defaultBatchInterval;
+    if (msai_isDebuggerAttached()) {
+      _senderBatchSize = debugMaxBatchCount;
+      _senderInterval = debugBatchInterval;
+    } else {
+      _senderBatchSize = defaultMaxBatchCount;
+      _senderInterval = defaultBatchInterval;
+    }
+    dispatch_queue_t serialQueue = dispatch_queue_create(MSAIDataItemsOperationsQueue, DISPATCH_QUEUE_SERIAL);
+    _dataItemsOperations = serialQueue;
   }
   return self;
 }
@@ -110,7 +120,7 @@ void msai_resetSafeJsonString(char **string) {
   *string = strdup("[");
 }
 
-- (void)processDictionary:(MSAIOrderedDictionary *)dictionary withCompletionBlock: (void (^)(BOOL success)) completionBlock{
+- (void)processDictionary:(MSAIOrderedDictionary *)dictionary withCompletionBlock: (nullable void (^)(BOOL success)) completionBlock{
   [[MSAIPersistence sharedInstance] persistBundle:[NSArray arrayWithObject:dictionary]
                           ofType:MSAIPersistenceTypeHighPriority withCompletionBlock:completionBlock];
 }
@@ -150,12 +160,12 @@ void msai_resetSafeJsonString(char **string) {
 }
 
 - (void)startTimer {
-
+  
   // Reset timer, if it is already running
   if(self.timerSource) {
     [self invalidateTimer];
   }
-
+  
   self.timerSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, self.dataItemsOperations);
   dispatch_source_set_timer(self.timerSource, dispatch_walltime(NULL, NSEC_PER_SEC * self.senderInterval), 1ull * NSEC_PER_SEC, 1ull * NSEC_PER_SEC);
   dispatch_source_set_event_handler(self.timerSource, ^{

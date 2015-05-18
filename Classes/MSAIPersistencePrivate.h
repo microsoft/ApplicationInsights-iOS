@@ -1,11 +1,12 @@
 #import "MSAIPersistence.h"
 
+NS_ASSUME_NONNULL_BEGIN
 @interface MSAIPersistence ()
 
-extern NSString *const kHighPrioString;
-extern NSString *const kRegularPrioString;
-extern NSString *const kCrashTemplateString;
-extern NSString *const kSessionIdsString;
+FOUNDATION_EXTERN NSString *const kHighPrioString;
+FOUNDATION_EXTERN NSString *const kRegularPrioString;
+FOUNDATION_EXTERN NSString *const kCrashTemplateString;
+FOUNDATION_EXTERN NSString *const kMetaDataString;
 
 /**
  * Notification that will be send on the main thread to notifiy observers of a successfully saved bundle.
@@ -24,7 +25,7 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
   MSAIPersistenceTypeHighPriority = 1,
   MSAIPersistenceTypeRegular = 2,
   MSAIPersistenceTypeCrashTemplate = 3,
-  MSAIPersistenceTypeSessionIds = 4
+  MSAIPersistenceTypeMetaData = 4
 };
 
 ///-----------------------------------------------------------------------------
@@ -91,18 +92,6 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
 ///-----------------------------------------------------------------------------
 /// @name Getting a bundle of saved data
 ///-----------------------------------------------------------------------------
-
-/**
- * Get a bundle of previously saved data from disk and deletes it using dispatch_sync.
- *
- * @warning Make sure nextBundle is not called from the main thread.
- *
- * It will return bundles of MSAIPersistenceType first.
- * Between bundles of the same MSAIPersistenceType, the order is arbitrary.
- * Returns 'nil' if no bundle is available
- *
- * @return a bundle of AppInsightsData that's ready to be sent to the server
- */
 
 /**
  *  Return the bundle for a given path and persistence type.
@@ -175,22 +164,22 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
 - (void)giveBackRequestedPath:(NSString *) path;
 
 ///-----------------------------------------------------------------------------
-/// @name Handling session IDs
+/// @name Handling Meta Data
 ///-----------------------------------------------------------------------------
 
 /**
  *  Saves the given dictionary to the session Ids file.
  *
- *  @param sessionIds a dictionary consisting of unix timestamps and session ids
+ *  @param metaData a dictionary consisting of unix timestamps and session ids
  */
-- (void)persistSessionIds:(NSDictionary *)sessionIds;
+- (void)persistMetaData:(NSDictionary *)metaData;
 
 /**
  *  Returns the content of the session Ids file.
  *
  *  @return return a dictionary containing all session Ids
  */
-- (NSDictionary *)sessionIds;
+- (NSDictionary *)metaData;
 
 ///-----------------------------------------------------------------------------
 /// @name Handling of a "fake" CrashReport
@@ -237,3 +226,4 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
 - (BOOL)isFreeSpaceAvailable;
 
 @end
+NS_ASSUME_NONNULL_END

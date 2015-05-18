@@ -2,6 +2,7 @@
 @class MSAIEnvelope;
 @class MSAITelemetryContext;
 
+NS_ASSUME_NONNULL_BEGIN
 @interface MSAISender ()
 
 ///-----------------------------------------------------------------------------
@@ -11,7 +12,12 @@
 /**
 *  The appClient is needed to create requests and send objects via an operation queue.
 */
-@property(nonatomic, strong)MSAIAppClient *appClient;
+@property (nonatomic, strong) MSAIAppClient *appClient;
+
+/**
+ *  A queue which is used to handle MSAIHTTPOperation completion blocks.
+ */
+@property (nonatomic, strong) dispatch_queue_t senderQueue;
 
 /**
  *  Delegate that should be informed if sending was successful or failed.
@@ -21,7 +27,7 @@
 /**
  *  The endpoint url of the telemetry server.
  */
-@property (nonatomic, strong)NSString *endpointPath;
+@property (nonatomic, strong) NSString *endpointPath;
 
 /**
  *  The max number of request that can run at a time.
@@ -46,7 +52,7 @@
  *  @param appClient    the app client used for sending the data
  *  @param endpointPath the endpoint url of the telemetry server
  */
-- (void)configureWithAppClient:(MSAIAppClient *)appClient endpointPath:(NSString *)endpointPath;
+- (void)configureWithAppClient:(MSAIAppClient *)appClient;
 
 /**
  *  Configures the sender instance.
@@ -55,7 +61,7 @@
  *  @param endpointPath the endpoint url of the telemetry server
  *  @param delegate delegate that should be informed if sending was successful or failed
  */
-- (void)configureWithAppClient:(MSAIAppClient *)appClient endpointPath:(NSString *)endpointPath delegate:(id) delegate;
+- (void)configureWithAppClient:(MSAIAppClient *)appClient delegate:(id) delegate;
 
 ///-----------------------------------------------------------------------------
 /// @name Sending data
@@ -97,3 +103,4 @@
 - (BOOL)shouldDeleteDataWithStatusCode:(NSInteger)statusCode;
 
 @end
+NS_ASSUME_NONNULL_END

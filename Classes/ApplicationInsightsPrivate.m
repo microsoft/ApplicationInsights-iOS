@@ -9,6 +9,3 @@ NSString *const kMSAICrashAnalyzer = @"MSAICrashManager.analyzer";
 NSString *const kMSAICrashErrorDomain = @"MSAICrashReporterErrorDomain";
 NSString *const kMSAIErrorDomain = @"MSAIErrorDomain";
 
-NSString *const kMSAIIntegrationflowTimestamp = @"MSAIIntegrationFlowStartTimestamp";
-
-NSString *const kMSAITelemetryPath = @"v2/track";

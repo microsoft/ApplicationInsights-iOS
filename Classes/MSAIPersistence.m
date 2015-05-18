@@ -8,7 +8,7 @@
 NSString *const kHighPrioString = @"highPrio";
 NSString *const kRegularPrioString = @"regularPrio";
 NSString *const kCrashTemplateString = @"crashTemplate";
-NSString *const kSessionIdsString = @"sessionIds";
+NSString *const kMetaDataString = @"metaData";
 NSString *const kFileBaseString = @"app-insights-bundle-";
 
 NSString *const MSAIPersistenceSuccessNotification = @"MSAIPersistenceSuccessNotification";
@@ -21,7 +21,7 @@ NSUInteger const defaultFileCount = 50;
 
 #pragma mark - Create an instance
 
-+ (instancetype)sharedInstance{
++ (instancetype)sharedInstance {
   static MSAIPersistence *sharedInstance;
   static dispatch_once_t onceToken;
   
@@ -32,7 +32,7 @@ NSUInteger const defaultFileCount = 50;
   return sharedInstance;
 }
 
-- (instancetype)init{
+- (instancetype)init {
   self = [super init];
   if ( self ) {
     _persistenceQueue = dispatch_queue_create(kPersistenceQueueString, DISPATCH_QUEUE_SERIAL);
@@ -87,6 +87,22 @@ NSUInteger const defaultFileCount = 50;
   }
 }
 
+- (void)persistMetaData:(NSDictionary *)metaData {
+  NSString *fileURL = [self newFileURLForPersitenceType:MSAIPersistenceTypeMetaData];
+  
+  dispatch_async(self.persistenceQueue, ^{
+    [NSKeyedArchiver archiveRootObject:metaData toFile:fileURL];
+  });
+}
+
+- (NSDictionary *)metaData {
+  NSDictionary *metaData = nil;
+  NSString *path = [self newFileURLForPersitenceType:MSAIPersistenceTypeMetaData];
+  if(path) {
+    metaData = [NSKeyedUnarchiver unarchiveObjectWithFile:path];
+  }
+  return metaData;
+}
 
 
 - (void)deleteFileAtPath:(NSString *)path {
@@ -259,9 +275,9 @@ NSUInteger const defaultFileCount = 50;
       filePath = [[applicationSupportDir stringByAppendingPathComponent:kCrashTemplateString] stringByAppendingPathComponent:kCrashTemplateString];
       break;
     };
-    case MSAIPersistenceTypeSessionIds: {
-      [self createFolderAtPathIfNeeded:[applicationSupportDir stringByAppendingPathComponent:kSessionIdsString]];
-      filePath = [[applicationSupportDir stringByAppendingPathComponent:kSessionIdsString] stringByAppendingPathComponent:kSessionIdsString];
+    case MSAIPersistenceTypeMetaData: {
+      [self createFolderAtPathIfNeeded:[applicationSupportDir stringByAppendingPathComponent:kMetaDataString]];
+      filePath = [[applicationSupportDir stringByAppendingPathComponent:kMetaDataString] stringByAppendingPathComponent:kMetaDataString];
       break;
     };
     default: {
@@ -275,10 +291,12 @@ NSUInteger const defaultFileCount = 50;
 }
 
 - (NSString *)folderPathForPersistenceType:(MSAIPersistenceType)type {
-  static NSString *documentFolder;
-  static dispatch_once_t documentFolderToken;
-  dispatch_once(&documentFolderToken, ^{
-    documentFolder = [NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES) lastObject];
+  static NSString *persistenceFolder;
+  static dispatch_once_t persistenceFolderToken;
+  dispatch_once(&persistenceFolderToken, ^{
+    NSString *documentsFolder = [NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES) lastObject];
+    persistenceFolder = [documentsFolder stringByAppendingPathComponent:@"com.microsoft.ApplicationInsights/"];
+    [self createFolderAtPathIfNeeded:persistenceFolder];
   });
   
   NSString *subfolderPath;
@@ -296,14 +314,14 @@ NSUInteger const defaultFileCount = 50;
       subfolderPath = kRegularPrioString;
       break;
     }
-    case MSAIPersistenceTypeSessionIds: {
-      subfolderPath = kSessionIdsString;
+    case MSAIPersistenceTypeMetaData: {
+      subfolderPath = kMetaDataString;
       break;
     }
     default:
       return nil;
   }
-  NSString *path = [documentFolder stringByAppendingPathComponent:subfolderPath];
+  NSString *path = [persistenceFolder stringByAppendingPathComponent:subfolderPath];
   
   return path;
 }
@@ -338,7 +356,7 @@ NSUInteger const defaultFileCount = 50;
 #pragma mark - Handling session IDs
 
 - (void)persistSessionIds:(NSDictionary *)sessionIds {
-  NSString *fileURL = [self newFileURLForPersitenceType:MSAIPersistenceTypeSessionIds];
+  NSString *fileURL = [self newFileURLForPersitenceType:MSAIPersistenceTypeMetaData];
   
   dispatch_async(self.persistenceQueue, ^{
     [NSKeyedArchiver archiveRootObject:sessionIds toFile:fileURL];
@@ -347,7 +365,7 @@ NSUInteger const defaultFileCount = 50;
 
 - (NSDictionary *)sessionIds {
   NSDictionary *sessionIds = nil;
-  NSString *path = [self newFileURLForPersitenceType:MSAIPersistenceTypeSessionIds];
+  NSString *path = [self newFileURLForPersitenceType:MSAIPersistenceTypeMetaData];
   if(path) {
     sessionIds = [NSKeyedUnarchiver unarchiveObjectWithFile:path];
   }
@@ -399,8 +417,8 @@ NSUInteger const defaultFileCount = 50;
     return MSAIPersistenceTypeHighPriority;
   }else if([path containsString:kRegularPrioString]){
     return MSAIPersistenceTypeRegular;
-  }else if([path containsString:kSessionIdsString]){
-    return MSAIPersistenceTypeSessionIds;
+  }else if([path containsString:kMetaDataString]){
+    return MSAIPersistenceTypeMetaData;
   }else if([path containsString:kCrashTemplateString]){
     return MSAIPersistenceTypeCrashTemplate;
   }else{

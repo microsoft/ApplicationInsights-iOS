@@ -33,7 +33,6 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
-		1B2439C31AB8AF0300B07374 /* MSAISessionHelperTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B2439C21AB8AF0300B07374 /* MSAISessionHelperTests.m */; };
 		1B3B73081A94BC8E008DCADA /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B3B73071A94BC8E008DCADA /* CoreTelephony.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		1B3C38761A82213000700081 /* MSAICrashData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3C386C1A82213000700081 /* MSAICrashData.h */; };
 		1B3C38771A82213000700081 /* MSAICrashData.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3C386D1A82213000700081 /* MSAICrashData.m */; };
@@ -47,17 +46,13 @@
 		1B3C387F1A82213000700081 /* MSAICrashDataThreadFrame.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3C38751A82213000700081 /* MSAICrashDataThreadFrame.m */; };
 		1B3FB89E1A93756100D06311 /* MSAIReachability.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B3FB89C1A93756100D06311 /* MSAIReachability.h */; };
 		1B3FB89F1A93756100D06311 /* MSAIReachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3FB89D1A93756100D06311 /* MSAIReachability.m */; };
-		1B3FB8A41A9382A200D06311 /* MSAIReachabilityTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3FB8A21A93762700D06311 /* MSAIReachabilityTests.m */; };
 		1B47E02E1A84D3DF000B4C3D /* MSAIEnvelopeManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B47E02C1A84D3DF000B4C3D /* MSAIEnvelopeManager.h */; };
 		1B47E02F1A84D3DF000B4C3D /* MSAIEnvelopeManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B47E02D1A84D3DF000B4C3D /* MSAIEnvelopeManager.m */; };
 		1B53FEBF1A6425240082F2E9 /* CrashReporter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B53FEBE1A6425240082F2E9 /* CrashReporter.framework */; };
 		1B53FEC01A6425240082F2E9 /* CrashReporter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B53FEBE1A6425240082F2E9 /* CrashReporter.framework */; };
-		1B5963AE1AC429E600349899 /* MSAINotificationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B5963AD1AC429E600349899 /* MSAINotificationTests.m */; };
 		1B62F4D81A692A3200EB5AD0 /* MSAIContext.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B62F4D61A692A3200EB5AD0 /* MSAIContext.h */; };
 		1B62F4D91A692A3200EB5AD0 /* MSAIContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B62F4D71A692A3200EB5AD0 /* MSAIContext.m */; };
-		1B74E8F21A9B6A070036F6C9 /* MSAIEnvelopeManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B74E8F01A9B69F90036F6C9 /* MSAIEnvelopeManagerTests.m */; };
 		1B85606F1A7A6A9D00A54FB7 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B85606E1A7A6A9D00A54FB7 /* UIKit.framework */; };
-		1B8688D51A6D852E0008CEE9 /* AppInsights-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1EDA60CF15C2C1450032D10B /* AppInsights-Info.plist */; };
 		1BBBCF341A6594AE00253031 /* MSAIChannel.h in Headers */ = {isa = PBXBuildFile; fileRef = 1BBBCF2E1A6594AE00253031 /* MSAIChannel.h */; };
 		1BBBCF351A6594AE00253031 /* MSAIChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BBBCF2F1A6594AE00253031 /* MSAIChannel.m */; };
 		1BBBCF361A6594AE00253031 /* MSAITelemetryContext.h in Headers */ = {isa = PBXBuildFile; fileRef = 1BBBCF301A6594AE00253031 /* MSAITelemetryContext.h */; };
@@ -66,8 +61,6 @@
 		1BC8596C1A7ACA820018FB6B /* MSAICategoryContainer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BC8596A1A7ACA820018FB6B /* MSAICategoryContainer.m */; };
 		1BE29B481A6FB8C20014A10F /* MSAISender.h in Headers */ = {isa = PBXBuildFile; fileRef = 1BE29B461A6FB8C20014A10F /* MSAISender.h */; };
 		1BE29B491A6FB8C20014A10F /* MSAISender.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BE29B471A6FB8C20014A10F /* MSAISender.m */; };
-		1BE53D761AB889420048ABBC /* MSAISessionHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = 1BE53D741AB889420048ABBC /* MSAISessionHelper.h */; };
-		1BE53D771AB889420048ABBC /* MSAISessionHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BE53D751AB889420048ABBC /* MSAISessionHelper.m */; };
 		1E0FEE28173BDB260061331F /* MSAIKeychainUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E0FEE26173BDB260061331F /* MSAIKeychainUtils.h */; };
 		1E0FEE29173BDB260061331F /* MSAIKeychainUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E0FEE27173BDB260061331F /* MSAIKeychainUtils.m */; };
 		1E49A4BE161222B900463151 /* MSAIHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E49A4A5161222B900463151 /* MSAIHelper.h */; };
@@ -90,8 +83,6 @@
 		1EB2E4C618FD4CEA008BB1CF /* MSAITelemetryManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 1EB2E4C418FD4CEA008BB1CF /* MSAITelemetryManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1EB2E4C718FD4CEA008BB1CF /* MSAITelemetryManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1EB2E4C518FD4CEA008BB1CF /* MSAITelemetryManager.m */; };
 		1ECA8F4D192B5BD8006B9416 /* MSAICrashDetailsPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 1ECA8F4B192B5BD8006B9416 /* MSAICrashDetailsPrivate.h */; settings = {ATTRIBUTES = (Private, ); }; };
-		1ECA8F51192B6954006B9416 /* MSAICrashMetaData.h in Headers */ = {isa = PBXBuildFile; fileRef = 1ECA8F4F192B6954006B9416 /* MSAICrashMetaData.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		1ECA8F52192B6954006B9416 /* MSAICrashMetaData.m in Sources */ = {isa = PBXBuildFile; fileRef = 1ECA8F50192B6954006B9416 /* MSAICrashMetaData.m */; };
 		594931B3422F36B9D1DA449C /* MSAIPersistence.h in Headers */ = {isa = PBXBuildFile; fileRef = 594931F0F69C22CBB67A2AD9 /* MSAIPersistence.h */; };
 		59493E4E3899627127FA6760 /* MSAIPersistence.m in Sources */ = {isa = PBXBuildFile; fileRef = 59493E91C1D38C3FC5F77D19 /* MSAIPersistence.m */; };
 		8004739C1ABB8FC200BBFE62 /* MSAIPersistencePrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 8004739B1ABB8FC200BBFE62 /* MSAIPersistencePrivate.h */; settings = {ATTRIBUTES = (Private, ); }; };
@@ -158,49 +149,57 @@
 		807CFDD11A712974004EA1B6 /* MSAIStackFrame.m in Sources */ = {isa = PBXBuildFile; fileRef = 807CFDA01A712974004EA1B6 /* MSAIStackFrame.m */; };
 		807CFDD21A712974004EA1B6 /* MSAIUser.h in Headers */ = {isa = PBXBuildFile; fileRef = 807CFDA11A712974004EA1B6 /* MSAIUser.h */; };
 		807CFDD31A712974004EA1B6 /* MSAIUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 807CFDA21A712974004EA1B6 /* MSAIUser.m */; };
-		808FB2411A7982230002872B /* MSAIAppClientTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 808FB2211A7982230002872B /* MSAIAppClientTests.m */; };
-		808FB2421A7982230002872B /* MSAIApplicationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 808FB2221A7982230002872B /* MSAIApplicationTests.m */; };
-		808FB2431A7982230002872B /* MSAIBaseTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 808FB2231A7982230002872B /* MSAIBaseTests.m */; };
-		808FB2441A7982230002872B /* MSAIChannelTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 808FB2241A7982230002872B /* MSAIChannelTests.m */; };
-		808FB2451A7982230002872B /* MSAICrashManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 808FB2251A7982230002872B /* MSAICrashManagerTests.m */; };
-		808FB2461A7982230002872B /* MSAICrashReportTextFormatterTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 808FB2261A7982230002872B /* MSAICrashReportTextFormatterTests.m */; };
-		808FB2471A7982230002872B /* MSAIDataPointTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 808FB2271A7982230002872B /* MSAIDataPointTests.m */; };
-		808FB2481A7982230002872B /* MSAIDataTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 808FB2281A7982230002872B /* MSAIDataTests.m */; };
-		808FB2491A7982230002872B /* MSAIDeviceTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 808FB2291A7982230002872B /* MSAIDeviceTests.m */; };
-		808FB24A1A7982230002872B /* MSAIDomainTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 808FB22A1A7982230002872B /* MSAIDomainTests.m */; };
-		808FB24B1A7982230002872B /* MSAIEnvelopeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 808FB22B1A7982230002872B /* MSAIEnvelopeTests.m */; };
-		808FB24C1A7982230002872B /* MSAIEventDataTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 808FB22C1A7982230002872B /* MSAIEventDataTests.m */; };
-		808FB24D1A7982230002872B /* MSAIExceptionDataTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 808FB22D1A7982230002872B /* MSAIExceptionDataTests.m */; };
-		808FB24E1A7982230002872B /* MSAIExceptionDetailsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 808FB22E1A7982230002872B /* MSAIExceptionDetailsTests.m */; };
-		808FB24F1A7982230002872B /* MSAIHelperTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 808FB22F1A7982230002872B /* MSAIHelperTests.m */; };
-		808FB2501A7982230002872B /* MSAIInternalTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 808FB2301A7982230002872B /* MSAIInternalTests.m */; };
-		808FB2511A7982230002872B /* MSAIKeychainUtilsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 808FB2311A7982230002872B /* MSAIKeychainUtilsTests.m */; };
-		808FB2521A7982230002872B /* MSAILocationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 808FB2321A7982230002872B /* MSAILocationTests.m */; };
-		808FB2531A7982230002872B /* MSAIMessageDataTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 808FB2331A7982230002872B /* MSAIMessageDataTests.m */; };
-		808FB2541A7982230002872B /* MSAIMetricDataTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 808FB2341A7982230002872B /* MSAIMetricDataTests.m */; };
-		808FB2551A7982230002872B /* MSAITelemetryManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 808FB2351A7982230002872B /* MSAITelemetryManagerTests.m */; };
-		808FB2561A7982230002872B /* MSAIOperationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 808FB2361A7982230002872B /* MSAIOperationTests.m */; };
-		808FB2571A7982230002872B /* MSAIPageViewDataTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 808FB2371A7982230002872B /* MSAIPageViewDataTests.m */; };
-		808FB2581A7982230002872B /* MSAIPageViewPerfDataTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 808FB2381A7982230002872B /* MSAIPageViewPerfDataTests.m */; };
-		808FB2591A7982230002872B /* MSAIRemoteDependencyDataTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 808FB2391A7982230002872B /* MSAIRemoteDependencyDataTests.m */; };
-		808FB25A1A7982230002872B /* MSAIRequestDataTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 808FB23A1A7982230002872B /* MSAIRequestDataTests.m */; };
-		808FB25B1A7982230002872B /* MSAISenderTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 808FB23B1A7982230002872B /* MSAISenderTests.m */; };
-		808FB25C1A7982230002872B /* MSAISessionTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 808FB23C1A7982230002872B /* MSAISessionTests.m */; };
-		808FB25D1A7982230002872B /* MSAIStackFrameTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 808FB23D1A7982230002872B /* MSAIStackFrameTests.m */; };
-		808FB25E1A7982230002872B /* MSAITelemetryContextTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 808FB23E1A7982230002872B /* MSAITelemetryContextTests.m */; };
-		808FB25F1A7982230002872B /* MSAITestHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 808FB23F1A7982230002872B /* MSAITestHelper.m */; };
-		808FB2601A7982230002872B /* MSAIUserTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 808FB2401A7982230002872B /* MSAIUserTests.m */; };
-		808FB2641A7982300002872B /* live_report_empty.plcrash in Resources */ = {isa = PBXBuildFile; fileRef = 808FB2611A7982300002872B /* live_report_empty.plcrash */; };
-		808FB2651A7982300002872B /* live_report_exception.plcrash in Resources */ = {isa = PBXBuildFile; fileRef = 808FB2621A7982300002872B /* live_report_exception.plcrash */; };
-		808FB2661A7982300002872B /* live_report_signal.plcrash in Resources */ = {isa = PBXBuildFile; fileRef = 808FB2631A7982300002872B /* live_report_signal.plcrash */; };
-		808FB2671A7982B50002872B /* OCHamcrestIOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 808FB21F1A7982140002872B /* OCHamcrestIOS.framework */; };
-		808FB2681A7982B50002872B /* OCMockitoIOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 808FB2201A7982140002872B /* OCMockitoIOS.framework */; };
 		809E9E5A1AC455D9008A1AB5 /* MSAISessionState.h in Headers */ = {isa = PBXBuildFile; fileRef = 809E9E571AC455D9008A1AB5 /* MSAISessionState.h */; };
 		809E9E5B1AC455D9008A1AB5 /* MSAISessionStateData.h in Headers */ = {isa = PBXBuildFile; fileRef = 809E9E581AC455D9008A1AB5 /* MSAISessionStateData.h */; };
 		809E9E5C1AC455D9008A1AB5 /* MSAISessionStateData.m in Sources */ = {isa = PBXBuildFile; fileRef = 809E9E591AC455D9008A1AB5 /* MSAISessionStateData.m */; };
-		80F334B01A9C8A430098026F /* MSAIManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 80F334AF1A9C8A430098026F /* MSAIManagerTests.m */; };
+		80D1D60E1B0A9A9800DD32B7 /* MSAIContextHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = 80D1D60B1B0A9A9800DD32B7 /* MSAIContextHelper.h */; };
+		80D1D60F1B0A9A9800DD32B7 /* MSAIContextHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 80D1D60C1B0A9A9800DD32B7 /* MSAIContextHelper.m */; };
+		80D1D6101B0A9A9800DD32B7 /* MSAIContextHelperPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 80D1D60D1B0A9A9800DD32B7 /* MSAIContextHelperPrivate.h */; };
+		80D1D6161B0A9F5B00DD32B7 /* OCHamcrestIOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 80D1D6151B0A9F5B00DD32B7 /* OCHamcrestIOS.framework */; };
+		80D1D6181B0A9F6600DD32B7 /* OCMockitoIOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 80D1D6171B0A9F6600DD32B7 /* OCMockitoIOS.framework */; };
+		80D1D61B1B0A9FA400DD32B7 /* MSAITestsDependencyInjection.m in Sources */ = {isa = PBXBuildFile; fileRef = 80D1D61A1B0A9FA400DD32B7 /* MSAITestsDependencyInjection.m */; };
+		80D1D6201B0A9FB200DD32B7 /* live_report_empty.plcrash in Resources */ = {isa = PBXBuildFile; fileRef = 80D1D61D1B0A9FB200DD32B7 /* live_report_empty.plcrash */; };
+		80D1D6211B0A9FB200DD32B7 /* live_report_exception.plcrash in Resources */ = {isa = PBXBuildFile; fileRef = 80D1D61E1B0A9FB200DD32B7 /* live_report_exception.plcrash */; };
+		80D1D6221B0A9FB200DD32B7 /* live_report_signal.plcrash in Resources */ = {isa = PBXBuildFile; fileRef = 80D1D61F1B0A9FB200DD32B7 /* live_report_signal.plcrash */; };
+		80D1D6481B0A9FE300DD32B7 /* MSAIAppClientTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 80D1D6231B0A9FE300DD32B7 /* MSAIAppClientTests.m */; };
+		80D1D6491B0A9FE300DD32B7 /* MSAIAppInsightsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 80D1D6241B0A9FE300DD32B7 /* MSAIAppInsightsTests.m */; };
+		80D1D64A1B0A9FE300DD32B7 /* MSAIApplicationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 80D1D6251B0A9FE300DD32B7 /* MSAIApplicationTests.m */; };
+		80D1D64B1B0A9FE300DD32B7 /* MSAIBaseTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 80D1D6261B0A9FE300DD32B7 /* MSAIBaseTests.m */; };
+		80D1D64C1B0A9FE300DD32B7 /* MSAIChannelTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 80D1D6271B0A9FE300DD32B7 /* MSAIChannelTests.m */; };
+		80D1D64D1B0A9FE300DD32B7 /* MSAIContextHelperTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 80D1D6281B0A9FE300DD32B7 /* MSAIContextHelperTests.m */; };
+		80D1D64E1B0A9FE300DD32B7 /* MSAICrashDataProviderTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 80D1D6291B0A9FE300DD32B7 /* MSAICrashDataProviderTests.m */; };
+		80D1D64F1B0A9FE300DD32B7 /* MSAICrashManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 80D1D62A1B0A9FE300DD32B7 /* MSAICrashManagerTests.m */; };
+		80D1D6501B0A9FE300DD32B7 /* MSAIDataPointTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 80D1D62B1B0A9FE300DD32B7 /* MSAIDataPointTests.m */; };
+		80D1D6511B0A9FE300DD32B7 /* MSAIDataTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 80D1D62C1B0A9FE300DD32B7 /* MSAIDataTests.m */; };
+		80D1D6521B0A9FE300DD32B7 /* MSAIDeviceTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 80D1D62D1B0A9FE300DD32B7 /* MSAIDeviceTests.m */; };
+		80D1D6531B0A9FE300DD32B7 /* MSAIDomainTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 80D1D62E1B0A9FE300DD32B7 /* MSAIDomainTests.m */; };
+		80D1D6541B0A9FE300DD32B7 /* MSAIEnvelopeManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 80D1D62F1B0A9FE300DD32B7 /* MSAIEnvelopeManagerTests.m */; };
+		80D1D6551B0A9FE300DD32B7 /* MSAIEnvelopeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 80D1D6301B0A9FE300DD32B7 /* MSAIEnvelopeTests.m */; };
+		80D1D6561B0A9FE300DD32B7 /* MSAIEventDataTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 80D1D6311B0A9FE300DD32B7 /* MSAIEventDataTests.m */; };
+		80D1D6571B0A9FE300DD32B7 /* MSAIExceptionDataTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 80D1D6321B0A9FE300DD32B7 /* MSAIExceptionDataTests.m */; };
+		80D1D6581B0A9FE300DD32B7 /* MSAIExceptionDetailsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 80D1D6331B0A9FE300DD32B7 /* MSAIExceptionDetailsTests.m */; };
+		80D1D6591B0A9FE300DD32B7 /* MSAIHelperTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 80D1D6341B0A9FE300DD32B7 /* MSAIHelperTests.m */; };
+		80D1D65A1B0A9FE300DD32B7 /* MSAIInternalTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 80D1D6351B0A9FE300DD32B7 /* MSAIInternalTests.m */; };
+		80D1D65B1B0A9FE300DD32B7 /* MSAIKeychainUtilsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 80D1D6361B0A9FE300DD32B7 /* MSAIKeychainUtilsTests.m */; };
+		80D1D65C1B0A9FE300DD32B7 /* MSAILocationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 80D1D6371B0A9FE300DD32B7 /* MSAILocationTests.m */; };
+		80D1D65D1B0A9FE300DD32B7 /* MSAIMessageDataTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 80D1D6381B0A9FE300DD32B7 /* MSAIMessageDataTests.m */; };
+		80D1D65E1B0A9FE300DD32B7 /* MSAIMetricDataTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 80D1D6391B0A9FE300DD32B7 /* MSAIMetricDataTests.m */; };
+		80D1D65F1B0A9FE300DD32B7 /* MSAIOperationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 80D1D63A1B0A9FE300DD32B7 /* MSAIOperationTests.m */; };
+		80D1D6601B0A9FE300DD32B7 /* MSAIPageViewDataTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 80D1D63B1B0A9FE300DD32B7 /* MSAIPageViewDataTests.m */; };
+		80D1D6611B0A9FE300DD32B7 /* MSAIPageViewPerfDataTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 80D1D63C1B0A9FE300DD32B7 /* MSAIPageViewPerfDataTests.m */; };
+		80D1D6621B0A9FE300DD32B7 /* MSAIPersistenceTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 80D1D63D1B0A9FE300DD32B7 /* MSAIPersistenceTest.m */; };
+		80D1D6631B0A9FE300DD32B7 /* MSAIReachabilityTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 80D1D63E1B0A9FE300DD32B7 /* MSAIReachabilityTests.m */; };
+		80D1D6641B0A9FE300DD32B7 /* MSAIRemoteDependencyDataTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 80D1D63F1B0A9FE300DD32B7 /* MSAIRemoteDependencyDataTests.m */; };
+		80D1D6651B0A9FE300DD32B7 /* MSAIRequestDataTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 80D1D6401B0A9FE300DD32B7 /* MSAIRequestDataTests.m */; };
+		80D1D6661B0A9FE300DD32B7 /* MSAISenderTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 80D1D6411B0A9FE300DD32B7 /* MSAISenderTests.m */; };
+		80D1D6671B0A9FE300DD32B7 /* MSAISessionTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 80D1D6421B0A9FE300DD32B7 /* MSAISessionTests.m */; };
+		80D1D6681B0A9FE300DD32B7 /* MSAIStackFrameTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 80D1D6431B0A9FE300DD32B7 /* MSAIStackFrameTests.m */; };
+		80D1D6691B0A9FE300DD32B7 /* MSAITelemetryContextTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 80D1D6441B0A9FE300DD32B7 /* MSAITelemetryContextTests.m */; };
+		80D1D66A1B0A9FE300DD32B7 /* MSAITelemetryManagerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 80D1D6451B0A9FE300DD32B7 /* MSAITelemetryManagerTests.m */; };
+		80D1D66B1B0A9FE300DD32B7 /* MSAITestHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 80D1D6461B0A9FE300DD32B7 /* MSAITestHelper.m */; };
+		80D1D66C1B0A9FE300DD32B7 /* MSAIUserTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 80D1D6471B0A9FE300DD32B7 /* MSAIUserTests.m */; };
+		80D1D66E1B0AA0BC00DD32B7 /* libOCMock.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 80D1D66D1B0AA0BC00DD32B7 /* libOCMock.a */; };
 		80F334B21A9C93290098026F /* MSAIApplicationInsightsPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 80F334B11A9C93290098026F /* MSAIApplicationInsightsPrivate.h */; settings = {ATTRIBUTES = (Private, ); }; };
-		B25912331A8D129C00C88800 /* MSAIPersistenceTest.m in Sources */ = {isa = PBXBuildFile; fileRef = B25912321A8D129C00C88800 /* MSAIPersistenceTest.m */; };
 		E40E0B0C17DA1AFF005E38C1 /* MSAIAppClient.h in Headers */ = {isa = PBXBuildFile; fileRef = E40E0B0A17DA1AFF005E38C1 /* MSAIAppClient.h */; };
 		E40E0B0D17DA1AFF005E38C1 /* MSAIAppClient.m in Sources */ = {isa = PBXBuildFile; fileRef = E40E0B0B17DA1AFF005E38C1 /* MSAIAppClient.m */; };
 		E4933E8017B66CDA00B11ACC /* MSAIHTTPOperation.h in Headers */ = {isa = PBXBuildFile; fileRef = E4933E7E17B66CDA00B11ACC /* MSAIHTTPOperation.h */; };
@@ -225,8 +224,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		1B2439BF1AB8AB8100B07374 /* MSAISessionHelperPrivate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MSAISessionHelperPrivate.h; sourceTree = "<group>"; };
-		1B2439C21AB8AF0300B07374 /* MSAISessionHelperTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAISessionHelperTests.m; path = AppInsightsTests/MSAISessionHelperTests.m; sourceTree = SOURCE_ROOT; };
 		1B3B73071A94BC8E008DCADA /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
 		1B3C386C1A82213000700081 /* MSAICrashData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAICrashData.h; sourceTree = "<group>"; };
 		1B3C386D1A82213000700081 /* MSAICrashData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAICrashData.m; sourceTree = "<group>"; };
@@ -240,19 +237,15 @@
 		1B3C38751A82213000700081 /* MSAICrashDataThreadFrame.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAICrashDataThreadFrame.m; sourceTree = "<group>"; };
 		1B3FB89C1A93756100D06311 /* MSAIReachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAIReachability.h; sourceTree = "<group>"; };
 		1B3FB89D1A93756100D06311 /* MSAIReachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAIReachability.m; sourceTree = "<group>"; };
-		1B3FB8A21A93762700D06311 /* MSAIReachabilityTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIReachabilityTests.m; path = AppInsightsTests/MSAIReachabilityTests.m; sourceTree = SOURCE_ROOT; };
 		1B3FB8A51A9383C300D06311 /* MSAIReachabilityPrivate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MSAIReachabilityPrivate.h; sourceTree = "<group>"; };
 		1B47E02C1A84D3DF000B4C3D /* MSAIEnvelopeManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAIEnvelopeManager.h; sourceTree = "<group>"; };
 		1B47E02D1A84D3DF000B4C3D /* MSAIEnvelopeManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAIEnvelopeManager.m; sourceTree = "<group>"; };
 		1B47E0301A84D413000B4C3D /* MSAIEnvelopeManagerPrivate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MSAIEnvelopeManagerPrivate.h; sourceTree = "<group>"; };
 		1B4D17E41A666EE30079D948 /* MSAIChannelPrivate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MSAIChannelPrivate.h; sourceTree = "<group>"; };
 		1B53FEBE1A6425240082F2E9 /* CrashReporter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CrashReporter.framework; path = ../Vendor/CrashReporter.framework; sourceTree = "<group>"; };
-		1B5963AC1AC429E600349899 /* MSAINotificationTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MSAINotificationTests.h; path = AppInsightsTests/MSAINotificationTests.h; sourceTree = SOURCE_ROOT; };
-		1B5963AD1AC429E600349899 /* MSAINotificationTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAINotificationTests.m; path = AppInsightsTests/MSAINotificationTests.m; sourceTree = SOURCE_ROOT; };
 		1B62F4D61A692A3200EB5AD0 /* MSAIContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAIContext.h; sourceTree = "<group>"; };
 		1B62F4D71A692A3200EB5AD0 /* MSAIContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAIContext.m; sourceTree = "<group>"; };
 		1B62F4DA1A692A6F00EB5AD0 /* MSAIContextPrivate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MSAIContextPrivate.h; sourceTree = "<group>"; };
-		1B74E8F01A9B69F90036F6C9 /* MSAIEnvelopeManagerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIEnvelopeManagerTests.m; path = AppInsightsTests/MSAIEnvelopeManagerTests.m; sourceTree = SOURCE_ROOT; };
 		1B85606E1A7A6A9D00A54FB7 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		1B873A971AC96F1700856450 /* MSAIAppInsightsDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MSAIAppInsightsDelegate.h; sourceTree = "<group>"; };
 		1BBBCF2E1A6594AE00253031 /* MSAIChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAIChannel.h; sourceTree = "<group>"; };
@@ -266,8 +259,6 @@
 		1BE29B461A6FB8C20014A10F /* MSAISender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAISender.h; sourceTree = "<group>"; };
 		1BE29B471A6FB8C20014A10F /* MSAISender.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAISender.m; sourceTree = "<group>"; };
 		1BE29B4A1A6FBAB50014A10F /* MSAISenderPrivate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MSAISenderPrivate.h; sourceTree = "<group>"; };
-		1BE53D741AB889420048ABBC /* MSAISessionHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAISessionHelper.h; sourceTree = "<group>"; };
-		1BE53D751AB889420048ABBC /* MSAISessionHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAISessionHelper.m; sourceTree = "<group>"; };
 		1E0FEE26173BDB260061331F /* MSAIKeychainUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAIKeychainUtils.h; sourceTree = "<group>"; };
 		1E0FEE27173BDB260061331F /* MSAIKeychainUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAIKeychainUtils.m; sourceTree = "<group>"; };
 		1E3A2B4C19645DC800D5BD66 /* ApplicationInsights-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ApplicationInsights-Prefix.pch"; sourceTree = "<group>"; };
@@ -292,8 +283,6 @@
 		1EB2E4C518FD4CEA008BB1CF /* MSAITelemetryManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAITelemetryManager.m; sourceTree = "<group>"; };
 		1EB2E4C818FD4E90008BB1CF /* MSAITelemetryManagerPrivate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MSAITelemetryManagerPrivate.h; sourceTree = "<group>"; };
 		1ECA8F4B192B5BD8006B9416 /* MSAICrashDetailsPrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAICrashDetailsPrivate.h; sourceTree = "<group>"; };
-		1ECA8F4F192B6954006B9416 /* MSAICrashMetaData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAICrashMetaData.h; sourceTree = "<group>"; };
-		1ECA8F50192B6954006B9416 /* MSAICrashMetaData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAICrashMetaData.m; sourceTree = "<group>"; };
 		1EDA60CF15C2C1450032D10B /* AppInsights-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "AppInsights-Info.plist"; sourceTree = "<group>"; };
 		1EFF03D717F20F8300A5F13C /* MSAICrashManagerPrivate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MSAICrashManagerPrivate.h; sourceTree = "<group>"; };
 		594931F0F69C22CBB67A2AD9 /* MSAIPersistence.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAIPersistence.h; sourceTree = "<group>"; };
@@ -354,52 +343,61 @@
 		807CFDA01A712974004EA1B6 /* MSAIStackFrame.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAIStackFrame.m; sourceTree = "<group>"; };
 		807CFDA11A712974004EA1B6 /* MSAIUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAIUser.h; sourceTree = "<group>"; };
 		807CFDA21A712974004EA1B6 /* MSAIUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAIUser.m; sourceTree = "<group>"; };
-		808FB21C1A7982140002872B /* ApplicationInsightsTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "ApplicationInsightsTests-Info.plist"; path = "AppInsightsTests/ApplicationInsightsTests-Info.plist"; sourceTree = SOURCE_ROOT; };
-		808FB21D1A7982140002872B /* ApplicationInsightsTests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "ApplicationInsightsTests-Prefix.pch"; path = "AppInsightsTests/ApplicationInsightsTests-Prefix.pch"; sourceTree = SOURCE_ROOT; };
-		808FB21E1A7982140002872B /* MSAITestHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MSAITestHelper.h; path = AppInsightsTests/MSAITestHelper.h; sourceTree = SOURCE_ROOT; };
-		808FB21F1A7982140002872B /* OCHamcrestIOS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OCHamcrestIOS.framework; path = AppInsightsTests/OCHamcrestIOS.framework; sourceTree = SOURCE_ROOT; };
-		808FB2201A7982140002872B /* OCMockitoIOS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OCMockitoIOS.framework; path = AppInsightsTests/OCMockitoIOS.framework; sourceTree = SOURCE_ROOT; };
-		808FB2211A7982230002872B /* MSAIAppClientTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIAppClientTests.m; path = AppInsightsTests/MSAIAppClientTests.m; sourceTree = SOURCE_ROOT; };
-		808FB2221A7982230002872B /* MSAIApplicationTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIApplicationTests.m; path = AppInsightsTests/MSAIApplicationTests.m; sourceTree = SOURCE_ROOT; };
-		808FB2231A7982230002872B /* MSAIBaseTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIBaseTests.m; path = AppInsightsTests/MSAIBaseTests.m; sourceTree = SOURCE_ROOT; };
-		808FB2241A7982230002872B /* MSAIChannelTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIChannelTests.m; path = AppInsightsTests/MSAIChannelTests.m; sourceTree = SOURCE_ROOT; };
-		808FB2251A7982230002872B /* MSAICrashManagerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAICrashManagerTests.m; path = AppInsightsTests/MSAICrashManagerTests.m; sourceTree = SOURCE_ROOT; };
-		808FB2261A7982230002872B /* MSAICrashReportTextFormatterTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAICrashReportTextFormatterTests.m; path = AppInsightsTests/MSAICrashReportTextFormatterTests.m; sourceTree = SOURCE_ROOT; };
-		808FB2271A7982230002872B /* MSAIDataPointTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIDataPointTests.m; path = AppInsightsTests/MSAIDataPointTests.m; sourceTree = SOURCE_ROOT; };
-		808FB2281A7982230002872B /* MSAIDataTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIDataTests.m; path = AppInsightsTests/MSAIDataTests.m; sourceTree = SOURCE_ROOT; };
-		808FB2291A7982230002872B /* MSAIDeviceTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIDeviceTests.m; path = AppInsightsTests/MSAIDeviceTests.m; sourceTree = SOURCE_ROOT; };
-		808FB22A1A7982230002872B /* MSAIDomainTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIDomainTests.m; path = AppInsightsTests/MSAIDomainTests.m; sourceTree = SOURCE_ROOT; };
-		808FB22B1A7982230002872B /* MSAIEnvelopeTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIEnvelopeTests.m; path = AppInsightsTests/MSAIEnvelopeTests.m; sourceTree = SOURCE_ROOT; };
-		808FB22C1A7982230002872B /* MSAIEventDataTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIEventDataTests.m; path = AppInsightsTests/MSAIEventDataTests.m; sourceTree = SOURCE_ROOT; };
-		808FB22D1A7982230002872B /* MSAIExceptionDataTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIExceptionDataTests.m; path = AppInsightsTests/MSAIExceptionDataTests.m; sourceTree = SOURCE_ROOT; };
-		808FB22E1A7982230002872B /* MSAIExceptionDetailsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIExceptionDetailsTests.m; path = AppInsightsTests/MSAIExceptionDetailsTests.m; sourceTree = SOURCE_ROOT; };
-		808FB22F1A7982230002872B /* MSAIHelperTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIHelperTests.m; path = AppInsightsTests/MSAIHelperTests.m; sourceTree = SOURCE_ROOT; };
-		808FB2301A7982230002872B /* MSAIInternalTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIInternalTests.m; path = AppInsightsTests/MSAIInternalTests.m; sourceTree = SOURCE_ROOT; };
-		808FB2311A7982230002872B /* MSAIKeychainUtilsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIKeychainUtilsTests.m; path = AppInsightsTests/MSAIKeychainUtilsTests.m; sourceTree = SOURCE_ROOT; };
-		808FB2321A7982230002872B /* MSAILocationTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAILocationTests.m; path = AppInsightsTests/MSAILocationTests.m; sourceTree = SOURCE_ROOT; };
-		808FB2331A7982230002872B /* MSAIMessageDataTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIMessageDataTests.m; path = AppInsightsTests/MSAIMessageDataTests.m; sourceTree = SOURCE_ROOT; };
-		808FB2341A7982230002872B /* MSAIMetricDataTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIMetricDataTests.m; path = AppInsightsTests/MSAIMetricDataTests.m; sourceTree = SOURCE_ROOT; };
-		808FB2351A7982230002872B /* MSAITelemetryManagerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAITelemetryManagerTests.m; path = AppInsightsTests/MSAITelemetryManagerTests.m; sourceTree = SOURCE_ROOT; };
-		808FB2361A7982230002872B /* MSAIOperationTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIOperationTests.m; path = AppInsightsTests/MSAIOperationTests.m; sourceTree = SOURCE_ROOT; };
-		808FB2371A7982230002872B /* MSAIPageViewDataTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIPageViewDataTests.m; path = AppInsightsTests/MSAIPageViewDataTests.m; sourceTree = SOURCE_ROOT; };
-		808FB2381A7982230002872B /* MSAIPageViewPerfDataTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIPageViewPerfDataTests.m; path = AppInsightsTests/MSAIPageViewPerfDataTests.m; sourceTree = SOURCE_ROOT; };
-		808FB2391A7982230002872B /* MSAIRemoteDependencyDataTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIRemoteDependencyDataTests.m; path = AppInsightsTests/MSAIRemoteDependencyDataTests.m; sourceTree = SOURCE_ROOT; };
-		808FB23A1A7982230002872B /* MSAIRequestDataTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIRequestDataTests.m; path = AppInsightsTests/MSAIRequestDataTests.m; sourceTree = SOURCE_ROOT; };
-		808FB23B1A7982230002872B /* MSAISenderTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAISenderTests.m; path = AppInsightsTests/MSAISenderTests.m; sourceTree = SOURCE_ROOT; };
-		808FB23C1A7982230002872B /* MSAISessionTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAISessionTests.m; path = AppInsightsTests/MSAISessionTests.m; sourceTree = SOURCE_ROOT; };
-		808FB23D1A7982230002872B /* MSAIStackFrameTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIStackFrameTests.m; path = AppInsightsTests/MSAIStackFrameTests.m; sourceTree = SOURCE_ROOT; };
-		808FB23E1A7982230002872B /* MSAITelemetryContextTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAITelemetryContextTests.m; path = AppInsightsTests/MSAITelemetryContextTests.m; sourceTree = SOURCE_ROOT; };
-		808FB23F1A7982230002872B /* MSAITestHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAITestHelper.m; path = AppInsightsTests/MSAITestHelper.m; sourceTree = SOURCE_ROOT; };
-		808FB2401A7982230002872B /* MSAIUserTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIUserTests.m; path = AppInsightsTests/MSAIUserTests.m; sourceTree = SOURCE_ROOT; };
-		808FB2611A7982300002872B /* live_report_empty.plcrash */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = live_report_empty.plcrash; path = AppInsightsTests/Fixtures/live_report_empty.plcrash; sourceTree = SOURCE_ROOT; };
-		808FB2621A7982300002872B /* live_report_exception.plcrash */ = {isa = PBXFileReference; lastKnownFileType = file; name = live_report_exception.plcrash; path = AppInsightsTests/Fixtures/live_report_exception.plcrash; sourceTree = SOURCE_ROOT; };
-		808FB2631A7982300002872B /* live_report_signal.plcrash */ = {isa = PBXFileReference; lastKnownFileType = file; name = live_report_signal.plcrash; path = AppInsightsTests/Fixtures/live_report_signal.plcrash; sourceTree = SOURCE_ROOT; };
 		809E9E571AC455D9008A1AB5 /* MSAISessionState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAISessionState.h; sourceTree = "<group>"; };
 		809E9E581AC455D9008A1AB5 /* MSAISessionStateData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAISessionStateData.h; sourceTree = "<group>"; };
 		809E9E591AC455D9008A1AB5 /* MSAISessionStateData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAISessionStateData.m; sourceTree = "<group>"; };
-		80F334AF1A9C8A430098026F /* MSAIManagerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIManagerTests.m; path = AppInsightsTests/MSAIManagerTests.m; sourceTree = SOURCE_ROOT; };
+		80D1D60B1B0A9A9800DD32B7 /* MSAIContextHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAIContextHelper.h; sourceTree = "<group>"; };
+		80D1D60C1B0A9A9800DD32B7 /* MSAIContextHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAIContextHelper.m; sourceTree = "<group>"; };
+		80D1D60D1B0A9A9800DD32B7 /* MSAIContextHelperPrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAIContextHelperPrivate.h; sourceTree = "<group>"; };
+		80D1D6111B0A9F3300DD32B7 /* ApplicationInsightsTests-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "ApplicationInsightsTests-Info.plist"; path = "ApplicationInsightsTests/ApplicationInsightsTests-Info.plist"; sourceTree = SOURCE_ROOT; };
+		80D1D6121B0A9F3300DD32B7 /* ApplicationInsightsTests-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "ApplicationInsightsTests-Prefix.pch"; path = "ApplicationInsightsTests/ApplicationInsightsTests-Prefix.pch"; sourceTree = SOURCE_ROOT; };
+		80D1D6141B0A9F4700DD32B7 /* MSAITestHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MSAITestHelper.h; path = ApplicationInsightsTests/MSAITestHelper.h; sourceTree = SOURCE_ROOT; };
+		80D1D6151B0A9F5B00DD32B7 /* OCHamcrestIOS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OCHamcrestIOS.framework; path = ApplicationInsightsTests/OCHamcrestIOS.framework; sourceTree = SOURCE_ROOT; };
+		80D1D6171B0A9F6600DD32B7 /* OCMockitoIOS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OCMockitoIOS.framework; path = ApplicationInsightsTests/OCMockitoIOS.framework; sourceTree = SOURCE_ROOT; };
+		80D1D6191B0A9FA400DD32B7 /* MSAITestsDependencyInjection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MSAITestsDependencyInjection.h; path = ApplicationInsightsTests/MSAITestsDependencyInjection.h; sourceTree = SOURCE_ROOT; };
+		80D1D61A1B0A9FA400DD32B7 /* MSAITestsDependencyInjection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAITestsDependencyInjection.m; path = ApplicationInsightsTests/MSAITestsDependencyInjection.m; sourceTree = SOURCE_ROOT; };
+		80D1D61D1B0A9FB200DD32B7 /* live_report_empty.plcrash */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = live_report_empty.plcrash; sourceTree = "<group>"; };
+		80D1D61E1B0A9FB200DD32B7 /* live_report_exception.plcrash */ = {isa = PBXFileReference; lastKnownFileType = file; path = live_report_exception.plcrash; sourceTree = "<group>"; };
+		80D1D61F1B0A9FB200DD32B7 /* live_report_signal.plcrash */ = {isa = PBXFileReference; lastKnownFileType = file; path = live_report_signal.plcrash; sourceTree = "<group>"; };
+		80D1D6231B0A9FE300DD32B7 /* MSAIAppClientTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIAppClientTests.m; path = ApplicationInsightsTests/MSAIAppClientTests.m; sourceTree = SOURCE_ROOT; };
+		80D1D6241B0A9FE300DD32B7 /* MSAIAppInsightsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIAppInsightsTests.m; path = ApplicationInsightsTests/MSAIAppInsightsTests.m; sourceTree = SOURCE_ROOT; };
+		80D1D6251B0A9FE300DD32B7 /* MSAIApplicationTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIApplicationTests.m; path = ApplicationInsightsTests/MSAIApplicationTests.m; sourceTree = SOURCE_ROOT; };
+		80D1D6261B0A9FE300DD32B7 /* MSAIBaseTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIBaseTests.m; path = ApplicationInsightsTests/MSAIBaseTests.m; sourceTree = SOURCE_ROOT; };
+		80D1D6271B0A9FE300DD32B7 /* MSAIChannelTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIChannelTests.m; path = ApplicationInsightsTests/MSAIChannelTests.m; sourceTree = SOURCE_ROOT; };
+		80D1D6281B0A9FE300DD32B7 /* MSAIContextHelperTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIContextHelperTests.m; path = ApplicationInsightsTests/MSAIContextHelperTests.m; sourceTree = SOURCE_ROOT; };
+		80D1D6291B0A9FE300DD32B7 /* MSAICrashDataProviderTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAICrashDataProviderTests.m; path = ApplicationInsightsTests/MSAICrashDataProviderTests.m; sourceTree = SOURCE_ROOT; };
+		80D1D62A1B0A9FE300DD32B7 /* MSAICrashManagerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAICrashManagerTests.m; path = ApplicationInsightsTests/MSAICrashManagerTests.m; sourceTree = SOURCE_ROOT; };
+		80D1D62B1B0A9FE300DD32B7 /* MSAIDataPointTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIDataPointTests.m; path = ApplicationInsightsTests/MSAIDataPointTests.m; sourceTree = SOURCE_ROOT; };
+		80D1D62C1B0A9FE300DD32B7 /* MSAIDataTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIDataTests.m; path = ApplicationInsightsTests/MSAIDataTests.m; sourceTree = SOURCE_ROOT; };
+		80D1D62D1B0A9FE300DD32B7 /* MSAIDeviceTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIDeviceTests.m; path = ApplicationInsightsTests/MSAIDeviceTests.m; sourceTree = SOURCE_ROOT; };
+		80D1D62E1B0A9FE300DD32B7 /* MSAIDomainTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIDomainTests.m; path = ApplicationInsightsTests/MSAIDomainTests.m; sourceTree = SOURCE_ROOT; };
+		80D1D62F1B0A9FE300DD32B7 /* MSAIEnvelopeManagerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIEnvelopeManagerTests.m; path = ApplicationInsightsTests/MSAIEnvelopeManagerTests.m; sourceTree = SOURCE_ROOT; };
+		80D1D6301B0A9FE300DD32B7 /* MSAIEnvelopeTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIEnvelopeTests.m; path = ApplicationInsightsTests/MSAIEnvelopeTests.m; sourceTree = SOURCE_ROOT; };
+		80D1D6311B0A9FE300DD32B7 /* MSAIEventDataTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIEventDataTests.m; path = ApplicationInsightsTests/MSAIEventDataTests.m; sourceTree = SOURCE_ROOT; };
+		80D1D6321B0A9FE300DD32B7 /* MSAIExceptionDataTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIExceptionDataTests.m; path = ApplicationInsightsTests/MSAIExceptionDataTests.m; sourceTree = SOURCE_ROOT; };
+		80D1D6331B0A9FE300DD32B7 /* MSAIExceptionDetailsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIExceptionDetailsTests.m; path = ApplicationInsightsTests/MSAIExceptionDetailsTests.m; sourceTree = SOURCE_ROOT; };
+		80D1D6341B0A9FE300DD32B7 /* MSAIHelperTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIHelperTests.m; path = ApplicationInsightsTests/MSAIHelperTests.m; sourceTree = SOURCE_ROOT; };
+		80D1D6351B0A9FE300DD32B7 /* MSAIInternalTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIInternalTests.m; path = ApplicationInsightsTests/MSAIInternalTests.m; sourceTree = SOURCE_ROOT; };
+		80D1D6361B0A9FE300DD32B7 /* MSAIKeychainUtilsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIKeychainUtilsTests.m; path = ApplicationInsightsTests/MSAIKeychainUtilsTests.m; sourceTree = SOURCE_ROOT; };
+		80D1D6371B0A9FE300DD32B7 /* MSAILocationTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAILocationTests.m; path = ApplicationInsightsTests/MSAILocationTests.m; sourceTree = SOURCE_ROOT; };
+		80D1D6381B0A9FE300DD32B7 /* MSAIMessageDataTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIMessageDataTests.m; path = ApplicationInsightsTests/MSAIMessageDataTests.m; sourceTree = SOURCE_ROOT; };
+		80D1D6391B0A9FE300DD32B7 /* MSAIMetricDataTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIMetricDataTests.m; path = ApplicationInsightsTests/MSAIMetricDataTests.m; sourceTree = SOURCE_ROOT; };
+		80D1D63A1B0A9FE300DD32B7 /* MSAIOperationTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIOperationTests.m; path = ApplicationInsightsTests/MSAIOperationTests.m; sourceTree = SOURCE_ROOT; };
+		80D1D63B1B0A9FE300DD32B7 /* MSAIPageViewDataTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIPageViewDataTests.m; path = ApplicationInsightsTests/MSAIPageViewDataTests.m; sourceTree = SOURCE_ROOT; };
+		80D1D63C1B0A9FE300DD32B7 /* MSAIPageViewPerfDataTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIPageViewPerfDataTests.m; path = ApplicationInsightsTests/MSAIPageViewPerfDataTests.m; sourceTree = SOURCE_ROOT; };
+		80D1D63D1B0A9FE300DD32B7 /* MSAIPersistenceTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIPersistenceTest.m; path = ApplicationInsightsTests/MSAIPersistenceTest.m; sourceTree = SOURCE_ROOT; };
+		80D1D63E1B0A9FE300DD32B7 /* MSAIReachabilityTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIReachabilityTests.m; path = ApplicationInsightsTests/MSAIReachabilityTests.m; sourceTree = SOURCE_ROOT; };
+		80D1D63F1B0A9FE300DD32B7 /* MSAIRemoteDependencyDataTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIRemoteDependencyDataTests.m; path = ApplicationInsightsTests/MSAIRemoteDependencyDataTests.m; sourceTree = SOURCE_ROOT; };
+		80D1D6401B0A9FE300DD32B7 /* MSAIRequestDataTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIRequestDataTests.m; path = ApplicationInsightsTests/MSAIRequestDataTests.m; sourceTree = SOURCE_ROOT; };
+		80D1D6411B0A9FE300DD32B7 /* MSAISenderTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAISenderTests.m; path = ApplicationInsightsTests/MSAISenderTests.m; sourceTree = SOURCE_ROOT; };
+		80D1D6421B0A9FE300DD32B7 /* MSAISessionTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAISessionTests.m; path = ApplicationInsightsTests/MSAISessionTests.m; sourceTree = SOURCE_ROOT; };
+		80D1D6431B0A9FE300DD32B7 /* MSAIStackFrameTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIStackFrameTests.m; path = ApplicationInsightsTests/MSAIStackFrameTests.m; sourceTree = SOURCE_ROOT; };
+		80D1D6441B0A9FE300DD32B7 /* MSAITelemetryContextTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAITelemetryContextTests.m; path = ApplicationInsightsTests/MSAITelemetryContextTests.m; sourceTree = SOURCE_ROOT; };
+		80D1D6451B0A9FE300DD32B7 /* MSAITelemetryManagerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAITelemetryManagerTests.m; path = ApplicationInsightsTests/MSAITelemetryManagerTests.m; sourceTree = SOURCE_ROOT; };
+		80D1D6461B0A9FE300DD32B7 /* MSAITestHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAITestHelper.m; path = ApplicationInsightsTests/MSAITestHelper.m; sourceTree = SOURCE_ROOT; };
+		80D1D6471B0A9FE300DD32B7 /* MSAIUserTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIUserTests.m; path = ApplicationInsightsTests/MSAIUserTests.m; sourceTree = SOURCE_ROOT; };
+		80D1D66D1B0AA0BC00DD32B7 /* libOCMock.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libOCMock.a; path = ApplicationInsightsTests/libOCMock.a; sourceTree = SOURCE_ROOT; };
 		80F334B11A9C93290098026F /* MSAIApplicationInsightsPrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAIApplicationInsightsPrivate.h; sourceTree = "<group>"; };
-		B25912321A8D129C00C88800 /* MSAIPersistenceTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIPersistenceTest.m; path = AppInsightsTests/MSAIPersistenceTest.m; sourceTree = SOURCE_ROOT; };
 		E400561D148D79B500EB22B9 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		E40E0B0A17DA1AFF005E38C1 /* MSAIAppClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAIAppClient.h; sourceTree = "<group>"; };
 		E40E0B0B17DA1AFF005E38C1 /* MSAIAppClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAIAppClient.m; sourceTree = "<group>"; };
@@ -426,10 +424,11 @@
 			files = (
 				1B3B73081A94BC8E008DCADA /* CoreTelephony.framework in Frameworks */,
 				1B53FEC01A6425240082F2E9 /* CrashReporter.framework in Frameworks */,
-				808FB2671A7982B50002872B /* OCHamcrestIOS.framework in Frameworks */,
-				808FB2681A7982B50002872B /* OCMockitoIOS.framework in Frameworks */,
+				80D1D6161B0A9F5B00DD32B7 /* OCHamcrestIOS.framework in Frameworks */,
+				80D1D6181B0A9F6600DD32B7 /* OCMockitoIOS.framework in Frameworks */,
 				1EA1170016F4D32C001C015C /* libApplicationInsights.a in Frameworks */,
 				1E5A459516F0DFC200B55C04 /* Foundation.framework in Frameworks */,
+				80D1D66E1B0AA0BC00DD32B7 /* libOCMock.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -538,47 +537,47 @@
 		1E5A459616F0DFC200B55C04 /* ApplicationInsights Tests */ = {
 			isa = PBXGroup;
 			children = (
-				1EA1170216F53B49001C015C /* Fixtures */,
-				808FB2211A7982230002872B /* MSAIAppClientTests.m */,
-				808FB2221A7982230002872B /* MSAIApplicationTests.m */,
-				808FB2231A7982230002872B /* MSAIBaseTests.m */,
-				808FB2241A7982230002872B /* MSAIChannelTests.m */,
-				808FB2251A7982230002872B /* MSAICrashManagerTests.m */,
-				808FB2261A7982230002872B /* MSAICrashReportTextFormatterTests.m */,
-				808FB2271A7982230002872B /* MSAIDataPointTests.m */,
-				808FB2281A7982230002872B /* MSAIDataTests.m */,
-				808FB2291A7982230002872B /* MSAIDeviceTests.m */,
-				808FB22A1A7982230002872B /* MSAIDomainTests.m */,
-				1B74E8F01A9B69F90036F6C9 /* MSAIEnvelopeManagerTests.m */,
-				808FB22B1A7982230002872B /* MSAIEnvelopeTests.m */,
-				808FB22C1A7982230002872B /* MSAIEventDataTests.m */,
-				808FB22D1A7982230002872B /* MSAIExceptionDataTests.m */,
-				808FB22E1A7982230002872B /* MSAIExceptionDetailsTests.m */,
-				808FB22F1A7982230002872B /* MSAIHelperTests.m */,
-				808FB2301A7982230002872B /* MSAIInternalTests.m */,
-				808FB2311A7982230002872B /* MSAIKeychainUtilsTests.m */,
-				808FB2321A7982230002872B /* MSAILocationTests.m */,
-				80F334AF1A9C8A430098026F /* MSAIManagerTests.m */,
-				808FB2331A7982230002872B /* MSAIMessageDataTests.m */,
-				808FB2341A7982230002872B /* MSAIMetricDataTests.m */,
-				808FB2351A7982230002872B /* MSAITelemetryManagerTests.m */,
-				808FB2361A7982230002872B /* MSAIOperationTests.m */,
-				808FB2371A7982230002872B /* MSAIPageViewDataTests.m */,
-				808FB2381A7982230002872B /* MSAIPageViewPerfDataTests.m */,
-				B25912321A8D129C00C88800 /* MSAIPersistenceTest.m */,
-				1B3FB8A21A93762700D06311 /* MSAIReachabilityTests.m */,
-				808FB2391A7982230002872B /* MSAIRemoteDependencyDataTests.m */,
-				808FB23A1A7982230002872B /* MSAIRequestDataTests.m */,
-				808FB23B1A7982230002872B /* MSAISenderTests.m */,
-				1B2439C21AB8AF0300B07374 /* MSAISessionHelperTests.m */,
-				808FB23C1A7982230002872B /* MSAISessionTests.m */,
-				808FB23D1A7982230002872B /* MSAIStackFrameTests.m */,
-				808FB23E1A7982230002872B /* MSAITelemetryContextTests.m */,
-				808FB23F1A7982230002872B /* MSAITestHelper.m */,
-				808FB2401A7982230002872B /* MSAIUserTests.m */,
+				80D1D61C1B0A9FB200DD32B7 /* Fixtures */,
+				80D1D6231B0A9FE300DD32B7 /* MSAIAppClientTests.m */,
+				80D1D6241B0A9FE300DD32B7 /* MSAIAppInsightsTests.m */,
+				80D1D6251B0A9FE300DD32B7 /* MSAIApplicationTests.m */,
+				80D1D6261B0A9FE300DD32B7 /* MSAIBaseTests.m */,
+				80D1D6271B0A9FE300DD32B7 /* MSAIChannelTests.m */,
+				80D1D6281B0A9FE300DD32B7 /* MSAIContextHelperTests.m */,
+				80D1D6291B0A9FE300DD32B7 /* MSAICrashDataProviderTests.m */,
+				80D1D62A1B0A9FE300DD32B7 /* MSAICrashManagerTests.m */,
+				80D1D62B1B0A9FE300DD32B7 /* MSAIDataPointTests.m */,
+				80D1D62C1B0A9FE300DD32B7 /* MSAIDataTests.m */,
+				80D1D62D1B0A9FE300DD32B7 /* MSAIDeviceTests.m */,
+				80D1D62E1B0A9FE300DD32B7 /* MSAIDomainTests.m */,
+				80D1D62F1B0A9FE300DD32B7 /* MSAIEnvelopeManagerTests.m */,
+				80D1D6301B0A9FE300DD32B7 /* MSAIEnvelopeTests.m */,
+				80D1D6311B0A9FE300DD32B7 /* MSAIEventDataTests.m */,
+				80D1D6321B0A9FE300DD32B7 /* MSAIExceptionDataTests.m */,
+				80D1D6331B0A9FE300DD32B7 /* MSAIExceptionDetailsTests.m */,
+				80D1D6341B0A9FE300DD32B7 /* MSAIHelperTests.m */,
+				80D1D6351B0A9FE300DD32B7 /* MSAIInternalTests.m */,
+				80D1D6361B0A9FE300DD32B7 /* MSAIKeychainUtilsTests.m */,
+				80D1D6371B0A9FE300DD32B7 /* MSAILocationTests.m */,
+				80D1D6381B0A9FE300DD32B7 /* MSAIMessageDataTests.m */,
+				80D1D6391B0A9FE300DD32B7 /* MSAIMetricDataTests.m */,
+				80D1D63A1B0A9FE300DD32B7 /* MSAIOperationTests.m */,
+				80D1D63B1B0A9FE300DD32B7 /* MSAIPageViewDataTests.m */,
+				80D1D63C1B0A9FE300DD32B7 /* MSAIPageViewPerfDataTests.m */,
+				80D1D63D1B0A9FE300DD32B7 /* MSAIPersistenceTest.m */,
+				80D1D63E1B0A9FE300DD32B7 /* MSAIReachabilityTests.m */,
+				80D1D63F1B0A9FE300DD32B7 /* MSAIRemoteDependencyDataTests.m */,
+				80D1D6401B0A9FE300DD32B7 /* MSAIRequestDataTests.m */,
+				80D1D6411B0A9FE300DD32B7 /* MSAISenderTests.m */,
+				80D1D6421B0A9FE300DD32B7 /* MSAISessionTests.m */,
+				80D1D6431B0A9FE300DD32B7 /* MSAIStackFrameTests.m */,
+				80D1D6441B0A9FE300DD32B7 /* MSAITelemetryContextTests.m */,
+				80D1D6451B0A9FE300DD32B7 /* MSAITelemetryManagerTests.m */,
+				80D1D6461B0A9FE300DD32B7 /* MSAITestHelper.m */,
+				80D1D6471B0A9FE300DD32B7 /* MSAIUserTests.m */,
 				1E5A459716F0DFC200B55C04 /* Supporting Files */,
-				1B5963AC1AC429E600349899 /* MSAINotificationTests.h */,
-				1B5963AD1AC429E600349899 /* MSAINotificationTests.m */,
+				80D1D6191B0A9FA400DD32B7 /* MSAITestsDependencyInjection.h */,
+				80D1D61A1B0A9FA400DD32B7 /* MSAITestsDependencyInjection.m */,
 			);
 			name = "ApplicationInsights Tests";
 			path = "AppInsights-iOSTests";
@@ -587,11 +586,12 @@
 		1E5A459716F0DFC200B55C04 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				808FB21C1A7982140002872B /* ApplicationInsightsTests-Info.plist */,
-				808FB21D1A7982140002872B /* ApplicationInsightsTests-Prefix.pch */,
-				808FB21E1A7982140002872B /* MSAITestHelper.h */,
-				808FB21F1A7982140002872B /* OCHamcrestIOS.framework */,
-				808FB2201A7982140002872B /* OCMockitoIOS.framework */,
+				80D1D6111B0A9F3300DD32B7 /* ApplicationInsightsTests-Info.plist */,
+				80D1D6121B0A9F3300DD32B7 /* ApplicationInsightsTests-Prefix.pch */,
+				80D1D6141B0A9F4700DD32B7 /* MSAITestHelper.h */,
+				80D1D66D1B0AA0BC00DD32B7 /* libOCMock.a */,
+				80D1D6151B0A9F5B00DD32B7 /* OCHamcrestIOS.framework */,
+				80D1D6171B0A9F6600DD32B7 /* OCMockitoIOS.framework */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -611,8 +611,13 @@
 			children = (
 				1E49A4D4161222D400463151 /* ApplicationInsightsPrivate.h */,
 				1E49A4D5161222D400463151 /* ApplicationInsightsPrivate.m */,
+				1BC859691A7ACA820018FB6B /* MSAICategoryContainer.h */,
+				1BC8596A1A7ACA820018FB6B /* MSAICategoryContainer.m */,
 				1B62F4D61A692A3200EB5AD0 /* MSAIContext.h */,
 				1B62F4D71A692A3200EB5AD0 /* MSAIContext.m */,
+				80D1D60B1B0A9A9800DD32B7 /* MSAIContextHelper.h */,
+				80D1D60C1B0A9A9800DD32B7 /* MSAIContextHelper.m */,
+				80D1D60D1B0A9A9800DD32B7 /* MSAIContextHelperPrivate.h */,
 				1B62F4DA1A692A6F00EB5AD0 /* MSAIContextPrivate.h */,
 				1E49A4A5161222B900463151 /* MSAIHelper.h */,
 				1E49A4A6161222B900463151 /* MSAIHelper.m */,
@@ -620,12 +625,7 @@
 				1E0FEE27173BDB260061331F /* MSAIKeychainUtils.m */,
 				807CFD661A71294E004EA1B6 /* MSAIOrderedDictionary.h */,
 				807CFD671A71294E004EA1B6 /* MSAIOrderedDictionary.m */,
-				1BC859691A7ACA820018FB6B /* MSAICategoryContainer.h */,
-				1BC8596A1A7ACA820018FB6B /* MSAICategoryContainer.m */,
 				1BC8596D1A7ACC040018FB6B /* MSAIPageViewLogging_UIViewController.h */,
-				1BE53D741AB889420048ABBC /* MSAISessionHelper.h */,
-				1BE53D751AB889420048ABBC /* MSAISessionHelper.m */,
-				1B2439BF1AB8AB8100B07374 /* MSAISessionHelperPrivate.h */,
 			);
 			name = Helper;
 			sourceTree = "<group>";
@@ -639,22 +639,10 @@
 				1E754E561621FBB70070AB92 /* MSAICrashManager.h */,
 				1E754E571621FBB70070AB92 /* MSAICrashManager.m */,
 				1EFF03D717F20F8300A5F13C /* MSAICrashManagerPrivate.h */,
-				1ECA8F4F192B6954006B9416 /* MSAICrashMetaData.h */,
-				1ECA8F50192B6954006B9416 /* MSAICrashMetaData.m */,
 				1E754E5A1621FBB70070AB92 /* MSAICrashDataProvider.h */,
 				1E754E5B1621FBB70070AB92 /* MSAICrashDataProvider.m */,
 			);
 			name = CrashReports;
-			sourceTree = "<group>";
-		};
-		1EA1170216F53B49001C015C /* Fixtures */ = {
-			isa = PBXGroup;
-			children = (
-				808FB2611A7982300002872B /* live_report_empty.plcrash */,
-				808FB2621A7982300002872B /* live_report_exception.plcrash */,
-				808FB2631A7982300002872B /* live_report_signal.plcrash */,
-			);
-			path = Fixtures;
 			sourceTree = "<group>";
 		};
 		1EB2E4C318FD4CBC008BB1CF /* Telemetry */ = {
@@ -666,6 +654,17 @@
 			);
 			name = Telemetry;
 			sourceTree = "<group>";
+		};
+		80D1D61C1B0A9FB200DD32B7 /* Fixtures */ = {
+			isa = PBXGroup;
+			children = (
+				80D1D61D1B0A9FB200DD32B7 /* live_report_empty.plcrash */,
+				80D1D61E1B0A9FB200DD32B7 /* live_report_exception.plcrash */,
+				80D1D61F1B0A9FB200DD32B7 /* live_report_signal.plcrash */,
+			);
+			name = Fixtures;
+			path = ApplicationInsightsTests/Fixtures;
+			sourceTree = SOURCE_ROOT;
 		};
 		E400560F148D79B500EB22B9 = {
 			isa = PBXGroup;
@@ -803,7 +802,6 @@
 				807CFDAD1A712974004EA1B6 /* MSAIDependencySourceType.h in Headers */,
 				1B3C387C1A82213000700081 /* MSAICrashDataThread.h in Headers */,
 				807CFDB71A712974004EA1B6 /* MSAIExceptionData.h in Headers */,
-				1ECA8F51192B6954006B9416 /* MSAICrashMetaData.h in Headers */,
 				807CFDBF1A712974004EA1B6 /* MSAIMessageData.h in Headers */,
 				1E90FD7318EDB86400CF0417 /* MSAICrashDetails.h in Headers */,
 				807CFDC71A712974004EA1B6 /* MSAIPageViewPerfData.h in Headers */,
@@ -824,6 +822,7 @@
 				807CFDAE1A712974004EA1B6 /* MSAIDevice.h in Headers */,
 				807CFDB51A712974004EA1B6 /* MSAIEventData.h in Headers */,
 				807CFDC91A712974004EA1B6 /* MSAIRemoteDependencyData.h in Headers */,
+				80D1D6101B0A9A9800DD32B7 /* MSAIContextHelperPrivate.h in Headers */,
 				1E49A4BE161222B900463151 /* MSAIHelper.h in Headers */,
 				807CFDCB1A712974004EA1B6 /* MSAIRequestData.h in Headers */,
 				807CFDA51A712974004EA1B6 /* MSAIBase.h in Headers */,
@@ -838,8 +837,8 @@
 				1E754E601621FBB70070AB92 /* MSAICrashDataProvider.h in Headers */,
 				807CFDC11A712974004EA1B6 /* MSAIMetricData.h in Headers */,
 				1B3C38761A82213000700081 /* MSAICrashData.h in Headers */,
-				1BE53D761AB889420048ABBC /* MSAISessionHelper.h in Headers */,
 				807CFDBD1A712974004EA1B6 /* MSAILocation.h in Headers */,
+				80D1D60E1B0A9A9800DD32B7 /* MSAIContextHelper.h in Headers */,
 				1E0FEE28173BDB260061331F /* MSAIKeychainUtils.h in Headers */,
 				1B3C387E1A82213000700081 /* MSAICrashDataThreadFrame.h in Headers */,
 				594931B3422F36B9D1DA449C /* MSAIPersistence.h in Headers */,
@@ -919,10 +918,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				808FB2651A7982300002872B /* live_report_exception.plcrash in Resources */,
-				808FB2661A7982300002872B /* live_report_signal.plcrash in Resources */,
-				1B8688D51A6D852E0008CEE9 /* AppInsights-Info.plist in Resources */,
-				808FB2641A7982300002872B /* live_report_empty.plcrash in Resources */,
+				80D1D6201B0A9FB200DD32B7 /* live_report_empty.plcrash in Resources */,
+				80D1D6211B0A9FB200DD32B7 /* live_report_exception.plcrash in Resources */,
+				80D1D6221B0A9FB200DD32B7 /* live_report_signal.plcrash in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -992,7 +990,6 @@
 				1B47E02F1A84D3DF000B4C3D /* MSAIEnvelopeManager.m in Sources */,
 				807CFDB81A712974004EA1B6 /* MSAIExceptionData.m in Sources */,
 				E40E0B0D17DA1AFF005E38C1 /* MSAIAppClient.m in Sources */,
-				1ECA8F52192B6954006B9416 /* MSAICrashMetaData.m in Sources */,
 				807CFDA61A712974004EA1B6 /* MSAIBase.m in Sources */,
 				1B3FB89F1A93756100D06311 /* MSAIReachability.m in Sources */,
 				809E9E5C1AC455D9008A1AB5 /* MSAISessionStateData.m in Sources */,
@@ -1001,7 +998,6 @@
 				807CFDBC1A712974004EA1B6 /* MSAIInternal.m in Sources */,
 				807CFDBE1A712974004EA1B6 /* MSAILocation.m in Sources */,
 				E4933E8117B66CDA00B11ACC /* MSAIHTTPOperation.m in Sources */,
-				1BE53D771AB889420048ABBC /* MSAISessionHelper.m in Sources */,
 				807CFDB41A712974004EA1B6 /* MSAIEnvelope.m in Sources */,
 				1E49A4C1161222B900463151 /* MSAIHelper.m in Sources */,
 				807CFDCE1A712974004EA1B6 /* MSAISession.m in Sources */,
@@ -1025,6 +1021,7 @@
 				1E754E611621FBB70070AB92 /* MSAICrashDataProvider.m in Sources */,
 				807CFDA41A712974004EA1B6 /* MSAIApplication.m in Sources */,
 				1BBBCF351A6594AE00253031 /* MSAIChannel.m in Sources */,
+				80D1D60F1B0A9A9800DD32B7 /* MSAIContextHelper.m in Sources */,
 				1E0FEE29173BDB260061331F /* MSAIKeychainUtils.m in Sources */,
 				59493E4E3899627127FA6760 /* MSAIPersistence.m in Sources */,
 			);
@@ -1034,44 +1031,44 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				808FB25D1A7982230002872B /* MSAIStackFrameTests.m in Sources */,
-				808FB24C1A7982230002872B /* MSAIEventDataTests.m in Sources */,
-				808FB25F1A7982230002872B /* MSAITestHelper.m in Sources */,
-				1B74E8F21A9B6A070036F6C9 /* MSAIEnvelopeManagerTests.m in Sources */,
-				808FB2561A7982230002872B /* MSAIOperationTests.m in Sources */,
-				808FB25C1A7982230002872B /* MSAISessionTests.m in Sources */,
-				808FB2421A7982230002872B /* MSAIApplicationTests.m in Sources */,
-				808FB2601A7982230002872B /* MSAIUserTests.m in Sources */,
-				1B5963AE1AC429E600349899 /* MSAINotificationTests.m in Sources */,
-				808FB2481A7982230002872B /* MSAIDataTests.m in Sources */,
-				808FB2411A7982230002872B /* MSAIAppClientTests.m in Sources */,
-				808FB2551A7982230002872B /* MSAITelemetryManagerTests.m in Sources */,
-				1B3FB8A41A9382A200D06311 /* MSAIReachabilityTests.m in Sources */,
-				808FB24A1A7982230002872B /* MSAIDomainTests.m in Sources */,
-				808FB25A1A7982230002872B /* MSAIRequestDataTests.m in Sources */,
-				808FB2531A7982230002872B /* MSAIMessageDataTests.m in Sources */,
-				808FB2511A7982230002872B /* MSAIKeychainUtilsTests.m in Sources */,
-				808FB2541A7982230002872B /* MSAIMetricDataTests.m in Sources */,
-				808FB24B1A7982230002872B /* MSAIEnvelopeTests.m in Sources */,
-				808FB24E1A7982230002872B /* MSAIExceptionDetailsTests.m in Sources */,
-				808FB2591A7982230002872B /* MSAIRemoteDependencyDataTests.m in Sources */,
-				808FB2521A7982230002872B /* MSAILocationTests.m in Sources */,
-				808FB2431A7982230002872B /* MSAIBaseTests.m in Sources */,
-				808FB2501A7982230002872B /* MSAIInternalTests.m in Sources */,
-				808FB2441A7982230002872B /* MSAIChannelTests.m in Sources */,
-				808FB2571A7982230002872B /* MSAIPageViewDataTests.m in Sources */,
-				808FB2491A7982230002872B /* MSAIDeviceTests.m in Sources */,
-				808FB2581A7982230002872B /* MSAIPageViewPerfDataTests.m in Sources */,
-				808FB2451A7982230002872B /* MSAICrashManagerTests.m in Sources */,
-				B25912331A8D129C00C88800 /* MSAIPersistenceTest.m in Sources */,
-				808FB25B1A7982230002872B /* MSAISenderTests.m in Sources */,
-				808FB2471A7982230002872B /* MSAIDataPointTests.m in Sources */,
-				808FB2461A7982230002872B /* MSAICrashReportTextFormatterTests.m in Sources */,
-				808FB24D1A7982230002872B /* MSAIExceptionDataTests.m in Sources */,
-				1B2439C31AB8AF0300B07374 /* MSAISessionHelperTests.m in Sources */,
-				80F334B01A9C8A430098026F /* MSAIManagerTests.m in Sources */,
-				808FB24F1A7982230002872B /* MSAIHelperTests.m in Sources */,
-				808FB25E1A7982230002872B /* MSAITelemetryContextTests.m in Sources */,
+				80D1D6581B0A9FE300DD32B7 /* MSAIExceptionDetailsTests.m in Sources */,
+				80D1D6601B0A9FE300DD32B7 /* MSAIPageViewDataTests.m in Sources */,
+				80D1D6491B0A9FE300DD32B7 /* MSAIAppInsightsTests.m in Sources */,
+				80D1D6511B0A9FE300DD32B7 /* MSAIDataTests.m in Sources */,
+				80D1D6661B0A9FE300DD32B7 /* MSAISenderTests.m in Sources */,
+				80D1D64A1B0A9FE300DD32B7 /* MSAIApplicationTests.m in Sources */,
+				80D1D6671B0A9FE300DD32B7 /* MSAISessionTests.m in Sources */,
+				80D1D6501B0A9FE300DD32B7 /* MSAIDataPointTests.m in Sources */,
+				80D1D65D1B0A9FE300DD32B7 /* MSAIMessageDataTests.m in Sources */,
+				80D1D64C1B0A9FE300DD32B7 /* MSAIChannelTests.m in Sources */,
+				80D1D66C1B0A9FE300DD32B7 /* MSAIUserTests.m in Sources */,
+				80D1D6631B0A9FE300DD32B7 /* MSAIReachabilityTests.m in Sources */,
+				80D1D65E1B0A9FE300DD32B7 /* MSAIMetricDataTests.m in Sources */,
+				80D1D64B1B0A9FE300DD32B7 /* MSAIBaseTests.m in Sources */,
+				80D1D6681B0A9FE300DD32B7 /* MSAIStackFrameTests.m in Sources */,
+				80D1D6541B0A9FE300DD32B7 /* MSAIEnvelopeManagerTests.m in Sources */,
+				80D1D66B1B0A9FE300DD32B7 /* MSAITestHelper.m in Sources */,
+				80D1D6521B0A9FE300DD32B7 /* MSAIDeviceTests.m in Sources */,
+				80D1D6621B0A9FE300DD32B7 /* MSAIPersistenceTest.m in Sources */,
+				80D1D6641B0A9FE300DD32B7 /* MSAIRemoteDependencyDataTests.m in Sources */,
+				80D1D65F1B0A9FE300DD32B7 /* MSAIOperationTests.m in Sources */,
+				80D1D6591B0A9FE300DD32B7 /* MSAIHelperTests.m in Sources */,
+				80D1D6651B0A9FE300DD32B7 /* MSAIRequestDataTests.m in Sources */,
+				80D1D6611B0A9FE300DD32B7 /* MSAIPageViewPerfDataTests.m in Sources */,
+				80D1D61B1B0A9FA400DD32B7 /* MSAITestsDependencyInjection.m in Sources */,
+				80D1D65C1B0A9FE300DD32B7 /* MSAILocationTests.m in Sources */,
+				80D1D6551B0A9FE300DD32B7 /* MSAIEnvelopeTests.m in Sources */,
+				80D1D64D1B0A9FE300DD32B7 /* MSAIContextHelperTests.m in Sources */,
+				80D1D6571B0A9FE300DD32B7 /* MSAIExceptionDataTests.m in Sources */,
+				80D1D6561B0A9FE300DD32B7 /* MSAIEventDataTests.m in Sources */,
+				80D1D66A1B0A9FE300DD32B7 /* MSAITelemetryManagerTests.m in Sources */,
+				80D1D65A1B0A9FE300DD32B7 /* MSAIInternalTests.m in Sources */,
+				80D1D64E1B0A9FE300DD32B7 /* MSAICrashDataProviderTests.m in Sources */,
+				80D1D6481B0A9FE300DD32B7 /* MSAIAppClientTests.m in Sources */,
+				80D1D65B1B0A9FE300DD32B7 /* MSAIKeychainUtilsTests.m in Sources */,
+				80D1D64F1B0A9FE300DD32B7 /* MSAICrashManagerTests.m in Sources */,
+				80D1D6531B0A9FE300DD32B7 /* MSAIDomainTests.m in Sources */,
+				80D1D6691B0A9FE300DD32B7 /* MSAITelemetryContextTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1171,26 +1168,47 @@
 					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
 					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
 					"\"$(SRCROOT)/../Vendor\"",
-					"\"$(SRCROOT)/AppInsightsTests\"",
 					"$(inherited)",
 					"$(PROJECT_DIR)",
-					"$(PROJECT_DIR)/AppInsightsTests",
+					"$(PROJECT_DIR)/ApplicationInsightsTests",
 				);
 				GCC_INSTRUMENT_PROGRAM_FLOW_ARCS = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "AppInsightsTests/ApplicationInsightsTests-Prefix.pch";
+				GCC_PREFIX_HEADER = "ApplicationInsightsTests/ApplicationInsightsTests-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
 				);
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
-				INFOPLIST_FILE = "AppInsightsTests/ApplicationInsightsTests-Info.plist";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					"$(PROJECT_DIR)/ApplicationInsightsTests",
+				);
+				INFOPLIST_FILE = "ApplicationInsightsTests/ApplicationInsightsTests-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/AppInsightsTests\"",
+					"$(PROJECT_DIR)/ApplicationInsightsTests",
 				);
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-framework",
+					CFNetwork,
+					"-framework",
+					Foundation,
+					"-framework",
+					Security,
+					"-framework",
+					SystemConfiguration,
+					"-framework",
+					UIKit,
+					"-weak_framework",
+					CoreTelephony,
+					"-lz",
+					"-ObjC",
+				);
 				PRODUCT_NAME = ApplicationInsightsTests;
 			};
 			name = Debug;
@@ -1210,22 +1228,43 @@
 					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
 					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
 					"\"$(SRCROOT)/../Vendor\"",
-					"\"$(SRCROOT)/AppInsightsTests\"",
 					"$(inherited)",
 					"$(PROJECT_DIR)",
-					"$(PROJECT_DIR)/AppInsightsTests",
+					"$(PROJECT_DIR)/ApplicationInsightsTests",
 				);
 				GCC_INSTRUMENT_PROGRAM_FLOW_ARCS = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "AppInsightsTests/ApplicationInsightsTests-Prefix.pch";
+				GCC_PREFIX_HEADER = "ApplicationInsightsTests/ApplicationInsightsTests-Prefix.pch";
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
-				INFOPLIST_FILE = "AppInsightsTests/ApplicationInsightsTests-Info.plist";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					"$(PROJECT_DIR)/ApplicationInsightsTests",
+				);
+				INFOPLIST_FILE = "ApplicationInsightsTests/ApplicationInsightsTests-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/AppInsightsTests\"",
+					"$(PROJECT_DIR)/ApplicationInsightsTests",
 				);
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-framework",
+					CFNetwork,
+					"-framework",
+					Foundation,
+					"-framework",
+					Security,
+					"-framework",
+					SystemConfiguration,
+					"-framework",
+					UIKit,
+					"-weak_framework",
+					CoreTelephony,
+					"-lz",
+					"-ObjC",
+				);
 				PRODUCT_NAME = ApplicationInsightsTests;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -1331,26 +1370,47 @@
 					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
 					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
 					"\"$(SRCROOT)/../Vendor\"",
-					"\"$(SRCROOT)/AppInsightsTests\"",
 					"$(inherited)",
 					"$(PROJECT_DIR)",
-					"$(PROJECT_DIR)/AppInsightsTests",
+					"$(PROJECT_DIR)/ApplicationInsightsTests",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "AppInsightsTests/ApplicationInsightsTests-Prefix.pch";
+				GCC_PREFIX_HEADER = "ApplicationInsightsTests/ApplicationInsightsTests-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
 				);
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GENERATE_PROFILING_CODE = YES;
-				INFOPLIST_FILE = "AppInsightsTests/ApplicationInsightsTests-Info.plist";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					"$(PROJECT_DIR)/ApplicationInsightsTests",
+				);
+				INFOPLIST_FILE = "ApplicationInsightsTests/ApplicationInsightsTests-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/AppInsightsTests\"",
+					"$(PROJECT_DIR)/ApplicationInsightsTests",
 				);
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-framework",
+					CFNetwork,
+					"-framework",
+					Foundation,
+					"-framework",
+					Security,
+					"-framework",
+					SystemConfiguration,
+					"-framework",
+					UIKit,
+					"-weak_framework",
+					CoreTelephony,
+					"-lz",
+					"-ObjC",
+				);
 				PRODUCT_NAME = ApplicationInsightsTests;
 			};
 			name = CodeCoverage;

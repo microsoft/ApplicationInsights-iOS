@@ -1,7 +1,7 @@
 #import <Foundation/Foundation.h>
-
 #import "MSAIHTTPOperation.h"
 
+NS_ASSUME_NONNULL_BEGIN
 /**
  *  Generic ApplicationInsights API client
  */
@@ -12,7 +12,7 @@
  *
  *	@param	baseURL	the baseURL of the ApplicationInsights instance
  */
-- (instancetype) initWithBaseURL:(NSURL*) baseURL;
+- (instancetype)initWithBaseURL:(NSURL*)baseURL;
 
 /**
  *	baseURL to which relative paths are appended
@@ -29,60 +29,75 @@
  *
  *	@return	an NSMutableURLRequest for further configuration
  */
-- (NSMutableURLRequest *) requestWithMethod:(NSString*) method
-                                       path:(NSString *) path
-                                 parameters:(NSDictionary *) params;
+- (NSMutableURLRequest *)requestWithMethod:(NSString*)method
+                                      path:(nullable NSString *)path
+                                parameters:(nullable NSDictionary *)params;
+
 /**
  *	Creates an operation for the given NSURLRequest
  *
  *	@param	request	the request that should be handled
+ *	@param  queue Queue on which the completion block will be executed.
  *	@param	completion	completionBlock that is called once the operation finished
  *
  *	@return	operation, which can be queued via enqueueHTTPOperation:
  */
-- (MSAIHTTPOperation *) operationWithURLRequest:(NSURLRequest*) request
-                                   completion:(MSAINetworkCompletionBlock) completion;
+- (MSAIHTTPOperation *)operationWithURLRequest:(NSURLRequest *)request queue:(dispatch_queue_t)queue completion:(nullable MSAINetworkCompletionBlock)completion;
 
 /**
  *	Creates an operation for the given path, and enqueues it
  *
  *	@param	path	the request path to check
  *	@param	params parameters for the request
- *	@param	completion	completionBlock that is called once the operation finished
+ *	@param	completion	completionBlock that is called once the operation finished. 
+ *          The block is executed on the main queue.
  *
  */
-- (void) getPath:(NSString*) path
-      parameters:(NSDictionary *) params
-      completion:(MSAINetworkCompletionBlock) completion;
+- (void)getPath:(NSString*)path
+     parameters:(nullable NSDictionary *)params
+     completion:(nullable MSAINetworkCompletionBlock)completion;
 
 /**
  *	Creates an operation for the given path, and enqueues it
  *
  *	@param	path	the request path to check
  *	@param	params parameters for the request
- *	@param	completion	completionBlock that is called once the operation finished
+ *	@param	completion	completionBlock that is called once the operation finished.
+ *          The block is executed on the main queue
  *
  */
-- (void) postPath:(NSString*) path
-       parameters:(NSDictionary *) params
-       completion:(MSAINetworkCompletionBlock) completion;
+- (void)postPath:(NSString*)path
+      parameters:(nullable NSDictionary *)params
+      completion:(nullable MSAINetworkCompletionBlock)completion;
 /**
  *	adds the given operation to the internal queue
  *
  *	@param	operation	operation to add
  */
-- (void) enqeueHTTPOperation:(MSAIHTTPOperation *) operation;
+- (void)enqeueHTTPOperation:(MSAIHTTPOperation *)operation;
 
 /**
  *	cancels the specified operations
  *
- *	@param	path	the path which operation should be cancelled. Can be nil to match all
- *	@param	method	the method which operations to cancel. Can be nil to match all
+ *	@param	path	the path which operation should be cancelled.
+ *	@param	method	the method which operations to cancel.
+ *
  *  @return number of operations cancelled
+ *
+ *  @see cancelAllOperations
  */
-- (NSUInteger) cancelOperationsWithPath:(NSString*) path
-                                 method:(NSString*) method;
+- (NSUInteger)cancelOperationsWithPath:(nullable NSString*)path
+                                method:(nullable NSString*)method;
 
+/**
+ *  cancels all current operations
+ *
+ *  @returns number of operations cancelled
+ *
+ *  @see cancelOperationsWithPath:method:
+ */
+- (NSUInteger)cancelAllOperations;
+ 
 /**
  *	Access to the internal operation queue
  */
@@ -99,19 +114,20 @@
  *
  *	@return	NSData instance configured to be attached on a (post) URLRequest
  */
-+ (NSData *)dataWithPostValue:(NSString *)value forKey:(NSString *)key boundary:(NSString *) boundary;
++ (NSData *)dataWithPostValue:(NSString *)value forKey:(NSString *)key boundary:(NSString *)boundary;
 
 /**
  *	create a post body from the given value, key and boundary and content type.
  *
  *	@param	value	-
  *	@param	key	-
- *@param contentType -
+ *  @param contentType -
  *	@param	boundary	-
  *	@param	filename	-
  *
  *	@return	NSData instance configured to be attached on a (post) URLRequest
  */
-+ (NSData *)dataWithPostValue:(NSData *)value forKey:(NSString *)key contentType:(NSString *)contentType boundary:(NSString *) boundary filename:(NSString *)filename;
++ (NSData *)dataWithPostValue:(NSData *)value forKey:(NSString *)key contentType:(NSString *)contentType boundary:(NSString *)boundary filename:(null_unspecified NSString *)filename;
 
 @end
+NS_ASSUME_NONNULL_END

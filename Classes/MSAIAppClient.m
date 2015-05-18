@@ -2,7 +2,7 @@
 
 @implementation MSAIAppClient
 - (void)dealloc {
-  [self cancelOperationsWithPath:nil method:nil];
+  [self cancelAllOperations];
 }
 
 - (instancetype)initWithBaseURL:(NSURL *)baseURL {
@@ -15,9 +15,9 @@
 }
 
 #pragma mark - Networking
-- (NSMutableURLRequest *) requestWithMethod:(NSString*) method
-                                       path:(NSString *) path
-                                 parameters:(NSDictionary *)params {
+- (NSMutableURLRequest *)requestWithMethod:(NSString*)method
+                                      path:(NSString *)path
+                                parameters:(NSDictionary *)params {
   
   path = path ? : @"";
   
@@ -64,7 +64,7 @@
   
   [postBody appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
   
-  // There's certainly a better way to check if we are supposed to send binary data here. 
+  // There's certainly a better way to check if we are supposed to send binary data here.
   if (filename){
     [postBody appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"%@\"; filename=\"%@\"\r\n", key, filename] dataUsingEncoding:NSUTF8StringEncoding]];
     [postBody appendData:[[NSString stringWithFormat:@"Content-Type: %@\r\n", contentType] dataUsingEncoding:NSUTF8StringEncoding]];
@@ -92,55 +92,59 @@
   return queryString;
 }
 
-- (MSAIHTTPOperation *) operationWithURLRequest:(NSURLRequest*) request
-                                   completion:(MSAINetworkCompletionBlock) completion {
-  MSAIHTTPOperation *operation = [MSAIHTTPOperation operationWithRequest:request
-  ];
-  [operation setCompletion:completion];
+- (MSAIHTTPOperation *)operationWithURLRequest:(NSURLRequest *)request queue:(dispatch_queue_t)queue completion:(nullable MSAINetworkCompletionBlock)completion {
+  MSAIHTTPOperation *operation = [MSAIHTTPOperation operationWithRequest:request];
+  [operation setCompletion:completion onQueue:queue];
   
   return operation;
 }
 
 - (void)getPath:(NSString *)path parameters:(NSDictionary *)params completion:(MSAINetworkCompletionBlock)completion {
   NSURLRequest *request = [self requestWithMethod:@"GET" path:path parameters:params];
-  MSAIHTTPOperation *op = [self operationWithURLRequest:request
-                                            completion:completion];
+  MSAIHTTPOperation *op = [self operationWithURLRequest:request queue:dispatch_get_main_queue() completion:completion];
   [self enqeueHTTPOperation:op];
 }
 
 - (void)postPath:(NSString *)path parameters:(NSDictionary *)params completion:(MSAINetworkCompletionBlock)completion {
   NSURLRequest *request = [self requestWithMethod:@"POST" path:path parameters:params];
-  MSAIHTTPOperation *op = [self operationWithURLRequest:request
-                                            completion:completion];
+  MSAIHTTPOperation *op = [self operationWithURLRequest:request queue:dispatch_get_main_queue() completion:completion];
   [self enqeueHTTPOperation:op];
 }
 
-- (void) enqeueHTTPOperation:(MSAIHTTPOperation *) operation {
+- (void)enqeueHTTPOperation:(MSAIHTTPOperation *)operation {
   [self.operationQueue addOperation:operation];
 }
 
-- (NSUInteger) cancelOperationsWithPath:(NSString*) path
-                                 method:(NSString*) method {
+- (NSUInteger)cancelOperationsWithPath:(NSString*)path method:(NSString*)method {
   NSUInteger cancelledOperations = 0;
   for(MSAIHTTPOperation *operation in self.operationQueue.operations) {
     NSURLRequest *request = operation.URLRequest;
     
-    BOOL matchedMethod = YES;
-    if(method && ![request.HTTPMethod isEqualToString:method]) {
-      matchedMethod = NO;
+    BOOL matchedMethod = NO;
+    if ([request.HTTPMethod isEqualToString:method]) {
+      matchedMethod = YES;
     }
     
-    BOOL matchedPath = YES;
-    if(path) {
+    BOOL matchedPath = NO;
+    if (path) {
       //method is not interesting here, we' just creating it to get the URL
       NSURL *url = [self requestWithMethod:@"GET" path:path parameters:nil].URL;
       matchedPath = [request.URL isEqual:url];
     }
     
-    if(matchedPath && matchedMethod) {
-      ++cancelledOperations;
+    if (matchedPath || matchedMethod) {
       [operation cancel];
+      ++cancelledOperations;
     }
+  }
+  return cancelledOperations;
+}
+
+- (NSUInteger)cancelAllOperations {
+  NSUInteger cancelledOperations = 0;
+  for(MSAIHTTPOperation *operation in self.operationQueue.operations) {
+    [operation cancel];
+    ++cancelledOperations;
   }
   return cancelledOperations;
 }

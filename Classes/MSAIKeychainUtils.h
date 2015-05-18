@@ -28,11 +28,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "ApplicationInsights.h"
 
-
-@interface MSAIKeychainUtils : NSObject {
-  
-}
+NS_ASSUME_NONNULL_BEGIN
+@interface MSAIKeychainUtils : NSObject
 
 + (NSString *) getPasswordForUsername: (NSString *) username andServiceName: (NSString *) serviceName error: (NSError **) error;
 //uses the default kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly
@@ -42,3 +41,4 @@
 + (BOOL) purgeItemsForServiceName:(NSString *) serviceName error: (NSError **) error;
 
 @end
+NS_ASSUME_NONNULL_END

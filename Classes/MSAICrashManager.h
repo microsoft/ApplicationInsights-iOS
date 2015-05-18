@@ -1,9 +1,9 @@
 #import <Foundation/Foundation.h>
 
 @class MSAICrashDetails;
-@class MSAICrashMetaData;
 @class MSAIContext;
 
+NS_ASSUME_NONNULL_BEGIN
 /**
 * Prototype of a callback function used to execute additional user code. Called upon completion of crash
 * handling, after the crash report has been written to disk.
@@ -298,3 +298,4 @@ invoked!
 - (void)generateTestCrash;
 
 @end
+NS_ASSUME_NONNULL_END

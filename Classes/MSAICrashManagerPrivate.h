@@ -8,8 +8,8 @@
 @class MSAIAppClient;
 @class MSAIEnvelope;
 
-@interface MSAICrashManager () {
-}
+NS_ASSUME_NONNULL_BEGIN
+@interface MSAICrashManager ()
 
 ///-----------------------------------------------------------------------------
 /// @name Properties
@@ -113,6 +113,6 @@ Value that indicates a low memory warning has been sent to the app. For memory w
 void msai_save_events_callback(siginfo_t *info, ucontext_t *uap, void *context);
 
 @end
-
+NS_ASSUME_NONNULL_END
 
 #endif /* MSAI_FEATURE_CRASH_REPORTER */
