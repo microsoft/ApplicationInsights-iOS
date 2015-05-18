@@ -13,10 +13,9 @@
 #import "MSAIEnvelope.h"
 #import "MSAIPersistencePrivate.h"
 
-@interface MSAISenderTests : XCTestCase
+@interface MSAISenderTests : XCTestCase <MSAIAppInsightsDelegate>
 
 @end
-
 
 @implementation MSAISenderTests {
   MSAISender *_sut;

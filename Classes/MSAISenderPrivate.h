@@ -61,7 +61,7 @@ NS_ASSUME_NONNULL_BEGIN
  *  @param endpointPath the endpoint url of the telemetry server
  *  @param delegate delegate that should be informed if sending was successful or failed
  */
-- (void)configureWithAppClient:(MSAIAppClient *)appClient delegate:(id) delegate;
+- (void)configureWithAppClient:(MSAIAppClient *)appClient delegate:(nullable id<MSAIAppInsightsDelegate>) delegate;
 
 ///-----------------------------------------------------------------------------
 /// @name Sending data

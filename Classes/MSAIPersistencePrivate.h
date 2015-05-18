@@ -70,7 +70,7 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
  *
  * @warning: The data within the array needs to implement NSCoding.
  */
-- (void)persistBundle:(NSArray *)bundle ofType:(MSAIPersistenceType)type withCompletionBlock:(void (^)(BOOL success))completionBlock;
+- (void)persistBundle:(NSArray *)bundle ofType:(MSAIPersistenceType)type withCompletionBlock:(nullable void (^)(BOOL success))completionBlock;
 
 /**
  *  Saves the bundle to disk.
@@ -80,7 +80,7 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
  *  @param sendNotifications a flag which determines if a notification should be sent if saving was successful
  *  @param completionBlock   a block which is executed after the bundle has been stored
  */
-- (void)persistBundle:(NSArray *)bundle ofType:(MSAIPersistenceType)type enableNotifications:(BOOL)sendNotifications withCompletionBlock:(void (^)(BOOL success))completionBlock;
+- (void)persistBundle:(NSArray *)bundle ofType:(MSAIPersistenceType)type enableNotifications:(BOOL)sendNotifications withCompletionBlock:(nullable void (^)(BOOL success))completionBlock;
 
 /**
  *  Deletes the file for the given path.
