@@ -76,15 +76,24 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 #pragma mark - Setup & Start
 
 - (void)setup {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnonnull"
   [self setupWithInstrumentationKey:nil delegate:nil];
+#pragma clang diagnostic pop
 }
 
 - (void)setupWithInstrumentationKey:(NSString *)instrumentationKey{
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnonnull"
   [self setupWithInstrumentationKey:instrumentationKey delegate:nil];
+#pragma clang diagnostic pop
 }
 
 - (void)setupWithDelegate:(id<MSAIAppInsightsDelegate>) delegate{
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnonnull"
   [self setupWithInstrumentationKey:nil delegate:delegate];
+#pragma clang diagnostic pop
 }
 
 - (void)setupWithInstrumentationKey:(NSString *)instrumentationKey delegate:(id<MSAIAppInsightsDelegate>) delegate{
@@ -104,7 +113,7 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
   [[self sharedInstance] setupWithInstrumentationKey:instrumentationKey];
 }
 
-+ (void)setupWithDelegate:(id<MSAIAppInsightsDelegate>) delegate{
++ (void)setupWithDelegate:(id<MSAIAppInsightsDelegate>)delegate{
   [[self sharedInstance] setupWithDelegate:delegate];
 }
 
