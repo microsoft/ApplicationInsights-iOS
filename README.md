@@ -119,10 +119,10 @@ From our experience, 3rd-party libraries usually reside inside a subdirectory (l
 
 You can also use the following shortcuts:
 
-	```objectivec
-	[MSAIApplicationInsights setup];
-	[MSAIApplicationInsights start];
-	```
+```objectivec
+[MSAIApplicationInsights setup];
+[MSAIApplicationInsights start];
+```
 
 **Swift**
 
