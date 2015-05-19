@@ -148,10 +148,10 @@ You can also use the following shortcuts:
     
 You can also use the following shortcuts:
 
-	```swift
-	MSAIApplicationInsights.setup();
-	MSAIApplicationInsights.start();
-	```
+```swift
+MSAIApplicationInsights.setup();
+MSAIApplicationInsights.start();
+```
     
 **Congratulation, now you're all set to use Application Insights! See [Basic Usage](#basicusage) on how to use Application Insights.**
 
