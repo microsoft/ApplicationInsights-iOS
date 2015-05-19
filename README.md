@@ -74,12 +74,12 @@ Please see the "[Getting an Application Insights Instrumentation Key](https://gi
 
 ### 4.3 Copy the SDK  into your projects directory in Finder
 
-From our experience, 3rd-party libraries usually reside inside a subdirectory (let's call our subdirectory `Vendor`), so if you don't have your project orgainzed with a subdirectory for libraries, now would be a great start for it. To continue our example,  create a folder called "Vendor" inside your project directory and move the unzipped `ApplicationInsights`-folder into it. 
+From our experience, 3rd-party libraries usually reside inside a subdirectory (let's call our subdirectory `Vendor`), so if you don't have your project organized with a subdirectory for libraries, now would be a great start for it. To continue our example,  create a folder called "Vendor" inside your project directory and move the unzipped `ApplicationInsights`-folder into it. 
 
 <a id="setupxcode"></a>
 ### 4.4 Set up the SDK in Xcode
 
-1. We recommend to use Xcode's group-feature to create a group for 3rd-party-lobraries similar to the structure of our files on disk. For example,  similar to the file structure in 4.1 above, our projects have a group called `Vendor`.
+1. We recommend to use Xcode's group-feature to create a group for 3rd-party-libraries similar to the structure of our files on disk. For example,  similar to the file structure in 4.1 above, our projects have a group called `Vendor`.
 2. Make sure the `Project Navigator` is visible (⌘+1)
 3. Drag & drop `ApplicationInsights.framework` from your window in the `Finder` into your project in Xcode and move it to the desired location in the `Project Navigator` (e.g. into the group called `Vendor`)
 4. A popup will appear. Select `Create groups for any added folders` and set the checkmark for your target. Then click `Finish`.
@@ -94,7 +94,7 @@ From our experience, 3rd-party libraries usually reside inside a subdirectory (l
 	- `Security`
 	- `libz`
 	- `CoreTelephony`(only required if iOS > 7.0)
-9. Open the info.plist of your app target and add a new field of type *String*. Name it `MSAIInstrumentationKey` and set your Application Insights instrumentation key as its value.
+9. Open the `Info.plist` of your app target and add a new field of type *String*. Name it `MSAIInstrumentationKey` and set your Application Insights instrumentation key from 4.1 as its value.
 
 ### 4.5 Modify Code 
 
@@ -160,7 +160,7 @@ MSAIApplicationInsights.start();
 
 ### 5.1 Set Instrumentation Key in Code
 
-It is also possible to set the instrumentation key of your app in code. This will override the one you might have set in your `info.plist`. Do set it in code, MSAIApplicationInsights provides an overloaded constructor:
+It is also possible to set the instrumentation key of your app in code. This will override the one you might have set in your `Info.plist`. To set it in code, MSAIApplicationInsights provides an overloaded constructor:
 
 ```objectivec
 [MSAIApplicationInsights setupWithInstrumentationKey:@"{YOUR-INSTRUMENTATIONKEY}"];
