@@ -74,12 +74,12 @@ Please see the "[Getting an Application Insights Instrumentation Key](https://gi
 
 ### 4.3 Copy the SDK  into your projects directory in Finder
 
-From our experience, 3rd-party libraries usually reside inside a subdirectory (let's call our subdirectory `Vendor`), so if you don't have your project orgainzed with a subdirectory for libraries, now would be a great start for it. To continue our example,  create a folder called "Vendor" inside your project directory and move the unzipped `ApplicationInsights`-folder into it. 
+From our experience, 3rd-party libraries usually reside inside a subdirectory (let's call our subdirectory `Vendor`), so if you don't have your project organized with a subdirectory for libraries, now would be a great start for it. To continue our example,  create a folder called "Vendor" inside your project directory and move the unzipped `ApplicationInsights`-folder into it. 
 
 <a id="setupxcode"></a>
 ### 4.4 Set up the SDK in Xcode
 
-1. We recommend to use Xcode's group-feature to create a group for 3rd-party-lobraries similar to the structure of our files on disk. For example,  similar to the file structure in 4.1 above, our projects have a group called `Vendor`.
+1. We recommend to use Xcode's group-feature to create a group for 3rd-party-libraries similar to the structure of our files on disk. For example,  similar to the file structure in 4.1 above, our projects have a group called `Vendor`.
 2. Make sure the `Project Navigator` is visible (⌘+1)
 3. Drag & drop `ApplicationInsights.framework` from your window in the `Finder` into your project in Xcode and move it to the desired location in the `Project Navigator` (e.g. into the group called `Vendor`)
 4. A popup will appear. Select `Create groups for any added folders` and set the checkmark for your target. Then click `Finish`.
@@ -94,7 +94,7 @@ From our experience, 3rd-party libraries usually reside inside a subdirectory (l
 	- `Security`
 	- `libz`
 	- `CoreTelephony`(only required if iOS > 7.0)
-9. Open the info.plist of your app target and add a new field of type *String*. Name it `MSAIInstrumentationKey` and set your Application Insights instrumentation key as its value.
+9. Open the `Info.plist` of your app target and add a new field of type *String*. Name it `MSAIInstrumentationKey` and set your Application Insights instrumentation key from 4.1 as its value.
 
 ### 4.5 Modify Code 
 
@@ -103,19 +103,19 @@ From our experience, 3rd-party libraries usually reside inside a subdirectory (l
 1. Open your `AppDelegate.m` file.
 2. Add the following line at the top of the file below your own #import statements:
 
-```objectivec
-#import <ApplicationInsights/ApplicationInsights.h>
-```
+	```objectivec
+	#import <ApplicationInsights/ApplicationInsights.h>
+	```
 
 3. Search for the method `application:didFinishLaunchingWithOptions:`
 4. Add the following lines to setup and start the Application Insights SDK:
 
-```objectivec
-[[MSAIApplicationInsights sharedInstance] setup];
-// Do some additional configuration if needed here
-...
-[[MSAIApplicationInsights sharedInstance] start];
-```
+	```objectivec
+	[[MSAIApplicationInsights sharedInstance] setup];
+	// Do some additional configuration if needed here
+	...
+	[[MSAIApplicationInsights sharedInstance] start];
+	```
 
 You can also use the following shortcuts:
 
@@ -128,31 +128,31 @@ You can also use the following shortcuts:
 
 1. Open your `AppDelegate.swift` file.
 2. Add the following line at the top of the file below your own #import statements:
-	
-```swift
-#import ApplicationInsights
-```
+    
+	```swift
+	#import ApplicationInsights
+	```
 
 3. Search for the method 
-	
-```swift
-application(application: UIApplication, didFinishLaunchingWithOptions launchOptions:[NSObject: AnyObject]?) -> Bool`
-```
+    
+	```swift
+	application(application: UIApplication, didFinishLaunchingWithOptions launchOptions:[NSObject: AnyObject]?) -> Bool`
+	```
 
 4. Add the following lines to setup and start the Application Insights SDK:
-	
-```swift
-MSAIApplicationInsights.sharedInstance().setup();
-MSAIApplicationInsights.sharedInstance().start();
-```
-	
+    
+	```swift
+	MSAIApplicationInsights.sharedInstance().setup();
+	MSAIApplicationInsights.sharedInstance().start();
+	```
+    
 You can also use the following shortcuts:
 
 ```swift
 MSAIApplicationInsights.setup();
 MSAIApplicationInsights.start();
 ```
-	
+    
 **Congratulation, now you're all set to use Application Insights! See [Basic Usage](#basicusage) on how to use Application Insights.**
 
 <a id="advancedsetup"></a>
@@ -160,7 +160,7 @@ MSAIApplicationInsights.start();
 
 ### 5.1 Set Instrumentation Key in Code
 
-It is also possible to set the instrumentation key of your app in code. This will override the one you might have set in your `info.plist`. Do set it in code, MSAIApplicationInsights provides an overloaded constructor:
+It is also possible to set the instrumentation key of your app in code. This will override the one you might have set in your `Info.plist`. To set it in code, MSAIApplicationInsights provides an overloaded constructor:
 
 ```objectivec
 [MSAIApplicationInsights setupWithInstrumentationKey:@"{YOUR-INSTRUMENTATIONKEY}"];
@@ -173,7 +173,7 @@ It is also possible to set the instrumentation key of your app in code. This wil
 
 ### 5.2 Setup with CocoaPods
 
-[CocoaPods](http://cocoapods.org) is a dependency manager for Objective-C, which automates and simplifies the process of using 3rd-party libraries like ApplicationInsights in your projects. To learn how to setup cocoapods for your project, visit the [official cocoapods website](http://cocoapods.org/).
+[CocoaPods](http://cocoapods.org) is a dependency manager for Objective-C, which automates and simplifies the process of using 3rd-party libraries like ApplicationInsights in your projects. To learn how to setup CocoaPods for your project, visit the [official CocoaPods website](http://cocoapods.org/).
 
 **[NOTE]**
 When adding Application Insights to your podfile **without** specifying the version, `pod install` will throw an error because using a pre-release version of a pod has to be specified **explicitly**.
@@ -201,12 +201,12 @@ The following points need to be considered to use the Application Insights SDK w
 @implementation TodayViewController
 
 - (void)viewDidLoad {
-	[super viewDidLoad];
-	if (!self.didSetupApplicationInsightsSDK) {
-		[MSAIApplicationInsights setup];
-		[MSAIApplicationInsights start];
-		self.didSetupApplicationInsightsSDK = YES;
-	}
+    [super viewDidLoad];
+    if (!self.didSetupApplicationInsightsSDK) {
+        [MSAIApplicationInsights setup];
+        [MSAIApplicationInsights start];
+        self.didSetupApplicationInsightsSDK = YES;
+    }
 }
 ```
 
@@ -215,12 +215,12 @@ The following points need to be considered to use the Application Insights SDK w
 
 ###6.1 Batching of data
 
-The **developer mode** is enabled automatically in case the debugger is attached or if the app is running in the emulator. This will  decrease the number of telemetry items sent in a batch (5 items) as well as the interval items when telemetry will be sent (3 seconds).
+The **developer mode** is enabled automatically in case the debugger is attached or if the app is running in the simulator. This will  decrease the number of telemetry items sent in a batch (5 items) as well as the interval items when telemetry will be sent (3 seconds).
 
 ###6.2 Logging
 
-We're all big fans of a clean debugging output without 3rd-party-SDKs messages pilling up in the debugging view, right?!
-That's why Application Insights keeps log messages to a minimum (like critical errors) unless the developer specifically enables before starting the SDK:
+We're all big fans of a clean debugging output without 3rd-party-SDKs messages piling up in the debugging view, right?!
+That's why Application Insights keeps log messages to a minimum (like critical errors) unless the developer specifically enables debug logging before starting the SDK:
 
 ```objectivec
 [MSAIApplicationInsights setup]; //setup the SDK
@@ -230,33 +230,33 @@ That's why Application Insights keeps log messages to a minimum (like critical e
 [MSAIApplicationInsights start]; //start using the SDK
 ```
 
-This setting is ignored if the app is running in an appstore environment, so the user's console won't be littered with our log messages.
+This setting is ignored if the app is running in an app store environment, so the user's console won't be littered with our log messages.
 
 <a id="basicusage"></a>
 ## 7. Basic Usage
 
-**[NOTE]** The SDK is optimized to defer everything possible to a later time while making sure e.g. crashes on startup can also be caught and each module executes other code with a delay some seconds. This ensures that applicationDidFinishLaunching will process as fast as possible and the SDK will not block the startup sequence resulting in a possible kill by the watchdog process.
+**[NOTE]** The SDK is optimized to defer everything possible to a later time while making sure e.g. crashes on startup can also be caught and each module executes other code with a delay of some seconds. This ensures that `applicationDidFinishLaunching:` will process as fast as possible and the SDK will not block the startup sequence resulting in a possible kill by the watchdog process.
 
-After you have setup the SDK as [described above](#setup), the ```MSAITelemetryManager```-instance is the central interface to track events, traces, metrics, page views or handled exceptions.
+After you have set up the SDK as [described above](#setup), the ```MSAITelemetryManager```-instance is the central interface to track events, traces, metrics, page views or handled exceptions.
 
 ### 7.1 Objective-C
 
 ```objectivec
 // Send an event with custom properties and measurements data
 [MSAITelemetryManager trackEventWithName:@"Hello World event!"
-  						      properties:@{@"Test property 1":@"Some value",
-										   @"Test property 2":@"Some other value"}
-						    measurements:@{@"Test measurement 1":@(4.8),
-										   @"Test measurement 2":@(15.16),
-		                               	   @"Test measurement 3":@(23.42)}];
+                              properties:@{@"Test property 1":@"Some value",
+                                           @"Test property 2":@"Some other value"}
+                            measurements:@{@"Test measurement 1":@(4.8),
+                                           @"Test measurement 2":@(15.16),
+                                           @"Test measurement 3":@(23.42)}];
 
 // Send a message
 [MSAITelemetryManager trackTraceWithMessage:@"Test message"];
 
 // Manually send pageviews (note: this will also be done automatically)
 [MSAITelemetryManager trackPageView:@"MyViewController"
-						   duration:300
-					 	 properties:@{@"Test measurement 1":@(4.8)}];
+                           duration:300
+                         properties:@{@"Test measurement 1":@(4.8)}];
 
 // Send custom metrics
 [MSAITelemetryManager trackMetricWithName:@"Test metric" value:42.2];
@@ -267,19 +267,19 @@ After you have setup the SDK as [described above](#setup), the ```MSAITelemetryM
 ```swift
 // Send an event with custom properties and measuremnts data
 MSAITelemetryManager.trackEventWithName(name:"Hello World event!", 
-								  properties:@{"Test property 1":"Some value",
-											  "Test property 2":"Some other value"},
-							    measurements:@{"Test measurement 1":@(4.8),
-											  "Test measurement 2":@(15.16),
-										      "Test measurement 3":@(23.42)});
+                                  properties:@{"Test property 1":"Some value",
+                                              "Test property 2":"Some other value"},
+                                measurements:@{"Test measurement 1":@(4.8),
+                                              "Test measurement 2":@(15.16),
+                                              "Test measurement 3":@(23.42)});
 
 // Send a message
 MSAITelemetryManager.trackTraceWithMessage(message:"Test message");
 
 // Manually send pageviews
 MSAITelemetryManager.trackPageView(pageView:"MyViewController",
-								   duration:300,
-							     properties:@{"Test measurement 1":@(4.8)});
+                                   duration:300,
+                                 properties:@{"Test measurement 1":@(4.8)});
 
 // Send a message
 MSAITelemetryManager.trackMetricWithName(name:"Test metric", value:42.2);
@@ -288,10 +288,10 @@ MSAITelemetryManager.trackMetricWithName(name:"Test metric", value:42.2);
 <a name="autolifecycle"></a>
 ## 8. Automatic collection of lifecycle events
 
-Automatic collection of life-cycle events is **enabled by default**. This means that Application Insights automatically tracks the appearance of a viewcontroller and manages sessions for you.
+Automatic collection of lifecycle events is **enabled by default**. This means that Application Insights automatically tracks the appearance of a view controller and manages sessions for you.
 
 ### 8.1. Page views
-The automatic tracking of viewcontroller appearance can be disabled between setup and start of the SDK.
+The automatic tracking of view controller appearance can be disabled between setup and start of the SDK.
 
 
 ```objectivec
@@ -304,7 +304,7 @@ The automatic tracking of viewcontroller appearance can be disabled between setu
 
 ### 8.2. Sessions
 
-By default, the Application Insights for iOS SDK starts a new session when the containing app is restarted (That means a 'cold start', i.e. when the app has not already been in memory prior to being launched.) or when it has been in the background for more then 20 seconds. 
+By default, the Application Insights for iOS SDK starts a new session when the containing app is restarted (this means a 'cold start', i.e. when the app has not already been in memory prior to being launched) or when it has been in the background for more then 20 seconds. 
 
 You can either change this time frame:
 ``` objectivec
@@ -360,7 +360,7 @@ You can also configure a different server endpoint for the SDK if needed using a
 <a id="documentation"></a>
 ## 11. Documentation
 
-Our documentation can be found on [CocoaDocs](http://cocoadocs.org/docsets/ApplicationInsights/1.0-beta.3/)
+Our documentation can be found on [CocoaDocs](http://cocoadocs.org/docsets/ApplicationInsights/1.0-beta.3/).
 
 
 <a id="contributing"></a>
