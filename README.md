@@ -103,55 +103,55 @@ From our experience, 3rd-party libraries usually reside inside a subdirectory (l
 1. Open your `AppDelegate.m` file.
 2. Add the following line at the top of the file below your own #import statements:
 
-    ```objectivec
-    #import <ApplicationInsights/ApplicationInsights.h>
-    ```
+	```objectivec
+	#import <ApplicationInsights/ApplicationInsights.h>
+	```
 
 3. Search for the method `application:didFinishLaunchingWithOptions:`
 4. Add the following lines to setup and start the Application Insights SDK:
 
-    ```objectivec
-    [[MSAIApplicationInsights sharedInstance] setup];
-    // Do some additional configuration if needed here
-    ...
-    [[MSAIApplicationInsights sharedInstance] start];
-    ```
+	```objectivec
+	[[MSAIApplicationInsights sharedInstance] setup];
+	// Do some additional configuration if needed here
+	...
+	[[MSAIApplicationInsights sharedInstance] start];
+	```
 
 You can also use the following shortcuts:
 
-    ```objectivec
-    [MSAIApplicationInsights setup];
-    [MSAIApplicationInsights start];
-    ```
+	```objectivec
+	[MSAIApplicationInsights setup];
+	[MSAIApplicationInsights start];
+	```
 
 **Swift**
 
 1. Open your `AppDelegate.swift` file.
 2. Add the following line at the top of the file below your own #import statements:
     
-    ```swift
-    #import ApplicationInsights
-    ```
+	```swift
+	#import ApplicationInsights
+	```
 
 3. Search for the method 
     
-    ```swift
-    application(application: UIApplication, didFinishLaunchingWithOptions launchOptions:[NSObject: AnyObject]?) -> Bool`
-    ```
+	```swift
+	application(application: UIApplication, didFinishLaunchingWithOptions launchOptions:[NSObject: AnyObject]?) -> Bool`
+	```
 
 4. Add the following lines to setup and start the Application Insights SDK:
     
-    ```swift
-    MSAIApplicationInsights.sharedInstance().setup();
-    MSAIApplicationInsights.sharedInstance().start();
-    ```
+	```swift
+	MSAIApplicationInsights.sharedInstance().setup();
+	MSAIApplicationInsights.sharedInstance().start();
+	```
     
 You can also use the following shortcuts:
 
-    ```swift
-    MSAIApplicationInsights.setup();
-    MSAIApplicationInsights.start();
-    ```
+	```swift
+	MSAIApplicationInsights.setup();
+	MSAIApplicationInsights.start();
+	```
     
 **Congratulation, now you're all set to use Application Insights! See [Basic Usage](#basicusage) on how to use Application Insights.**
 
