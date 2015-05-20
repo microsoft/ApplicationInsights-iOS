@@ -16,6 +16,7 @@
 
 #import "ApplicationInsightsFeatureConfig.h"
 #import "MSAIApplicationInsights.h"
+#import "MSAICategoryContainer.h"
 
 #if MSAI_FEATURE_CRASH_REPORTER
 #import "MSAICrashManager.h"
@@ -24,7 +25,6 @@
 #endif /* MSAI_FEATURE_CRASH_REPORTER */
 
 #if MSAI_FEATURE_TELEMETRY
-#import "MSAICategoryContainer.h"
 #import "MSAITelemetryManager.h"
 #endif /* MSAI_FEATURE_TELEMETRY */
 
