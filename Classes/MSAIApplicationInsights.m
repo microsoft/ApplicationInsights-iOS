@@ -216,17 +216,17 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
   [[self sharedInstance] setAutoPageViewTrackingDisabled:autoPageViewTrackingDisabled];
 }
 
+#endif /* MSAI_FEATURE_TELEMETRY */
+
 - (void)setAutoSessionManagementDisabled:(BOOL)autoSessionManagementDisabled {
   [MSAIContextHelper sharedInstance].autoSessionManagementDisabled = autoSessionManagementDisabled;
   [[MSAIContextHelper sharedInstance] unregisterObservers];
   _autoSessionManagementDisabled = autoSessionManagementDisabled;
-
+  
 }
 + (void)setAutoSessionManagementDisabled:(BOOL)autoSessionManagementDisabled {
   [[self sharedInstance] setAutoSessionManagementDisabled:autoSessionManagementDisabled];
 }
-
-#endif /* MSAI_FEATURE_TELEMETRY */
 
 #if MSAI_FEATURE_CRASH_REPORTER
 - (void)setCrashManagerDisabled:(BOOL)crashManagerDisabled {
