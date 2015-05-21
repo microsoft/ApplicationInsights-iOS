@@ -142,6 +142,8 @@ NS_ASSUME_NONNULL_BEGIN
  */
 + (void)setAutoPageViewTrackingDisabled:(BOOL)autoPageViewTrackingDisabled;
 
+#endif /* MSAI_FEATURE_TELEMETRY */
+
 /**
  *  Flag that determines whether sessions will automatically be renewed when the app starts and goes to the background for more than 20 seconds.
  *  If YES, sessions are not automatically renewed and the developer has to manually trigger a session renewal or set a specific session ID.
@@ -221,8 +223,6 @@ NS_ASSUME_NONNULL_BEGIN
  *  @see autoSessionManagementDisabled
  */
 - (void)renewSessionWithId:(NSString *)sessionId;
-
-#endif /* MSAI_FEATURE_TELEMETRY */
 
 ///-----------------------------------------------------------------------------
 /// @name Environment

@@ -16,6 +16,7 @@
 #import "MSAIContextHelper.h"
 #import "MSAIContextHelperPrivate.h"
 #include <stdint.h>
+#import "MSAICategoryContainer.h"
 
 #if MSAI_FEATURE_CRASH_REPORTER
 #import "MSAICrashManager.h"
@@ -23,7 +24,6 @@
 #endif /* MSAI_FEATURE_CRASH_REPORTER */
 
 #if MSAI_FEATURE_TELEMETRY
-#import "MSAICategoryContainer.h"
 #import "MSAITelemetryManager.h"
 #import "MSAITelemetryManagerPrivate.h"
 #endif /* MSAI_FEATURE_TELEMETRY */
@@ -127,12 +127,14 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
       MSAILog(@"INFO: Auto page views disabled");
       [MSAITelemetryManager sharedManager].autoPageViewTrackingDisabled = YES;
     }
-    [MSAICategoryContainer activateCategory];
+    
     
     MSAILog(@"INFO: Starting MSAITelemetryManager");
     [[MSAITelemetryManager sharedManager] startManager];
   }
 #endif /* MSAI_FEATURE_TELEMETRY */
+  
+  [MSAICategoryContainer activateCategory];
 }
 
 + (void)start {
@@ -216,17 +218,17 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
   [[self sharedInstance] setAutoPageViewTrackingDisabled:autoPageViewTrackingDisabled];
 }
 
+#endif /* MSAI_FEATURE_TELEMETRY */
+
 - (void)setAutoSessionManagementDisabled:(BOOL)autoSessionManagementDisabled {
   [MSAIContextHelper sharedInstance].autoSessionManagementDisabled = autoSessionManagementDisabled;
   [[MSAIContextHelper sharedInstance] unregisterObservers];
   _autoSessionManagementDisabled = autoSessionManagementDisabled;
-
+  
 }
 + (void)setAutoSessionManagementDisabled:(BOOL)autoSessionManagementDisabled {
   [[self sharedInstance] setAutoSessionManagementDisabled:autoSessionManagementDisabled];
 }
-
-#endif /* MSAI_FEATURE_TELEMETRY */
 
 #if MSAI_FEATURE_CRASH_REPORTER
 - (void)setCrashManagerDisabled:(BOOL)crashManagerDisabled {
