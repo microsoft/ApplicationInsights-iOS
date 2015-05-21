@@ -27,6 +27,14 @@
 #if MSAI_FEATURE_TELEMETRY  
   if(![MSAITelemetryManager sharedManager].autoPageViewTrackingDisabled){
     NSString *pageViewName = [NSString stringWithFormat:@"%@ %@", NSStringFromClass([self class]), self.title];
+    NSString *className = NSStringFromClass([self class]);
+    NSString *pageViewName;
+    
+    if (self.title && (self.title.length > 0)) {
+      pageViewName = [NSString stringWithFormat:@"%@ %@", className, self.title];
+    } else {
+      pageViewName = className;
+    }
     [MSAITelemetryManager trackPageView:pageViewName];
   }
 #endif /* MSAI_FEATURE_TELEMETRY */
