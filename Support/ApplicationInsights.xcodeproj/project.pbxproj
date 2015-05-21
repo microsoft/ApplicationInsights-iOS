@@ -1125,7 +1125,7 @@
 		1E4F61EB1621AD970033EFC5 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				INFOPLIST_FILE = "/Users/andreaslinde/SourceCode/AI/AppInsights-iOS/Resources/AppInsights-iOS-Info.plist";
+				INFOPLIST_FILE = "$(PROJECT_DIR)/../Resources/ApplicationInsights-Info.plist";
 				PRODUCT_NAME = ApplicationInsights.framework;
 			};
 			name = Debug;
@@ -1133,7 +1133,7 @@
 		1E4F61EC1621AD970033EFC5 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				INFOPLIST_FILE = "/Users/andreaslinde/SourceCode/AI/AppInsights-iOS/Resources/AppInsights-iOS-Info.plist";
+				INFOPLIST_FILE = "$(PROJECT_DIR)/../Resources/ApplicationInsights-Info.plist";
 				PRODUCT_NAME = ApplicationInsights.framework;
 			};
 			name = Release;
@@ -1356,7 +1356,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				GCC_THUMB_SUPPORT = NO;
-				INFOPLIST_FILE = "/Users/andreaslinde/SourceCode/AI/AppInsights-iOS/Resources/AppInsights-iOS-Info.plist";
+				INFOPLIST_FILE = "$(PROJECT_DIR)/../Resources/ApplicationInsights-Info.plist";
 				PRODUCT_NAME = "ApplicationInsights Documentation";
 			};
 			name = CodeCoverage;
@@ -1364,7 +1364,7 @@
 		1E68F4AB16F7843F00053706 /* CodeCoverage */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				INFOPLIST_FILE = "/Users/andreaslinde/SourceCode/AI/AppInsights-iOS/Resources/AppInsights-iOS-Info.plist";
+				INFOPLIST_FILE = "$(PROJECT_DIR)/../Resources/ApplicationInsights-Info.plist";
 				PRODUCT_NAME = ApplicationInsights.framework;
 			};
 			name = CodeCoverage;
@@ -1422,7 +1422,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				GCC_THUMB_SUPPORT = NO;
-				INFOPLIST_FILE = "/Users/andreaslinde/SourceCode/AI/AppInsights-iOS/Resources/AppInsights-iOS-Info.plist";
+				INFOPLIST_FILE = "$(PROJECT_DIR)/../Resources/ApplicationInsights-Info.plist";
 				PRODUCT_NAME = "ApplicationInsights Documentation";
 			};
 			name = Debug;
@@ -1431,7 +1431,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				GCC_THUMB_SUPPORT = NO;
-				INFOPLIST_FILE = "/Users/andreaslinde/SourceCode/AI/AppInsights-iOS/Resources/AppInsights-iOS-Info.plist";
+				INFOPLIST_FILE = "$(PROJECT_DIR)/../Resources/ApplicationInsights-Info.plist";
 				PRODUCT_NAME = "ApplicationInsights Documentation";
 			};
 			name = Release;
