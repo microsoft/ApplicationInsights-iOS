@@ -80,5 +80,36 @@
   }
 }
 
+- (void)testContentTypeForData {
+  NSString *jsonContentType = @"application/json";
+  NSString *jsonStreamContentType = @"application/x-json-stream";
+  
+  // JSON Stream
+  NSData *data = [@"{}\n{}\n" dataUsingEncoding:NSUTF8StringEncoding];
+  
+  NSString *contentType = [_sut contentTypeForData:data];
+  
+  XCTAssertEqualObjects(contentType, jsonStreamContentType);
+  
+  // Regular JSON
+  data = [@"[{}]" dataUsingEncoding:NSUTF8StringEncoding];
+  
+  contentType = [_sut contentTypeForData:data];
+  
+  XCTAssertEqualObjects(contentType, jsonContentType);
+  
+  data = [@"{}" dataUsingEncoding:NSUTF8StringEncoding];
+  
+  contentType = [_sut contentTypeForData:data];
+  
+  XCTAssertEqualObjects(contentType, jsonContentType);
+  
+  // "Other" data fallback
+  data = [@"random string" dataUsingEncoding:NSUTF8StringEncoding];
+  
+  contentType = [_sut contentTypeForData:data];
+  
+  XCTAssertEqualObjects(contentType, jsonContentType);
+}
 
 @end
