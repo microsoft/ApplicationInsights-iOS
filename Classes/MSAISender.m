@@ -85,17 +85,8 @@ static NSUInteger const defaultRequestLimit = 10;
 - (void)sendData:(NSData * __nonnull)data withPath:(NSString * __nonnull)path {
   
   if(data) {
-    NSString *contentType;
-    static const uint8_t LINEBREAK_SIGNATURE = (0x0a);
-    UInt8 lastByte;
-    [data getBytes:&lastByte range:NSMakeRange(data.length-1, 1)];
-    
-    if ((data.length > sizeof(uint8_t)) && (lastByte == LINEBREAK_SIGNATURE)) {
-      contentType = @"application/x-json-stream";
-    } else {
-      contentType = @"application/json";
-    }
-    
+    NSString *contentType = [self contentTypeForData:data];
+
     NSData *gzippedData = [data gzippedData];
     NSURLRequest *request = [self requestForData:gzippedData withContentType:contentType];
     
@@ -158,6 +149,20 @@ static NSUInteger const defaultRequestLimit = 10;
   NSArray *recoverableStatusCodes = @[@429, @408, @500, @503, @511];
 
   return ![recoverableStatusCodes containsObject:@(statusCode)];
+}
+
+- (NSString *)contentTypeForData:(NSData *)data {
+  NSString *contentType;
+  static const uint8_t LINEBREAK_SIGNATURE = (0x0a);
+  UInt8 lastByte;
+  [data getBytes:&lastByte range:NSMakeRange(data.length-1, 1)];
+  
+  if ((data.length > sizeof(uint8_t)) && (lastByte == LINEBREAK_SIGNATURE)) {
+    contentType = @"application/x-json-stream";
+  } else {
+    contentType = @"application/json";
+  }
+  return contentType;
 }
 
 #pragma mark - Getter/Setter
