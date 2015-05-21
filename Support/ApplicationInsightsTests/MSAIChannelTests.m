@@ -94,7 +94,7 @@
   
   [self.sut enqueueDictionary:dictionary];
   
-  dispatch_async(self.sut.dataItemsOperations, ^{
+  dispatch_sync(self.sut.dataItemsOperations, ^{
     assertThatUnsignedInteger(self.sut.dataItemCount, equalToUnsignedInteger(1));
     XCTAssertTrue(strcmp(MSAISafeJsonEventsString, "{}\n") == 0);
     OCMVerify([self.sut startTimer]);
@@ -134,18 +134,19 @@
   assertThatUnsignedInteger(self.sut.dataItemCount, equalToUnsignedInteger(0));
   
   [self.sut enqueueDictionary:dictionary];
-  [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.2]];
-  assertThatUnsignedInteger(self.sut.dataItemCount, equalToUnsignedInteger(1));
-  XCTAssertTrue(strcmp(MSAISafeJsonEventsString, "{}\n") == 0);
-  
+  dispatch_sync(self.sut.dataItemsOperations, ^{
+    assertThatUnsignedInteger(self.sut.dataItemCount, equalToUnsignedInteger(1));
+    XCTAssertTrue(strcmp(MSAISafeJsonEventsString, "{}\n") == 0);
+  });
+    
   [self.sut enqueueDictionary:dictionary];
-  dispatch_async(self.sut.dataItemsOperations, ^{
+  dispatch_sync(self.sut.dataItemsOperations, ^{
     assertThatUnsignedInteger(self.sut.dataItemCount, equalToUnsignedInteger(2));
     XCTAssertTrue(strcmp(MSAISafeJsonEventsString, "{}\n{}\n") == 0);
   });
   
   [self.sut enqueueDictionary:dictionary];
-  dispatch_async(self.sut.dataItemsOperations, ^{
+  dispatch_sync(self.sut.dataItemsOperations, ^{
     OCMVerify([self.sut invalidateTimer]);
     assertThatUnsignedInteger(self.sut.dataItemCount, equalToUnsignedInteger(0));
     XCTAssertTrue(strcmp(MSAISafeJsonEventsString, "") == 0);
