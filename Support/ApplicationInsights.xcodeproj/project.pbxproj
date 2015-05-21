@@ -214,14 +214,14 @@
 			containerPortal = E4005611148D79B500EB22B9 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 1E8E66AD15BC3D7700632A2E;
-			remoteInfo = "HockeySDK Documentation";
+			remoteInfo = "ApplicationInsights Documentation";
 		};
 		1EA116FE16F4D302001C015C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = E4005611148D79B500EB22B9 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 1E5954CB15B6F24A00A03429;
-			remoteInfo = HockeySDK;
+			remoteInfo = ApplicationInsights;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -896,7 +896,7 @@
 			dependencies = (
 			);
 			name = ApplicationInsights;
-			productName = HockeySDK;
+			productName = ApplicationInsights;
 			productReference = 1E5954F215B6F24A00A03429 /* libApplicationInsights.a */;
 			productType = "com.apple.product-type.library.static";
 		};
@@ -914,7 +914,7 @@
 				1EA116FF16F4D302001C015C /* PBXTargetDependency */,
 			);
 			name = "ApplicationInsights Tests";
-			productName = HockeySDKTests;
+			productName = ApplicationInsightsTests;
 			productReference = 1E5A459016F0DFC200B55C04 /* ApplicationInsightsTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
@@ -1301,7 +1301,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/../Classes/ApplicationInsights-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					"BITHOCKEY_STATIC_LIBRARY=1",
+					"MSAI_STATIC_LIBRARY=1",
 					"DEBUG=1",
 					"$(inherited)",
 				);
@@ -1451,7 +1451,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/../Classes/ApplicationInsights-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					"BITHOCKEY_STATIC_LIBRARY=1",
+					"MSAI_STATIC_LIBRARY=1",
 					"DEBUG=1",
 					"$(inherited)",
 				);
@@ -1491,7 +1491,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/../Classes/ApplicationInsights-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					"BITHOCKEY_STATIC_LIBRARY=1",
+					"MSAI_STATIC_LIBRARY=1",
 					"$(inherited)",
 				);
 				GCC_THUMB_SUPPORT = NO;
