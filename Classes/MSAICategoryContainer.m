@@ -24,10 +24,13 @@
 
 - (void)msai_viewWillAppear:(BOOL)animated {
   [self msai_viewWillAppear:animated];
-#if MSAI_FEATURE_TELEMETRY  
-  if(![MSAITelemetryManager sharedManager].autoPageViewTrackingDisabled){
-    NSString *pageViewName = [NSString stringWithFormat:@"%@ %@", NSStringFromClass([self class]), self.title];
+#if MSAI_FEATURE_TELEMETRY
+  if(![MSAITelemetryManager sharedManager].autoPageViewTrackingDisabled) {
+    NSArray *containerViewControllerClasses = @ [@"UINavigationController", @"UITabBarController", @"UISplitViewController", @"UIInputWindowController", @"UIPageViewController"];
+    
     NSString *className = NSStringFromClass([self class]);
+    if ([containerViewControllerClasses containsObject:className]) { return; }
+    
     NSString *pageViewName;
     
     if (self.title && (self.title.length > 0)) {
@@ -49,6 +52,9 @@
 }
 
 @end
+
+
+#pragma mark - GZIP library
 
 
 //
