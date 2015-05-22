@@ -95,7 +95,7 @@
   assertThat(utcDateString, equalTo(@"1970-01-01T00:00:00.000Z"));
 }
 
-- (void)testUtcDateStringPerformane {
+- (void)testUtcDateStringPerformance {
   [self measureBlock:^{
     for (int i = 0; i < 100; i++) {
       NSDate *testDate = [NSDate dateWithTimeIntervalSince1970:0];

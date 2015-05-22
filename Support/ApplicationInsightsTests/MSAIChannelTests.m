@@ -6,7 +6,7 @@
 #define MOCKITO_SHORTHAND
 #import <OCMockitoIOS/OCMockitoIOS.h>
 
-#import <OCMock/OCMock.h>
+#import "OCMock/OCMock.h"
 
 #import "MSAIAppClient.h"
 #import "MSAIChannel.h"

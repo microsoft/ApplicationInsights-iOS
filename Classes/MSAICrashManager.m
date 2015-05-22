@@ -151,7 +151,7 @@ static PLCrashReporterCallbacks defaultCallback = {
       BOOL considerReport = YES;
 
       if(self.delegate &&
-          [self.delegate respondsToSelector:@selector(considerAppNotTerminatedCleanlyReportForCrashManager)]) {
+        [self.delegate respondsToSelector:@selector(considerAppNotTerminatedCleanlyReportForCrashManager)]) {
         considerReport = [self.delegate considerAppNotTerminatedCleanlyReportForCrashManager];
       }
 

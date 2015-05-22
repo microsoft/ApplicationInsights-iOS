@@ -8,7 +8,7 @@
 
 #import "ApplicationInsights.h"
 #import "MSAIEnvelope.h"
-#import "MSAIPersistence.h"
+#import "MSAIPersistencePrivate.h"
 
 typedef void (^MSAIPersistenceTestBlock)(BOOL);
 
@@ -169,6 +169,27 @@ typedef void (^MSAIPersistenceTestBlock)(BOOL);
   // Create a new crash template, which should overwrite the first one
   [self createFileForDict:@{} withType:MSAIPersistenceTypeCrashTemplate];
   XCTAssertEqual([self fileCountForType:MSAIPersistenceTypeCrashTemplate], 1U);
+}
+
+- (void)testPersistenceTypeForPathWorks {
+  
+  NSString *path = kHighPrioString;
+  XCTAssertEqual([_sut persistenceTypeForPath:path], MSAIPersistenceTypeHighPriority);
+  
+  path = kRegularPrioString;
+  XCTAssertEqual([_sut persistenceTypeForPath:path], MSAIPersistenceTypeRegular);
+  
+  path = kMetaDataString;
+  XCTAssertEqual([_sut persistenceTypeForPath:path], MSAIPersistenceTypeMetaData);
+  
+  path = kCrashTemplateString;
+  XCTAssertEqual([_sut persistenceTypeForPath:path], MSAIPersistenceTypeCrashTemplate);
+  
+  path = nil;
+  XCTAssertEqual([_sut persistenceTypeForPath:path], MSAIPersistenceTypeNone);
+  
+  path = @"path/to/nowhere";
+  XCTAssertEqual([_sut persistenceTypeForPath:path], MSAIPersistenceTypeNone);
 }
 
 #pragma mark - Helper

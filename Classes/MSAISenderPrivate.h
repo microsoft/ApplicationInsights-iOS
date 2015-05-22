@@ -1,3 +1,4 @@
+#import "MSAIAppInsightsDelegate.h"
 @class MSAIEnvelope;
 @class MSAITelemetryContext;
 
@@ -17,6 +18,11 @@ NS_ASSUME_NONNULL_BEGIN
  *  A queue which is used to handle MSAIHTTPOperation completion blocks.
  */
 @property (nonatomic, strong) dispatch_queue_t senderQueue;
+
+/**
+ *  Delegate that should be informed if sending was successful or failed.
+ */
+@property (nonatomic, weak) id<MSAIAppInsightsDelegate> delegate;
 
 /**
  *  The endpoint url of the telemetry server.
@@ -48,9 +54,23 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (void)configureWithAppClient:(MSAIAppClient *)appClient;
 
+/**
+ *  Configures the sender instance.
+ *
+ *  @param appClient    the app client used for sending the data
+ *  @param endpointPath the endpoint url of the telemetry server
+ *  @param delegate delegate that should be informed if sending was successful or failed
+ */
+- (void)configureWithAppClient:(MSAIAppClient *)appClient delegate:(nullable id<MSAIAppInsightsDelegate>) delegate;
+
 ///-----------------------------------------------------------------------------
 /// @name Sending data
 ///-----------------------------------------------------------------------------
+
+/**
+ *  Triggers sending the saved data. Does nothing if nothing has been persisted, yet. This method should be called by MSAITelemetryMnager on app start.
+ */
+- (void)sendSavedData;
 
 /**
  *  Creates a HTTP operation and puts it to the queue.

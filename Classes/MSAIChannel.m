@@ -10,7 +10,7 @@
 #import "MSAISender.h"
 #import "MSAISenderPrivate.h"
 #import "MSAIHelper.h"
-#import "MSAIPersistence.h"
+#import "MSAIPersistencePrivate.h"
 
 NSInteger const defaultMaxBatchCount = 50;
 NSInteger const defaultBatchInterval = 15;

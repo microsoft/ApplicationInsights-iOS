@@ -3,6 +3,8 @@
 #import "ApplicationInsights.h"
 
 NS_ASSUME_NONNULL_BEGIN
+
+@protocol MSAIAppInsightsDelegate;
 /**
  This is the main class to setup, configure and start the Application Insights SDK.
  */
@@ -25,6 +27,23 @@ NS_ASSUME_NONNULL_BEGIN
  *  @param instrumentationKey the instrumentationKey of your Application Insights component
  */
 + (void)setupWithInstrumentationKey:(NSString *)instrumentationKey;
+
+/**
+ * Configures the manager with the class implementing the optional protocols `MSAIAppInsightsDelegate`.
+ * This method should be called before calling `start`.
+ *
+ *  @param delegate the class implementing the optional protocols `MSAIAppInsightsDelegate`
+ */
++ (void)setupWithDelegate:(id<MSAIAppInsightsDelegate>)delegate;
+
+/**
+ * Configures the manager with a instrumentation key and the class implementing the optional protocols `MSAIAppInsightsDelegate`.
+ * This method should be called before calling `start`.
+ *
+ *  @param instrumentationKey the instrumentationKey of your AppInsights component
+ *  @param delegate the class implementing the optional protocols `MSAIAppInsightsDelegate`
+ */
++ (void)setupWithInstrumentationKey:(NSString *)instrumentationKey delegate:(id<MSAIAppInsightsDelegate>) delegate;
 
 /**
  * Starts the manager and runs all modules. Call this after initializing the manager
@@ -62,6 +81,23 @@ NS_ASSUME_NONNULL_BEGIN
  *  @param instrumentationKey the instrumentationKey of your Application Insights component
  */
 - (void)setupWithInstrumentationKey:(NSString *)instrumentationKey;
+
+/**
+ * Configures the manager with the class implementing the optional protocols `MSAIAppInsightsDelegate`.
+ * This method should be called before calling `start`.
+ *
+ *  @param delegate the class implementing the optional protocols `MSAIAppInsightsDelegate`
+ */
+- (void)setupWithDelegate:(id<MSAIAppInsightsDelegate>) delegate;
+
+/**
+ * Configures the manager with a instrumentation key and the class implementing the optional protocols `MSAIAppInsightsDelegate`.
+ * This method should be called before calling `start`.
+ *
+ *  @param instrumentationKey the instrumentationKey of your AppInsights component
+ *  @param delegate the class implementing the optional protocols `MSAIAppInsightsDelegate`
+ */
+- (void)setupWithInstrumentationKey:(NSString *)instrumentationKey delegate:(id<MSAIAppInsightsDelegate>) delegate;
 
 /**
  * Starts the manager and runs all modules. Call this after initializing the manager
@@ -223,6 +259,22 @@ NS_ASSUME_NONNULL_BEGIN
  *  @see autoSessionManagementDisabled
  */
 - (void)renewSessionWithId:(NSString *)sessionId;
+
+///-----------------------------------------------------------------------------
+/// @name Delegate
+///-----------------------------------------------------------------------------
+
+/**
+ *  The class implementing the optional protocols `MSAIAppInsightsDelegate`.
+ */
+@property (nonatomic, weak) id<MSAIAppInsightsDelegate> delegate;
+
+/**
+ *  Assign the class that implements the optional protocols `MSAIAppInsightsDelegate`
+ *
+ *  @param delegate the class implementing the option protocols
+ */
++ (void)setDelegate:(id<MSAIAppInsightsDelegate>) delegate;
 
 ///-----------------------------------------------------------------------------
 /// @name Environment

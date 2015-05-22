@@ -76,11 +76,31 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 #pragma mark - Setup & Start
 
 - (void)setup {
-  NSString *instrumentationKey = [[NSBundle mainBundle] objectForInfoDictionaryKey:kMSAIInstrumentationKey];
-  [self setupWithInstrumentationKey:instrumentationKey];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnonnull"
+  [self setupWithInstrumentationKey:nil delegate:nil];
+#pragma clang diagnostic pop
 }
 
 - (void)setupWithInstrumentationKey:(NSString *)instrumentationKey{
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnonnull"
+  [self setupWithInstrumentationKey:instrumentationKey delegate:nil];
+#pragma clang diagnostic pop
+}
+
+- (void)setupWithDelegate:(id<MSAIAppInsightsDelegate>) delegate{
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnonnull"
+  [self setupWithInstrumentationKey:nil delegate:delegate];
+#pragma clang diagnostic pop
+}
+
+- (void)setupWithInstrumentationKey:(NSString *)instrumentationKey delegate:(id<MSAIAppInsightsDelegate>) delegate{
+  if(!instrumentationKey){
+    instrumentationKey = [[NSBundle mainBundle] objectForInfoDictionaryKey:kMSAIInstrumentationKey];
+  }
+  self.delegate = delegate;
   _appContext = [[MSAIContext alloc] initWithInstrumentationKey:instrumentationKey];
   [self initializeModules];
 }
@@ -91,6 +111,14 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 
 + (void)setupWithInstrumentationKey:(NSString *)instrumentationKey{
   [[self sharedInstance] setupWithInstrumentationKey:instrumentationKey];
+}
+
++ (void)setupWithDelegate:(id<MSAIAppInsightsDelegate>)delegate{
+  [[self sharedInstance] setupWithDelegate:delegate];
+}
+
++ (void)setupWithInstrumentationKey:(NSString *)instrumentationKey delegate:(id<MSAIAppInsightsDelegate>) delegate{
+  [[self sharedInstance] setupWithInstrumentationKey:instrumentationKey delegate:delegate];
 }
 
 - (void)start {
@@ -116,6 +144,7 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
   if (![self isCrashManagerDisabled]) {
     MSAILog(@"INFO: Starting MSAICrashManager");
     [MSAICrashManager sharedManager].isCrashManagerDisabled = self.isCrashManagerDisabled;
+    [MSAICrashManager sharedManager].delegate = self.delegate;
     [[MSAICrashManager sharedManager] startManager];
   }
 #endif /* MSAI_FEATURE_CRASH_REPORTER */
@@ -262,6 +291,10 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 }
 
 #pragma mark - SDK meta data
+
++ (void)setDelegate:(id<MSAIAppInsightsDelegate>)delegate {
+  [[MSAIApplicationInsights sharedInstance] setDelegate:delegate];
+}
 
 - (NSString *)version {
   return msai_sdkVersion();

@@ -1,4 +1,5 @@
 #import "MSAIPersistence.h"
+#import "MSAIPersistencePrivate.h"
 #import "MSAIEnvelope.h"
 #import "MSAICrashData.h"
 #import "ApplicationInsightsPrivate.h"
@@ -7,7 +8,7 @@
 NSString *const kHighPrioString = @"highPrio";
 NSString *const kRegularPrioString = @"regularPrio";
 NSString *const kCrashTemplateString = @"crashTemplate";
-NSString *const kSessionIdsString = @"metaData";
+NSString *const kMetaDataString = @"metaData";
 NSString *const kFileBaseString = @"app-insights-bundle-";
 
 NSString *const MSAIPersistenceSuccessNotification = @"MSAIPersistenceSuccessNotification";
@@ -18,8 +19,7 @@ NSUInteger const defaultFileCount = 50;
   BOOL _maxFileCountReached;
 }
 
-
-#pragma mark - Public
+#pragma mark - Create an instance
 
 + (instancetype)sharedInstance {
   static MSAIPersistence *sharedInstance;
@@ -45,16 +45,13 @@ NSUInteger const defaultFileCount = 50;
   return self;
 }
 
+#pragma mark - Save/delete bundle of data
+
 //TODO remove the completion block and implement notification-handling in MSAICrashManager
 - (void)persistBundle:(NSArray *)bundle ofType:(MSAIPersistenceType)type withCompletionBlock:(void (^)(BOOL success))completionBlock {
   [self persistBundle:bundle ofType:type enableNotifications:YES withCompletionBlock:completionBlock];
 }
 
-/**
- * Creates a serial background queue that saves the Bundle using NSKeyedArchiver and NSData's writeToFile:atomically
- * In case if type MSAIPersistenceTypeCrashTemplate, we don't send out a kMSAIPersistenceSuccessNotification.
- *
- */
 - (void)persistBundle:(NSArray *)bundle ofType:(MSAIPersistenceType)type enableNotifications:(BOOL)sendNotifications withCompletionBlock:(void (^)(BOOL success))completionBlock {
   
   if(bundle && bundle.count > 0) {
@@ -98,62 +95,6 @@ NSUInteger const defaultFileCount = 50;
   });
 }
 
-- (BOOL)isFreeSpaceAvailable{
-  return !_maxFileCountReached;
-}
-
-- (NSString *)requestNextPath {
-  __block NSString *path = nil;
-  __weak typeof(self) weakSelf = self;
-  dispatch_sync(self.persistenceQueue, ^() {
-    typeof(self) strongSelf = weakSelf;
-    
-    path = [strongSelf nextURLWithPriority:MSAIPersistenceTypeHighPriority];
-    if(!path) {
-      path = [strongSelf nextURLWithPriority:MSAIPersistenceTypeRegular];
-    }
-    
-    if(path){
-      [self.requestedBundlePaths addObject:path];
-    }
-  });
-  return path;
-}
-
-/**
- * Method used to persist the "fake" crash reports. Crash templates are handled but are similar to the other bundle
- * types under the hood.
- */
-- (void)persistCrashTemplateBundle:(NSArray *)bundle {
-  [self persistBundle:bundle ofType:MSAIPersistenceTypeCrashTemplate withCompletionBlock:nil];
-}
-
-/*
- * @Returns a bundle that includes a crash template.
- */
-- (NSArray *)crashTemplateBundle {
-  NSString *path = [self nextURLWithPriority:MSAIPersistenceTypeCrashTemplate];
-  if(path && [path isKindOfClass:[NSString class]] && path.length > 0) {
-    NSArray *bundle = [self bundleAtPath:path];
-    if(bundle) {
-      return bundle;
-    }
-  }
-  return nil;
-}
-
-/**
- * Deserializes a bundle from disk using NSKeyedUnarchiver and deletes it from disk
- * @return a bundle of data or nil
- */
-- (NSArray *)bundleAtPath:(NSString *)path {
-  NSArray *bundle = nil;
-  if(path && [path rangeOfString:kFileBaseString].location != NSNotFound) {
-    bundle = [NSKeyedUnarchiver unarchiveObjectWithFile:path];
-  }
-  return bundle;
-}
-
 - (NSDictionary *)metaData {
   NSDictionary *metaData = nil;
   NSString *path = [self newFileURLForPersitenceType:MSAIPersistenceTypeMetaData];
@@ -163,18 +104,7 @@ NSUInteger const defaultFileCount = 50;
   return metaData;
 }
 
-- (NSData *)dataAtPath:(NSString *)path {
-  NSData *data = nil;
-  
-  if(path && [path rangeOfString:kFileBaseString].location != NSNotFound) {
-    data = [NSData dataWithContentsOfFile:path];
-  }
-  return data;
-}
 
-/**
- * Deletes a file at the given path.
- */
 - (void)deleteFileAtPath:(NSString *)path {
   __weak typeof(self) weakSelf = self;
   dispatch_sync(self.persistenceQueue, ^() {
@@ -192,59 +122,9 @@ NSUInteger const defaultFileCount = 50;
       MSAILog(@"Empty path, so nothing can be deleted");
     }
   });
-  
 }
 
-- (void)giveBackRequestedPath:(NSString *) path {
-  __weak typeof(self) weakSelf = self;
-  dispatch_async(self.persistenceQueue, ^() {
-    typeof(self) strongSelf = weakSelf;
-    
-    [strongSelf.requestedBundlePaths removeObject:path];
-  });
-}
-
-#pragma mark - Private
-
-- (NSString *)newFileURLForPersitenceType:(MSAIPersistenceType)type {
-  static NSString *fileDir;
-  static dispatch_once_t dirToken;
-  
-  dispatch_once(&dirToken, ^{
-    NSString *applicationSupportDir = [NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES) lastObject];
-    fileDir = [applicationSupportDir stringByAppendingPathComponent:@"com.microsoft.ApplicationInsights/"];
-    [self createFolderAtPathIfNeeded:fileDir];
-  });
-  
-  NSString *uuid = msai_UUID();
-  NSString *fileName = [NSString stringWithFormat:@"%@%@", kFileBaseString, uuid];
-  NSString *filePath;
-  
-  switch(type) {
-    case MSAIPersistenceTypeHighPriority: {
-      [self createFolderAtPathIfNeeded:[fileDir stringByAppendingPathComponent:kHighPrioString]];
-      filePath = [[fileDir stringByAppendingPathComponent:kHighPrioString] stringByAppendingPathComponent:fileName];
-      break;
-    };
-    case MSAIPersistenceTypeCrashTemplate: {
-      [self createFolderAtPathIfNeeded:[fileDir stringByAppendingPathComponent:kCrashTemplateString]];
-      filePath = [[fileDir stringByAppendingPathComponent:kCrashTemplateString] stringByAppendingPathComponent:kCrashTemplateString];
-      break;
-    };
-    case MSAIPersistenceTypeMetaData: {
-      [self createFolderAtPathIfNeeded:[fileDir stringByAppendingPathComponent:kSessionIdsString]];
-      filePath = [[fileDir stringByAppendingPathComponent:kSessionIdsString] stringByAppendingPathComponent:kSessionIdsString];
-      break;
-    };
-    default: {
-      [self createFolderAtPathIfNeeded:[fileDir stringByAppendingPathComponent:kRegularPrioString]];
-      filePath = [[fileDir stringByAppendingPathComponent:kRegularPrioString] stringByAppendingPathComponent:fileName];
-      break;
-    };
-  }
-  
-  return filePath;
-}
+#pragma mark - Create folders
 
 /**
  * create a folder within at the given path
@@ -282,6 +162,72 @@ NSUInteger const defaultFileCount = 50;
   }
 }
 
+#pragma mark - Notify observers
+
+/**
+ * Send a MSAIPersistenceSuccessNotification to the main thread to notify observers that we have successfully saved a file
+ * This is typocally used to trigger sending.
+ */
+- (void)sendBundleSavedNotification{
+  dispatch_async(dispatch_get_main_queue(), ^{
+    [[NSNotificationCenter defaultCenter] postNotificationName:MSAIPersistenceSuccessNotification
+                                                        object:nil
+                                                      userInfo:nil];
+  });
+}
+
+#pragma mark - Getting a bundle of saved data
+
+/**
+ * Deserializes a bundle from disk using NSKeyedUnarchiver and deletes it from disk
+ * @return a bundle of data or nil
+ */
+- (NSArray *)bundleAtPath:(NSString *)path withPersistenceType:(MSAIPersistenceType)persistenceType{
+  NSArray *bundle = nil;
+  
+  if(path && [path rangeOfString:kFileBaseString].location != NSNotFound) {
+    if(persistenceType == MSAIPersistenceTypeCrashTemplate){
+      bundle = [NSKeyedUnarchiver unarchiveObjectWithFile:path];
+    }else{
+      NSError *error = nil;
+      bundle = [NSJSONSerialization JSONObjectWithData:[NSData dataWithContentsOfFile:path] options:0 error:&error];
+      if(error){
+        MSAILog(@"Unable to convert data to JSON: %@", [error localizedDescription]);
+      }
+    }
+  }
+  
+  return bundle;
+}
+
+#pragma mark - Getting data
+
+- (NSData *)dataAtPath:(NSString *)path {
+  NSData *data = nil;
+  
+  if(path && [path rangeOfString:kFileBaseString].location != NSNotFound) {
+    data = [NSData dataWithContentsOfFile:path];
+  }
+  return data;
+}
+
+- (NSData *)dataForBundle:(NSArray *)bundle withPersistenceTye:(MSAIPersistenceType)persistenceType{
+  NSData *data = nil;
+  
+  if(persistenceType == MSAIPersistenceTypeCrashTemplate){
+    data = [NSKeyedArchiver archivedDataWithRootObject:bundle];
+  }else{
+    NSError *error = nil;
+    data = [NSJSONSerialization dataWithJSONObject:bundle options:NSJSONWritingPrettyPrinted error:&error];
+    if(error){
+      MSAILog(@"Unable to convert JSON to NSData: %@", [error localizedDescription]);
+    }
+  }
+  return data;
+}
+
+#pragma mark - Getting a path
+
 /**
  * @returns the URL to the next file depending on the specified type. If there's no file, return nil.
  */
@@ -311,6 +257,39 @@ NSUInteger const defaultFileCount = 50;
   return nil;
 }
 
+- (NSString *)newFileURLForPersitenceType:(MSAIPersistenceType)type {
+  
+  NSString *applicationSupportDir = [NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES) lastObject];
+  NSString *uuid = msai_UUID();
+  NSString *fileName = [NSString stringWithFormat:@"%@%@", kFileBaseString, uuid];
+  NSString *filePath;
+  
+  switch(type) {
+    case MSAIPersistenceTypeHighPriority: {
+      [self createFolderAtPathIfNeeded:[applicationSupportDir stringByAppendingPathComponent:kHighPrioString]];
+      filePath = [[applicationSupportDir stringByAppendingPathComponent:kHighPrioString] stringByAppendingPathComponent:fileName];
+      break;
+    };
+    case MSAIPersistenceTypeCrashTemplate: {
+      [self createFolderAtPathIfNeeded:[applicationSupportDir stringByAppendingPathComponent:kCrashTemplateString]];
+      filePath = [[applicationSupportDir stringByAppendingPathComponent:kCrashTemplateString] stringByAppendingPathComponent:kCrashTemplateString];
+      break;
+    };
+    case MSAIPersistenceTypeMetaData: {
+      [self createFolderAtPathIfNeeded:[applicationSupportDir stringByAppendingPathComponent:kMetaDataString]];
+      filePath = [[applicationSupportDir stringByAppendingPathComponent:kMetaDataString] stringByAppendingPathComponent:kMetaDataString];
+      break;
+    };
+    default: {
+      [self createFolderAtPathIfNeeded:[applicationSupportDir stringByAppendingPathComponent:kRegularPrioString]];
+      filePath = [[applicationSupportDir stringByAppendingPathComponent:kRegularPrioString] stringByAppendingPathComponent:fileName];
+      break;
+    };
+  }
+  
+  return filePath;
+}
+
 - (NSString *)folderPathForPersistenceType:(MSAIPersistenceType)type {
   static NSString *persistenceFolder;
   static dispatch_once_t persistenceFolderToken;
@@ -336,40 +315,78 @@ NSUInteger const defaultFileCount = 50;
       break;
     }
     case MSAIPersistenceTypeMetaData: {
-      subfolderPath = kSessionIdsString;
+      subfolderPath = kMetaDataString;
       break;
     }
+    default:
+      return nil;
   }
   NSString *path = [persistenceFolder stringByAppendingPathComponent:subfolderPath];
   
   return path;
 }
 
-- (NSData *)dataForBundle:(NSArray *)bundle withPersistenceTye:(MSAIPersistenceType)persistenceType{
-  NSData *data = nil;
-  
-  if(persistenceType == MSAIPersistenceTypeCrashTemplate){
-    data = [NSKeyedArchiver archivedDataWithRootObject:bundle];
-  }else{
-    NSError *error = nil;
-    data = [NSJSONSerialization dataWithJSONObject:bundle options:NSJSONWritingPrettyPrinted error:&error];
-    if (data == nil) {
-      MSAILog(@"Unable to convert JSON to NSData: %@", [error localizedDescription]);
+- (NSString *)requestNextPath {
+  __block NSString *path = nil;
+  __weak typeof(self) weakSelf = self;
+  dispatch_sync(self.persistenceQueue, ^() {
+    typeof(self) strongSelf = weakSelf;
+    
+    path = [strongSelf nextURLWithPriority:MSAIPersistenceTypeHighPriority];
+    if (!path) {
+      path = [strongSelf nextURLWithPriority:MSAIPersistenceTypeRegular];
     }
-  }
-  return data;
+    
+    if (path) {
+      [self.requestedBundlePaths addObject:path];
+    }
+  });
+  return path;
 }
 
-/**
- * Send a MSAIPersistenceSuccessNotification to the main thread to notify observers that we have successfully saved a file
- * This is typocally used to trigger sending.
- */
-- (void)sendBundleSavedNotification{
-  dispatch_async(dispatch_get_main_queue(), ^{
-    [[NSNotificationCenter defaultCenter] postNotificationName:MSAIPersistenceSuccessNotification
-                                                        object:nil
-                                                      userInfo:nil];
+- (void)giveBackRequestedPath:(NSString *) path {
+  __weak typeof(self) weakSelf = self;
+  dispatch_async(self.persistenceQueue, ^() {
+    typeof(self) strongSelf = weakSelf;
+    
+    [strongSelf.requestedBundlePaths removeObject:path];
   });
+}
+
+#pragma mark - Handling session IDs
+
+- (void)persistSessionIds:(NSDictionary *)sessionIds {
+  NSString *fileURL = [self newFileURLForPersitenceType:MSAIPersistenceTypeMetaData];
+  
+  dispatch_async(self.persistenceQueue, ^{
+    [NSKeyedArchiver archiveRootObject:sessionIds toFile:fileURL];
+  });
+}
+
+- (NSDictionary *)sessionIds {
+  NSDictionary *sessionIds = nil;
+  NSString *path = [self newFileURLForPersitenceType:MSAIPersistenceTypeMetaData];
+  if(path) {
+    sessionIds = [NSKeyedUnarchiver unarchiveObjectWithFile:path];
+  }
+  return sessionIds;
+}
+
+#pragma mark - Handling of a "fake" CrashReport
+
+- (void)persistCrashTemplateBundle:(NSArray *)bundle {
+  [self persistBundle:bundle ofType:MSAIPersistenceTypeCrashTemplate withCompletionBlock:nil];
+}
+
+- (NSArray *)crashTemplateBundle {
+  NSString *path = [self nextURLWithPriority:MSAIPersistenceTypeCrashTemplate];
+  if(path && [path isKindOfClass:[NSString class]] && path.length > 0) {
+    NSArray *bundle = [self bundleAtPath:path withPersistenceType:MSAIPersistenceTypeCrashTemplate];
+    if(bundle) {
+      return bundle;
+    }
+  }
+  return nil;
 }
 
 - (BOOL)crashReportLockFilePresent {
@@ -390,6 +407,29 @@ NSUInteger const defaultFileCount = 50;
   if([[NSFileManager defaultManager] fileExistsAtPath:analyzerInProgressFile]) {
     [[NSFileManager defaultManager] removeItemAtPath:analyzerInProgressFile error:&error];
   }
+}
+
+#pragma mark - Getting the MSAIPersistenceType
+
+- (MSAIPersistenceType)persistenceTypeForPath:(NSString *)path{
+  
+  if([path containsString:kHighPrioString]){
+    return MSAIPersistenceTypeHighPriority;
+  }else if([path containsString:kRegularPrioString]){
+    return MSAIPersistenceTypeRegular;
+  }else if([path containsString:kMetaDataString]){
+    return MSAIPersistenceTypeMetaData;
+  }else if([path containsString:kCrashTemplateString]){
+    return MSAIPersistenceTypeCrashTemplate;
+  }else{
+    return MSAIPersistenceTypeNone;
+  }
+}
+
+#pragma mark - Helper
+
+- (BOOL)isFreeSpaceAvailable{
+  return !_maxFileCountReached;
 }
 
 @end

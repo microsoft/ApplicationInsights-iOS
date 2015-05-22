@@ -2,6 +2,7 @@
 #import "MSAIAppClient.h"
 #import "MSAISenderPrivate.h"
 #import "MSAIPersistence.h"
+#import "MSAIPersistencePrivate.h"
 #import "MSAIGZIP.h"
 #import "MSAIEnvelope.h"
 #import "ApplicationInsights.h"
@@ -41,8 +42,13 @@ static NSUInteger const defaultRequestLimit = 10;
 #pragma mark - Network status
 
 - (void)configureWithAppClient:(MSAIAppClient *)appClient {
+  [self configureWithAppClient:appClient delegate:nil];
+}
+
+- (void)configureWithAppClient:(MSAIAppClient *)appClient delegate:(id)delegate {
   self.appClient = appClient;
   self.maxRequestCount = defaultRequestLimit;
+  self.delegate = delegate;
   [self registerObservers];
 }
 
@@ -95,14 +101,22 @@ static NSUInteger const defaultRequestLimit = 10;
 }
 
 - (void)sendRequest:(NSURLRequest *)request path:(NSString *)path{
-  
   if(!path || !request) return;
+  
+  // Inform delegate
+  NSArray *bundle;
+  MSAIPersistenceType type = [[MSAIPersistence sharedInstance] persistenceTypeForPath:path];
+  if(self.delegate && type == MSAIPersistenceTypeHighPriority && [self.delegate respondsToSelector:@selector(appInsightsWillSendCrashDict:)]){
+    bundle = [[MSAIPersistence sharedInstance] bundleAtPath:path withPersistenceType:type];
+    NSDictionary *crashDict = bundle.count > 0 ? bundle[0] : nil;
+    [self.delegate appInsightsWillSendCrashDict:crashDict];
+  }
   
   __weak typeof(self) weakSelf = self;
   MSAIHTTPOperation *operation = [self.appClient operationWithURLRequest:request queue:self.senderQueue completion:^(MSAIHTTPOperation *operation, NSData *responseData, NSError *error) {
     typeof(self) strongSelf = weakSelf;
-
-    self.runningRequestsCount -= 1;
+    
+    strongSelf.runningRequestsCount -= 1;
     NSInteger statusCode = [operation.response statusCode];
 
     if(responseData && [self shouldDeleteDataWithStatusCode:statusCode]) {
@@ -117,6 +131,18 @@ static NSUInteger const defaultRequestLimit = 10;
       MSAILog(@"Sending MSAIApplicationInsights data failed");
       MSAILog(@"Error description: %@", error.localizedDescription);
       [[MSAIPersistence sharedInstance] giveBackRequestedPath:path];
+    }
+    
+    // Inform delegate
+    if(statusCode >= 200 && statusCode <= 202){
+      if(strongSelf.delegate && type == MSAIPersistenceTypeHighPriority && [strongSelf.delegate respondsToSelector:@selector(appInsightsDidFinishSendingCrashDict:)]){
+        NSDictionary *crashDict = bundle.count > 0 ? bundle[0] : nil;
+        [strongSelf.delegate appInsightsDidFinishSendingCrashDict:crashDict];
+      }
+    }else{
+      if(strongSelf.delegate && [strongSelf.delegate respondsToSelector:@selector(appInsightsDidFailWithError:)]){
+        [strongSelf.delegate appInsightsDidFailWithError:error];
+      }
     }
   }];
   

@@ -7,14 +7,15 @@
 #import <OCMockitoIOS/OCMockitoIOS.h>
 
 #import "MSAIAppClient.h"
+#import "MSAIAppInsightsDelegate.h"
 #import "MSAISender.h"
 #import "MSAISenderPrivate.h"
 #import "MSAIEnvelope.h"
+#import "MSAIPersistencePrivate.h"
 
-@interface MSAISenderTests : XCTestCase
+@interface MSAISenderTests : XCTestCase <MSAIAppInsightsDelegate>
 
 @end
-
 
 @implementation MSAISenderTests {
   MSAISender *_sut;
@@ -41,10 +42,11 @@
 }
 
 - (void)testConfiguredPropertiesNotNil {
-  [_sut configureWithAppClient:_appClient];
+  [_sut configureWithAppClient:_appClient delegate:self];
   
   assertThat([_sut appClient], notNilValue());
   assertThat([_sut appClient], equalTo(_appClient));
+  assertThat([_sut delegate], equalTo(self));
 }
 
 - (void)testSingletonReturnsInstanceTwice {
@@ -80,5 +82,16 @@
   }
 }
 
+- (void)testDelegateGetsCalled{
+   id<MSAIAppInsightsDelegate> delegate = mockProtocol(@protocol(MSAIAppInsightsDelegate));
+  _sut.delegate = delegate;
+  NSURLRequest *request = [[NSURLRequest alloc] initWithURL:nil];
+  NSString *filePath = [NSString stringWithFormat:@"%@/fileName", kHighPrioString];
+  
+  [_sut sendRequest:request path:filePath];
+  [verifyCount(delegate, times(1)) appInsightsWillSendCrashDict:nil];
+  
+  // TODO: Test delegate call of completion block
+}
 
 @end

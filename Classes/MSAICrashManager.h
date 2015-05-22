@@ -32,8 +32,6 @@ typedef struct MSAICrashManagerCallbacks {
   MSAICrashManagerPostCrashSignalCallback handleSignal;
 } MSAICrashManagerCallbacks;
 
-@protocol MSAICrashManagerDelegate;
-
 /**
 The crash reporting module.
 
@@ -44,7 +42,7 @@ As a foundation it is using the open source, reliable and async-safe crash repor
 This module works as a wrapper around the underlying crash reporting framework and provides functionality to
 detect new crashes.
 
-It also provides options via `MSAICrashManagerDelegate` protocol and a way to detect startup crashes so you
+It also provides options via `MSAIAppInsightsDelegate` protocol and a way to detect startup crashes so you
 can adjust your startup process to get these crash reports too and delay your app initialization.
 
 Crashes are send the next time the app starts. This module is not sending the reports right when the crash happens
@@ -60,7 +58,7 @@ very slow.
 It is possible to check upon startup if the app crashed before using `didCrashInLastSession` and also how much
 time passed between the app launch and the crash using `timeintervalCrashInLastSessionOccured`. This allows you
 to add additional code to your app delaying the app start until the crash has been successfully send if the crash
-occured within a critical startup timeframe, e.g. after 10 seconds. The `MSAICrashManagerDelegate` protocol provides
+occured within a critical startup timeframe, e.g. after 10 seconds. The `MSAIAppInsightsDelegate` protocol provides
 various delegates to inform the app about it's current status so you can continue the remaining app startup setup
 after sending has been completed. The documentation contains a guide
 [How to handle Crashes on startup](HowTo-Handle-Crashes-On-Startup) with an example on how to do that.
@@ -169,7 +167,7 @@ safe crash reporting: [Reliable Crash Reporting](http://goo.gl/WvTBR)
 *
 * @see lastSessionCrashDetails
 * @see didReceiveMemoryWarningInLastSession
-* @see `MSAICrashManagerDelegate considerAppNotTerminatedCleanlyReportForCrashManager:`
+* @see `MSAIAppInsightsDelegate considerAppNotTerminatedCleanlyReportForCrashManager:`
 * @see [Apple Technical Note TN2151](https://developer.apple.com/library/ios/technotes/tn2151/_index.html)
 * @see [Apple Technical Q&A QA1693](https://developer.apple.com/library/ios/qa/qa1693/_index.html)
 */
@@ -238,12 +236,12 @@ cleaning up some cache data etc.
 Note that sending a crash reports starts as early as 1.5 seconds after the application
 did finish launching!
 
-The `MSAICrashManagerDelegate` protocol provides some delegates to inform if sending
+The `MSAIAppInsightsDelegate` protocol provides some delegates to inform if sending
 a crash report was finished successfully, ended in error or was cancelled by the user.
 
 *Default*: _-1_
 @see didCrashInLastSession
-@see MSAICrashManagerDelegate
+@see MSAIAppInsightsDelegate
 */
 @property (nonatomic, readonly) NSTimeInterval timeintervalCrashInLastSessionOccured;
 
