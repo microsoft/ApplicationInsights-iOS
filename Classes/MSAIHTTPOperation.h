@@ -3,7 +3,7 @@
 
 @class MSAIHTTPOperation;
 
-NS_ASSUME_NONNULL_BEGIN
+MSAI_ASSUME_NONNULL_BEGIN
 /**
  * A typedefed block that can be used for MSAIHTTPOperation
  */
@@ -30,4 +30,4 @@ typedef void (^MSAINetworkCompletionBlock)(MSAIHTTPOperation * operation, NSData
 @property (nonatomic, readonly) NSError *error;
 
 @end
-NS_ASSUME_NONNULL_END
+MSAI_ASSUME_NONNULL_END

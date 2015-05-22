@@ -1,4 +1,4 @@
-NS_ASSUME_NONNULL_BEGIN
+MSAI_ASSUME_NONNULL_BEGIN
 
 extern NSString *const kMSAIDummyInstrumentationKey;
 
@@ -9,4 +9,4 @@ extern NSString *const kMSAIDummyInstrumentationKey;
 + (BOOL)copyFixtureCrashReportWithFileName:(NSString *)filename;
 
 @end
-NS_ASSUME_NONNULL_END
+MSAI_ASSUME_NONNULL_END

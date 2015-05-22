@@ -1,6 +1,6 @@
 #import <Foundation/Foundation.h>
 
-NS_ASSUME_NONNULL_BEGIN
+MSAI_ASSUME_NONNULL_BEGIN
 /**
  *  A helper class that allows to persist and retrieve session IDs attached to different timestamps.
  */
@@ -9,4 +9,4 @@ NS_ASSUME_NONNULL_BEGIN
 @property NSUInteger appBackgroundTimeBeforeSessionExpires;
 
 @end
-NS_ASSUME_NONNULL_END
+MSAI_ASSUME_NONNULL_END

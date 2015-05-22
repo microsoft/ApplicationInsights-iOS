@@ -8,7 +8,7 @@
 #import "MSAIContext.h"
 #import "MSAIContextPrivate.h"
 
-NS_ASSUME_NONNULL_BEGIN
+MSAI_ASSUME_NONNULL_BEGIN
 @interface MSAITelemetryContext()
 
 ///-----------------------------------------------------------------------------
@@ -95,4 +95,4 @@ NS_ASSUME_NONNULL_BEGIN
 - (MSAIOrderedDictionary *)contextDictionary;
 
 @end
-NS_ASSUME_NONNULL_END
+MSAI_ASSUME_NONNULL_END

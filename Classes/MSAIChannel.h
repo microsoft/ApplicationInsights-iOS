@@ -1,7 +1,7 @@
 #import <Foundation/Foundation.h>
 #import "ApplicationInsights.h"
 
-NS_ASSUME_NONNULL_BEGIN
+MSAI_ASSUME_NONNULL_BEGIN
 /**
  *  Prepares telemetry data and forwards it to the persistence layer. Once data has been persisted it will be sent by the sender automatically.
  */
@@ -13,4 +13,4 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)persistDataItemQueue;
 
 @end
-NS_ASSUME_NONNULL_END
+MSAI_ASSUME_NONNULL_END

@@ -2,7 +2,7 @@
 
 @class MSAICrashManager;
 
-NS_ASSUME_NONNULL_BEGIN
+MSAI_ASSUME_NONNULL_BEGIN
 /**
 The `MSAICrashManagerDelegate` formal protocol defines methods further configuring
 the behaviour of `MSAICrashManager`.
@@ -55,4 +55,4 @@ received by the app to reduce to possibility of having false positives.
 
 
 @end
-NS_ASSUME_NONNULL_END
+MSAI_ASSUME_NONNULL_END

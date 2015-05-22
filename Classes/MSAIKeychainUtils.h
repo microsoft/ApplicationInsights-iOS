@@ -30,7 +30,7 @@
 #import <UIKit/UIKit.h>
 #import "ApplicationInsights.h"
 
-NS_ASSUME_NONNULL_BEGIN
+MSAI_ASSUME_NONNULL_BEGIN
 @interface MSAIKeychainUtils : NSObject
 
 + (NSString *) getPasswordForUsername: (NSString *) username andServiceName: (NSString *) serviceName error: (NSError **) error;
@@ -41,4 +41,4 @@ NS_ASSUME_NONNULL_BEGIN
 + (BOOL) purgeItemsForServiceName:(NSString *) serviceName error: (NSError **) error;
 
 @end
-NS_ASSUME_NONNULL_END
+MSAI_ASSUME_NONNULL_END

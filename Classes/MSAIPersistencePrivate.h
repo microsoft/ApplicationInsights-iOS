@@ -1,6 +1,6 @@
 #import "MSAIPersistence.h"
 
-NS_ASSUME_NONNULL_BEGIN
+MSAI_ASSUME_NONNULL_BEGIN
 @interface MSAIPersistence ()
 
 /**
@@ -11,4 +11,4 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSString *)newFileURLForPersitenceType:(MSAIPersistenceType)type;
 
 @end
-NS_ASSUME_NONNULL_END
+MSAI_ASSUME_NONNULL_END

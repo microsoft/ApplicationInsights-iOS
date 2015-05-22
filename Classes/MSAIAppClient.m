@@ -92,7 +92,7 @@
   return queryString;
 }
 
-- (MSAIHTTPOperation *)operationWithURLRequest:(NSURLRequest *)request queue:(dispatch_queue_t)queue completion:(nullable MSAINetworkCompletionBlock)completion {
+- (MSAIHTTPOperation *)operationWithURLRequest:(NSURLRequest *)request queue:(dispatch_queue_t)queue completion:(MSAI_NULLABLE MSAINetworkCompletionBlock)completion {
   MSAIHTTPOperation *operation = [MSAIHTTPOperation operationWithRequest:request];
   [operation setCompletion:completion onQueue:queue];
   

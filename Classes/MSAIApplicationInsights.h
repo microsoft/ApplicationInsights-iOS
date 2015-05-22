@@ -2,7 +2,7 @@
 #import "ApplicationInsights.h"
 #import "ApplicationInsights.h"
 
-NS_ASSUME_NONNULL_BEGIN
+MSAI_ASSUME_NONNULL_BEGIN
 /**
  This is the main class to setup, configure and start the Application Insights SDK.
  */
@@ -274,4 +274,4 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSString *)build;
 
 @end
-NS_ASSUME_NONNULL_END
+MSAI_ASSUME_NONNULL_END

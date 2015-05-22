@@ -4,7 +4,7 @@
 #import <Foundation/Foundation.h>
 #import "ApplicationInsights.h"
 
-NS_ASSUME_NONNULL_BEGIN
+MSAI_ASSUME_NONNULL_BEGIN
 /**
  *  ApplicationInsights Crash Reporter error domain
  */
@@ -27,8 +27,8 @@ typedef NS_ENUM (NSInteger, MSAIBinaryImageType) {
 @interface MSAICrashDataProvider : NSObject {
 }
 
-+ (MSAIEnvelope *)crashDataForCrashReport:(MSAIPLCrashReport *)report handledException:(nullable NSException *)exception;
++ (MSAIEnvelope *)crashDataForCrashReport:(MSAIPLCrashReport *)report handledException:(MSAI_NULLABLE NSException *)exception;
 + (MSAIEnvelope *)crashDataForCrashReport:(MSAIPLCrashReport *)report;
 
 @end
-NS_ASSUME_NONNULL_END
+MSAI_ASSUME_NONNULL_END
