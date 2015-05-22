@@ -1,7 +1,7 @@
 #import <Foundation/Foundation.h>
 #import "MSAIHTTPOperation.h"
 
-NS_ASSUME_NONNULL_BEGIN
+MSAI_ASSUME_NONNULL_BEGIN
 /**
  *  Generic ApplicationInsights API client
  */
@@ -30,8 +30,8 @@ NS_ASSUME_NONNULL_BEGIN
  *	@return	an NSMutableURLRequest for further configuration
  */
 - (NSMutableURLRequest *)requestWithMethod:(NSString*)method
-                                      path:(nullable NSString *)path
-                                parameters:(nullable NSDictionary *)params;
+                                      path:(MSAI_NULLABLE NSString *)path
+                                parameters:(MSAI_NULLABLE NSDictionary *)params;
 
 /**
  *	Creates an operation for the given NSURLRequest
@@ -42,7 +42,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  *	@return	operation, which can be queued via enqueueHTTPOperation:
  */
-- (MSAIHTTPOperation *)operationWithURLRequest:(NSURLRequest *)request queue:(dispatch_queue_t)queue completion:(nullable MSAINetworkCompletionBlock)completion;
+- (MSAIHTTPOperation *)operationWithURLRequest:(NSURLRequest *)request queue:(dispatch_queue_t)queue completion:(MSAI_NULLABLE MSAINetworkCompletionBlock)completion;
 
 /**
  *	Creates an operation for the given path, and enqueues it
@@ -54,8 +54,8 @@ NS_ASSUME_NONNULL_BEGIN
  *
  */
 - (void)getPath:(NSString*)path
-     parameters:(nullable NSDictionary *)params
-     completion:(nullable MSAINetworkCompletionBlock)completion;
+     parameters:(MSAI_NULLABLE NSDictionary *)params
+     completion:(MSAI_NULLABLE MSAINetworkCompletionBlock)completion;
 
 /**
  *	Creates an operation for the given path, and enqueues it
@@ -67,8 +67,8 @@ NS_ASSUME_NONNULL_BEGIN
  *
  */
 - (void)postPath:(NSString*)path
-      parameters:(nullable NSDictionary *)params
-      completion:(nullable MSAINetworkCompletionBlock)completion;
+      parameters:(MSAI_NULLABLE NSDictionary *)params
+      completion:(MSAI_NULLABLE MSAINetworkCompletionBlock)completion;
 /**
  *	adds the given operation to the internal queue
  *
@@ -86,8 +86,8 @@ NS_ASSUME_NONNULL_BEGIN
  *
  *  @see cancelAllOperations
  */
-- (NSUInteger)cancelOperationsWithPath:(nullable NSString*)path
-                                method:(nullable NSString*)method;
+- (NSUInteger)cancelOperationsWithPath:(MSAI_NULLABLE NSString*)path
+                                method:(MSAI_NULLABLE NSString*)method;
 
 /**
  *  cancels all current operations
@@ -127,7 +127,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  *	@return	NSData instance configured to be attached on a (post) URLRequest
  */
-+ (NSData *)dataWithPostValue:(NSData *)value forKey:(NSString *)key contentType:(NSString *)contentType boundary:(NSString *)boundary filename:(null_unspecified NSString *)filename;
++ (NSData *)dataWithPostValue:(NSData *)value forKey:(NSString *)key contentType:(NSString *)contentType boundary:(NSString *)boundary filename:(MSAI_NULL_UNSPECIFIED NSString *)filename;
 
 @end
-NS_ASSUME_NONNULL_END
+MSAI_ASSUME_NONNULL_END

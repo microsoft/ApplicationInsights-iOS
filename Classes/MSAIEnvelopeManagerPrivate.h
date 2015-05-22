@@ -6,7 +6,7 @@
 #import "MSAIEnvelopeManager.h"
 #import "ApplicationInsights.h"
 
-NS_ASSUME_NONNULL_BEGIN
+MSAI_ASSUME_NONNULL_BEGIN
 @interface MSAIEnvelopeManager()
 
 ///-----------------------------------------------------------------------------
@@ -70,7 +70,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  *  @return an envelope object that contains a handled exception
  */
-- (MSAIEnvelope *)envelopeForCrashReport:(MSAIPLCrashReport *)report exception:(nullable NSException *)exception;
+- (MSAIEnvelope *)envelopeForCrashReport:(MSAIPLCrashReport *)report exception:(MSAI_NULLABLE NSException *)exception;
 
 @end
-NS_ASSUME_NONNULL_END
+MSAI_ASSUME_NONNULL_END

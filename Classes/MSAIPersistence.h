@@ -1,7 +1,7 @@
 #import <Foundation/Foundation.h>
 #import "ApplicationInsights.h"
 
-NS_ASSUME_NONNULL_BEGIN
+MSAI_ASSUME_NONNULL_BEGIN
 /**
 * A simple class that handles serialisation and deserialisation of bundles of data.
 */
@@ -68,7 +68,7 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
 *
 * @warning: The data within the array needs to implement NSCoding.
 */
-- (void)persistBundle:(NSArray *)bundle ofType:(MSAIPersistenceType)type withCompletionBlock:(nullable void (^)(BOOL success))completionBlock;
+- (void)persistBundle:(NSArray *)bundle ofType:(MSAIPersistenceType)type withCompletionBlock:(MSAI_NULLABLE void (^)(BOOL success))completionBlock;
 
 /**
  *  Saves the bundle to disk.
@@ -205,4 +205,4 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
 - (void)deleteCrashReporterLockFile;
 
 @end
-NS_ASSUME_NONNULL_END
+MSAI_ASSUME_NONNULL_END

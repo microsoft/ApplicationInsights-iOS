@@ -1,7 +1,7 @@
 #import "MSAIContext.h"
 #import "ApplicationInsights.h"
 
-NS_ASSUME_NONNULL_BEGIN
+MSAI_ASSUME_NONNULL_BEGIN
 @interface MSAIContext()
 
 @property (nonatomic, strong, readonly) NSString *instrumentationKey;
@@ -14,4 +14,4 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithInstrumentationKey:(NSString *)instrumentationKey;
 
 @end
-NS_ASSUME_NONNULL_END
+MSAI_ASSUME_NONNULL_END

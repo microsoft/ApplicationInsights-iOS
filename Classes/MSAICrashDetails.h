@@ -1,7 +1,7 @@
 #import <Foundation/Foundation.h>
 #import "ApplicationInsights.h"
 
-NS_ASSUME_NONNULL_BEGIN
+MSAI_ASSUME_NONNULL_BEGIN
 /**
  *  Provides details about the crash that occured in the previous app session
  */
@@ -82,4 +82,4 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL)isAppKill;
 
 @end
-NS_ASSUME_NONNULL_END
+MSAI_ASSUME_NONNULL_END

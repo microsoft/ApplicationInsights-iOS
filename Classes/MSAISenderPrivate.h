@@ -1,7 +1,7 @@
 @class MSAIEnvelope;
 @class MSAITelemetryContext;
 
-NS_ASSUME_NONNULL_BEGIN
+MSAI_ASSUME_NONNULL_BEGIN
 @interface MSAISender ()
 
 ///-----------------------------------------------------------------------------
@@ -83,4 +83,4 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL)shouldDeleteDataWithStatusCode:(NSInteger)statusCode;
 
 @end
-NS_ASSUME_NONNULL_END
+MSAI_ASSUME_NONNULL_END

@@ -1,4 +1,4 @@
-NS_ASSUME_NONNULL_BEGIN
+MSAI_ASSUME_NONNULL_BEGIN
 /**
 * MSAITelemetryManager is the component of the Application Insights SDK for iOS that is responsible for all things
 * that are related to metrics and tracking.
@@ -35,7 +35,7 @@ NS_ASSUME_NONNULL_BEGIN
  *  @param eventName the name of the event, which should be tracked.
  *  @param properties key value pairs with additional info about the event.
  */
-+ (void)trackEventWithName:(NSString *)eventName properties:(nullable NSDictionary *)properties;
++ (void)trackEventWithName:(NSString *)eventName properties:(MSAI_NULLABLE NSDictionary *)properties;
 
 /**
  *  Track the event by event name and customized properties and metrics.
@@ -44,7 +44,7 @@ NS_ASSUME_NONNULL_BEGIN
  *  @param properties key value pairs with additional info about the event.
  *  @param measurements key value pairs, which contain custom metrics.
  */
-+ (void)trackEventWithName:(NSString *)eventName properties:(nullable NSDictionary *)properties measurements:(nullable NSDictionary *)measurements;
++ (void)trackEventWithName:(NSString *)eventName properties:(MSAI_NULLABLE NSDictionary *)properties measurements:(MSAI_NULLABLE NSDictionary *)measurements;
 
 /**
  *  Track by message.
@@ -59,7 +59,7 @@ NS_ASSUME_NONNULL_BEGIN
  *  @param message a message, which should be tracked.
  *  @param properties key value pairs with additional info about the trace.
  */
-+ (void)trackTraceWithMessage:(NSString *)message properties:(nullable NSDictionary *)properties;
++ (void)trackTraceWithMessage:(NSString *)message properties:(MSAI_NULLABLE NSDictionary *)properties;
 
 /**
  *  Track metric by name and value.
@@ -76,7 +76,7 @@ NS_ASSUME_NONNULL_BEGIN
  *  @param value a numeric value, which should be tracked.
  *  @param properties key value pairs with additional info about the metric.
  */
-+ (void)trackMetricWithName:(NSString *)metricName value:(double)value properties:(nullable NSDictionary *)properties;
++ (void)trackMetricWithName:(NSString *)metricName value:(double)value properties:(MSAI_NULLABLE NSDictionary *)properties;
 
 /**
  * Track pageView by name of the page.
@@ -100,7 +100,7 @@ NS_ASSUME_NONNULL_BEGIN
  *  @param duration time the page has been viewed. This method is ideally called when a page view ends. The time has to be calculated by the developer.
  *  @param properties key-value pairs which can contain additional information about the page view
  */
-+ (void)trackPageView:(NSString *)pageName duration:(long)duration properties:(nullable NSDictionary *)properties;
++ (void)trackPageView:(NSString *)pageName duration:(long)duration properties:(MSAI_NULLABLE NSDictionary *)properties;
 
 /**
  *  Track handled exception.
@@ -122,7 +122,7 @@ NS_ASSUME_NONNULL_BEGIN
  *  @param eventName the name of the event, which should be tracked.
  *  @param properties key value pairs with additional info about the event.
  */
-- (void)trackEventWithName:(NSString *)eventName properties:(nullable NSDictionary *)properties;
+- (void)trackEventWithName:(NSString *)eventName properties:(MSAI_NULLABLE NSDictionary *)properties;
 
 /**
  *  Track the event by event name and customized properties and metrics.
@@ -131,7 +131,7 @@ NS_ASSUME_NONNULL_BEGIN
  *  @param properties key value pairs with additional info about the event.
  *  @param measurements key value pairs, which contain custom metrics.
  */
-- (void)trackEventWithName:(NSString *)eventName properties:(nullable NSDictionary *)properties measurements:(nullable NSDictionary *)measurements;
+- (void)trackEventWithName:(NSString *)eventName properties:(MSAI_NULLABLE NSDictionary *)properties measurements:(MSAI_NULLABLE NSDictionary *)measurements;
 
 /**
  *  Track by message.
@@ -146,7 +146,7 @@ NS_ASSUME_NONNULL_BEGIN
  *  @param message a message, which should be tracked.
  *  @param properties key value pairs with additional info about the trace.
  */
-- (void)trackTraceWithMessage:(NSString *)message properties:(nullable NSDictionary *)properties;
+- (void)trackTraceWithMessage:(NSString *)message properties:(MSAI_NULLABLE NSDictionary *)properties;
 
 /**
  *  Track metric by name and value.
@@ -163,7 +163,7 @@ NS_ASSUME_NONNULL_BEGIN
  *  @param value a numeric value, which should be tracked.
  *  @param properties key value pairs with additional info about the metric.
  */
-- (void)trackMetricWithName:(NSString *)metricName value:(double)value properties:(nullable NSDictionary *)properties;
+- (void)trackMetricWithName:(NSString *)metricName value:(double)value properties:(MSAI_NULLABLE NSDictionary *)properties;
 
 /**
  * Track pageView by name of the page.
@@ -187,7 +187,7 @@ NS_ASSUME_NONNULL_BEGIN
  *  @param duration time the page has been viewed. This method is ideally called when a page view ends. The time has to be calculated by the developer.
  *  @param properties key-value pairs which can contain additional information about the page view
  */
-- (void)trackPageView:(NSString *)pageName duration:(long)duration properties:(nullable NSDictionary *)properties;
+- (void)trackPageView:(NSString *)pageName duration:(long)duration properties:(MSAI_NULLABLE NSDictionary *)properties;
 
 /**
  *  Track handled exception.
@@ -197,4 +197,4 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)trackException:(NSException *)exception;
 
 @end
-NS_ASSUME_NONNULL_END
+MSAI_ASSUME_NONNULL_END

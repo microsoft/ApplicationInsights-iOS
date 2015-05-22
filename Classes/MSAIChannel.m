@@ -120,7 +120,7 @@ void msai_resetSafeJsonString(char **string) {
   *string = strdup("[");
 }
 
-- (void)processDictionary:(MSAIOrderedDictionary *)dictionary withCompletionBlock: (nullable void (^)(BOOL success)) completionBlock{
+- (void)processDictionary:(MSAIOrderedDictionary *)dictionary withCompletionBlock: (MSAI_NULLABLE void (^)(BOOL success)) completionBlock{
   [[MSAIPersistence sharedInstance] persistBundle:[NSArray arrayWithObject:dictionary]
                           ofType:MSAIPersistenceTypeHighPriority withCompletionBlock:completionBlock];
 }

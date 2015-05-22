@@ -3,7 +3,7 @@
 #import "MSAISession.h"
 #import "MSAIUser.h"
 
-NS_ASSUME_NONNULL_BEGIN
+MSAI_ASSUME_NONNULL_BEGIN
 
 FOUNDATION_EXPORT NSString *const MSAISessionStartedNotification;
 FOUNDATION_EXPORT NSString *const MSAISessionEndedNotification;
@@ -249,4 +249,4 @@ FOUNDATION_EXPORT NSString *const kMSAIApplicationWasLaunched;
 - (NSString *)unixTimestampFromDate:(NSDate *)date;
 
 @end
-NS_ASSUME_NONNULL_END
+MSAI_ASSUME_NONNULL_END

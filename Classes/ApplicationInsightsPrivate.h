@@ -1,7 +1,7 @@
 #import <Foundation/Foundation.h>
 #import "MSAIApplicationInsights.h"
 
-NS_ASSUME_NONNULL_BEGIN
+MSAI_ASSUME_NONNULL_BEGIN
 #ifndef MSAI_Private_h
 #define MSAI_Private_h
 
@@ -27,4 +27,4 @@ FOUNDATION_EXPORT NSString *const kMSAIIntegrationflowTimestamp;
 #endif
 
 #endif /* MSAI_Private_h */
-NS_ASSUME_NONNULL_END
+MSAI_ASSUME_NONNULL_END

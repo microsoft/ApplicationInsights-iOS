@@ -3,7 +3,7 @@
 #if MSAI_FEATURE_TELEMETRY
 @class MSAITelemetryData;
 
-NS_ASSUME_NONNULL_BEGIN
+MSAI_ASSUME_NONNULL_BEGIN
 @interface MSAITelemetryManager ()
 
 ///-----------------------------------------------------------------------------
@@ -59,6 +59,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)unregisterObservers;
 
 @end
-NS_ASSUME_NONNULL_END
+MSAI_ASSUME_NONNULL_END
 
 #endif /* MSAI_FEATURE_METRICS */

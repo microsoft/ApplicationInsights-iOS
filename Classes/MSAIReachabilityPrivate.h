@@ -3,7 +3,7 @@
 #import <CoreTelephony/CTTelephonyNetworkInfo.h>
 #endif
 
-NS_ASSUME_NONNULL_BEGIN
+MSAI_ASSUME_NONNULL_BEGIN
 /**
  *  Enum for representing different network statuses.
  */
@@ -129,4 +129,4 @@ FOUNDATION_EXPORT NSString* const kMSAIReachabilityUserInfoType;
 - (NSString *)descriptionForReachabilityType:(MSAIReachabilityType)reachabilityType;
 
 @end
-NS_ASSUME_NONNULL_END
+MSAI_ASSUME_NONNULL_END
