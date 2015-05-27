@@ -38,7 +38,7 @@
     } else {
       pageViewName = className;
     }
-    [MSAITelemetryManager trackPageView:pageViewName];
+    [[MSAITelemetryManager sharedManager] trackPageView:pageViewName];
   }
 #endif /* MSAI_FEATURE_TELEMETRY */
 }
