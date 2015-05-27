@@ -11,11 +11,8 @@ notifications:
 script:
 - set -o pipefail
 - cd Support
-- xcodebuild -project ApplicationInsights.xcodeproj -scheme "ApplicationInsights" -sdk iphonesimulator
-  -configuration Debug -destination "platform=iOS Simulator,name=iPhone 6" test |
-  xcpretty -c
-- xcodebuild -project ApplicationInsights.xcodeproj -scheme "ApplicationInsights Framework" -sdk iphonesimulator
-  -configuration Release | xcpretty -c
+- xcodebuild -project ApplicationInsights.xcodeproj -scheme "ApplicationInsights" -sdk iphonesimulator -configuration Debug -destination "platform=iOS Simulator,name=iPhone 6" test | xcpretty -c
+- xcodebuild -project ApplicationInsights.xcodeproj -scheme "ApplicationInsights Framework" -sdk iphonesimulator -configuration Release | xcpretty -c
 - cd ..
 - cp -R Products/ApplicationInsights ApplicationInsights
 - pod lib lint 
