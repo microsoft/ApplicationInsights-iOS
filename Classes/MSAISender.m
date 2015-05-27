@@ -154,10 +154,12 @@ static NSUInteger const defaultRequestLimit = 10;
 - (NSString *)contentTypeForData:(NSData *)data {
   NSString *contentType;
   static const uint8_t LINEBREAK_SIGNATURE = (0x0a);
-  UInt8 lastByte;
-  [data getBytes:&lastByte range:NSMakeRange(data.length-1, 1)];
+  UInt8 lastByte = 0;
+  if (data && data.length > 0) {
+    [data getBytes:&lastByte range:NSMakeRange(data.length-1, 1)];
+  }
   
-  if ((data.length > sizeof(uint8_t)) && (lastByte == LINEBREAK_SIGNATURE)) {
+  if (data && (data.length > sizeof(uint8_t)) && (lastByte == LINEBREAK_SIGNATURE)) {
     contentType = @"application/x-json-stream";
   } else {
     contentType = @"application/json";
