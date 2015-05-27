@@ -79,9 +79,16 @@ NS_ASSUME_NONNULL_BEGIN
  * Defines the server URL to send data to or request data from. By default this is set 
  * to the Application Insights servers and there rarely should be a need to modify that.
  * If you set your custom server URL, make sure you set the full URL (e.g. https://yourdomain.com/track/)
- * @warning This property needs to be set before calling `startManager`.
+ * @warning This property needs to be set before calling `start`.
  */
 @property (nonatomic, strong) NSString *serverURL;
+
+/**
+ *  Flag which determines if the line delimited JSON Stream format should be used for our data.
+ *
+ *  @warning This property needs to be set before calling `start`.  
+ */
+@property (nonatomic, assign) BOOL emitLineDelimitedJson;
 
 #if MSAI_FEATURE_CRASH_REPORTER
 
