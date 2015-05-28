@@ -1,3 +1,5 @@
+#import "ApplicationInsights.h"
+
 NS_ASSUME_NONNULL_BEGIN
 /**
 * MSAITelemetryManager is the component of the Application Insights SDK for iOS that is responsible for all things
