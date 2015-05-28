@@ -1,5 +1,6 @@
 #import <Foundation/Foundation.h>
 #import "ApplicationInsights.h"
+@class MSAIEnvelope;
 
 NS_ASSUME_NONNULL_BEGIN
 /**
@@ -181,7 +182,7 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
 *
 * @param bundle The bundle of application insights data
 */
-- (void)persistCrashTemplateBundle:(NSData *)bundle;
+- (void)persistCrashTemplate:(MSAIEnvelope *)crashTemplate;
 
 /**
 * Get the persisted crash template.

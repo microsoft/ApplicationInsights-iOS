@@ -120,7 +120,8 @@ NSUInteger const defaultFileCount = 50;
  * Method used to persist the "fake" crash reports. Crash templates are handled but are similar to the other bundle
  * types under the hood.
  */
-- (void)persistCrashTemplateBundle:(NSData *)bundle {
+- (void)persistCrashTemplate:(MSAIEnvelope *)crashTemplate {
+  NSData *bundle = [NSKeyedArchiver archivedDataWithRootObject:@[crashTemplate]];
   [self persistBundle:bundle ofType:MSAIPersistenceTypeCrashTemplate withCompletionBlock:nil];
 }
 
