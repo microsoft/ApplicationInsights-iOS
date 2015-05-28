@@ -47,7 +47,6 @@ static dispatch_once_t once_token;
   if(self = [super init]) {
     _dataItemQueue = [NSMutableArray array];
     _dataItemCount = 0;
-    _emitLineDelimitedJson = NO;
     if (msai_isDebuggerAttached()) {
       _senderBatchSize = debugMaxBatchCount;
       _senderInterval = debugBatchInterval;
@@ -81,12 +80,7 @@ static dispatch_once_t once_token;
 - (void)persistDataItemQueue {
   [self invalidateTimer];
   
-  NSData *bundle;
-  if (_emitLineDelimitedJson) {
-    bundle = [NSData dataWithBytes:MSAISafeJsonEventsString length:strlen(MSAISafeJsonEventsString)];
-  } else {
-    bundle = [self serializeObjectToJSONData:_dataItemQueue];
-  }
+  NSData *bundle = [NSData dataWithBytes:MSAISafeJsonEventsString length:strlen(MSAISafeJsonEventsString)];
   [[MSAIPersistence sharedInstance] persistBundle:bundle ofType:MSAIPersistenceTypeRegular withCompletionBlock:nil];
   
   // Reset both, the async-signal-safe and item counter.
@@ -94,13 +88,8 @@ static dispatch_once_t once_token;
 }
 
 - (void)resetQueue {
-  if (_emitLineDelimitedJson) {
-    msai_resetSafeJsonStream(&(MSAISafeJsonEventsString));
-    _dataItemCount = 0;
-  } else {
-    [_dataItemQueue removeAllObjects];
-    msai_resetSafeJsonString(&(MSAISafeJsonEventsString));
-  }
+  msai_resetSafeJsonStream(&(MSAISafeJsonEventsString));
+  _dataItemCount = 0;
 }
 
 #pragma mark - Adding to queue
@@ -113,31 +102,16 @@ static dispatch_once_t once_token;
       typeof(self) strongSelf = weakSelf;
       
       // Enqueue item
-      if (_emitLineDelimitedJson) {
-        [strongSelf appendDictionaryToJsonStream:dictionary];
-        
-        if(strongSelf->_dataItemCount >= strongSelf.senderBatchSize) {
-          // Max batch count has been reached, so write queue to disk and delete all items.
-          [strongSelf persistDataItemQueue];
-          
-        } else if(strongSelf->_dataItemCount == 1) {
-          // It is the first item, let's start the timer
-          [strongSelf startTimer];
-        }
-        
-      } else {
-        [strongSelf addDictionaryToQueues:dictionary];
-        
-        if([strongSelf->_dataItemQueue count] >= strongSelf.senderBatchSize) {
-          // Max batch count has been reached, so write queue to disk and delete all items.
-          [strongSelf persistDataItemQueue];
-          
-        } else if([strongSelf->_dataItemQueue count] == 1) {
-          // It is the first item, let's start the timer
-          [strongSelf startTimer];
-        }
-      }
+      [strongSelf appendDictionaryToJsonStream:dictionary];
       
+      if(strongSelf->_dataItemCount >= strongSelf.senderBatchSize) {
+        // Max batch count has been reached, so write queue to disk and delete all items.
+        [strongSelf persistDataItemQueue];
+        
+      } else if(strongSelf->_dataItemCount == 1) {
+        // It is the first item, let's start the timer
+        [strongSelf startTimer];
+      }
     });
   }
 }
@@ -168,39 +142,6 @@ static dispatch_once_t once_token;
     return nil;
   }
   return data;
-}
-
-#pragma mark JSON String
-
-- (void)addDictionaryToQueues:(MSAIOrderedDictionary *)dictionary {
-  // Since we can't persist every event right away, we write it to a simple C string.
-  // This can then be written to disk by a signal handler in case of a crash.
-  [self->_dataItemQueue addObject:dictionary];
-  
-  NSString *string = [self serializeDictionaryToJSONString:dictionary];
-  msai_appendStringToSafeJsonString(string, &(MSAISafeJsonEventsString));
-}
-
-void msai_appendStringToSafeJsonString(NSString *string, char **jsonString) {
-  if (jsonString == NULL) { return; }
-  
-  if (!string) { return; }
-  
-  if (*jsonString == NULL || strlen(*jsonString) == 0) {
-    msai_resetSafeJsonString(jsonString);
-  }
-  
-  char *new_string = NULL;
-  // Concatenate old string with new JSON string and add a comma.
-  asprintf(&new_string, "%s%.*s,", *jsonString, (int)MIN(string.length, (NSUInteger)INT_MAX), string.UTF8String);
-  free(*jsonString);
-  *jsonString = new_string;
-}
-
-void msai_resetSafeJsonString(char **string) {
-  if (!string) { return; }
-  free(*string);
-  *string = strdup("[");
 }
 
 #pragma mark JSON Stream

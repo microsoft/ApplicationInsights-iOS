@@ -74,23 +74,9 @@
 
 #pragma mark - Queue management
 
-- (void)testEnqueueEnvelopeWithOneEnvelopeAndNormalJSON {
-  self.sut = OCMPartialMock(self.sut);
-  MSAIOrderedDictionary *dictionary = [MSAIOrderedDictionary new];
-  
-  [self.sut enqueueDictionary:dictionary];
-  
-  [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
-  
-  assertThat(self.sut.dataItemQueue, hasCountOf(1));
-  XCTAssertEqual(self.sut.dataItemQueue.firstObject, dictionary);
-  OCMVerify([self.sut startTimer]);
-}
-
 - (void)testEnqueueEnvelopeWithOneEnvelopeAndJSONStream {
   self.sut = OCMPartialMock(self.sut);
   MSAIOrderedDictionary *dictionary = [MSAIOrderedDictionary new];
-  self.sut.emitLineDelimitedJson = YES;
   
   [self.sut enqueueDictionary:dictionary];
   
@@ -101,32 +87,8 @@
   });
 }
 
-- (void)testEnqueueEnvelopeWithMultipleEnvelopesAndNormalJSON {
-  self.sut = OCMPartialMock(self.sut);
-  OCMStub([self.sut invalidateTimer]);
-  
-  self.sut.senderBatchSize = 3;
-  
-  MSAIOrderedDictionary *dictionary = [MSAIOrderedDictionary new];
-  
-  assertThat(self.sut.dataItemQueue, hasCountOf(0));
-  
-  [self.sut enqueueDictionary:dictionary];
-  assertThat(self.sut.dataItemQueue, hasCountOf(1));
-  
-  [self.sut enqueueDictionary:dictionary];
-  assertThat(self.sut.dataItemQueue, hasCountOf(2));
-  
-  [self.sut enqueueDictionary:dictionary];
-  assertThat(self.sut.dataItemQueue, hasCountOf(0));
-  
-  OCMVerify([self.sut invalidateTimer]);
-}
-
 - (void)testEnqueueEnvelopeWithMultipleEnvelopesAndJSONStream {
   self.sut = OCMPartialMock(self.sut);
-  self.sut.emitLineDelimitedJson = YES;
-  
   self.sut.senderBatchSize = 3;
   
   MSAIOrderedDictionary *dictionary = [MSAIOrderedDictionary new];
@@ -151,45 +113,6 @@
     assertThatUnsignedInteger(self.sut.dataItemCount, equalToUnsignedInteger(0));
     XCTAssertTrue(strcmp(MSAISafeJsonEventsString, "") == 0);
   });
-}
-
-#pragma mark - Safe JSON String Tests
-
-- (void)testAppendStringToSafeJsonString {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wnonnull"
-  msai_appendStringToSafeJsonString(nil, 0);
-#pragma clang diagnostic pop
-  XCTAssertTrue(MSAISafeJsonEventsString == NULL);
-  
-  MSAISafeJsonEventsString = NULL;
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wnonnull"
-  msai_appendStringToSafeJsonString(nil, &MSAISafeJsonEventsString);
-#pragma clang diagnostic pop
-  XCTAssertTrue(MSAISafeJsonEventsString == NULL);
-  
-  msai_appendStringToSafeJsonString(@"", &MSAISafeJsonEventsString);
-  XCTAssertEqual(strcmp(MSAISafeJsonEventsString,"[,"), 0);
-  
-  msai_appendStringToSafeJsonString(@"{\"Key1\":\"Value1\"}", &MSAISafeJsonEventsString);
-  XCTAssertEqual(strcmp(MSAISafeJsonEventsString,"[,{\"Key1\":\"Value1\"},"), 0);
-}
-
-- (void)testResetSafeJsonString {
-  msai_resetSafeJsonString(&MSAISafeJsonEventsString);
-  XCTAssertEqual(strcmp(MSAISafeJsonEventsString,"["), 0);
-  
-  MSAISafeJsonEventsString = NULL;
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wnonnull"
-  msai_resetSafeJsonString(nil);
-#pragma clang diagnostic pop
-  XCTAssertEqual(MSAISafeJsonEventsString, NULL);
-  
-  MSAISafeJsonEventsString = strdup("test string");
-  msai_resetSafeJsonString(&MSAISafeJsonEventsString);
-  XCTAssertEqual(strcmp(MSAISafeJsonEventsString,"["), 0);
 }
 
 #pragma mark - Safe JSON Stream Tests

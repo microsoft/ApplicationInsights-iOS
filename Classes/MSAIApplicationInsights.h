@@ -83,13 +83,6 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nonatomic, strong) NSString *serverURL;
 
-/**
- *  Flag which determines if the line delimited JSON Stream format should be used for our data.
- *
- *  @warning This property needs to be set before calling `start`.  
- */
-@property (nonatomic, assign) BOOL emitLineDelimitedJson;
-
 #if MSAI_FEATURE_CRASH_REPORTER
 
 /**

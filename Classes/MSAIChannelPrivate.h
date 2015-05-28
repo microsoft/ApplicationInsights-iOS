@@ -54,11 +54,6 @@ FOUNDATION_EXPORT char *MSAISafeJsonEventsString;
 @property (nonatomic, assign) NSUInteger dataItemCount;
 
 /**
- *  A boolean value that indicates whether data is processed as regular JSON or line delimited JSON Stream.
- */
-@property (nonatomic, assign) BOOL emitLineDelimitedJson;
-
-/**
  *  Enqueue telemetry data (events, metrics, exceptions, traces) before processing it.
  *
  *  @param dictionary The dictionary object, which should be processed.
@@ -90,32 +85,6 @@ void msai_appendStringToSafeJsonStream(NSString *string, char *__nonnull*__nonnu
  *  @param string The string that will be reset.
  */
 void msai_resetSafeJsonStream(char *__nonnull*__nonnull jsonStream);
-
-///-----------------------------------------------------------------------------
-/// @name Regular JSON
-///-----------------------------------------------------------------------------
-
-/**
- *  Adds the specified dictionary to the dataItemQueue.
- *
- *  @param dictionary The dictionary object which is to be added to the dataItemQueue and the fallback MSAISafeJsonEventsString.
- */
-- (void)addDictionaryToQueues:(MSAIOrderedDictionary *)dictionary;
-
-/**
- *  A C function that serializes a given dictionary to JSON and appends it to a char string
- *
- *  @param dictionary A dictionary which will be serialized to JSON and then appended to the string.
- *  @param string The C string which the dictionary's JSON representation will be appended to.
- */
-void msai_appendStringToSafeJsonString(NSString *string, char *__nonnull*__nonnull jsonString);
-
-/**
- *  Reset MSAISafeJsonEventsString so we can start appending JSON dictionaries.
- *
- *  @param string The string that will be reset.
- */
-void msai_resetSafeJsonString(char *__nonnull*__nonnull string);
 
 /**
  *  Directly process telemetry data (crashs) without enqueuing it first.

@@ -259,15 +259,6 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
   [[self sharedInstance] setServerURL:serverURL];
 }
 
-- (void)setEmitLineDelimitedJson:(BOOL)emitLineDelimitedJson {
-  _emitLineDelimitedJson = emitLineDelimitedJson;
-  [[MSAIChannel sharedChannel] setEmitLineDelimitedJson:emitLineDelimitedJson];
-}
-
-+ (void)setEmitLineDelimitedJson:(BOOL)emitLineDelimitedJson {
-  [[self sharedInstance] setEmitLineDelimitedJson:emitLineDelimitedJson];
-}
-
 #pragma mark - SDK meta data
 
 - (NSString *)version {
