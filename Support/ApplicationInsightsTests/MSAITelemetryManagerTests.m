@@ -72,8 +72,19 @@
   [self.sut unregisterObservers];
   
   [self.sut registerObservers];
+  OCMVerify([self.mockNotificationCenter addObserverForName:UIApplicationDidEnterBackgroundNotification object:nil queue:NSOperationQueue.mainQueue usingBlock:[OCMArg any]]);
+  OCMVerify([self.mockNotificationCenter addObserverForName:UIApplicationWillResignActiveNotification object:nil queue:NSOperationQueue.mainQueue usingBlock:[OCMArg any]]);
   OCMVerify([self.mockNotificationCenter addObserverForName:MSAISessionStartedNotification object:nil queue:NSOperationQueue.mainQueue usingBlock:[OCMArg any]]);
   OCMVerify([self.mockNotificationCenter addObserverForName:MSAISessionEndedNotification object:nil queue:NSOperationQueue.mainQueue usingBlock:[OCMArg any]]);
+  OCMVerify([self.mockNotificationCenter addObserverForName:UIDeviceOrientationDidChangeNotification object:nil queue:NSOperationQueue.mainQueue usingBlock:[OCMArg any]]);
+}
+
+- (void)testTrackOrientationChange {
+  self.sut = OCMPartialMock([MSAITelemetryManager new]);
+  
+  [self.sut trackOrientationChange];
+  
+  OCMVerify([self.sut trackEventWithName:[OCMArg isEqual:@"Device orientation changed"] properties:[OCMArg any]]);
 }
 
 @end

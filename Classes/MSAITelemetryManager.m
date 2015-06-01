@@ -36,6 +36,7 @@ static char *const MSAITelemetryEventQueue = "com.microsoft.ApplicationInsights.
   id _appWillResignActiveObserver;
   id _sessionStartedObserver;
   id _sessionEndedObserver;
+  id _deviceOrientationObserver;
 }
 
 #pragma mark - Configure manager
@@ -101,9 +102,17 @@ static char *const MSAITelemetryEventQueue = "com.microsoft.ApplicationInsights.
                                                  queue:NSOperationQueue.mainQueue
                                             usingBlock:^(NSNotification *notification) {
                                               typeof(self) strongSelf = weakSelf;
-                                              
                                               [strongSelf trackSessionEnd];
                                             }];
+  }
+  if (!_deviceOrientationObserver) {
+    [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
+    _deviceOrientationObserver = [center addObserverForName:UIDeviceOrientationDidChangeNotification
+                                                     object:nil
+                                                      queue:NSOperationQueue.mainQueue usingBlock:^(NSNotification *note) {
+                                                        typeof(self) strongSelf = weakSelf;
+                                                        [strongSelf trackOrientationChange];
+                                                    }];
   }
 }
 
@@ -269,6 +278,40 @@ static char *const MSAITelemetryEventQueue = "com.microsoft.ApplicationInsights.
     MSAIOrderedDictionary *dict = [envelope serializeToDictionary];
     [[MSAIChannel sharedChannel] enqueueDictionary:dict];
   }
+}
+
+#pragma mark - Orientation Change
+
+- (void)trackOrientationChange {
+  UIInterfaceOrientation *currentOrientation = [UIDevice currentDevice].orientation;
+  NSDictionary *properties;
+  switch ((int)currentOrientation) {
+    case UIDeviceOrientationUnknown:
+      properties = @{@"orientation":@"UIDeviceOrientationUnknown"};
+      break;
+    case UIDeviceOrientationPortrait:
+      properties = @{@"orientation":@"UIDeviceOrientationPortrait"};
+      break;
+    case UIDeviceOrientationPortraitUpsideDown:
+      properties = @{@"orientation":@"UIDeviceOrientationPortraitUpsideDown"};
+      break;
+    case UIDeviceOrientationLandscapeLeft:
+      properties = @{@"orientation":@"UIDeviceOrientationLandscapeLeft"};
+      break;
+    case UIDeviceOrientationLandscapeRight:
+      properties = @{@"orientation":@"UIDeviceOrientationLandscapeRight"};
+      break;
+    case UIDeviceOrientationFaceUp:
+      properties = @{@"orientation":@"UIDeviceOrientationFaceUp"};
+      break;
+    case UIDeviceOrientationFaceDown:
+      properties = @{@"orientation":@"UIDeviceOrientationFaceDown"};
+      break;
+    default:
+      properties = @{@"orientation":@"UIDeviceOrientationUnknown"};
+      break;
+  }
+  [self trackEventWithName:@"Device orientation changed" properties:properties];
 }
 
 #pragma mark - Session update

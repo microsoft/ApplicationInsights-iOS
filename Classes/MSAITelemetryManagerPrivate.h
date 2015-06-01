@@ -48,6 +48,8 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (void)trackDataItem:(MSAITelemetryData *)dataItem;
 
+- (void)trackOrientationChange;
+
 /**
  * Registers the manager for all notifications that are necessary for automatic session tracking
  */
