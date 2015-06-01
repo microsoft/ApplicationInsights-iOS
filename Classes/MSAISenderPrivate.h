@@ -65,7 +65,7 @@ NS_ASSUME_NONNULL_BEGIN
 ///-----------------------------------------------------------------------------
 
 /**
- *  Returnes a request for sending data to the telemetry sender.
+ *  Returns a request for sending data to the telemetry sender.
  *
  *  @param data the data which should be sent
  *

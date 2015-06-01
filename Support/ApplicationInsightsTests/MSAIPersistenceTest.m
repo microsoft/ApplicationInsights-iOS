@@ -52,12 +52,12 @@ typedef void (^MSAIPersistenceTestBlock)(BOOL);
   // First requested file should be high prio
   NSString *nextPath = [_sut requestNextPath];
   NSData *data = [_sut dataAtPath:nextPath];
-  XCTAssertTrue([data isEqual:[_sut dataForBundle:@[highPrioDict] withPersistenceTye:MSAIPersistenceTypeHighPriority]]);
+  XCTAssertTrue([data isEqual:[self jsonDataFromArray:@[highPrioDict]]]);
   
   // Once this file has been locked, we'll get the file with regular prio
   nextPath = [_sut requestNextPath];
   data = [_sut dataAtPath:nextPath];
-  XCTAssertTrue([data isEqual:[_sut dataForBundle:@[regularPrioDict] withPersistenceTye:MSAIPersistenceTypeRegular]]);
+  XCTAssertTrue([data isEqual:[self jsonDataFromArray:@[regularPrioDict]]]);
 }
 
 - (void)testDeletionWorks {
@@ -173,11 +173,21 @@ typedef void (^MSAIPersistenceTestBlock)(BOOL);
 
 #pragma mark - Helper
 
--(BOOL)createFileForDict:(NSDictionary *)dict withType:(MSAIPersistenceType)type{
+- (NSData *)jsonDataFromArray:(NSArray *)array {
+  NSError *error = nil;
+  NSData *data = [NSJSONSerialization dataWithJSONObject:array options:0 error:&error];
+  if (data == nil) {
+    NSLog(@"Unable to convert JSON to NSData: %@", [error localizedDescription]);
+  }
+  return data;
+}
+
+- (BOOL)createFileForDict:(NSDictionary *)dict withType:(MSAIPersistenceType)type{
   
   __block BOOL success = NO;
   XCTestExpectation *documentOpenExpectation = [self expectationWithDescription:@"File saved to disk"];
-  [_sut persistBundle:@[dict] ofType:type enableNotifications:NO withCompletionBlock:^(BOOL success) {
+  NSData *data = [NSJSONSerialization dataWithJSONObject:@[dict] options:(NSJSONWritingOptions)0 error:nil];
+  [_sut persistBundle:data ofType:type enableNotifications:NO withCompletionBlock:^(BOOL success) {
     if (success) {
       [documentOpenExpectation fulfill];
     }
@@ -191,7 +201,7 @@ typedef void (^MSAIPersistenceTestBlock)(BOOL);
   return success;
 }
 
--(void)deleteAllFiles{
+- (void)deleteAllFiles {
   [_sut.requestedBundlePaths removeAllObjects];
   //Delete all bundles to make sure we have a clean dir next time
   NSString *nextPath = [_sut requestNextPath];
@@ -202,12 +212,12 @@ typedef void (^MSAIPersistenceTestBlock)(BOOL);
   }
 }
 
--(void)updateFileCount{
+- (void)updateFileCount {
   // Due to permormance reasons the file count only gets updated when a file is requested
   [_sut requestNextPath];
 }
 
-- (NSUInteger)fileCountForType:(MSAIPersistenceType)type{
+- (NSUInteger)fileCountForType:(MSAIPersistenceType)type {
   NSString *directoryPath = [_sut folderPathForPersistenceType:type];
   NSError *error = nil;
   NSArray *fileNames = [[NSFileManager defaultManager] contentsOfDirectoryAtURL:[NSURL fileURLWithPath:directoryPath]

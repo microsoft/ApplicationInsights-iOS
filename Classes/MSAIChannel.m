@@ -28,7 +28,7 @@ static dispatch_once_t once_token;
 
 #pragma mark - Initialisation
 
-+ (id)sharedChannel {
++ (instancetype)sharedChannel {
   
   dispatch_once(&once_token, ^{
     if (_sharedChannel == nil) {
@@ -46,6 +46,7 @@ static dispatch_once_t once_token;
 - (instancetype)init {
   if(self = [super init]) {
     _dataItemQueue = [NSMutableArray array];
+    _dataItemCount = 0;
     if (msai_isDebuggerAttached()) {
       _senderBatchSize = debugMaxBatchCount;
       _senderInterval = debugBatchInterval;
@@ -61,70 +62,6 @@ static dispatch_once_t once_token;
 
 #pragma mark - Queue management
 
-- (void)enqueueDictionary:(MSAIOrderedDictionary *)dictionary{
-  if(dictionary) {
-    
-    __weak typeof(self) weakSelf = self;
-    dispatch_async(self.dataItemsOperations, ^{
-      typeof(self) strongSelf = weakSelf;
-      
-      // Enqueue item
-      [strongSelf addDictionaryToQueues:dictionary];
-
-      if([strongSelf->_dataItemQueue count] >= strongSelf.senderBatchSize) {
-        
-        // Max batch count has been reached, so write queue to disk and delete all items.
-        [strongSelf persistDataItemQueue];
-      } else if([strongSelf->_dataItemQueue count] == 1) {
-        
-        // It is the first item, let's start the timer
-        [strongSelf startTimer];
-      }
-    });
-  }
-}
-
-- (void)addDictionaryToQueues:(MSAIOrderedDictionary *)dictionary {
-  // Since we can't persist every event right away, we write it to a simple C string.
-  // This can then be written to disk by a signal handler in case of a crash.
-  [self->_dataItemQueue addObject:dictionary];
-  msai_appendDictionaryToSafeJsonString(dictionary, &(MSAISafeJsonEventsString));
-}
-
-void msai_appendDictionaryToSafeJsonString(NSDictionary *dictionary, char **string) {
-  if (string == NULL) { return; }
-
-  if (!dictionary) { return; }
-  
-  if (*string == NULL || strlen(*string) == 0) {
-    msai_resetSafeJsonString(string);
-  }
-
-  NSError *error = nil;
-  NSData *json_data = [NSJSONSerialization dataWithJSONObject:dictionary options:0 error:&error];
-  if (!json_data) {
-    MSAILog(@"JSONSerialization error: %@", error.description);
-    return;
-  }
-
-  char *new_string = NULL;
-  // Concatenate old string with new JSON string and add a comma.
-  asprintf(&new_string, "%s%.*s,", *string, (int)MIN(json_data.length, (NSUInteger)INT_MAX), json_data.bytes);
-  free(*string);
-  *string = new_string;
-}
-
-void msai_resetSafeJsonString(char **string) {
-  if (!string) { return; }
-  free(*string);
-  *string = strdup("[");
-}
-
-- (void)processDictionary:(MSAIOrderedDictionary *)dictionary withCompletionBlock: (nullable void (^)(BOOL success)) completionBlock{
-  [[MSAIPersistence sharedInstance] persistBundle:[NSArray arrayWithObject:dictionary]
-                          ofType:MSAIPersistenceTypeHighPriority withCompletionBlock:completionBlock];
-}
-
 - (NSMutableArray *)dataItemQueue {
   __block NSMutableArray *queue = nil;
   __weak typeof(self) weakSelf = self;
@@ -136,18 +73,110 @@ void msai_resetSafeJsonString(char **string) {
   return queue;
 }
 
-- (void)persistDataItemQueue {
-  [self invalidateTimer];
-  NSArray *bundle = [NSArray arrayWithArray:_dataItemQueue];
-  [[MSAIPersistence sharedInstance] persistBundle:bundle ofType:MSAIPersistenceTypeRegular withCompletionBlock:nil];
-  
-  // Reset both, the async-signal-safe and normal queue.
-  [_dataItemQueue removeAllObjects];
-  msai_resetSafeJsonString(&(MSAISafeJsonEventsString));
-}
-
 - (BOOL)isQueueBusy{
   return ![[MSAIPersistence sharedInstance] isFreeSpaceAvailable];
+}
+
+- (void)persistDataItemQueue {
+  [self invalidateTimer];
+  
+  NSData *bundle = [NSData dataWithBytes:MSAISafeJsonEventsString length:strlen(MSAISafeJsonEventsString)];
+  [[MSAIPersistence sharedInstance] persistBundle:bundle ofType:MSAIPersistenceTypeRegular withCompletionBlock:nil];
+  
+  // Reset both, the async-signal-safe and item counter.
+  [self resetQueue];
+}
+
+- (void)resetQueue {
+  msai_resetSafeJsonStream(&(MSAISafeJsonEventsString));
+  _dataItemCount = 0;
+}
+
+#pragma mark - Adding to queue
+
+- (void)enqueueDictionary:(MSAIOrderedDictionary *)dictionary{
+  if(dictionary) {
+    
+    __weak typeof(self) weakSelf = self;
+    dispatch_async(self.dataItemsOperations, ^{
+      typeof(self) strongSelf = weakSelf;
+      
+      // Enqueue item
+      [strongSelf appendDictionaryToJsonStream:dictionary];
+      
+      if(strongSelf->_dataItemCount >= strongSelf.senderBatchSize) {
+        // Max batch count has been reached, so write queue to disk and delete all items.
+        [strongSelf persistDataItemQueue];
+        
+      } else if(strongSelf->_dataItemCount == 1) {
+        // It is the first item, let's start the timer
+        [strongSelf startTimer];
+      }
+    });
+  }
+}
+
+- (void)processDictionary:(MSAIOrderedDictionary *)dictionary withCompletionBlock: (nullable void (^)(BOOL success)) completionBlock{
+  [[MSAIPersistence sharedInstance] persistBundle:[self serializeObjectToJSONData:dictionary]
+                                           ofType:MSAIPersistenceTypeHighPriority withCompletionBlock:completionBlock];
+}
+
+#pragma mark - Serialization Helper
+
+- (NSString *)serializeDictionaryToJSONString:(MSAIOrderedDictionary *)dictionary {
+  NSError *error;
+  NSData *data = [NSJSONSerialization dataWithJSONObject:dictionary options:(NSJSONWritingOptions)0 error:&error];
+  if (!data) {
+    MSAILog(@"JSONSerialization error: %@", error.localizedDescription);
+    return @"{}";
+  } else {
+    return [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+  }
+}
+
+- (NSData *)serializeObjectToJSONData:(id)object {
+  NSError *error = nil;
+  NSData *data = [NSJSONSerialization dataWithJSONObject:object options:0 error:&error];
+  if (!data) {
+    MSAILog(@"JSONSerialization error: %@", error.localizedDescription);
+    return nil;
+  }
+  return data;
+}
+
+#pragma mark JSON Stream
+
+- (void)appendDictionaryToJsonStream:(MSAIOrderedDictionary *)dictionary {
+  NSString *string = [self serializeDictionaryToJSONString:dictionary];
+  
+  // Since we can't persist every event right away, we write it to a simple C string.
+  // This can then be written to disk by a signal handler in case of a crash.
+  msai_appendStringToSafeJsonStream(string, &(MSAISafeJsonEventsString));
+  _dataItemCount += 1;
+}
+
+void msai_appendStringToSafeJsonStream(NSString *string, char **jsonString) {
+  if (jsonString == NULL) { return; }
+  
+  if (!string) { return; }
+  
+  if (*jsonString == NULL || strlen(*jsonString) == 0) {
+    msai_resetSafeJsonStream(jsonString);
+  }
+  
+  if (string.length == 0) { return; }
+  
+  char *new_string = NULL;
+  // Concatenate old string with new JSON string and add a comma.
+  asprintf(&new_string, "%s%.*s\n", *jsonString, (int)MIN(string.length, (NSUInteger)INT_MAX), string.UTF8String);
+  free(*jsonString);
+  *jsonString = new_string;
+}
+
+void msai_resetSafeJsonStream(char **string) {
+  if (!string) { return; }
+  free(*string);
+  *string = strdup("");
 }
 
 #pragma mark - Batching

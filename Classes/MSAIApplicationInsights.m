@@ -318,15 +318,18 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 #pragma mark - Helper
 
 - (BOOL)checkValidityOfInstrumentationKey:(NSString *)instrumentationKey {
-  BOOL result = NO;
+  BOOL keyIsValid = NO;
+  BOOL internalKey = NO;
   
   if (instrumentationKey) {
     NSCharacterSet *hexSet = [NSCharacterSet characterSetWithCharactersInString:@"0123456789abcdef-"];
     NSCharacterSet *inStringSet = [NSCharacterSet characterSetWithCharactersInString:instrumentationKey];
-    result = ([instrumentationKey length] == 36) && ([hexSet isSupersetOfSet:inStringSet]);
+
+    keyIsValid = ([instrumentationKey length] == 36) && ([hexSet isSupersetOfSet:inStringSet]);
+    internalKey = ([instrumentationKey length] == 40) && ([instrumentationKey hasPrefix:@"AIF"]);
   }
   
-  return result;
+  return keyIsValid || internalKey;
 }
 
 - (MSAIAppClient *)appClient {
