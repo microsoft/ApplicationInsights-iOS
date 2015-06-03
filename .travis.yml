@@ -4,6 +4,8 @@ before_install:
 notifications:
   slack:
     secure: dCzA1+dtjKkHk2PK6RWBSE0Obgf0CvIejhXXH4Aba29zfVQg5Bv0yWJ34YHnPMFPA7+eyFrW2TqGqI7gA7L7Ju0RWHwu9Z0XayCcMpOCZVKTOSf/7SrAvtODKNzAT/S55HZOaj8yxK6l5a0cMGXfGM7j+NLdkjyba7ypQKsn0ug=
+    on_failure: always
+    on_success: change
 script:
 
 XCPROJECT = ApplicationInsights.xcodeproj
