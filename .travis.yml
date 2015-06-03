@@ -10,8 +10,8 @@ XCPROJECT = ApplicationInsights.xcodeproj
 SDK = iphonesimulator
 
 - cd Support
-- set -o pipefail && xcodebuild -project $(XCPROJECT) -scheme "ApplicationInsights" -sdk $(SDK) -configuration Debug -destination "platform=iOS Simulator,name=iPhone 6" test | xcpretty -c
-- set -o pipefail && xcodebuild -project $(XCPROJECT) -scheme "ApplicationInsights Framework" -sdk $(SDK) -configuration Release | xcpretty -c
+- set -o pipefail && xcodebuild -project $(XCPROJECT) -scheme "ApplicationInsights" -sdk $(SDK) -configuration Debug -destination "platform=iOS Simulator,name=iPhone 6" test
+- set -o pipefail && xcodebuild -project $(XCPROJECT) -scheme "ApplicationInsights Framework" -sdk $(SDK) -configuration Release
 - cd ..
 - cp -R Products/ApplicationInsights ApplicationInsights
 - pod lib lint
