@@ -72,6 +72,8 @@
   [self.sut unregisterObservers];
   
   [self.sut registerObservers];
+  OCMVerify([self.mockNotificationCenter addObserverForName:UIApplicationDidFinishLaunchingNotification object:nil queue:NSOperationQueue.mainQueue usingBlock:[OCMArg any]]);
+  OCMVerify([self.mockNotificationCenter addObserverForName:UIApplicationWillEnterForegroundNotification object:nil queue:NSOperationQueue.mainQueue usingBlock:[OCMArg any]]);
   OCMVerify([self.mockNotificationCenter addObserverForName:UIApplicationDidEnterBackgroundNotification object:nil queue:NSOperationQueue.mainQueue usingBlock:[OCMArg any]]);
   OCMVerify([self.mockNotificationCenter addObserverForName:UIApplicationWillResignActiveNotification object:nil queue:NSOperationQueue.mainQueue usingBlock:[OCMArg any]]);
   OCMVerify([self.mockNotificationCenter addObserverForName:MSAISessionStartedNotification object:nil queue:NSOperationQueue.mainQueue usingBlock:[OCMArg any]]);

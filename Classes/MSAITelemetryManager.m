@@ -37,6 +37,9 @@ static char *const MSAITelemetryEventQueue = "com.microsoft.ApplicationInsights.
   id _sessionStartedObserver;
   id _sessionEndedObserver;
   id _deviceOrientationObserver;
+  id _appStartObserver;
+  id _foregroundObserver;
+  id _backgroundObserver;
 }
 
 #pragma mark - Configure manager
@@ -69,12 +72,31 @@ static char *const MSAITelemetryEventQueue = "com.microsoft.ApplicationInsights.
   NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
   __weak typeof(self) weakSelf = self;
   
+  if (!_appStartObserver) {
+    _appStartObserver = [center addObserverForName:UIApplicationDidFinishLaunchingNotification
+                                            object:nil queue:NSOperationQueue.mainQueue
+                                        usingBlock:^(NSNotification *note) {
+                                          typeof(self) strongSelf = weakSelf;
+                                          [strongSelf trackAppStart];
+                                        }];
+  }
+  if (!_foregroundObserver) {
+    _foregroundObserver = [center addObserverForName:UIApplicationWillEnterForegroundNotification
+                                              object:nil
+                                               queue:NSOperationQueue.mainQueue
+                                          usingBlock:^(NSNotification *note) {
+                                            typeof(weakSelf) strongSelf = weakSelf;
+                                            [strongSelf trackEnterForeground];
+                                          }];
+  }
   if (!_appDidEnterBackgroundObserver) {
     _appDidEnterBackgroundObserver = [center addObserverForName:UIApplicationDidEnterBackgroundNotification
                                                          object:nil
                                                           queue:NSOperationQueue.mainQueue
                                                      usingBlock:^(NSNotification *notification) {
+                                                       typeof(self) strongSelf = weakSelf;
                                                        [[MSAIChannel sharedChannel] persistDataItemQueue];
+                                                       [strongSelf trackEnterBackground];
                                                      }];
   }
   
@@ -278,6 +300,22 @@ static char *const MSAITelemetryEventQueue = "com.microsoft.ApplicationInsights.
     MSAIOrderedDictionary *dict = [envelope serializeToDictionary];
     [[MSAIChannel sharedChannel] enqueueDictionary:dict];
   }
+}
+
+#pragma mark - App Start
+
+- (void)trackAppStart {
+  [self trackEventWithName:@"App started"];
+}
+
+#pragma mark - Foreground / Background
+
+- (void)trackEnterForeground {
+  [self trackEventWithName:@"App will enter foreground"];
+}
+
+- (void)trackEnterBackground {
+  [self trackEventWithName:@"App did enter background"];
 }
 
 #pragma mark - Orientation Change
