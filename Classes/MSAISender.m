@@ -2,16 +2,16 @@
 #import "MSAIAppClient.h"
 #import "MSAISenderPrivate.h"
 #import "MSAIPersistence.h"
+#import "MSAIGZIP.h"
 
 #import "ApplicationInsights.h"
 #import "ApplicationInsightsPrivate.h"
 #import "MSAIApplicationInsights.h"
 
+static char const *kPersistenceQueueString = "com.microsoft.ApplicationInsights.senderQueue";
 static NSUInteger const defaultRequestLimit = 10;
 
-static NSInteger const statusCodeOK = 200;
-static NSInteger const statusCodeAccepted = 202;
-static NSInteger const statusCodeBadRequest = 400;
+
 
 @implementation MSAISender
 
@@ -29,10 +29,16 @@ static NSInteger const statusCodeBadRequest = 400;
   return sharedInstance;
 }
 
+- (instancetype)init {
+  if ((self = [super init])) {
+    _senderQueue = dispatch_queue_create(kPersistenceQueueString, DISPATCH_QUEUE_CONCURRENT);
+  }
+  return self;
+}
+
 #pragma mark - Network status
 
-- (void)configureWithAppClient:(MSAIAppClient *)appClient endpointPath:(NSString *)endpointPath {
-  self.endpointPath = endpointPath;
+- (void)configureWithAppClient:(MSAIAppClient * __nonnull)appClient {
   self.appClient = appClient;
   self.maxRequestCount = defaultRequestLimit;
   [self registerObservers];
@@ -57,7 +63,6 @@ static NSInteger const statusCodeBadRequest = 400;
 #pragma mark - Sending
 
 - (void)sendSavedData{
-  
   @synchronized(self){
     if(self.runningRequestsCount < self.maxRequestCount){
       self.runningRequestsCount++;
@@ -70,37 +75,37 @@ static NSInteger const statusCodeBadRequest = 400;
     typeof(self) strongSelf = weakSelf;
     NSString *path = [[MSAIPersistence sharedInstance] requestNextPath];
     NSData *data = [[MSAIPersistence sharedInstance] dataAtPath:path];
-    [strongSelf sendData:data withPath:path];
+    
+    [strongSelf sendData:[data gzippedData] withPath:path];
   });
 }
 
-- (void)sendData:(NSData *)data withPath:(NSString *)path{
+- (void)sendData:(NSData * __nonnull)data withPath:(NSString * __nonnull)path {
   
   if(data) {
     NSURLRequest *request = [self requestForData:data];
     [self sendRequest:request path:path];
     
-  }else{
+  } else {
     self.runningRequestsCount -= 1;
   }
 }
 
-- (void)sendRequest:(NSURLRequest *)request path:(NSString *)path{
+- (void)sendRequest:(NSURLRequest * __nonnull)request path:(NSString * __nonnull)path {
   
   if(!path || !request) return;
   
   __weak typeof(self) weakSelf = self;
-  MSAIHTTPOperation *operation = [self.appClient operationWithURLRequest:request completion:^(MSAIHTTPOperation *operation, NSData *responseData, NSError *error) {
+  MSAIHTTPOperation *operation = [self.appClient operationWithURLRequest:request queue:self.senderQueue completion:^(MSAIHTTPOperation *operation, NSData *responseData, NSError *error) {
     typeof(self) strongSelf = weakSelf;
-    
+
     self.runningRequestsCount -= 1;
     NSInteger statusCode = [operation.response statusCode];
 
-    if([self shouldDeleteDataWithStatusCode:statusCode]) {
-      // We should delete data if it has been successfully sent (200/202) or if its values have not been accepted (400)
+    if(responseData && [self shouldDeleteDataWithStatusCode:statusCode]) {
+      //we delete data that was either sent successfully or if we have a non-recoverable error
       MSAILog(@"Sent data with status code: %ld", (long) statusCode);
       MSAILog(@"Response data:\n%@", [NSJSONSerialization JSONObjectWithData:responseData options:0 error:nil]);
-      
       [[MSAIPersistence sharedInstance] deleteFileAtPath:path];
       [strongSelf sendSavedData];
     } else {
@@ -113,32 +118,31 @@ static NSInteger const statusCodeBadRequest = 400;
   [self.appClient enqueueHTTPOperation:operation];
 }
 
-//TODO remove this because it is never used and it's not public?
-- (void)sendRequest:(NSURLRequest *)request withCompletionBlock:(MSAINetworkCompletionBlock)completion{
-  
-  MSAIHTTPOperation *operation = [_appClient
-                                  operationWithURLRequest:request
-                                  completion:completion];
-  [_appClient enqueueHTTPOperation:operation];
-}
-
 #pragma mark - Helper
 
-- (NSURLRequest *)requestForData:(NSData *)data {
+- (NSURLRequest *)requestForData:(NSData * __nonnull)data {
   NSMutableURLRequest *request = [self.appClient requestWithMethod:@"POST"
                                                               path:self.endpointPath
                                                         parameters:nil];
   
-  [request setHTTPBody:data];
-  [request setCachePolicy:NSURLRequestReloadIgnoringLocalCacheData];
-  NSString *contentType = @"application/json";
-  [request setValue:contentType forHTTPHeaderField:@"Content-type"];
+  request.HTTPBody = data;
+  request.cachePolicy = NSURLRequestReloadIgnoringLocalCacheData;
+  
+  NSDictionary *headers = @{@"Charset": @"UTF-8",
+                            @"Content-Encoding": @"gzip",
+                            @"Content-Type": @"application/x-json-stream",
+                            @"Accept-Encoding": @"gzip"};
+  [request setAllHTTPHeaderFields:headers];
+  
   return request;
 }
 
+//some status codes represent recoverable error codes
+//we try sending again some point later
 - (BOOL)shouldDeleteDataWithStatusCode:(NSInteger)statusCode {
-  
-  return (statusCode >= statusCodeOK && statusCode <= statusCodeAccepted) || statusCode == statusCodeBadRequest;
+  NSArray *recoverableStatusCodes = @[@429, @408, @500, @503, @511];
+
+  return ![recoverableStatusCodes containsObject:@(statusCode)];
 }
 
 #pragma mark - Getter/Setter

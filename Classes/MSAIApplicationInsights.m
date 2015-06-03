@@ -13,9 +13,10 @@
 #import "MSAITelemetryContextPrivate.h"
 #import "MSAIEnvelopeManager.h"
 #import "MSAIEnvelopeManagerPrivate.h"
-#import "MSAISessionHelper.h"
-#import "MSAISessionHelperPrivate.h"
+#import "MSAIContextHelper.h"
+#import "MSAIContextHelperPrivate.h"
 #include <stdint.h>
+#import "MSAICategoryContainer.h"
 
 #if MSAI_FEATURE_CRASH_REPORTER
 #import "MSAICrashManager.h"
@@ -23,7 +24,6 @@
 #endif /* MSAI_FEATURE_CRASH_REPORTER */
 
 #if MSAI_FEATURE_TELEMETRY
-#import "MSAICategoryContainer.h"
 #import "MSAITelemetryManager.h"
 #import "MSAITelemetryManagerPrivate.h"
 #endif /* MSAI_FEATURE_TELEMETRY */
@@ -110,13 +110,6 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
   MSAILog(@"INFO: Starting MSAIManager");
   _startManagerIsInvoked = YES;
   
-  // Configure Http-client and send persisted data
-  MSAITelemetryContext *telemetryContext = [[MSAITelemetryContext alloc] initWithAppContext:_appContext
-                                                                               endpointPath:kMSAITelemetryPath];
-  [[MSAIEnvelopeManager sharedManager] configureWithTelemetryContext:telemetryContext];
-  
-  [[MSAISender sharedSender] configureWithAppClient:[self appClient]
-                                       endpointPath:kMSAITelemetryPath];
   [[MSAISender sharedSender] sendSavedData];
   
 #if MSAI_FEATURE_CRASH_REPORTER
@@ -134,12 +127,14 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
       MSAILog(@"INFO: Auto page views disabled");
       [MSAITelemetryManager sharedManager].autoPageViewTrackingDisabled = YES;
     }
-    [MSAICategoryContainer activateCategory];
+    
     
     MSAILog(@"INFO: Starting MSAITelemetryManager");
     [[MSAITelemetryManager sharedManager] startManager];
   }
 #endif /* MSAI_FEATURE_TELEMETRY */
+  
+  [MSAICategoryContainer activateCategory];
 }
 
 + (void)start {
@@ -184,17 +179,17 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
   _startManagerIsInvoked = NO;
   
   if (_validInstrumentationKey) {
+    // Configure Http-client and send persisted data
+    
+    MSAITelemetryContext *telemetryContext = [[MSAITelemetryContext alloc] initWithAppContext:_appContext];
+    [[MSAIEnvelopeManager sharedManager] configureWithTelemetryContext:telemetryContext];
+    
+    [[MSAISender sharedSender] configureWithAppClient:[self appClient]];
     
 #if MSAI_FEATURE_TELEMETRY
     MSAILog(@"INFO: Setup TelemetryManager");
 #endif /* MSAI_FEATURE_TELEMETRY */
     
-    if (![self isAppStoreEnvironment]) {
-      NSString *integrationFlowTime = [self integrationFlowTimeString];
-      if (integrationFlowTime && [self integrationFlowStartedWithTimeString:integrationFlowTime]) {
-        [self pingServerForIntegrationStartWorkflowWithTimeString:integrationFlowTime instrumentationKey:[_appContext instrumentationKey]];
-      }
-    }
     _managersInitialized = YES;
   } else {
     if (!_appStoreEnvironment) {
@@ -222,7 +217,18 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 + (void)setAutoPageViewTrackingDisabled:(BOOL)autoPageViewTrackingDisabled {
   [[self sharedInstance] setAutoPageViewTrackingDisabled:autoPageViewTrackingDisabled];
 }
+
 #endif /* MSAI_FEATURE_TELEMETRY */
+
+- (void)setAutoSessionManagementDisabled:(BOOL)autoSessionManagementDisabled {
+  [MSAIContextHelper sharedInstance].autoSessionManagementDisabled = autoSessionManagementDisabled;
+  [[MSAIContextHelper sharedInstance] unregisterObservers];
+  _autoSessionManagementDisabled = autoSessionManagementDisabled;
+  
+}
++ (void)setAutoSessionManagementDisabled:(BOOL)autoSessionManagementDisabled {
+  [[self sharedInstance] setAutoSessionManagementDisabled:autoSessionManagementDisabled];
+}
 
 #if MSAI_FEATURE_CRASH_REPORTER
 - (void)setCrashManagerDisabled:(BOOL)crashManagerDisabled {
@@ -246,7 +252,7 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
     _serverURL = [serverURL copy];
     
     if (_appClient) {
-      self.appClient.baseURL = [NSURL URLWithString:_serverURL ? _serverURL : MSAI_BASE_URL];
+      self.appClient.baseURL = [NSURL URLWithString:_serverURL ? _serverURL : MSAI_SERVER_URL];
     }
   }
 }
@@ -255,81 +261,7 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
   [[self sharedInstance] setServerURL:serverURL];
 }
 
-#pragma mark - Testing integration
-
-- (void)testIdentifier {
-  if (![_appContext instrumentationKey] || msai_isAppStoreEnvironment()) {
-    return;
-  }
-  
-  NSDate *now = [NSDate date];
-  NSString *timeString = [NSString stringWithFormat:@"%.0f", [now timeIntervalSince1970]];
-  [self pingServerForIntegrationStartWorkflowWithTimeString:timeString
-                                         instrumentationKey:[_appContext instrumentationKey]];
-}
-
-+ (void)testIdentifier {
-  [[self sharedInstance] testIdentifier];
-}
-
-- (NSString *)integrationFlowTimeString {
-  NSString *timeString = [[NSBundle mainBundle] objectForInfoDictionaryKey:kMSAIIntegrationFlowTimestamp];
-  
-  return timeString;
-}
-
-- (BOOL)integrationFlowStartedWithTimeString:(NSString *)timeString {
-  if ( (!timeString) || ([self isAppStoreEnvironment]) ) {
-    return NO;
-  }
-  
-  NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-  NSLocale *enUSPOSIXLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
-  [dateFormatter setLocale:enUSPOSIXLocale];
-  [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ssZ"];
-  NSDate *integrationFlowStartDate = [dateFormatter dateFromString:timeString];
-  
-  if (integrationFlowStartDate && [integrationFlowStartDate timeIntervalSince1970] > [[NSDate date] timeIntervalSince1970] - (60 * 10) ) {
-    return YES;
-  }
-  
-  return NO;
-}
-
-- (void)pingServerForIntegrationStartWorkflowWithTimeString:(NSString *)timeString instrumentationKey:(NSString *)instrumentationKey {
-  if (!instrumentationKey || [self isAppStoreEnvironment]) {
-    return;
-  }
-  
-  NSString *integrationPath = [NSString stringWithFormat:@"api/3/apps/%@/integration", msai_encodeInstrumentationKey(instrumentationKey)];
-  
-  MSAILog(@"INFO: Sending integration workflow ping to %@", integrationPath);
-  
-  [[self appClient] postPath:integrationPath
-                  parameters:@{@"timestamp": timeString,
-                               @"sdk": kMSAIName,
-                               @"sdk_version": MSAI_VERSION,
-                               @"bundle_version": [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"]
-                               }
-                  completion:^(MSAIHTTPOperation *operation, NSData* responseData, NSError *error) {
-                    switch (operation.response.statusCode) {
-                      case 400:
-                        MSAILog(@"ERROR: App ID not found");
-                        break;
-                      case 201:
-                        MSAILog(@"INFO: Ping accepted.");
-                        break;
-                      case 200:
-                        MSAILog(@"INFO: Ping accepted. Server already knows.");
-                        break;
-                      default:
-                        MSAILog(@"ERROR: Unknown error");
-                        break;
-                    }
-                  }];
-}
-
-#pragma mark - Meta data
+#pragma mark - SDK meta data
 
 - (NSString *)version {
   return msai_sdkVersion();
@@ -347,23 +279,62 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
   return [[self sharedInstance] build];
 }
 
+#pragma mark - Context meta data
+
++ (void)setUserId:(NSString *)userId {
+  [[self sharedInstance] setUserId:userId];
+}
+
+- (void)setUserId:(NSString *)userId {
+  [[MSAIContextHelper sharedInstance] setCurrentUserId:userId];
+}
+
++ (void)startNewSession {
+  [[self sharedInstance] startNewSession];
+}
+
+- (void)startNewSession {
+  [[MSAIContextHelper sharedInstance] startNewSession];
+}
+
++ (void)setAppBackgroundTimeBeforeSessionExpires:(NSUInteger)appBackgroundTimeBeforeSessionExpires {
+  [[self sharedInstance] setAppBackgroundTimeBeforeSessionExpires:appBackgroundTimeBeforeSessionExpires];
+}
+
+- (void)setAppBackgroundTimeBeforeSessionExpires:(NSUInteger)appBackgroundTimeBeforeSessionExpires {
+  [[MSAIContextHelper sharedInstance] setAppBackgroundTimeBeforeSessionExpires:appBackgroundTimeBeforeSessionExpires];
+}
+
++ (void)renewSessionWithId:(NSString *)sessionId {
+  [[self sharedInstance] setAutoSessionManagementDisabled:YES];
+  [[self sharedInstance] renewSessionWithId:sessionId];
+}
+
+- (void)renewSessionWithId:(NSString *)sessionId {
+  [self setAutoSessionManagementDisabled:YES];
+  [[MSAIContextHelper sharedInstance] renewSessionWithId:sessionId];
+}
+
 #pragma mark - Helper
 
 - (BOOL)checkValidityOfInstrumentationKey:(NSString *)instrumentationKey {
-  BOOL result = NO;
+  BOOL keyIsValid = NO;
+  BOOL internalKey = NO;
   
   if (instrumentationKey) {
     NSCharacterSet *hexSet = [NSCharacterSet characterSetWithCharactersInString:@"0123456789abcdef-"];
     NSCharacterSet *inStringSet = [NSCharacterSet characterSetWithCharactersInString:instrumentationKey];
-    result = ([instrumentationKey length] == 36) && ([hexSet isSupersetOfSet:inStringSet]);
+
+    keyIsValid = ([instrumentationKey length] == 36) && ([hexSet isSupersetOfSet:inStringSet]);
+    internalKey = ([instrumentationKey length] == 40) && ([instrumentationKey hasPrefix:@"AIF"]);
   }
   
-  return result;
+  return keyIsValid || internalKey;
 }
 
 - (MSAIAppClient *)appClient {
   if (!_appClient) {
-    _appClient = [[MSAIAppClient alloc] initWithBaseURL:[NSURL URLWithString:_serverURL ? _serverURL : MSAI_BASE_URL]];
+    _appClient = [[MSAIAppClient alloc] initWithBaseURL:[NSURL URLWithString:_serverURL ? _serverURL : MSAI_SERVER_URL]];
   }
   
   return _appClient;

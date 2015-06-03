@@ -1,9 +1,11 @@
 #import <Foundation/Foundation.h>
+#import "ApplicationInsights.h"
+@class MSAIEnvelope;
 
+NS_ASSUME_NONNULL_BEGIN
 /**
 * A simple class that handles serialisation and deserialisation of bundles of data.
 */
-
 @interface MSAIPersistence : NSObject
 
 /**
@@ -22,7 +24,7 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
   MSAIPersistenceTypeHighPriority = 0,
   MSAIPersistenceTypeRegular = 1,
   MSAIPersistenceTypeCrashTemplate = 2,
-  MSAIPersistenceTypeSessionIds = 3
+  MSAIPersistenceTypeMetaData = 3
 };
 
 ///-----------------------------------------------------------------------------
@@ -43,7 +45,7 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
 /**
  *  A queue which makes file system operations thread safe.
  */
-@property (nonatomic, strong)dispatch_queue_t persistenceQueue;
+@property (nonatomic, strong) dispatch_queue_t persistenceQueue;
 
 /**
  *  Determines how many files (regular prio) can be on disk at a time.
@@ -67,7 +69,7 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
 *
 * @warning: The data within the array needs to implement NSCoding.
 */
-- (void)persistBundle:(NSArray *)bundle ofType:(MSAIPersistenceType)type withCompletionBlock:(void (^)(BOOL success))completionBlock;
+- (void)persistBundle:(NSData *)bundle ofType:(MSAIPersistenceType)type withCompletionBlock:(nullable void (^)(BOOL success))completionBlock;
 
 /**
  *  Saves the bundle to disk.
@@ -77,14 +79,14 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
  *  @param sendNotifications a flag which determines if a notification should be sent if saving was successful
  *  @param completionBlock   a block which is executed after the bundle has been stored
  */
-- (void)persistBundle:(NSArray *)bundle ofType:(MSAIPersistenceType)type enableNotifications:(BOOL)sendNotifications withCompletionBlock:(void (^)(BOOL success))completionBlock;
+- (void)persistBundle:(NSData *)bundle ofType:(MSAIPersistenceType)type enableNotifications:(BOOL)sendNotifications withCompletionBlock:(void (^)(BOOL success))completionBlock;
 
 /**
  *  Saves the given dictionary to the session Ids file.
  *
- *  @param sessionIds a dictionary consisting of unix timestamps and session ids
+ *  @param metaData a dictionary consisting of unix timestamps and session ids
  */
-- (void)persistSessionIds:(NSDictionary *)sessionIds;
+- (void)persistMetaData:(NSDictionary *)metaData;
 
 /**
  *  Deletes the file for the given path.
@@ -131,7 +133,7 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
  *
  *  @param path the path that should be available for sending again.
  */
-- (void)giveBackRequestedPath:(NSString *) path;
+- (void)giveBackRequestedPath:(NSString *)path;
 
 /**
  *  Return the bundle for a given path.
@@ -156,17 +158,7 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
  *
  *  @return return a dictionary containing all session Ids
  */
-- (NSDictionary *)sessionIds;
-
-/**
- *  Return data for a given array based on its persistence type.
- *
- *  @param bundle          items, which should be persisted
- *  @param persistenceType the type of the data (crash/telemetry data)
- *
- *  @return data for a given array based on its persistence type
- */
--(NSData *)dataForBundle:(NSArray *)bundle withPersistenceTye:(MSAIPersistenceType)persistenceType;
+- (NSDictionary *)metaData;
 
 ///-----------------------------------------------------------------------------
 /// @name Getting a path
@@ -190,7 +182,7 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
 *
 * @param bundle The bundle of application insights data
 */
-- (void)persistCrashTemplateBundle:(NSArray *)bundle;
+- (void)persistCrashTemplate:(MSAIEnvelope *)crashTemplate;
 
 /**
 * Get the persisted crash template.
@@ -204,3 +196,4 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
 - (void)deleteCrashReporterLockFile;
 
 @end
+NS_ASSUME_NONNULL_END

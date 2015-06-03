@@ -1,12 +1,13 @@
 #import <Foundation/Foundation.h>
+#import "ApplicationInsights.h"
 
 @class MSAICrashManager;
 
+NS_ASSUME_NONNULL_BEGIN
 /**
 The `MSAICrashManagerDelegate` formal protocol defines methods further configuring
 the behaviour of `MSAICrashManager`.
 */
-
 @protocol MSAICrashManagerDelegate <NSObject>
 
 @optional
@@ -55,3 +56,4 @@ received by the app to reduce to possibility of having false positives.
 
 
 @end
+NS_ASSUME_NONNULL_END

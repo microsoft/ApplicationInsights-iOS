@@ -1,27 +1,48 @@
 #ifndef MSAI_h
 #define MSAI_h
 
+// Define nullability fallback for backwards compatibility
+#if !__has_feature(nullability)
+#define NS_ASSUME_NONNULL_BEGIN
+#define NS_ASSUME_NONNULL_END
+#define nullable
+#define nonnull
+#define null_unspecified
+#define null_resettable
+#define __nullable
+#define __nonnull
+#define __null_unspecified
+#endif
+
+// Fallback for convenience syntax which might not be available in older SDKs
+#ifndef NS_ASSUME_NONNULL_BEGIN
+  #define NS_ASSUME_NONNULL_BEGIN _Pragma("clang assume_nonnull begin")
+#endif
+#ifndef NS_ASSUME_NONNULL_END
+  #define NS_ASSUME_NONNULL_END _Pragma("clang assume_nonnull end")
+#endif
+
 #import "ApplicationInsightsFeatureConfig.h"
 #import "MSAIApplicationInsights.h"
+#import "MSAICategoryContainer.h"
 
 #if MSAI_FEATURE_CRASH_REPORTER
 #import "MSAICrashManager.h"
 #import "MSAICrashManagerDelegate.h"
 #import "MSAICrashDetails.h"
-#import "MSAICrashMetaData.h"
 #endif /* MSAI_FEATURE_CRASH_REPORTER */
 
 #if MSAI_FEATURE_TELEMETRY
-#import "MSAICategoryContainer.h"
 #import "MSAITelemetryManager.h"
 #endif /* MSAI_FEATURE_TELEMETRY */
 
 // Notification message which MSAIApplicationInsights is listening to, to retry requesting updated from the server
 #define MSAINetworkDidBecomeReachableNotification @"MSAINetworkDidBecomeReachable"
 
-#define MSAI_BASE_URL   @"https://dc.services.visualstudio.com"
+#define MSAI_SERVER_URL   @"https://dc.services.visualstudio.com/v2/track"
 
 #if MSAI_FEATURE_CRASH_REPORTER
+NS_ASSUME_NONNULL_BEGIN
 /**
  *  MSAI Crash Reporter error domain
  */
@@ -43,7 +64,7 @@ typedef NS_ENUM (NSInteger, MSAICrashErrorReason) {
    */
   MSAICrashAPIErrorWithStatusCode
 };
-extern NSString *const __unused kMSAICrashErrorDomain;
+FOUNDATION_EXPORT NSString *const __unused kMSAICrashErrorDomain;
 
 
 /**
@@ -56,6 +77,8 @@ typedef NS_ENUM(NSInteger, MSAIErrorReason) {
   MSAIErrorUnknown
 };
 extern NSString *const __unused kMSAIErrorDomain;
-#endif 
+NS_ASSUME_NONNULL_END
 
-#endif
+#endif /* MSAI_FEATURE_CRASH_REPORTER */
+
+#endif /* MSAI_h */

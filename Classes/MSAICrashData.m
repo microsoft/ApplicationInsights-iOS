@@ -9,7 +9,7 @@
   if (self = [super init]) {
     _envelopeTypeName = @"Microsoft.ApplicationInsights.Crash";
     _dataTypeName = @"CrashData";
-    self.version = [NSNumber numberWithInt:2];
+    self.version = @2;
     self.threads = [NSMutableArray new];
     self.binaries = [NSMutableArray new];
   }

@@ -10,7 +10,14 @@
 @class MSAICrashData;
 @class MSAIOrderedDictionary;
 
-FOUNDATION_EXTERN char *MSAISafeJsonEventsString;
+NS_ASSUME_NONNULL_BEGIN
+
+FOUNDATION_EXPORT NSInteger const debugBatchInterval;
+FOUNDATION_EXPORT NSInteger const debugMaxBatchCount;
+
+FOUNDATION_EXPORT NSInteger const defaultBatchInterval;
+FOUNDATION_EXPORT NSInteger const defaultMaxBatchCount;
+FOUNDATION_EXPORT char *MSAISafeJsonEventsString;
 
 @interface MSAIChannel ()
 
@@ -24,6 +31,8 @@ FOUNDATION_EXTERN char *MSAISafeJsonEventsString;
 *  @return A singleton MSAIChannel instance ready use
 */
 + (instancetype)sharedChannel;
+
++ (void)setSharedChannel:(MSAIChannel *)channel;
 
 ///-----------------------------------------------------------------------------
 /// @name Queue management
@@ -40,28 +49,42 @@ FOUNDATION_EXTERN char *MSAISafeJsonEventsString;
 @property (atomic, strong) NSMutableArray *dataItemQueue;
 
 /**
+ *  An integer value that keeps tracks of the number of data items added to the JSON Stream string.
+ */
+@property (nonatomic, assign) NSUInteger dataItemCount;
+
+/**
+ *  Enqueue telemetry data (events, metrics, exceptions, traces) before processing it.
+ *
+ *  @param dictionary The dictionary object, which should be processed.
+ */
+- (void)enqueueDictionary:(MSAIOrderedDictionary *)dictionary;
+
+///-----------------------------------------------------------------------------
+/// @name JSON Stream
+///-----------------------------------------------------------------------------
+
+/**
+ *  Adds the specified dictionary to the JSON Stream string.
+ *
+ *  @param dictionary The dictionary object which is to be added to the JSON Stream queue string.
+ */
+- (void)appendDictionaryToJsonStream:(MSAIOrderedDictionary *)dictionary;
+
+/**
  *  A C function that serializes a given dictionary to JSON and appends it to a char string
  *
  *  @param dictionary A dictionary which will be serialized to JSON and then appended to the string.
  *  @param string The C string which the dictionary's JSON representation will be appended to.
  */
-void msai_appendDictionaryToSafeJsonString(NSDictionary *dictionary, char **string);
+void msai_appendStringToSafeJsonStream(NSString *string, char *__nonnull*__nonnull jsonStream);
 
 /**
  *  Reset MSAISafeJsonEventsString so we can start appending JSON dictionaries.
  *
  *  @param string The string that will be reset.
  */
-void msai_resetSafeJsonString(char **string);
-
-/**
- *  Enqueue telemetry data (events, metrics, exceptions, traces) before processing it.
- *
- *  @param dictionary   the dictionary object, which should be processed
- */
-- (void)enqueueDictionary:(MSAIOrderedDictionary *)dictionary;
-
-- (void)addDictionaryToQueues:(MSAIOrderedDictionary *)dictionary;
+void msai_resetSafeJsonStream(char *__nonnull*__nonnull jsonStream);
 
 /**
  *  Directly process telemetry data (crashs) without enqueuing it first.
@@ -69,7 +92,7 @@ void msai_resetSafeJsonString(char **string);
  *  @param dictionary      the dictionary object to process.
  *  @param completionBlock the block, which should be executed after the envelope has been persisted.
  */
-- (void)processDictionary:(MSAIOrderedDictionary *)dictionary withCompletionBlock: (void (^)(BOOL success)) completionBlock;
+- (void)processDictionary:(MSAIOrderedDictionary *)dictionary withCompletionBlock:(nullable void (^)(BOOL success))completionBlock;
 
 ///-----------------------------------------------------------------------------
 /// @name Batching
@@ -80,7 +103,7 @@ void msai_resetSafeJsonString(char **string);
  *
  * Default: 15
  */
-@property (nonatomic, assign) NSInteger senderInterval;
+@property (nonatomic, assign) NSUInteger senderInterval;
 
 /*
  * Threshold for sending data to the server. Default batch size for debugging is 150, for release
@@ -95,7 +118,7 @@ void msai_resetSafeJsonString(char **string);
 /**
  *  A timer source which is used to flush the queue after a cretain time.
  */
-@property (nonatomic, strong) dispatch_source_t timerSource;
+@property (nonatomic, strong, null_unspecified) dispatch_source_t timerSource;
 
 /**
  *  Starts the timer.
@@ -119,3 +142,4 @@ void msai_resetSafeJsonString(char **string);
 - (BOOL)isQueueBusy;
 
 @end
+NS_ASSUME_NONNULL_END
