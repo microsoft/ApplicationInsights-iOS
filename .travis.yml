@@ -11,4 +11,7 @@ script:
 - xcodebuild -project ApplicationInsights.xcodeproj -scheme "ApplicationInsights Framework" -sdk iphonesimulator -configuration Release | xcpretty -c
 - cd ..
 - cp -R Products/ApplicationInsights ApplicationInsights
-- pod lib lint 
+- pod lib lint
+after_faiL:
+- cd /var/folders/gw/_2jq29095y7b__wtby9dg_5h0000gn/T/com.apple.dt.XCTest-status/
+- tail -n +1 *.log
