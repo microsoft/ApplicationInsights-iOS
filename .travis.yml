@@ -8,8 +8,8 @@ notifications:
     on_success: change
 script:
 - cd Support
-- set -o pipefail && xcodebuild -project ApplicationInsights.xcodeproj -scheme "ApplicationInsights" -sdk iphonesimulator -configuration Debug -destination "platform=iOS Simulator,name=iPhone 6" test
-- set -o pipefail && xcodebuild -project ApplicationInsights.xcodeproj -scheme "ApplicationInsights Framework" -sdk iphonesimulator -configuration Release
+- set -o pipefail && xcodebuild -project ApplicationInsights.xcodeproj -scheme "ApplicationInsights" -configuration Debug -destination "platform=iOS Simulator,name=iPhone 6" test
+- set -o pipefail && xcodebuild -project ApplicationInsights.xcodeproj -scheme "ApplicationInsights Framework" -configuration Release
 - cd ..
 - cp -R Products/ApplicationInsights ApplicationInsights
 - pod lib lint
