@@ -149,8 +149,8 @@ You can also use the following shortcuts:
 You can also use the following shortcuts:
 
 ```swift
-MSAIApplicationInsights.setup();
-MSAIApplicationInsights.start();
+MSAIApplicationInsights.setup()
+MSAIApplicationInsights.start()
 ```
     
 **Congratulation, now you're all set to use Application Insights! See [Basic Usage](#basicusage) on how to use Application Insights.**
@@ -266,23 +266,23 @@ After you have set up the SDK as [described above](#setup), the ```MSAITelemetry
 
 ```swift
 // Send an event with custom properties and measuremnts data
-MSAITelemetryManager.trackEventWithName(name:"Hello World event!", 
-                                  properties:@{"Test property 1":"Some value",
-                                              "Test property 2":"Some other value"},
-                                measurements:@{"Test measurement 1":@(4.8),
-                                              "Test measurement 2":@(15.16),
-                                              "Test measurement 3":@(23.42)});
+MSAITelemetryManager.trackEventWithName("Hello World event!", 
+								  properties:["Test property 1":"Some value",
+											  "Test property 2":"Some other value"],
+							    measurements:["Test measurement 1":4.8,
+											  "Test measurement 2":15.16,
+										      "Test measurement 3":23.42])
 
 // Send a message
-MSAITelemetryManager.trackTraceWithMessage(message:"Test message");
+MSAITelemetryManager.trackTraceWithMessage("Test message");
 
 // Manually send pageviews
-MSAITelemetryManager.trackPageView(pageView:"MyViewController",
-                                   duration:300,
-                                 properties:@{"Test measurement 1":@(4.8)});
+MSAITelemetryManager.trackPageView("MyViewController",
+								   duration:300,
+							     properties:["Test measurement 1":4.8]);
 
 // Send a message
-MSAITelemetryManager.trackMetricWithName(name:"Test metric", value:42.2);
+MSAITelemetryManager.trackMetricWithName("Test metric", value:42.2);
 ```
 
 <a name="autolifecycle"></a>
