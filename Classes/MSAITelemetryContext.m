@@ -69,20 +69,20 @@ NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
   return self;
 }
 
-- (void)dealloc{
+- (void)dealloc {
   [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 #pragma mark - Network
 
-- (void)configureNetworkStatusTracking{
+- (void)configureNetworkStatusTracking {
   [[MSAIReachability sharedInstance] startNetworkStatusTracking];
   _device.network = [[MSAIReachability sharedInstance] descriptionForActiveReachabilityType];
   NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
   [center addObserver:self selector:@selector(updateNetworkType:) name:kMSAIReachabilityTypeChangedNotification object:nil];
 }
 
--(void)updateNetworkType:(NSNotification *)notification{
+- (void)updateNetworkType:(NSNotification *)notification {
   
   @synchronized(self){
     _device.network = [notification userInfo][kMSAIReachabilityUserInfoName];
