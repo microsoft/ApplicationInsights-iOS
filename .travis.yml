@@ -1,3 +1,6 @@
+XCPROJECT = ApplicationInsights.xcodeproj
+SDK = iphonesimulator
+
 language: objective-c
 before_install:
 - gem install xcpretty -N cocoapods
@@ -7,10 +10,6 @@ notifications:
     on_failure: always
     on_success: change
 script:
-
-XCPROJECT = ApplicationInsights.xcodeproj
-SDK = iphonesimulator
-
 - cd Support
 - set -o pipefail && xcodebuild -project $(XCPROJECT) -scheme "ApplicationInsights" -sdk $(SDK) -configuration Debug -destination "platform=iOS Simulator,name=iPhone 6" test
 - set -o pipefail && xcodebuild -project $(XCPROJECT) -scheme "ApplicationInsights Framework" -sdk $(SDK) -configuration Release
