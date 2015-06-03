@@ -28,11 +28,15 @@
   if(![MSAITelemetryManager sharedManager].autoPageViewTrackingDisabled) {
     NSArray *containerViewControllerClasses = @ [@"UINavigationController", @"UITabBarController", @"UISplitViewController", @"UIInputWindowController", @"UIPageViewController"];
     
+    // Check if current class is a kind of one of the known container view controller classes.
+    for (NSString *classString in containerViewControllerClasses) {
+      Class aContainerClass = NSClassFromString(classString);
+      if ([self isKindOfClass:aContainerClass]) { return; }
+    }
+    
     NSString *className = NSStringFromClass([self class]);
-    if ([containerViewControllerClasses containsObject:className]) { return; }
     
     NSString *pageViewName;
-    
     if (self.title && (self.title.length > 0)) {
       pageViewName = [NSString stringWithFormat:@"%@ %@", className, self.title];
     } else {
@@ -47,7 +51,7 @@
 
 @implementation MSAICategoryContainer
 
-+ (void)activateCategory{
++ (void)activateCategory {
   [UIViewController swizzleViewWillAppear];
 }
 
