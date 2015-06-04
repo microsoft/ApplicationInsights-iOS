@@ -268,6 +268,8 @@ static char *const MSAITelemetryEventQueue = "com.microsoft.ApplicationInsights.
     MSAIEnvelope *envelope = [[MSAIEnvelopeManager sharedManager] envelopeForTelemetryData:dataItem];
     MSAIOrderedDictionary *dict = [envelope serializeToDictionary];
     [[MSAIChannel sharedChannel] enqueueDictionary:dict];
+  } else {
+    MSAILog(@"The data pipeline is saturated right now and the data item named %@ was dropped.", dataItem.name);
   }
 }
 
