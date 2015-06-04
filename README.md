@@ -274,15 +274,15 @@ MSAITelemetryManager.trackEventWithName("Hello World event!",
 										      "Test measurement 3":23.42])
 
 // Send a message
-MSAITelemetryManager.trackTraceWithMessage("Test message");
+MSAITelemetryManager.trackTraceWithMessage("Test message")
 
 // Manually send pageviews
 MSAITelemetryManager.trackPageView("MyViewController",
 								   duration:300,
-							     properties:["Test measurement 1":4.8]);
+							     properties:["Test measurement 1":4.8])
 
 // Send a message
-MSAITelemetryManager.trackMetricWithName("Test metric", value:42.2);
+MSAITelemetryManager.trackMetricWithName("Test metric", value:42.2)
 ```
 
 <a name="autolifecycle"></a>
