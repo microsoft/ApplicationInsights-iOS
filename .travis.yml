@@ -1,14 +1,18 @@
 language: objective-c
 before_install:
-- gem install xcpretty -N cocoapods
+- gem install cocoapods #xcpretty -N
 notifications:
   slack:
     secure: dCzA1+dtjKkHk2PK6RWBSE0Obgf0CvIejhXXH4Aba29zfVQg5Bv0yWJ34YHnPMFPA7+eyFrW2TqGqI7gA7L7Ju0RWHwu9Z0XayCcMpOCZVKTOSf/7SrAvtODKNzAT/S55HZOaj8yxK6l5a0cMGXfGM7j+NLdkjyba7ypQKsn0ug=
+    on_failure: always
+    on_success: change
 script:
-- set -o pipefail
 - cd Support
-- xcodebuild -project ApplicationInsights.xcodeproj -scheme "ApplicationInsights" -sdk iphonesimulator -configuration Debug -destination "platform=iOS Simulator,name=iPhone 6" test | xcpretty -c
-- xcodebuild -project ApplicationInsights.xcodeproj -scheme "ApplicationInsights Framework" -sdk iphonesimulator -configuration Release | xcpretty -c
+- set -o pipefail && xcodebuild -project ApplicationInsights.xcodeproj -scheme "ApplicationInsights" -configuration Debug -destination "platform=iOS Simulator,name=iPhone 6" test
+- set -o pipefail && xcodebuild -project ApplicationInsights.xcodeproj -scheme "ApplicationInsights Framework" -configuration Release
 - cd ..
 - cp -R Products/ApplicationInsights ApplicationInsights
-- pod lib lint 
+- pod lib lint
+after_faiL:
+- cd /var/folders/gw/_2jq29095y7b__wtby9dg_5h0000gn/T/com.apple.dt.XCTest-status/
+- tail -n +1 *.log
