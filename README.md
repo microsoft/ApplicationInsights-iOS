@@ -260,6 +260,14 @@ After you have setup the SDK as [described above](#setup), the ```MSAITelemetryM
 
 // Send custom metrics
 [MSAITelemetryManager trackMetricWithName:@"Test metric" value:42.2];
+
+// Track handled exceptions
+NSArray *zeroItemArray = [NSArray new];
+@try{
+	NSString *fooString = zeroItemArray[3];
+}@catch(NSException *exception){
+	[MSAITelemetryManager trackException:exception];
+}
 ```
 
 ### 7.2 Swift
