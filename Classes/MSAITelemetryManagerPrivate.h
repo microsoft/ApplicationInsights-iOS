@@ -34,7 +34,9 @@ NS_ASSUME_NONNULL_BEGIN
  *  A flag which determines rather collecting page views automatically is enabled or not.
  *  NO by default.
  */
-@property BOOL autoPageViewTrackingDisabled;
+@property BOOL autoPageViewTrackingDisabled __deprecated_msg("Use autoLifeCycleTrackingDisabled instead!");
+
+@property BOOL autoLifeCycleTrackingDisabled;
 
 /**
  *  A concurrent queue which creates telemetry objects and forwards them to the channel.

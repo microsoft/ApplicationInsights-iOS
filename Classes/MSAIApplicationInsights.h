@@ -124,6 +124,10 @@ NS_ASSUME_NONNULL_BEGIN
  */
 + (void)setTelemetryManagerDisabled:(BOOL)telemetryManagerDisabled;
 
+@property (nonatomic, getter=isAutoLifeCycleTrackingDisabled) BOOL autoLifeCycleTrackingDisabled;
+
++ (void)setAutoLifeCycleTrackingDisabled:(BOOL)autoLifeCycleTrackingDisabled;
+
 /**
  * Flag that determines whether collecting page views automatically should be disabled.
  * If YES, auto page view collection is disabled.
@@ -133,14 +137,14 @@ NS_ASSUME_NONNULL_BEGIN
  * @default NO
  * @warning This property needs to be set before calling `start`
  */
-@property (nonatomic, getter = isAutoPageViewTrackingDisabled) BOOL autoPageViewTrackingDisabled;
+@property (nonatomic, getter = isAutoPageViewTrackingDisabled) BOOL autoPageViewTrackingDisabled __deprecated_msg("Use autoLifeCycleTrackingDisabled instead!");
 
 /**
  *  Enable (NO) or disable (YES) auto collection of page views. This should be called before `start`.
  *
  *  @param autoPageViewTrackingDisabled Flag which determines whether the page view collection should be disabled
  */
-+ (void)setAutoPageViewTrackingDisabled:(BOOL)autoPageViewTrackingDisabled;
++ (void)setAutoPageViewTrackingDisabled:(BOOL)autoPageViewTrackingDisabled __deprecated_msg("Use setAutoLifeCycleTrackingDisabled:w instead!");
 
 #endif /* MSAI_FEATURE_TELEMETRY */
 
