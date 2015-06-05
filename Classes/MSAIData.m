@@ -18,6 +18,8 @@
     MSAIOrderedDictionary *baseDataDict = [self.baseData serializeToDictionary];
     if ([NSJSONSerialization isValidJSONObject:baseDataDict]) {
         [dict setObject:baseDataDict forKey:@"baseData"];
+    } else {
+        NSLog(@"[ApplicationInsights] Some of the telemetry data was not NSJSONSerialization compatible and could not be serialized!");
     }
     return dict;
 }

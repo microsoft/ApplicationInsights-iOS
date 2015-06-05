@@ -63,6 +63,8 @@
   MSAIOrderedDictionary *dataDict = [self.data serializeToDictionary];
   if ([NSJSONSerialization isValidJSONObject:dataDict]) {
     [dict setObject:dataDict forKey:@"data"];
+  } else {
+    NSLog(@"[ApplicationInsights] Some of the telemetry data was not NSJSONSerialization compatible and could not be serialized!");
   }
   return dict;
 }
