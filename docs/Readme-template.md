@@ -27,16 +27,16 @@ The SDK runs on devices with iOS 6.0 or higher.
 
 * Add new API to be able to manually set session and user IDs.
 
-``` objectivec
-[MSAIApplicationInsights setUserId:@"your_user_id"];
-[MSAIApplicationInsights renewSessionWithId:@"4815162342"];
-```
+	``` objectivec
+	[MSAIApplicationInsights setUserId:@"your_user_id"];
+	[MSAIApplicationInsights renewSessionWithId:@"4815162342"];
+	```
 
 * Allow to specify the amount of time that an app has to have been in the background before a new session is triggered.
 
-``` objectivec
-[MSAIApplicationInsights setAppBackgroundTimeBeforeSessionExpires:60];
-```
+	``` objectivec
+	[MSAIApplicationInsights setAppBackgroundTimeBeforeSessionExpires:60];
+	```
 
 * Make our sending-retry policy more robust and only delete data on unrecoverable HTTP status codes.
 * Trigger saving of queued-up date when the app goes to the background since then there is a high probability it might be removed from memory by the OS.
@@ -117,12 +117,12 @@ From our experience, 3rd-party libraries usually reside inside a subdirectory (l
 	[[MSAIApplicationInsights sharedInstance] start];
 	```
 
-You can also use the following shortcuts:
+	You can also use the following shortcuts:
 
-```objectivec
-[MSAIApplicationInsights setup];
-[MSAIApplicationInsights start];
-```
+	```objectivec
+	[MSAIApplicationInsights setup];
+	[MSAIApplicationInsights start];
+	```
 
 **Swift**
 
@@ -146,13 +146,13 @@ You can also use the following shortcuts:
 	MSAIApplicationInsights.sharedInstance().start();
 	```
     
-You can also use the following shortcuts:
+	You can also use the following shortcuts:
 
-```swift
-MSAIApplicationInsights.setup()
-MSAIApplicationInsights.start()
-```
-    
+	```swift
+	MSAIApplicationInsights.setup()
+	MSAIApplicationInsights.start()
+	```
+
 **Congratulation, now you're all set to use Application Insights! See [Basic Usage](#basicusage) on how to use Application Insights.**
 
 <a id="advancedsetup"></a>
