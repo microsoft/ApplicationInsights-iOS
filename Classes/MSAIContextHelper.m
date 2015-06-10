@@ -306,7 +306,8 @@ NSString *const kMSAISessionInfoSession = @"MSAISessionInfoSession";
     NSString *sessionKey = [strongSelf keyForTimestamp:timestamp inDictionary:sessions];
     NSMutableDictionary *sessionDict = [sessions valueForKey:sessionKey];
     if(sessionDict && sessionDict[kMSAIMetaDataSessionCrashHandled]){
-      ignoreCrash = sessionDict[kMSAIMetaDataSessionCrashHandled];
+      NSNumber *crashHandled = sessionDict[kMSAIMetaDataSessionCrashHandled];
+      ignoreCrash = [crashHandled boolValue];
     }
   });
   
