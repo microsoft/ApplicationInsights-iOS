@@ -546,6 +546,15 @@ void msai_save_events_callback(siginfo_t *info, ucontext_t *uap, void *context) 
 
     report = [[MSAIPLCrashReport alloc] initWithData:crashData error:&error];
 
+    #if MSAI_FEATURE_XAMARIN
+    
+    NSDate *crashTimestamp = report.systemInfo.timestamp;
+    if([[MSAIContextHelper sharedInstance] shouldIgnoreCrashForSessionWithDate:crashTimestamp]){
+      return;
+    }
+    
+    #endif /* MSAI_FEATURE_XAMARIN */
+    
     if(report) {
       crashEnvelope = [MSAICrashDataProvider crashDataForCrashReport:report];
       if([report.applicationInfo.applicationVersion compare:[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"]] == NSOrderedSame) {

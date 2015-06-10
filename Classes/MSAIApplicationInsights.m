@@ -128,7 +128,6 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
       [MSAITelemetryManager sharedManager].autoPageViewTrackingDisabled = YES;
     }
     
-    
     MSAILog(@"INFO: Starting MSAITelemetryManager");
     [[MSAITelemetryManager sharedManager] startManager];
   }
@@ -322,7 +321,7 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 }
 
 - (void)ignoreCrashForSessionForDate:(NSDate *)date{
-  [[MSAIContextHelper sharedInstance] ignoreCrashReportForSessionWithDate:date];
+  [[MSAIContextHelper sharedInstance] ignoreCrashForSessionWithDate:date];
 }
 #endif /* MSAI_FEATURE_XAMARIN */
 

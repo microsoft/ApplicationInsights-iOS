@@ -243,8 +243,12 @@ NSString *const kMSAISessionInfoSession = @"MSAISessionInfoSession";
   dispatch_sync(self.operationsQueue, ^{
     typeof(self) strongSelf = weakSelf;
     NSMutableDictionary *sessions = strongSelf.metaData[@"sessions"];
+    
+    NSDictionary *sessionDict = [NSDictionary dictionaryWithObjectsAndKeys:session, kMSAIMetaDataSessionInfo, @(NO), kMSAIMetaDataSessionCrashHandled, nil];
     sessions[timestamp][kMSAIMetaDataSessionInfo] = session;
     sessions[timestamp][kMSAIMetaDataSessionCrashHandled] = @(NO);
+    sessions[timestamp] = sessionDict;
+    strongSelf.metaData[@"sessions"] = sessions;
     [[MSAIPersistence sharedInstance] persistMetaData:strongSelf.metaData];
   });
 }
@@ -268,24 +272,49 @@ NSString *const kMSAISessionInfoSession = @"MSAISessionInfoSession";
 
 #if MSAI_FEATURE_XAMARIN
 
-- (void)ignoreCrashReportForSessionWithDate:(NSDate *)date {
+- (void)ignoreCrashForSessionWithDate:(NSDate *)date {
   
   NSString *timestamp = [self unixTimestampFromDate:date];
   NSMutableDictionary *sessions = self.metaData[@"sessions"];
-  
-  __block NSMutableDictionary *sessionDict = nil;
   
   __weak typeof(self) weakSelf = self;
   dispatch_sync(self.operationsQueue, ^{
     typeof(self) strongSelf = weakSelf;
     
     NSString *sessionKey = [strongSelf keyForTimestamp:timestamp inDictionary:sessions];
-    sessionDict = [sessions valueForKey:sessionKey];
-    sessionDict[kMSAIMetaDataSessionCrashHandled] = @(YES);
+    NSMutableDictionary *sessionDict = [[sessions valueForKey:sessionKey] mutableCopy];
+    if(sessionDict){
+      sessionDict[kMSAIMetaDataSessionCrashHandled] = @(YES);
+      sessions[sessionKey] = sessionDict;
+      strongSelf.metaData[@"sessions"] = sessions;
+      [[MSAIPersistence sharedInstance] persistMetaData:self.metaData];
+    }
   });
 }
 
+- (BOOL)shouldIgnoreCrashForSessionWithDate:(NSDate *)date {
+  
+  NSString *timestamp = [self unixTimestampFromDate:date];
+  NSMutableDictionary *sessions = self.metaData[@"sessions"];
+  
+  __block BOOL ignoreCrash = NO;
+  
+  __weak typeof(self) weakSelf = self;
+  dispatch_sync(self.operationsQueue, ^{
+    typeof(self) strongSelf = weakSelf;
+    
+    NSString *sessionKey = [strongSelf keyForTimestamp:timestamp inDictionary:sessions];
+    NSMutableDictionary *sessionDict = [sessions valueForKey:sessionKey];
+    if(sessionDict && sessionDict[kMSAIMetaDataSessionCrashHandled]){
+      ignoreCrash = sessionDict[kMSAIMetaDataSessionCrashHandled];
+    }
+  });
+  
+  return ignoreCrash;
+}
+
 #endif /* MSAI_FEATURE_XAMARIN */
+
 
 #pragma mark Session Lifecycle
 
@@ -340,7 +369,7 @@ NSString *const kMSAISessionInfoSession = @"MSAISessionInfoSession";
       NSString *recentSessionKey = sortedKeys.firstObject;
       
       // Clear list and add most recent session
-      MSAISession *lastSession = sessions[recentSessionKey][kMSAIMetaDataSessionInfo];
+      NSDictionary *lastSession = sessions[recentSessionKey];
       [sessions removeAllObjects];
       sessions[recentSessionKey] = lastSession;
     }

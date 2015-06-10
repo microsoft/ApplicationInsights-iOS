@@ -312,7 +312,6 @@ static char *const MSAITelemetryEventQueue = "com.microsoft.ApplicationInsights.
   }
 }
 
-
 - (void)trackSessionEnd {
   MSAISessionStateData *sessionState = [MSAISessionStateData new];
   sessionState.state = MSAISessionState_end;

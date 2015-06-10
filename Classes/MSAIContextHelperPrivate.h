@@ -193,7 +193,9 @@ FOUNDATION_EXPORT NSString *const kMSAIApplicationWasLaunched;
  *
  *  @param date the creation date of a crash report
  */
-- (void)ignoreCrashReportForSessionWithDate:(NSDate *)date;
+- (void)ignoreCrashForSessionWithDate:(NSDate *)date;
+
+- (BOOL)shouldIgnoreCrashForSessionWithDate:(NSDate *)date;
 
 #endif /* MSAI_FEATURE_XAMARIN */
 
