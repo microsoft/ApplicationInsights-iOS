@@ -114,6 +114,17 @@ NS_ASSUME_NONNULL_BEGIN
  */
 + (void)trackException:(NSException *)exception;
 
+#if MSAI_FEATURE_XAMARIN
+
+/**
+ *  Track managed handled exception.
+ *
+ *  @param exceptionData the handled exception data from managed Code, which should be send to the server.
+ */
++ (void)trackManagedException:(MSAIExceptionData *)exceptionData;
+
+#endif /* MSAI_FEATURE_XAMARIN */
+
 /**
  *  Track the event by event name.
  *
@@ -200,6 +211,17 @@ NS_ASSUME_NONNULL_BEGIN
  *  @param exception the handled exception, which should be send to the server.
  */
 - (void)trackException:(NSException *)exception;
+
+#if MSAI_FEATURE_XAMARIN
+
+/**
+ *  Track managed handled exception.
+ *
+ *  @param exceptionData the handled exception data from managed Code, which should be send to the server.
+ */
+- (void)trackManagedException:(MSAIExceptionData *)exceptionData;
+
+#endif /* MSAI_FEATURE_XAMARIN */
 
 @end
 NS_ASSUME_NONNULL_END

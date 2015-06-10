@@ -29,6 +29,11 @@
 #import "MSAIContextHelperPrivate.h"
 #import "MSAISessionStateData.h"
 
+#if MSAI_FEATURE_XAMARIN
+#import "MSAIExceptionData.h"
+#import "MSAIExceptionDetails.h"
+#endif /* MSAI_FEATURE_XAMARIN */
+
 static char *const MSAITelemetryEventQueue = "com.microsoft.ApplicationInsights.telemetryEventQueue";
 
 @implementation MSAITelemetryManager{
@@ -206,6 +211,18 @@ static char *const MSAITelemetryEventQueue = "com.microsoft.ApplicationInsights.
   });
 }
 
+#if MSAI_FEATURE_XAMARIN
+
++ (void)trackManagedException:(MSAIExceptionData *)exceptionData{
+  [[self sharedManager]trackManagedException:exceptionData];
+}
+
+- (void)trackManagedException:(MSAIExceptionData *)exceptionData{
+  [self processDataItem:exceptionData];
+}
+
+#endif /* MSAI_FEATURE_XAMARIN */
+
 + (void)trackException:(NSException *)exception{
   [[self sharedManager]trackException:exception];
 }
@@ -270,6 +287,16 @@ static char *const MSAITelemetryEventQueue = "com.microsoft.ApplicationInsights.
     [[MSAIChannel sharedChannel] enqueueDictionary:dict];
   }
 }
+
+#if MSAI_FEATURE_XAMARIN
+
+- (void)processDataItem:(MSAITelemetryData *)dataItem {
+  MSAIEnvelope *envelope = [[MSAIEnvelopeManager sharedManager] envelopeForTelemetryData:dataItem];
+  MSAIOrderedDictionary *dict = [envelope serializeToDictionary];
+  [[MSAIChannel sharedChannel] processDictionary:dict withCompletionBlock:nil];
+}
+
+#endif /* MSAI_FEATURE_XAMARIN */
 
 #pragma mark - Session update
 
