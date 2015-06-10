@@ -1,6 +1,9 @@
 #import "ApplicationInsights.h"
 
 NS_ASSUME_NONNULL_BEGIN
+
+@class MSAIExceptionData;
+
 /**
 * MSAITelemetryManager is the component of the Application Insights SDK for iOS that is responsible for all things
 * that are related to metrics and tracking.
@@ -190,7 +193,7 @@ NS_ASSUME_NONNULL_BEGIN
  *  @param properties key-value pairs which can contain additional information about the page view
  */
 - (void)trackPageView:(NSString *)pageName duration:(long)duration properties:(nullable NSDictionary *)properties;
-
+  
 /**
  *  Track handled exception.
  *

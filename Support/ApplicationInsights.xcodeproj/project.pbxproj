@@ -98,11 +98,11 @@
 		803871C61A94C26500BF295F /* MSAIEnvelopeManagerPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B47E0301A84D413000B4C3D /* MSAIEnvelopeManagerPrivate.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		803871C71A94C26500BF295F /* MSAISenderPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 1BE29B4A1A6FBAB50014A10F /* MSAISenderPrivate.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		8042486D1AC2266A001DBE4F /* MSAIAppClient.h in Headers */ = {isa = PBXBuildFile; fileRef = E40E0B0A17DA1AFF005E38C1 /* MSAIAppClient.h */; };
-		807CFD681A71294E004EA1B6 /* MSAIOrderedDictionary.h in Headers */ = {isa = PBXBuildFile; fileRef = 807CFD661A71294E004EA1B6 /* MSAIOrderedDictionary.h */; };
+		807CFD681A71294E004EA1B6 /* MSAIOrderedDictionary.h in Headers */ = {isa = PBXBuildFile; fileRef = 807CFD661A71294E004EA1B6 /* MSAIOrderedDictionary.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		807CFD691A71294E004EA1B6 /* MSAIOrderedDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 807CFD671A71294E004EA1B6 /* MSAIOrderedDictionary.m */; };
-		807CFD6E1A712969004EA1B6 /* MSAIObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 807CFD6A1A712969004EA1B6 /* MSAIObject.h */; };
+		807CFD6E1A712969004EA1B6 /* MSAIObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 807CFD6A1A712969004EA1B6 /* MSAIObject.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		807CFD6F1A712969004EA1B6 /* MSAIObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 807CFD6B1A712969004EA1B6 /* MSAIObject.m */; };
-		807CFD701A712969004EA1B6 /* MSAITelemetryData.h in Headers */ = {isa = PBXBuildFile; fileRef = 807CFD6C1A712969004EA1B6 /* MSAITelemetryData.h */; };
+		807CFD701A712969004EA1B6 /* MSAITelemetryData.h in Headers */ = {isa = PBXBuildFile; fileRef = 807CFD6C1A712969004EA1B6 /* MSAITelemetryData.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		807CFD711A712969004EA1B6 /* MSAITelemetryData.m in Sources */ = {isa = PBXBuildFile; fileRef = 807CFD6D1A712969004EA1B6 /* MSAITelemetryData.m */; };
 		807CFDA31A712974004EA1B6 /* MSAIApplication.h in Headers */ = {isa = PBXBuildFile; fileRef = 807CFD721A712974004EA1B6 /* MSAIApplication.h */; };
 		807CFDA41A712974004EA1B6 /* MSAIApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = 807CFD731A712974004EA1B6 /* MSAIApplication.m */; };
@@ -112,21 +112,21 @@
 		807CFDA81A712974004EA1B6 /* MSAIData.m in Sources */ = {isa = PBXBuildFile; fileRef = 807CFD771A712974004EA1B6 /* MSAIData.m */; };
 		807CFDA91A712974004EA1B6 /* MSAIDataPoint.h in Headers */ = {isa = PBXBuildFile; fileRef = 807CFD781A712974004EA1B6 /* MSAIDataPoint.h */; };
 		807CFDAA1A712974004EA1B6 /* MSAIDataPoint.m in Sources */ = {isa = PBXBuildFile; fileRef = 807CFD791A712974004EA1B6 /* MSAIDataPoint.m */; };
-		807CFDAB1A712974004EA1B6 /* MSAIDataPointType.h in Headers */ = {isa = PBXBuildFile; fileRef = 807CFD7A1A712974004EA1B6 /* MSAIDataPointType.h */; };
-		807CFDAC1A712974004EA1B6 /* MSAIDependencyKind.h in Headers */ = {isa = PBXBuildFile; fileRef = 807CFD7B1A712974004EA1B6 /* MSAIDependencyKind.h */; };
-		807CFDAD1A712974004EA1B6 /* MSAIDependencySourceType.h in Headers */ = {isa = PBXBuildFile; fileRef = 807CFD7C1A712974004EA1B6 /* MSAIDependencySourceType.h */; };
+		807CFDAB1A712974004EA1B6 /* MSAIDataPointType.h in Headers */ = {isa = PBXBuildFile; fileRef = 807CFD7A1A712974004EA1B6 /* MSAIDataPointType.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		807CFDAC1A712974004EA1B6 /* MSAIDependencyKind.h in Headers */ = {isa = PBXBuildFile; fileRef = 807CFD7B1A712974004EA1B6 /* MSAIDependencyKind.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		807CFDAD1A712974004EA1B6 /* MSAIDependencySourceType.h in Headers */ = {isa = PBXBuildFile; fileRef = 807CFD7C1A712974004EA1B6 /* MSAIDependencySourceType.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		807CFDAE1A712974004EA1B6 /* MSAIDevice.h in Headers */ = {isa = PBXBuildFile; fileRef = 807CFD7D1A712974004EA1B6 /* MSAIDevice.h */; };
 		807CFDAF1A712974004EA1B6 /* MSAIDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = 807CFD7E1A712974004EA1B6 /* MSAIDevice.m */; };
-		807CFDB01A712974004EA1B6 /* MSAIDomain.h in Headers */ = {isa = PBXBuildFile; fileRef = 807CFD7F1A712974004EA1B6 /* MSAIDomain.h */; };
+		807CFDB01A712974004EA1B6 /* MSAIDomain.h in Headers */ = {isa = PBXBuildFile; fileRef = 807CFD7F1A712974004EA1B6 /* MSAIDomain.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		807CFDB11A712974004EA1B6 /* MSAIDomain.m in Sources */ = {isa = PBXBuildFile; fileRef = 807CFD801A712974004EA1B6 /* MSAIDomain.m */; };
-		807CFDB21A712974004EA1B6 /* MSAIEnums.h in Headers */ = {isa = PBXBuildFile; fileRef = 807CFD811A712974004EA1B6 /* MSAIEnums.h */; };
+		807CFDB21A712974004EA1B6 /* MSAIEnums.h in Headers */ = {isa = PBXBuildFile; fileRef = 807CFD811A712974004EA1B6 /* MSAIEnums.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		807CFDB31A712974004EA1B6 /* MSAIEnvelope.h in Headers */ = {isa = PBXBuildFile; fileRef = 807CFD821A712974004EA1B6 /* MSAIEnvelope.h */; };
 		807CFDB41A712974004EA1B6 /* MSAIEnvelope.m in Sources */ = {isa = PBXBuildFile; fileRef = 807CFD831A712974004EA1B6 /* MSAIEnvelope.m */; };
 		807CFDB51A712974004EA1B6 /* MSAIEventData.h in Headers */ = {isa = PBXBuildFile; fileRef = 807CFD841A712974004EA1B6 /* MSAIEventData.h */; };
 		807CFDB61A712974004EA1B6 /* MSAIEventData.m in Sources */ = {isa = PBXBuildFile; fileRef = 807CFD851A712974004EA1B6 /* MSAIEventData.m */; };
-		807CFDB71A712974004EA1B6 /* MSAIExceptionData.h in Headers */ = {isa = PBXBuildFile; fileRef = 807CFD861A712974004EA1B6 /* MSAIExceptionData.h */; };
+		807CFDB71A712974004EA1B6 /* MSAIExceptionData.h in Headers */ = {isa = PBXBuildFile; fileRef = 807CFD861A712974004EA1B6 /* MSAIExceptionData.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		807CFDB81A712974004EA1B6 /* MSAIExceptionData.m in Sources */ = {isa = PBXBuildFile; fileRef = 807CFD871A712974004EA1B6 /* MSAIExceptionData.m */; };
-		807CFDB91A712974004EA1B6 /* MSAIExceptionDetails.h in Headers */ = {isa = PBXBuildFile; fileRef = 807CFD881A712974004EA1B6 /* MSAIExceptionDetails.h */; };
+		807CFDB91A712974004EA1B6 /* MSAIExceptionDetails.h in Headers */ = {isa = PBXBuildFile; fileRef = 807CFD881A712974004EA1B6 /* MSAIExceptionDetails.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		807CFDBA1A712974004EA1B6 /* MSAIExceptionDetails.m in Sources */ = {isa = PBXBuildFile; fileRef = 807CFD891A712974004EA1B6 /* MSAIExceptionDetails.m */; };
 		807CFDBB1A712974004EA1B6 /* MSAIInternal.h in Headers */ = {isa = PBXBuildFile; fileRef = 807CFD8A1A712974004EA1B6 /* MSAIInternal.h */; };
 		807CFDBC1A712974004EA1B6 /* MSAIInternal.m in Sources */ = {isa = PBXBuildFile; fileRef = 807CFD8B1A712974004EA1B6 /* MSAIInternal.m */; };
@@ -148,7 +148,7 @@
 		807CFDCC1A712974004EA1B6 /* MSAIRequestData.m in Sources */ = {isa = PBXBuildFile; fileRef = 807CFD9B1A712974004EA1B6 /* MSAIRequestData.m */; };
 		807CFDCD1A712974004EA1B6 /* MSAISession.h in Headers */ = {isa = PBXBuildFile; fileRef = 807CFD9C1A712974004EA1B6 /* MSAISession.h */; };
 		807CFDCE1A712974004EA1B6 /* MSAISession.m in Sources */ = {isa = PBXBuildFile; fileRef = 807CFD9D1A712974004EA1B6 /* MSAISession.m */; };
-		807CFDCF1A712974004EA1B6 /* MSAISeverityLevel.h in Headers */ = {isa = PBXBuildFile; fileRef = 807CFD9E1A712974004EA1B6 /* MSAISeverityLevel.h */; };
+		807CFDCF1A712974004EA1B6 /* MSAISeverityLevel.h in Headers */ = {isa = PBXBuildFile; fileRef = 807CFD9E1A712974004EA1B6 /* MSAISeverityLevel.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		807CFDD01A712974004EA1B6 /* MSAIStackFrame.h in Headers */ = {isa = PBXBuildFile; fileRef = 807CFD9F1A712974004EA1B6 /* MSAIStackFrame.h */; };
 		807CFDD11A712974004EA1B6 /* MSAIStackFrame.m in Sources */ = {isa = PBXBuildFile; fileRef = 807CFDA01A712974004EA1B6 /* MSAIStackFrame.m */; };
 		807CFDD21A712974004EA1B6 /* MSAIUser.h in Headers */ = {isa = PBXBuildFile; fileRef = 807CFDA11A712974004EA1B6 /* MSAIUser.h */; };
@@ -805,8 +805,18 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1E59559B15B6FDA500A03429 /* ApplicationInsights.h in Headers */,
+				807CFDB01A712974004EA1B6 /* MSAIDomain.h in Headers */,
+				807CFD701A712969004EA1B6 /* MSAITelemetryData.h in Headers */,
+				807CFD681A71294E004EA1B6 /* MSAIOrderedDictionary.h in Headers */,
+				807CFDAC1A712974004EA1B6 /* MSAIDependencyKind.h in Headers */,
+				807CFDCF1A712974004EA1B6 /* MSAISeverityLevel.h in Headers */,
 				807CFDAB1A712974004EA1B6 /* MSAIDataPointType.h in Headers */,
+				807CFDAD1A712974004EA1B6 /* MSAIDependencySourceType.h in Headers */,
+				807CFDB21A712974004EA1B6 /* MSAIEnums.h in Headers */,
+				807CFD6E1A712969004EA1B6 /* MSAIObject.h in Headers */,
+				807CFDB91A712974004EA1B6 /* MSAIExceptionDetails.h in Headers */,
+				807CFDB71A712974004EA1B6 /* MSAIExceptionData.h in Headers */,
+				1E59559B15B6FDA500A03429 /* ApplicationInsights.h in Headers */,
 				1B47E02E1A84D3DF000B4C3D /* MSAIEnvelopeManager.h in Headers */,
 				1E59559A15B6FDA500A03429 /* MSAIApplicationInsights.h in Headers */,
 				8042486D1AC2266A001DBE4F /* MSAIAppClient.h in Headers */,
@@ -835,9 +845,7 @@
 				809E9E5B1AC455D9008A1AB5 /* MSAISessionStateData.h in Headers */,
 				1B3C387A1A82213000700081 /* MSAICrashDataHeaders.h in Headers */,
 				807CFDB31A712974004EA1B6 /* MSAIEnvelope.h in Headers */,
-				807CFDAD1A712974004EA1B6 /* MSAIDependencySourceType.h in Headers */,
 				1B3C387C1A82213000700081 /* MSAICrashDataThread.h in Headers */,
-				807CFDB71A712974004EA1B6 /* MSAIExceptionData.h in Headers */,
 				807CFDBF1A712974004EA1B6 /* MSAIMessageData.h in Headers */,
 				1E90FD7318EDB86400CF0417 /* MSAICrashDetails.h in Headers */,
 				807CFDC71A712974004EA1B6 /* MSAIPageViewPerfData.h in Headers */,
@@ -846,11 +854,7 @@
 				807CFDCD1A712974004EA1B6 /* MSAISession.h in Headers */,
 				1EB2E4C618FD4CEA008BB1CF /* MSAITelemetryManager.h in Headers */,
 				807CFDC51A712974004EA1B6 /* MSAIPageViewData.h in Headers */,
-				807CFD701A712969004EA1B6 /* MSAITelemetryData.h in Headers */,
-				807CFD681A71294E004EA1B6 /* MSAIOrderedDictionary.h in Headers */,
-				807CFDB91A712974004EA1B6 /* MSAIExceptionDetails.h in Headers */,
 				1BE29B481A6FB8C20014A10F /* MSAISender.h in Headers */,
-				807CFDB01A712974004EA1B6 /* MSAIDomain.h in Headers */,
 				807CFDA91A712974004EA1B6 /* MSAIDataPoint.h in Headers */,
 				807CFDD01A712974004EA1B6 /* MSAIStackFrame.h in Headers */,
 				E4933E8017B66CDA00B11ACC /* MSAIHTTPOperation.h in Headers */,
@@ -860,13 +864,9 @@
 				1E49A4BE161222B900463151 /* MSAIHelper.h in Headers */,
 				807CFDCB1A712974004EA1B6 /* MSAIRequestData.h in Headers */,
 				807CFDA51A712974004EA1B6 /* MSAIBase.h in Headers */,
-				807CFD6E1A712969004EA1B6 /* MSAIObject.h in Headers */,
 				1B3C38781A82213000700081 /* MSAICrashDataBinary.h in Headers */,
 				807CFDD21A712974004EA1B6 /* MSAIUser.h in Headers */,
-				807CFDB21A712974004EA1B6 /* MSAIEnums.h in Headers */,
-				807CFDCF1A712974004EA1B6 /* MSAISeverityLevel.h in Headers */,
 				807CFDBB1A712974004EA1B6 /* MSAIInternal.h in Headers */,
-				807CFDAC1A712974004EA1B6 /* MSAIDependencyKind.h in Headers */,
 				809E9E5A1AC455D9008A1AB5 /* MSAISessionState.h in Headers */,
 				1E754E601621FBB70070AB92 /* MSAICrashDataProvider.h in Headers */,
 				807CFDC11A712974004EA1B6 /* MSAIMetricData.h in Headers */,

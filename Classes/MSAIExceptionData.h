@@ -1,6 +1,4 @@
 #import "MSAIExceptionDetails.h"
-#import "MSAIObject.h"
-#import "MSAITelemetryData.h"
 #import "MSAIDomain.h"
 
 @interface MSAIExceptionData : MSAIDomain <NSCoding>
