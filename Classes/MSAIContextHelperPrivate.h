@@ -185,6 +185,17 @@ FOUNDATION_EXPORT NSString *const kMSAIApplicationWasLaunched;
  */
 - (BOOL)removeSession:(MSAISession *)session;
 
+#if MSAI_FEATURE_XAMARIN
+
+/**
+ *  Tells the SDK to not report native crashes occured in the next oldest session. This gives you the possibility to
+ *  processing managed unhandled exceptions from managed code.
+ *
+ *  @param date the creation date of a crash report
+ */
+- (void)ignoreCrashReportForSessionWithDate:(NSDate *)date;
+
+#endif /* MSAI_FEATURE_XAMARIN */
 
 ///-----------------------------------------------------------------------------
 /// @name Session Lifecycle

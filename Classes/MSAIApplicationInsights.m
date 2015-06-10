@@ -306,6 +306,7 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 }
 
 + (void)renewSessionWithId:(NSString *)sessionId {
+  // Call of instance method should be enough, remove setAutoSessionManagementDisabled
   [[self sharedInstance] setAutoSessionManagementDisabled:YES];
   [[self sharedInstance] renewSessionWithId:sessionId];
 }
@@ -314,6 +315,16 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
   [self setAutoSessionManagementDisabled:YES];
   [[MSAIContextHelper sharedInstance] renewSessionWithId:sessionId];
 }
+
+#if MSAI_FEATURE_XAMARIN
++ (void)ignoreCrashForSessionForDate:(NSDate *)date{
+  [[self sharedInstance] ignoreCrashForSessionForDate:date];
+}
+
+- (void)ignoreCrashForSessionForDate:(NSDate *)date{
+  [[MSAIContextHelper sharedInstance] ignoreCrashReportForSessionWithDate:date];
+}
+#endif /* MSAI_FEATURE_XAMARIN */
 
 #pragma mark - Helper
 
