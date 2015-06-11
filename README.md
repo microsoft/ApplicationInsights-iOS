@@ -322,9 +322,9 @@ After you have set up the SDK as [described above](#setup), the ```MSAITelemetry
 
 // Track handled exceptions
 NSArray *zeroItemArray = [NSArray new];
-@try{
+@try {
 	NSString *fooString = zeroItemArray[3];
-}@catch(NSException *exception){
+} @catch(NSException *exception) {
 	[MSAITelemetryManager trackException:exception];
 }
 ```
