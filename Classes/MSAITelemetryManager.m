@@ -36,6 +36,10 @@ static char *const MSAITelemetryEventQueue = "com.microsoft.ApplicationInsights.
   id _appWillResignActiveObserver;
   id _sessionStartedObserver;
   id _sessionEndedObserver;
+  id _deviceOrientationObserver;
+  id _appStartObserver;
+  id _foregroundObserver;
+  id _backgroundObserver;
 }
 
 #pragma mark - Configure manager
@@ -68,22 +72,41 @@ static char *const MSAITelemetryEventQueue = "com.microsoft.ApplicationInsights.
   NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
   __weak typeof(self) weakSelf = self;
   
+  if (!_appStartObserver) {
+    _appStartObserver = [center addObserverForName:UIApplicationDidFinishLaunchingNotification
+                                            object:nil queue:NSOperationQueue.mainQueue
+                                        usingBlock:^(NSNotification *note) {
+                                          typeof(self) strongSelf = weakSelf;
+                                          [strongSelf trackAppStart];
+                                        }];
+  }
+  if (!_foregroundObserver) {
+    _foregroundObserver = [center addObserverForName:UIApplicationWillEnterForegroundNotification
+                                              object:nil
+                                               queue:NSOperationQueue.mainQueue
+                                          usingBlock:^(NSNotification *note) {
+                                            typeof(weakSelf) strongSelf = weakSelf;
+                                            [strongSelf trackEnterForeground];
+                                          }];
+  }
   if (!_appDidEnterBackgroundObserver) {
     _appDidEnterBackgroundObserver = [center addObserverForName:UIApplicationDidEnterBackgroundNotification
                                                          object:nil
                                                           queue:NSOperationQueue.mainQueue
                                                      usingBlock:^(NSNotification *notification) {
+                                                       typeof(self) strongSelf = weakSelf;
                                                        [[MSAIChannel sharedChannel] persistDataItemQueue];
+                                                       [strongSelf trackEnterBackground];
                                                      }];
   }
   
   if (!_appWillResignActiveObserver) {
     _appWillResignActiveObserver = [center addObserverForName:UIApplicationWillResignActiveNotification
-                                                         object:nil
-                                                          queue:NSOperationQueue.mainQueue
-                                                     usingBlock:^(NSNotification *notification) {
-                                                       [[MSAIChannel sharedChannel] persistDataItemQueue];
-                                                     }];
+                                                       object:nil
+                                                        queue:NSOperationQueue.mainQueue
+                                                   usingBlock:^(NSNotification *notification) {
+                                                     [[MSAIChannel sharedChannel] persistDataItemQueue];
+                                                   }];
   }
   
   if(!_sessionStartedObserver){
@@ -101,9 +124,17 @@ static char *const MSAITelemetryEventQueue = "com.microsoft.ApplicationInsights.
                                                  queue:NSOperationQueue.mainQueue
                                             usingBlock:^(NSNotification *notification) {
                                               typeof(self) strongSelf = weakSelf;
-                                              
                                               [strongSelf trackSessionEnd];
                                             }];
+  }
+  if (!_deviceOrientationObserver) {
+    [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
+    _deviceOrientationObserver = [center addObserverForName:UIDeviceOrientationDidChangeNotification
+                                                     object:nil
+                                                      queue:NSOperationQueue.mainQueue usingBlock:^(NSNotification *note) {
+                                                        typeof(self) strongSelf = weakSelf;
+                                                        [strongSelf trackOrientationChange];
+                                                      }];
   }
 }
 
@@ -270,6 +301,64 @@ static char *const MSAITelemetryEventQueue = "com.microsoft.ApplicationInsights.
     [[MSAIChannel sharedChannel] enqueueDictionary:dict];
   } else {
     MSAILog(@"The data pipeline is saturated right now and the data item named %@ was dropped.", dataItem.name);
+  }
+}
+
+#pragma mark - App Start
+
+- (void)trackAppStart {
+  if (!self.autoLifeCycleTrackingDisabled) {
+    [self trackEventWithName:@"App started"];
+  }
+}
+
+#pragma mark - Foreground / Background
+
+- (void)trackEnterForeground {
+  if (!self.autoLifeCycleTrackingDisabled) {
+    [self trackEventWithName:@"App will enter foreground"];
+  }
+}
+
+- (void)trackEnterBackground {
+  if (!self.autoLifeCycleTrackingDisabled) {
+    [self trackEventWithName:@"App did enter background"];
+  }
+}
+
+#pragma mark - Orientation Change
+
+- (void)trackOrientationChange {
+  if (!self.autoLifeCycleTrackingDisabled) {
+    UIInterfaceOrientation *currentOrientation = [UIDevice currentDevice].orientation;
+    NSDictionary *properties;
+    switch ((int)currentOrientation) {
+      case UIDeviceOrientationUnknown:
+        properties = @{@"orientation":@"UIDeviceOrientationUnknown"};
+        break;
+      case UIDeviceOrientationPortrait:
+        properties = @{@"orientation":@"UIDeviceOrientationPortrait"};
+        break;
+      case UIDeviceOrientationPortraitUpsideDown:
+        properties = @{@"orientation":@"UIDeviceOrientationPortraitUpsideDown"};
+        break;
+      case UIDeviceOrientationLandscapeLeft:
+        properties = @{@"orientation":@"UIDeviceOrientationLandscapeLeft"};
+        break;
+      case UIDeviceOrientationLandscapeRight:
+        properties = @{@"orientation":@"UIDeviceOrientationLandscapeRight"};
+        break;
+      case UIDeviceOrientationFaceUp:
+        properties = @{@"orientation":@"UIDeviceOrientationFaceUp"};
+        break;
+      case UIDeviceOrientationFaceDown:
+        properties = @{@"orientation":@"UIDeviceOrientationFaceDown"};
+        break;
+      default:
+        properties = @{@"orientation":@"UIDeviceOrientationUnknown"};
+        break;
+    }
+    [self trackEventWithName:@"Device orientation changed" properties:properties];
   }
 }
 

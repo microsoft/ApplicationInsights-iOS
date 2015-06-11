@@ -25,7 +25,10 @@
 - (void)msai_viewWillAppear:(BOOL)animated {
   [self msai_viewWillAppear:animated];
 #if MSAI_FEATURE_TELEMETRY  
-  if(![MSAITelemetryManager sharedManager].autoPageViewTrackingDisabled){
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+  if(![MSAITelemetryManager sharedManager].autoLifeCycleTrackingDisabled && ![MSAITelemetryManager sharedManager].autoPageViewTrackingDisabled){
+#pragma clang diagnostic pop
     NSString *pageViewName = [NSString stringWithFormat:@"%@ %@", NSStringFromClass([self class]), self.title];
     [MSAITelemetryManager trackPageView:pageViewName];
   }

@@ -122,10 +122,22 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
   
 #if MSAI_FEATURE_TELEMETRY
   if (![self isTelemetryManagerDisabled]) {
-    
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     if([self isAutoPageViewTrackingDisabled]){
       MSAILog(@"INFO: Auto page views disabled");
       [MSAITelemetryManager sharedManager].autoPageViewTrackingDisabled = YES;
+#pragma clang diagnostic pop
+    }
+    if ([self isAutoLifeCycleTrackingDisabled]) {
+      MSAILog(@"INFO: Auto life cycle tracking disabled");
+      [MSAITelemetryManager sharedManager].autoLifeCycleTrackingDisabled = YES;
+      
+      MSAILog(@"INFO: Auto page views disabled");
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+      [MSAITelemetryManager sharedManager].autoPageViewTrackingDisabled = YES;
+#pragma clang diagnostic pop
     }
     
     
@@ -207,6 +219,20 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 
 + (void)setTelemetryManagerDisabled:(BOOL)telemetryManagerDisabled {
   [[self sharedInstance] setTelemetryManagerDisabled:telemetryManagerDisabled];
+}
+
+- (void)setAutoLifeCycleTrackingDisabled:(BOOL)autoLifeCycleTrackingDisabled {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+  [self setAutoPageViewTrackingDisabled:autoLifeCycleTrackingDisabled];
+#pragma clang diagnostic pop
+  
+  [MSAITelemetryManager sharedManager].autoLifeCycleTrackingDisabled = autoLifeCycleTrackingDisabled;
+  _autoLifeCycleTrackingDisabled = autoLifeCycleTrackingDisabled;
+}
+
++ (void)setAutoLifeCycleTrackingDisabled:(BOOL)autoLifeCycleTrackingDisabled {
+  
 }
 
 - (void)setAutoPageViewTrackingDisabled:(BOOL)autoPageViewTrackingDisabled {
