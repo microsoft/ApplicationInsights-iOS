@@ -213,12 +213,35 @@ static char *const MSAITelemetryEventQueue = "com.microsoft.ApplicationInsights.
 
 #if MSAI_FEATURE_XAMARIN
 
-+ (void)trackManagedException:(MSAIExceptionData *)exceptionData{
-  [[self sharedManager]trackManagedException:exceptionData];
++ (void)trackManagedExceptionWithType:(NSString *)type
+                              message:(NSString *)message
+                           stacktrace:(NSString *)stacktrace
+                              handled:(BOOL)handled{
+  [[self sharedManager] trackManagedExceptionWithType:type message:message stacktrace:stacktrace handled:handled];
 }
 
-- (void)trackManagedException:(MSAIExceptionData *)exceptionData{
-  [self processDataItem:exceptionData];
+- (void)trackManagedExceptionWithType:(NSString *)type
+                              message:(NSString *)message
+                           stacktrace:(NSString *)stacktrace
+                              handled:(BOOL)handled{
+  if(!_managerInitialised) return;
+    
+  MSAIExceptionDetails *details = [MSAIExceptionDetails new];
+  details.hasFullStack = (stacktrace) ? YES : NO;
+  details.message = message;
+  details.stack = stacktrace;
+  details.typeName = type;
+  //TODO: parse stacktrace & provide name of handledAt
+  
+  MSAIExceptionData *data = [MSAIExceptionData new];
+  data.handledAt = (handled) ? @"handled" : @"";
+  data.exceptions = @[details].mutableCopy;
+  
+  [self processDataItem:data];
+  
+  if(!handled){
+    [[MSAIContextHelper sharedInstance] ignoreCrashForSessionWithDate:[NSDate date]];
+  }
 }
 
 #endif /* MSAI_FEATURE_XAMARIN */

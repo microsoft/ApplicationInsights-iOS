@@ -119,9 +119,15 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  *  Track managed handled exception.
  *
- *  @param exceptionData the handled exception data from managed Code, which should be send to the server.
+ *  @param type the exception type
+ *  @param message the exception message
+ *  @param stacktrace the stacktrace for the exception
+ *  @param handled a flag which determines if the exception was handled or not
  */
-+ (void)trackManagedException:(MSAIExceptionData *)exceptionData;
++ (void)trackManagedExceptionWithType:(NSString *)type
+                              message:(NSString *)message
+                           stacktrace:(NSString *)stacktrace
+                              handled:(BOOL)handled;
 
 #endif /* MSAI_FEATURE_XAMARIN */
 
@@ -217,9 +223,15 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  *  Track managed handled exception.
  *
- *  @param exceptionData the handled exception data from managed Code, which should be send to the server.
+ *  @param type the exception type
+ *  @param message the exception message
+ *  @param stacktrace the stacktrace for the exception
+ *  @param handled a flag which determines if the exception was handled or not
  */
-- (void)trackManagedException:(MSAIExceptionData *)exceptionData;
+- (void)trackManagedExceptionWithType:(NSString *)type
+                              message:(NSString *)message
+                           stacktrace:(NSString *)stacktrace
+                              handled:(BOOL)handled;
 
 #endif /* MSAI_FEATURE_XAMARIN */
 
