@@ -414,7 +414,7 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
   
   /* Uncaught Exception */
   if (report.hasExceptionInfo) {
-    crashHeaders.exceptionReason = report.exceptionInfo.exceptionReason;
+    crashHeaders.exceptionReason = [NSString stringWithFormat:@"%@: %@", report.exceptionInfo.exceptionName, report.exceptionInfo.exceptionReason];
   } else if (crashed_thread != nil) {
     // try to find the selector in case this was a crash in obj_msgSend
     // we search this wether the crash happend in obj_msgSend or not since we don't have the symbol!
