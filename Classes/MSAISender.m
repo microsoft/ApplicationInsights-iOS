@@ -3,7 +3,7 @@
 #import "MSAISenderPrivate.h"
 #import "MSAIPersistence.h"
 #import "MSAIGZIP.h"
-#import "MSAIEnvelope.h"
+
 #import "ApplicationInsights.h"
 #import "ApplicationInsightsPrivate.h"
 #import "MSAIApplicationInsights.h"
@@ -11,9 +11,7 @@
 static char const *kPersistenceQueueString = "com.microsoft.ApplicationInsights.senderQueue";
 static NSUInteger const defaultRequestLimit = 10;
 
-@interface MSAISender ()
 
-@end
 
 @implementation MSAISender
 
@@ -24,7 +22,7 @@ static NSUInteger const defaultRequestLimit = 10;
 + (instancetype)sharedSender {
   static MSAISender *sharedInstance = nil;
   static dispatch_once_t onceToken;
-  
+
   dispatch_once(&onceToken, ^{
     sharedInstance = [MSAISender new];
   });
@@ -66,8 +64,8 @@ static NSUInteger const defaultRequestLimit = 10;
 
 - (void)sendSavedData{
   @synchronized(self){
-    if(_runningRequestsCount < _maxRequestCount){
-      _runningRequestsCount++;
+    if(self.runningRequestsCount < self.maxRequestCount){
+      self.runningRequestsCount++;
     }else{
       return;
     }
@@ -120,8 +118,8 @@ static NSUInteger const defaultRequestLimit = 10;
       [[MSAIPersistence sharedInstance] giveBackRequestedPath:path];
     }
   }];
-  
-  [self.appClient enqeueHTTPOperation:operation];
+
+  [self.appClient enqueueHTTPOperation:operation];
 }
 
 #pragma mark - Helper

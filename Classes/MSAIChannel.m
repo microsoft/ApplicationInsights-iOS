@@ -1,6 +1,5 @@
 #import "MSAIChannel.h"
 #import "MSAIChannelPrivate.h"
-#import "MSAITelemetryContext.h"
 #import "MSAITelemetryContextPrivate.h"
 #import "MSAIEnvelope.h"
 #import "MSAIHTTPOperation.h"
@@ -61,17 +60,6 @@ static dispatch_once_t once_token;
 }
 
 #pragma mark - Queue management
-
-- (NSMutableArray *)dataItemQueue {
-  __block NSMutableArray *queue = nil;
-  __weak typeof(self) weakSelf = self;
-  dispatch_sync(self.dataItemsOperations, ^{
-    typeof(self) strongSelf = weakSelf;
-    
-    queue = [NSMutableArray arrayWithArray:strongSelf->_dataItemQueue];
-  });
-  return queue;
-}
 
 - (BOOL)isQueueBusy{
   return ![[MSAIPersistence sharedInstance] isFreeSpaceAvailable];

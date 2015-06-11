@@ -41,12 +41,12 @@ FOUNDATION_EXPORT char *MSAISafeJsonEventsString;
 /**
  *  A queue which makes array operations thread safe.
  */
-@property (nonatomic, strong) dispatch_queue_t dataItemsOperations;
+@property (atomic, strong) dispatch_queue_t dataItemsOperations;
 
 /**
  *  An array for collecting data, which should be sent to the telemetry server.
  */
-@property (nonatomic, strong) NSMutableArray *dataItemQueue;
+@property (atomic, strong) NSMutableArray *dataItemQueue;
 
 /**
  *  An integer value that keeps tracks of the number of data items added to the JSON Stream string.

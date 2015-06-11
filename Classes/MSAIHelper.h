@@ -6,7 +6,7 @@ NS_ASSUME_NONNULL_BEGIN
 /* NSString helpers */
 NSString *msai_URLEncodedString(NSString *inputString);
 NSString *msai_URLDecodedString(NSString *inputString);
-NSString *msai_base64String(NSData * data, unsigned long length);
+NSString *msai_base64String(NSData * data);
 
 NSString *msai_settingsDir(void);
 
