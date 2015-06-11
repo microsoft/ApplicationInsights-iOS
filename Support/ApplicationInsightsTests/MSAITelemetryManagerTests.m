@@ -83,8 +83,8 @@
 
 - (void)testTrackOrientationChange {
   self.sut = OCMPartialMock([MSAITelemetryManager new]);
-  
-  [self.sut trackOrientationChange];
+
+  [self.sut trackCurrentOrientation];
   
   OCMVerify([self.sut trackEventWithName:[OCMArg isEqual:@"Device orientation changed"] properties:[OCMArg any]]);
 }

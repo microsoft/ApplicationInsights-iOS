@@ -133,7 +133,7 @@ static char *const MSAITelemetryEventQueue = "com.microsoft.ApplicationInsights.
                                                      object:nil
                                                       queue:NSOperationQueue.mainQueue usingBlock:^(NSNotification *note) {
                                                         typeof(self) strongSelf = weakSelf;
-                                                        [strongSelf trackOrientationChange];
+          [strongSelf trackCurrentOrientation];
                                                       }];
   }
 }
@@ -326,7 +326,7 @@ static char *const MSAITelemetryEventQueue = "com.microsoft.ApplicationInsights.
 
 #pragma mark - Orientation Change
 
-- (void)trackOrientationChange {
+- (void)trackCurrentOrientation {
   if (!self.autoLifeCycleTrackingDisabled) {
     UIInterfaceOrientation *currentOrientation = [UIDevice currentDevice].orientation;
     NSDictionary *properties;

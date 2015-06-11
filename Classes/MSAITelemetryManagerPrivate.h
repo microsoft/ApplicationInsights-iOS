@@ -36,6 +36,10 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property BOOL autoPageViewTrackingDisabled __deprecated_msg("Use autoLifeCycleTrackingDisabled instead!");
 
+/**
+ *  A flag which determines whether page views, background/foreground switches and app cold starts are automatically detected and tracked.
+ *  Defaults to NO.
+ */
 @property BOOL autoLifeCycleTrackingDisabled;
 
 /**
@@ -50,7 +54,10 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (void)trackDataItem:(MSAITelemetryData *)dataItem;
 
-- (void)trackOrientationChange;
+/**
+ *  Track an event with the current device orientation
+ */
+- (void)trackCurrentOrientation;
 
 /**
  * Registers the manager for all notifications that are necessary for automatic session tracking
