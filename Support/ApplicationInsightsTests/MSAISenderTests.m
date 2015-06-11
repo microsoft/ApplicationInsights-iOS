@@ -56,7 +56,7 @@
   [_sut configureWithAppClient:_appClient];
   MSAIEnvelope *testItem = [MSAIEnvelope new];
   NSData *expectedBodyData = [[testItem serializeToString] dataUsingEncoding:NSUTF8StringEncoding];
-  NSURLRequest *testRequest = [_sut requestForData:expectedBodyData];
+  NSURLRequest *testRequest = [_sut requestForData:expectedBodyData withContentType:@"application/json"];
 
   assertThat(testRequest, notNilValue());
   assertThat([testRequest HTTPBody], equalTo(expectedBodyData));
@@ -78,6 +78,38 @@
       assertThatBool([_sut shouldDeleteDataWithStatusCode:statusCode], isTrue());
     }
   }
+}
+
+- (void)testContentTypeForData {
+  NSString *jsonContentType = @"application/json";
+  NSString *jsonStreamContentType = @"application/x-json-stream";
+  
+  // JSON Stream
+  NSData *data = [@"{}\n{}\n" dataUsingEncoding:NSUTF8StringEncoding];
+  
+  NSString *contentType = [_sut contentTypeForData:data];
+  
+  XCTAssertEqualObjects(contentType, jsonStreamContentType);
+  
+  // Regular JSON
+  data = [@"[{}]" dataUsingEncoding:NSUTF8StringEncoding];
+  
+  contentType = [_sut contentTypeForData:data];
+  
+  XCTAssertEqualObjects(contentType, jsonContentType);
+  
+  data = [@"{}" dataUsingEncoding:NSUTF8StringEncoding];
+  
+  contentType = [_sut contentTypeForData:data];
+  
+  XCTAssertEqualObjects(contentType, jsonContentType);
+  
+  // "Other" data fallback
+  data = [@"random string" dataUsingEncoding:NSUTF8StringEncoding];
+  
+  contentType = [_sut contentTypeForData:data];
+  
+  XCTAssertEqualObjects(contentType, jsonContentType);
 }
 
 @end
