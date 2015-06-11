@@ -62,8 +62,11 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 #endif /* MSAI_FEATURE_CRASH_REPORTER */
 #if MSAI_FEATURE_TELEMETRY
     _telemetryManagerDisabled = NO;
+    _autoPageViewTrackingDisabled = NO;
+    _autoLifeCycleTrackingDisabled = NO;
 #endif /* MSAI_FEATURE_TELEMETRY */
     _appStoreEnvironment = NO;
+    _autoSessionManagementDisabled = NO;
     _startManagerIsInvoked = NO;
     
     msai_isAppStoreEnvironment();
