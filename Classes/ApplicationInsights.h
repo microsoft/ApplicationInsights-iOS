@@ -36,11 +36,6 @@
 #import "MSAITelemetryManager.h"
 #endif /* MSAI_FEATURE_TELEMETRY */
 
-#if MSAI_FEATURE_XAMARIN
-#import "MSAIExceptionData.h"
-#import "MSAIExceptionDetails.h"
-#endif /* MSAI_FEATURE_XAMARIN */
-
 // Notification message which MSAIApplicationInsights is listening to, to retry requesting updated from the server
 #define MSAINetworkDidBecomeReachableNotification @"MSAINetworkDidBecomeReachable"
 

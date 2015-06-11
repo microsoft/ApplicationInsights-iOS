@@ -315,16 +315,6 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
   [[MSAIContextHelper sharedInstance] renewSessionWithId:sessionId];
 }
 
-#if MSAI_FEATURE_XAMARIN
-+ (void)ignoreCrashForSessionForDate:(NSDate *)date{
-  [[self sharedInstance] ignoreCrashForSessionForDate:date];
-}
-
-- (void)ignoreCrashForSessionForDate:(NSDate *)date{
-  [[MSAIContextHelper sharedInstance] ignoreCrashForSessionWithDate:date];
-}
-#endif /* MSAI_FEATURE_XAMARIN */
-
 #pragma mark - Helper
 
 - (BOOL)checkValidityOfInstrumentationKey:(NSString *)instrumentationKey {

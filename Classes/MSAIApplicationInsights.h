@@ -223,24 +223,6 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (void)renewSessionWithId:(NSString *)sessionId;
 
-#if MSAI_FEATURE_XAMARIN
-/**
- *  Tells the SDK to not report native crashes occured in the next oldest session. This gives you the possibility to
- *  processing managed unhandled exceptions from managed code.
- *
- *  @param date the creation date of a crash report
- */
-+ (void)ignoreCrashForSessionForDate:(NSDate *)date;
-
-/**
- *  Tells the SDK to not report native crashes occured in the next oldest session. This gives you the possibility to 
- *  processing managed unhandled exceptions from managed code.
- *
- *  @param date the creation date of a crash report
- */
-- (void)ignoreCrashForSessionForDate:(NSDate *)date;
-#endif /* MSAI_FEATURE_XAMARIN */
-
 ///-----------------------------------------------------------------------------
 /// @name Environment
 ///-----------------------------------------------------------------------------
