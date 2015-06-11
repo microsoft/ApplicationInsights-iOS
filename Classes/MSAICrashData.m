@@ -25,6 +25,8 @@
   MSAIOrderedDictionary *headersDict = [self.headers serializeToDictionary];
   if ([NSJSONSerialization isValidJSONObject:headersDict]) {
     [dict setObject:headersDict forKey:@"headers"];
+  } else {
+    NSLog(@"[ApplicationInsights] Some of the telemetry data was not NSJSONSerialization compatible and could not be serialized!");
   }
   if (self.threads != nil) {
     NSMutableArray *threadsArray = [NSMutableArray array];
