@@ -30,7 +30,6 @@ NSString *const kMSAICrashManagerIsDisabled = @"MSAICrashManagerIsDisabled";
 NSString *const kMSAIAppWentIntoBackgroundSafely = @"MSAIAppWentIntoBackgroundSafely";
 NSString *const kMSAIAppDidReceiveLowMemoryNotification = @"MSAIAppDidReceiveLowMemoryNotification";
 
-MSAIChannel const *sharedChannelReference;
 static char const *saveEventsFilePath;
 
 static MSAICrashManagerCallbacks msaiCrashCallbacks = {
@@ -270,7 +269,6 @@ static PLCrashReporterCallbacks defaultCallback = {
 
 - (void)configDefaultCallback {
   saveEventsFilePath = strdup([[[MSAIPersistence sharedInstance] newFileURLForPersitenceType:MSAIPersistenceTypeRegular] UTF8String]);
-  sharedChannelReference = [MSAIChannel sharedChannel];
 }
 
 void msai_save_events_callback(siginfo_t *info, ucontext_t *uap, void *context) {
