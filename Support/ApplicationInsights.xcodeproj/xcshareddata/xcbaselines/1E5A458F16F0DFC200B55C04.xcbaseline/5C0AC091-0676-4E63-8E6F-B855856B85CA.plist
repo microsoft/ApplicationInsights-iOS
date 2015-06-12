@@ -13,7 +13,20 @@
 					<key>baselineAverage</key>
 					<real>0.03</real>
 					<key>baselineIntegrationDisplayName</key>
-					<string>Local Baseline</string>
+					<string>12 Jun 2015 17:58:00</string>
+				</dict>
+			</dict>
+		</dict>
+		<key>MSAIHelperTests</key>
+		<dict>
+			<key>testUtcDateStringPerformane</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>0.00034178</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>12 Jun 2015 17:58:00</string>
 				</dict>
 			</dict>
 		</dict>
@@ -26,7 +39,7 @@
 					<key>baselineAverage</key>
 					<real>0.01</real>
 					<key>baselineIntegrationDisplayName</key>
-					<string>Local Baseline</string>
+					<string>12 Jun 2015 17:58:00</string>
 				</dict>
 			</dict>
 		</dict>
@@ -39,7 +52,7 @@
 					<key>baselineAverage</key>
 					<real>0.02</real>
 					<key>baselineIntegrationDisplayName</key>
-					<string>Local Baseline</string>
+					<string>12 Jun 2015 17:58:00</string>
 				</dict>
 			</dict>
 		</dict>

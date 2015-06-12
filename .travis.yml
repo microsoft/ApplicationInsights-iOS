@@ -1,14 +1,42 @@
 language: objective-c
+osx_image: beta-xcode6.3
+
+env:
+  global:
+    - PROJECT="Support/ApplicationInsights.xcodeproj"
+    - SDK="iphonesimulator8.3"
+  matrix:
+    - SCHEME="ApplicationInsights" DESTINATION="OS=7.1,name=iPad 2"        CONFIGURATION="Debug"   RUN_TESTS="YES" POD_LINT="NO"
+    - SCHEME="ApplicationInsights" DESTINATION="OS=7.1,name=iPhone 5"      CONFIGURATION="Debug"   RUN_TESTS="YES" POD_LINT="NO"
+    - SCHEME="ApplicationInsights" DESTINATION="OS=8.2,name=iPhone 6"      CONFIGURATION="Debug"   RUN_TESTS="YES" POD_LINT="NO"
+    - SCHEME="ApplicationInsights" DESTINATION="OS=8.3,name=iPhone 6 Plus" CONFIGURATION="Debug"   RUN_TESTS="YES" POD_LINT="NO"
+    - SCHEME="ApplicationInsights Framework"                               CONFIGURATION="Release" RUN_TESTS="NO"  POD_LINT="NO" GCC_PREPROCESSOR_DEFINITIONS="$GCC_PREPROCESSOR_DEFINITONS MSAI_FEATURE_TELEMETRY=0 MSAI_FEATURE_CRASH_REPORTER=0"
+    - SCHEME="ApplicationInsights Framework"                               CONFIGURATION="Release" RUN_TESTS="NO"  POD_LINT="NO" GCC_PREPROCESSOR_DEFINITIONS="$GCC_PREPROCESSOR_DEFINITONS MSAI_FEATURE_TELEMETRY=1 MSAI_FEATURE_CRASH_REPORTER=0"
+    - SCHEME="ApplicationInsights Framework"                               CONFIGURATION="Release" RUN_TESTS="NO"  POD_LINT="NO" GCC_PREPROCESSOR_DEFINITIONS="$GCC_PREPROCESSOR_DEFINITONS MSAI_FEATURE_TELEMETRY=0 MSAI_FEATURE_CRASH_REPORTER=1"
+    - SCHEME="ApplicationInsights Framework"                               CONFIGURATION="Release" RUN_TESTS="NO"  POD_LINT="YES"
+
 before_install:
-- gem install xcpretty -N cocoapods
+  - gem install cocoapods --no-rdoc --no-ri --no-document --quiet
+  - gem install xcpretty --no-rdoc --no-ri --no-document --quiet
+  - brew tap homebrew/versions
+  - brew install appledoc22
+  - brew link --force appledoc22
+
 notifications:
   slack:
     secure: dCzA1+dtjKkHk2PK6RWBSE0Obgf0CvIejhXXH4Aba29zfVQg5Bv0yWJ34YHnPMFPA7+eyFrW2TqGqI7gA7L7Ju0RWHwu9Z0XayCcMpOCZVKTOSf/7SrAvtODKNzAT/S55HZOaj8yxK6l5a0cMGXfGM7j+NLdkjyba7ypQKsn0ug=
+    on_success: change
+    on_failure: always
+
 script:
-- set -o pipefail
-- cd Support
-- xcodebuild -project ApplicationInsights.xcodeproj -scheme "ApplicationInsights" -sdk iphonesimulator -configuration Debug -destination "platform=iOS Simulator,name=iPhone 6" test | xcpretty -c
-- xcodebuild -project ApplicationInsights.xcodeproj -scheme "ApplicationInsights Framework" -sdk iphonesimulator -configuration Release | xcpretty -c
-- cd ..
-- cp -R Products/ApplicationInsights ApplicationInsights
-- pod lib lint 
+  - set -o pipefail
+  - COMMAND='xcodebuild -project "$PROJECT" -scheme "$SCHEME" -sdk "$SDK" -configuration "$CONFIGURATION"'
+  - if [ $RUN_TESTS == "YES" ]; then
+      COMMAND+=' -destination "$DESTINATION" test';
+    fi
+  - COMMAND+=' | xcpretty -c'
+  - eval $COMMAND
+  - if [ $POD_LINT == "YES" ]; then
+      cp -R Products/ApplicationInsights ApplicationInsights;
+      pod lib lint;
+    fi
