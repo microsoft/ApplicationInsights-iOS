@@ -7,10 +7,5 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @interface MSAIChannel : NSObject
 
-/**
- *  Manually trigger the MSAIChannel to persist all items currently in its dataItemsQueue
- */
-- (void)persistDataItemQueue;
-
 @end
 NS_ASSUME_NONNULL_END

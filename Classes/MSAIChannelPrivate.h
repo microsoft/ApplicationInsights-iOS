@@ -55,6 +55,11 @@ FOUNDATION_EXPORT char *MSAISafeJsonEventsString;
  */
 - (void)enqueueDictionary:(MSAIOrderedDictionary *)dictionary;
 
+/**
+ *  Manually trigger the MSAIChannel to persist all items currently in its data item queue.
+ */
+- (void)persistDataItemQueue;
+
 ///-----------------------------------------------------------------------------
 /// @name JSON Stream
 ///-----------------------------------------------------------------------------
