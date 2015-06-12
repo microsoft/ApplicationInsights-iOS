@@ -1,7 +1,7 @@
 #import "ApplicationInsightsPrivate.h"
 #import "MSAIContextHelper.h"
 #import "MSAIContextHelperPrivate.h"
-#import "MSAIPersistence.h"
+#import "MSAIPersistencePrivate.h"
 #import "MSAISessionStateData.h"
 
 #import "MSAITelemetryManagerPrivate.h"

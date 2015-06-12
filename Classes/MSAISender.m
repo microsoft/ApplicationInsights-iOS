@@ -1,7 +1,7 @@
 #import "MSAISender.h"
 #import "MSAIAppClient.h"
 #import "MSAISenderPrivate.h"
-#import "MSAIPersistence.h"
+#import "MSAIPersistencePrivate.h"
 #import "MSAIGZIP.h"
 #import "MSAIEnvelope.h"
 #import "ApplicationInsights.h"
