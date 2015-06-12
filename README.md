@@ -83,28 +83,18 @@ From our experience, 3rd-party libraries usually reside inside a subdirectory (l
 2. Make sure the `Project Navigator` is visible (⌘+1)
 3. Drag & drop `ApplicationInsights.framework` from your window in the `Finder` into your project in Xcode and move it to the desired location in the `Project Navigator` (e.g. into the group called `Vendor`)
 4. A popup will appear. Select `Create groups for any added folders` and set the checkmark for your target. Then click `Finish`.
-5. Select your project in the `Project Navigator` (⌘+1).
-6. Select your app target.
-7. Select the tab `Build Phases`.
-8. Expand `Link Binary With Libraries`.
-9. Add the following system frameworks, if they are missing:
-	- `UIKit`
-	- `Foundation`
-	- `SystemConfiguration`
-	- `Security`
-	- `libz`
-	- `CoreTelephony`(only required if iOS > 7.0)
-9. Open the `Info.plist` of your app target and add a new field of type *String*. Name it `MSAIInstrumentationKey` and set your Application Insights instrumentation key from 4.1 as its value.
+5. Open the `Info.plist` of your app target and add a new field of type *String*. Name it `MSAIInstrumentationKey` and set your Application Insights instrumentation key from 4.1 as its value.
 
+<a id="modifycode"/>
 ### 4.5 Modify Code 
 
 **Objective-C**
 
 1. Open your `AppDelegate.m` file.
-2. Add the following line at the top of the file below your own #import statements:
+2. Add the following line at the top of the file below your own `import` statements:
 
 	```objectivec
-	#import <ApplicationInsights/ApplicationInsights.h>
+	@import ApplicationInsights;
 	```
 
 3. Search for the method `application:didFinishLaunchingWithOptions:`
@@ -127,10 +117,10 @@ From our experience, 3rd-party libraries usually reside inside a subdirectory (l
 **Swift**
 
 1. Open your `AppDelegate.swift` file.
-2. Add the following line at the top of the file below your own #import statements:
+2. Add the following line at the top of the file below your own import statements:
     
 	```swift
-	#import ApplicationInsights
+	@import ApplicationInsights;
 	```
 
 3. Search for the method 
@@ -170,8 +160,26 @@ It is also possible to set the instrumentation key of your app in code. This wil
 [MSAIApplicationInsights start];
 ```
 
+<a id="linkmanually"/>
+### 5.2 Linking System Frameworks manually
 
-### 5.2 Setup with CocoaPods
+If you are working with an older project which doesn't support clang modules yet or you for some reason turned off the `Enable Modules (C and Objective-C` and `Link Frameworks Automatically` options in Xcode, you have to manually link some system frameworks:
+
+1. Select your project in the `Project Navigator` (⌘+1).
+2. Select your app target.
+3. Select the tab `Build Phases`.
+4. Expand `Link Binary With Libraries`.
+5. Add the following system frameworks, if they are missing:
+    - `UIKit`
+    - `Foundation`
+    - `SystemConfiguration`
+    - `Security`
+    - `libz`
+    - `CoreTelephony`(only required if iOS > 7.0)
+
+Note that this also means that you can't use the `@import` syntax mentioned in the [Modify Code](#modify) section but have to stick to the old `#import <ApplicationInsights/ApplicationInsights.h>`.
+
+### 5.3 Setup with CocoaPods
 
 [CocoaPods](http://cocoapods.org) is a dependency manager for Objective-C, which automates and simplifies the process of using 3rd-party libraries like ApplicationInsights in your projects. To learn how to setup CocoaPods for your project, visit the [official CocoaPods website](http://cocoapods.org/).
 
@@ -186,7 +194,7 @@ platform :ios, '8.0'
 pod "ApplicationInsights", '1.0-beta.3'
 ```
 
-### 5.3 iOS 8 Extensions
+### 5.4 iOS 8 Extensions
 
 The following points need to be considered to use the Application Insights SDK with iOS 8 Extensions:
 
