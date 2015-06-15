@@ -65,6 +65,8 @@
 		1BE53D771AB889420048ABBC /* MSAIContextHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BE53D751AB889420048ABBC /* MSAIContextHelper.m */; };
 		1E0FEE28173BDB260061331F /* MSAIKeychainUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E0FEE26173BDB260061331F /* MSAIKeychainUtils.h */; };
 		1E0FEE29173BDB260061331F /* MSAIKeychainUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E0FEE27173BDB260061331F /* MSAIKeychainUtils.m */; };
+		1E3A26111B2B2C8B00D59683 /* MSAICrashCXXExceptionHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E3A260F1B2B2C8B00D59683 /* MSAICrashCXXExceptionHandler.h */; };
+		1E3A26121B2B2C8B00D59683 /* MSAICrashCXXExceptionHandler.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1E3A26101B2B2C8B00D59683 /* MSAICrashCXXExceptionHandler.mm */; };
 		1E49A4BE161222B900463151 /* MSAIHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E49A4A5161222B900463151 /* MSAIHelper.h */; };
 		1E49A4C1161222B900463151 /* MSAIHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E49A4A6161222B900463151 /* MSAIHelper.m */; };
 		1E49A4D8161222D400463151 /* ApplicationInsightsPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E49A4D4161222D400463151 /* ApplicationInsightsPrivate.h */; settings = {ATTRIBUTES = (Private, ); }; };
@@ -266,6 +268,9 @@
 		1BE53D751AB889420048ABBC /* MSAIContextHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAIContextHelper.m; sourceTree = "<group>"; };
 		1E0FEE26173BDB260061331F /* MSAIKeychainUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAIKeychainUtils.h; sourceTree = "<group>"; };
 		1E0FEE27173BDB260061331F /* MSAIKeychainUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAIKeychainUtils.m; sourceTree = "<group>"; };
+		1E3A260F1B2B2C8B00D59683 /* MSAICrashCXXExceptionHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAICrashCXXExceptionHandler.h; sourceTree = "<group>"; };
+		1E3A26101B2B2C8B00D59683 /* MSAICrashCXXExceptionHandler.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MSAICrashCXXExceptionHandler.mm; sourceTree = "<group>"; };
+		1E3A26131B2B2CFE00D59683 /* libc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.dylib"; path = "usr/lib/libc++.dylib"; sourceTree = SDKROOT; };
 		1E3A2B4C19645DC800D5BD66 /* ApplicationInsights-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ApplicationInsights-Prefix.pch"; sourceTree = "<group>"; };
 		1E49A4A5161222B900463151 /* MSAIHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAIHelper.h; sourceTree = "<group>"; };
 		1E49A4A6161222B900463151 /* MSAIHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAIHelper.m; sourceTree = "<group>"; };
@@ -659,6 +664,8 @@
 				1E754E571621FBB70070AB92 /* MSAICrashManager.m */,
 				1E754E581621FBB70070AB92 /* MSAICrashManagerDelegate.h */,
 				1EFF03D717F20F8300A5F13C /* MSAICrashManagerPrivate.h */,
+				1E3A260F1B2B2C8B00D59683 /* MSAICrashCXXExceptionHandler.h */,
+				1E3A26101B2B2C8B00D59683 /* MSAICrashCXXExceptionHandler.mm */,
 				1E754E5A1621FBB70070AB92 /* MSAICrashDataProvider.h */,
 				1E754E5B1621FBB70070AB92 /* MSAICrashDataProvider.m */,
 			);
@@ -729,6 +736,7 @@
 		E400561C148D79B500EB22B9 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1E3A26131B2B2CFE00D59683 /* libc++.dylib */,
 				80B69EEF1ADDC49100C47B0A /* libz.dylib */,
 				1B3B73071A94BC8E008DCADA /* CoreTelephony.framework */,
 				1B85606E1A7A6A9D00A54FB7 /* UIKit.framework */,
@@ -823,6 +831,7 @@
 				1E49A4D8161222D400463151 /* ApplicationInsightsPrivate.h in Headers */,
 				803871C01A94C26500BF295F /* MSAICrashManagerPrivate.h in Headers */,
 				803871C21A94C26500BF295F /* MSAIContextPrivate.h in Headers */,
+				1E3A26111B2B2C8B00D59683 /* MSAICrashCXXExceptionHandler.h in Headers */,
 				803871C31A94C26500BF295F /* MSAITelemetryManagerPrivate.h in Headers */,
 				1ECA8F4D192B5BD8006B9416 /* MSAICrashDetailsPrivate.h in Headers */,
 				80F334B21A9C93290098026F /* MSAIApplicationInsightsPrivate.h in Headers */,
@@ -1026,6 +1035,7 @@
 				1BBBCF371A6594AE00253031 /* MSAITelemetryContext.m in Sources */,
 				807CFDC21A712974004EA1B6 /* MSAIMetricData.m in Sources */,
 				1B47E02F1A84D3DF000B4C3D /* MSAIEnvelopeManager.m in Sources */,
+				1E3A26121B2B2C8B00D59683 /* MSAICrashCXXExceptionHandler.mm in Sources */,
 				807CFDB81A712974004EA1B6 /* MSAIExceptionData.m in Sources */,
 				E40E0B0D17DA1AFF005E38C1 /* MSAIAppClient.m in Sources */,
 				807CFDA61A712974004EA1B6 /* MSAIBase.m in Sources */,
@@ -1146,6 +1156,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				"ARCHS[sdk=iphonesimulator*]" = "$(MSAI_SIM_ARCHS)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
 				DSTROOT = /tmp/AIS.dst;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1169,6 +1181,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				"ARCHS[sdk=iphonesimulator*]" = "$(MSAI_SIM_ARCHS)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
 				DSTROOT = /tmp/AIS.dst;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1336,6 +1350,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				"ARCHS[sdk=iphonesimulator*]" = "$(MSAI_SIM_ARCHS)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
 				DSTROOT = /tmp/AIS.dst;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
