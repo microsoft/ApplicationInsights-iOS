@@ -1,5 +1,3 @@
-#ifndef MSAI_h
-#define MSAI_h
 
 #import "ApplicationInsightsFeatureConfig.h"
 #import "MSAINullability.h"
@@ -58,5 +56,3 @@ extern NSString *const __unused kMSAIErrorDomain;
 NS_ASSUME_NONNULL_END
 
 #endif /* MSAI_FEATURE_CRASH_REPORTER */
-
-#endif /* MSAI_h */

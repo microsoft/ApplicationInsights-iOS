@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   s.requires_arc    = true
 
   s.frameworks      = 'UIKit', 'Foundation', 'SystemConfiguration', 'Security'
-  s.libraries       = 'z'
+  s.libraries       = 'z', 'c++'
   s.weak_framework  = 'CoreTelephony'
 
   s.ios.vendored_frameworks = 'ApplicationInsights/ApplicationInsights.framework'
