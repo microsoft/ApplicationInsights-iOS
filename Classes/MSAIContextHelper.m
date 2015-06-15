@@ -2,6 +2,8 @@
 #import "MSAIContextHelper.h"
 #import "MSAIContextHelperPrivate.h"
 #import "MSAIPersistencePrivate.h"
+#import "MSAIUser.h"
+#import "MSAISession.h"
 #import "MSAISessionStateData.h"
 
 #import "MSAITelemetryManagerPrivate.h"
