@@ -145,6 +145,7 @@ typedef void (^MSAIPersistenceTestBlock)(BOOL);
   XCTAssertTrue(_sut.requestedBundlePaths.count == 0);
 }
 
+#ifndef CI
 - (void)testFolderPathForPersistenceTypePerformance {
   [self measureBlock:^{
     for (int i = 0; i < 1000; ++i) {
@@ -158,6 +159,7 @@ typedef void (^MSAIPersistenceTestBlock)(BOOL);
     }
   }];
 }
+#endif
 
 - (void)testOverwriteCrashTemplateWorks {
   
