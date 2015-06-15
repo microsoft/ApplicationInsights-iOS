@@ -28,7 +28,6 @@
 //
 
 #import "MSAIKeychainUtils.h"
-#import <Security/Security.h>
 
 static NSString *MSAIKeychainUtilsErrorDomain = @"MSAIKeychainUtilsErrorDomain";
 

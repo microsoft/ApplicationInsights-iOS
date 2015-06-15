@@ -36,8 +36,6 @@
 #import <mach-o/dyld.h>
 #import <mach-o/getsect.h>
 #import <mach-o/ldsyms.h>
-#import <dlfcn.h>
-#import <Availability.h>
 
 #if defined(__OBJC2__)
 #define SEL_NAME_SECT "__objc_methname"
