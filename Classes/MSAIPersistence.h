@@ -1,8 +1,6 @@
 #import <Foundation/Foundation.h>
 #import "ApplicationInsights.h"
 
-@class MSAIEnvelope;
-
 NS_ASSUME_NONNULL_BEGIN
 /**
 * A simple class that handles serialisation and deserialisation of bundles of data.
