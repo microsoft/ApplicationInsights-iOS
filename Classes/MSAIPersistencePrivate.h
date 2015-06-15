@@ -9,31 +9,7 @@ NS_ASSUME_NONNULL_BEGIN
  */
 FOUNDATION_EXPORT NSString *const MSAIPersistenceSuccessNotification;
 
-
-/**
- * The MSAIPersistenceType determines the way how a bundle is saved.
- * Bundles of type MSAIPersistenceTypeHighPriority will be loaded before all bundles if type MSAIPersistenceTypeRegular.
- */
-
-typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
-  MSAIPersistenceTypeHighPriority = 0,
-  MSAIPersistenceTypeRegular = 1,
-  MSAIPersistenceTypeCrashTemplate = 2,
-  MSAIPersistenceTypeMetaData = 3
-};
-
 @interface MSAIPersistence ()
-
-///-----------------------------------------------------------------------------
-/// @name Create an instance
-///-----------------------------------------------------------------------------
-
-/**
- *  Returns a shared MSAIPersistence object.
- *
- *  @return A singleton MSAIPersistence instance ready use
- */
-+ (instancetype)sharedInstance;
 
 ///-----------------------------------------------------------------------------
 /// @name Save/delete bundle of data
@@ -160,13 +136,6 @@ typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
 ///-----------------------------------------------------------------------------
 /// @name Getting a path
 ///-----------------------------------------------------------------------------
-
-/**
- * Creates the path for a file depending on the MSAIPersistenceType.
- * The filename includes the timestamp.
- * For each MSAIPersistenceType, we create a folder within the app's Application Support directory directory
- */
-- (NSString *)newFileURLForPersitenceType:(MSAIPersistenceType)type;
 
 /**
  *  Returns a folder path for items of a given type.

@@ -17,7 +17,6 @@ FOUNDATION_EXPORT NSInteger const debugMaxBatchCount;
 
 FOUNDATION_EXPORT NSInteger const defaultBatchInterval;
 FOUNDATION_EXPORT NSInteger const defaultMaxBatchCount;
-FOUNDATION_EXPORT char *MSAISafeJsonEventsString;
 
 @interface MSAIChannel ()
 
