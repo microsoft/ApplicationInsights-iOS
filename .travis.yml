@@ -5,14 +5,15 @@ env:
   global:
     - PROJECT="Support/ApplicationInsights.xcodeproj"
     - SDK="iphonesimulator8.3"
+
   matrix:
-    - SCHEME="ApplicationInsights" DESTINATION="OS=7.1,name=iPad 2"        CONFIGURATION="Debug"   RUN_TESTS="YES" POD_LINT="NO"
-    - SCHEME="ApplicationInsights" DESTINATION="OS=7.1,name=iPhone 5"      CONFIGURATION="Debug"   RUN_TESTS="YES" POD_LINT="NO"
-    - SCHEME="ApplicationInsights" DESTINATION="OS=8.2,name=iPhone 6"      CONFIGURATION="Debug"   RUN_TESTS="YES" POD_LINT="NO"
-    - SCHEME="ApplicationInsights" DESTINATION="OS=8.3,name=iPhone 6 Plus" CONFIGURATION="Debug"   RUN_TESTS="YES" POD_LINT="NO"
-    - SCHEME="ApplicationInsights Framework"                               CONFIGURATION="Release" RUN_TESTS="NO"  POD_LINT="NO" GCC_PREPROCESSOR_DEFINITIONS="$GCC_PREPROCESSOR_DEFINITONS MSAI_FEATURE_TELEMETRY=0 MSAI_FEATURE_CRASH_REPORTER=0"
-    - SCHEME="ApplicationInsights Framework"                               CONFIGURATION="Release" RUN_TESTS="NO"  POD_LINT="NO" GCC_PREPROCESSOR_DEFINITIONS="$GCC_PREPROCESSOR_DEFINITONS MSAI_FEATURE_TELEMETRY=1 MSAI_FEATURE_CRASH_REPORTER=0"
-    - SCHEME="ApplicationInsights Framework"                               CONFIGURATION="Release" RUN_TESTS="NO"  POD_LINT="NO" GCC_PREPROCESSOR_DEFINITIONS="$GCC_PREPROCESSOR_DEFINITONS MSAI_FEATURE_TELEMETRY=0 MSAI_FEATURE_CRASH_REPORTER=1"
+    - SCHEME="ApplicationInsights" DESTINATION="OS=7.1,name=iPad 2"        CONFIGURATION="Debug"   RUN_TESTS="YES" POD_LINT="NO" XCODEBUILD_GCC_PREPROCESSOR_DEFINITIONS="CI=1"
+    - SCHEME="ApplicationInsights" DESTINATION="OS=7.1,name=iPhone 5"      CONFIGURATION="Debug"   RUN_TESTS="YES" POD_LINT="NO" XCODEBUILD_GCC_PREPROCESSOR_DEFINITIONS="CI=1"
+    - SCHEME="ApplicationInsights" DESTINATION="OS=8.2,name=iPhone 6"      CONFIGURATION="Debug"   RUN_TESTS="YES" POD_LINT="NO" XCODEBUILD_GCC_PREPROCESSOR_DEFINITIONS="CI=1"
+    - SCHEME="ApplicationInsights" DESTINATION="OS=8.3,name=iPhone 6 Plus" CONFIGURATION="Debug"   RUN_TESTS="YES" POD_LINT="NO" XCODEBUILD_GCC_PREPROCESSOR_DEFINITIONS="CI=1"
+    - SCHEME="ApplicationInsights Framework"                               CONFIGURATION="Release" RUN_TESTS="NO"  POD_LINT="NO" XCODEBUILD_GCC_PREPROCESSOR_DEFINITIONS="MSAI_FEATURE_TELEMETRY=0 MSAI_FEATURE_CRASH_REPORTER=0"
+    - SCHEME="ApplicationInsights Framework"                               CONFIGURATION="Release" RUN_TESTS="NO"  POD_LINT="NO" XCODEBUILD_GCC_PREPROCESSOR_DEFINITIONS="MSAI_FEATURE_TELEMETRY=1 MSAI_FEATURE_CRASH_REPORTER=0"
+    - SCHEME="ApplicationInsights Framework"                               CONFIGURATION="Release" RUN_TESTS="NO"  POD_LINT="NO" XCODEBUILD_GCC_PREPROCESSOR_DEFINITIONS="MSAI_FEATURE_TELEMETRY=0 MSAI_FEATURE_CRASH_REPORTER=1"
     - SCHEME="ApplicationInsights Framework"                               CONFIGURATION="Release" RUN_TESTS="NO"  POD_LINT="YES"
 
 before_install:
@@ -30,11 +31,11 @@ notifications:
 
 script:
   - set -o pipefail
-  - COMMAND='xcodebuild -project "$PROJECT" -scheme "$SCHEME" -sdk "$SDK" -configuration "$CONFIGURATION"'
+  - COMMAND="xcodebuild -project '$PROJECT' -scheme '$SCHEME' -sdk '$SDK' -configuration '$CONFIGURATION' XCODEBUILD_GCC_PREPROCESSOR_DEFINITIONS='$XCODEBUILD_GCC_PREPROCESSOR_DEFINITIONS'"
   - if [ $RUN_TESTS == "YES" ]; then
-      COMMAND+=' -destination "$DESTINATION" clean test';
+      COMMAND+=" -destination '$DESTINATION' clean test";
     fi
-  - COMMAND+=' | xcpretty -c'
+  - COMMAND+=" | xcpretty -c"
   - eval $COMMAND
   - if [ $POD_LINT == "YES" ]; then
       cp -R Products/ApplicationInsights ApplicationInsights;
