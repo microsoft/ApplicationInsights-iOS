@@ -1,5 +1,6 @@
 #import <Foundation/Foundation.h>
-#import "ApplicationInsights.h"
+#import "MSAINullability.h"
+
 @class MSAIEnvelope;
 
 NS_ASSUME_NONNULL_BEGIN

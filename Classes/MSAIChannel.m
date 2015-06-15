@@ -38,7 +38,7 @@ static dispatch_once_t once_token;
   return _sharedChannel;
 }
 
-+(void)setSharedChannel:(MSAIChannel *)channel {
++ (void)setSharedChannel:(MSAIChannel *)channel {
   once_token = 0;
   _sharedChannel = channel;
 }
@@ -94,7 +94,7 @@ static dispatch_once_t once_token;
 
 #pragma mark - Adding to queue
 
-- (void)enqueueDictionary:(MSAIOrderedDictionary *)dictionary{
+- (void)enqueueDictionary:(MSAIOrderedDictionary *)dictionary {
   if(dictionary) {
     
     __weak typeof(self) weakSelf = self;

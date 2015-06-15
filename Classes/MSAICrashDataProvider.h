@@ -1,8 +1,8 @@
+#import <Foundation/Foundation.h>
+#import "MSAINullability.h"
+
 @class MSAIEnvelope;
 @class MSAIPLCrashReport;
-
-#import <Foundation/Foundation.h>
-#import "ApplicationInsights.h"
 
 NS_ASSUME_NONNULL_BEGIN
 /**

@@ -3,4 +3,6 @@ framework module ApplicationInsights {
   
   export *
   module * { export * }
+  
+  link "c++"
 }

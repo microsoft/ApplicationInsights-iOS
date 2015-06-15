@@ -35,6 +35,7 @@
 #endif /* MSAI_FEATURE_XAMARIN */
 
 static char *const MSAITelemetryEventQueue = "com.microsoft.ApplicationInsights.telemetryEventQueue";
+static char *const MSAICommonPropertiesQueue = "com.microsoft.ApplicationInsights.commonPropertiesQueue";
 
 @implementation MSAITelemetryManager{
   id _appDidEnterBackgroundObserver;
@@ -42,6 +43,8 @@ static char *const MSAITelemetryEventQueue = "com.microsoft.ApplicationInsights.
   id _sessionStartedObserver;
   id _sessionEndedObserver;
 }
+
+@synthesize commonProperties = _commonProperties;
 
 #pragma mark - Configure manager
 
@@ -57,6 +60,8 @@ static char *const MSAITelemetryEventQueue = "com.microsoft.ApplicationInsights.
 - (instancetype)init {
   if ((self = [super init])) {
     _telemetryEventQueue = dispatch_queue_create(MSAITelemetryEventQueue,DISPATCH_QUEUE_CONCURRENT);
+    _commonPropertiesQueue = dispatch_queue_create(MSAICommonPropertiesQueue, DISPATCH_QUEUE_CONCURRENT);
+    _commonProperties = [NSDictionary new];
   }
   return self;
 }
@@ -116,6 +121,26 @@ static char *const MSAITelemetryEventQueue = "com.microsoft.ApplicationInsights.
   [[NSNotificationCenter defaultCenter] removeObserver:self];
   _sessionStartedObserver = nil;
   _sessionEndedObserver = nil;
+}
+
+#pragma mark - Common Properties
+
++ (void)setCommonProperties:(NSDictionary *)commonProperties {
+  [[self sharedManager] setCommonProperties:commonProperties];
+}
+
+- (void)setCommonProperties:(NSDictionary *)commonProperties {
+  dispatch_barrier_async(_commonPropertiesQueue, ^{
+    _commonProperties = commonProperties;
+  });
+}
+
+- (NSDictionary *)commonProperties {
+  __block NSDictionary *properties = nil;
+  dispatch_sync(_commonPropertiesQueue, ^{
+    properties = _commonProperties.copy;
+  });
+  return properties;
 }
 
 #pragma mark - Track data
@@ -305,9 +330,12 @@ static char *const MSAITelemetryEventQueue = "com.microsoft.ApplicationInsights.
 
 - (void)trackDataItem:(MSAITelemetryData *)dataItem {
   if(![[MSAIChannel sharedChannel] isQueueBusy]){
+    [self addCommonPropertiesToDataItem:dataItem];
     MSAIEnvelope *envelope = [[MSAIEnvelopeManager sharedManager] envelopeForTelemetryData:dataItem];
     MSAIOrderedDictionary *dict = [envelope serializeToDictionary];
     [[MSAIChannel sharedChannel] enqueueDictionary:dict];
+  } else {
+    MSAILog(@"The data pipeline is saturated right now and the data item named %@ was dropped.", dataItem.name);
   }
 }
 
@@ -321,6 +349,12 @@ static char *const MSAITelemetryEventQueue = "com.microsoft.ApplicationInsights.
 
 #endif /* MSAI_FEATURE_XAMARIN */
 
+- (void)addCommonPropertiesToDataItem:(MSAITelemetryData *)dataItem {
+  NSMutableDictionary *mergedProperties = self.commonProperties.mutableCopy;
+  [mergedProperties addEntriesFromDictionary:dataItem.properties];
+  dataItem.properties = mergedProperties;
+}
+
 #pragma mark - Session update
 
 - (void)trackSessionStart {
@@ -328,6 +362,7 @@ static char *const MSAITelemetryEventQueue = "com.microsoft.ApplicationInsights.
   sessionState.state = MSAISessionState_start;
   
   if(![[MSAIChannel sharedChannel] isQueueBusy]){
+    [self addCommonPropertiesToDataItem:sessionState];
     MSAIEnvelope *envelope = [[MSAIEnvelopeManager sharedManager] envelopeForTelemetryData:sessionState];
     envelope.tags[@"ai.session.isNew"] = @"true";
     MSAIOrderedDictionary *dict = [envelope serializeToDictionary];

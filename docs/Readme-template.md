@@ -15,28 +15,29 @@ The SDK runs on devices with iOS 6.0 or higher.
 5. [Advanced Setup](#advancedsetup)
 6. [Developer Mode](#developermode)
 7. [Basic Usage](#basicusage)
-8. [Automatic collection of life-cycle events](#autolifecycle)
-9. [Crash Reporting](#crashreporting)
-10. [Set Custom Server Endpoint](#additionalconfig)
-11. [Documentation](#documentation)
-12. [Contributing](#contributing)
-13. [Contact](#contact)
+8. [Advanced Usage](#advancedusage)
+9. [Automatic collection of life-cycle events](#autolifecycle)
+10. [Crash Reporting](#crashreporting)
+11. [Set Custom Server Endpoint](#additionalconfig)
+12. [Documentation](#documentation)
+13. [Contributing](#contributing)
+14. [Contact](#contact)
 
 <a name="releasenotes"></a>
 ## 1. Release Notes
 
 * Add new API to be able to manually set session and user IDs.
 
-``` objectivec
-[MSAIApplicationInsights setUserId:@"your_user_id"];
-[MSAIApplicationInsights renewSessionWithId:@"4815162342"];
-```
+	``` objectivec
+	[MSAIApplicationInsights setUserId:@"your_user_id"];
+	[MSAIApplicationInsights renewSessionWithId:@"4815162342"];
+	```
 
 * Allow to specify the amount of time that an app has to have been in the background before a new session is triggered.
 
-``` objectivec
-[MSAIApplicationInsights setAppBackgroundTimeBeforeSessionExpires:60];
-```
+	``` objectivec
+	[MSAIApplicationInsights setAppBackgroundTimeBeforeSessionExpires:60];
+	```
 
 * Make our sending-retry policy more robust and only delete data on unrecoverable HTTP status codes.
 * Trigger saving of queued-up date when the app goes to the background since then there is a high probability it might be removed from memory by the OS.
@@ -117,12 +118,12 @@ From our experience, 3rd-party libraries usually reside inside a subdirectory (l
 	[[MSAIApplicationInsights sharedInstance] start];
 	```
 
-You can also use the following shortcuts:
+	You can also use the following shortcuts:
 
-```objectivec
-[MSAIApplicationInsights setup];
-[MSAIApplicationInsights start];
-```
+	```objectivec
+	[MSAIApplicationInsights setup];
+	[MSAIApplicationInsights start];
+	```
 
 **Swift**
 
@@ -146,13 +147,13 @@ You can also use the following shortcuts:
 	MSAIApplicationInsights.sharedInstance().start();
 	```
     
-You can also use the following shortcuts:
+	You can also use the following shortcuts:
 
-```swift
-MSAIApplicationInsights.setup();
-MSAIApplicationInsights.start();
-```
-    
+	```swift
+	MSAIApplicationInsights.setup()
+	MSAIApplicationInsights.start()
+	```
+
 **Congratulation, now you're all set to use Application Insights! See [Basic Usage](#basicusage) on how to use Application Insights.**
 
 <a id="advancedsetup"></a>
@@ -266,32 +267,53 @@ After you have set up the SDK as [described above](#setup), the ```MSAITelemetry
 
 ```swift
 // Send an event with custom properties and measuremnts data
-MSAITelemetryManager.trackEventWithName(name:"Hello World event!", 
-                                  properties:@{"Test property 1":"Some value",
-                                              "Test property 2":"Some other value"},
-                                measurements:@{"Test measurement 1":@(4.8),
-                                              "Test measurement 2":@(15.16),
-                                              "Test measurement 3":@(23.42)});
+MSAITelemetryManager.trackEventWithName("Hello World event!", 
+								  properties:["Test property 1":"Some value",
+											  "Test property 2":"Some other value"],
+							    measurements:["Test measurement 1":4.8,
+											  "Test measurement 2":15.16,
+										      "Test measurement 3":23.42])
 
 // Send a message
-MSAITelemetryManager.trackTraceWithMessage(message:"Test message");
+MSAITelemetryManager.trackTraceWithMessage("Test message")
 
 // Manually send pageviews
-MSAITelemetryManager.trackPageView(pageView:"MyViewController",
-                                   duration:300,
-                                 properties:@{"Test measurement 1":@(4.8)});
+MSAITelemetryManager.trackPageView("MyViewController",
+								   duration:300,
+							     properties:["Test measurement 1":4.8])
 
 // Send a message
-MSAITelemetryManager.trackMetricWithName(name:"Test metric", value:42.2);
+MSAITelemetryManager.trackMetricWithName("Test metric", value:42.2)
+```
+
+<a name="advancedusage"></a>
+## 8. Advanced Usage
+
+The SDK also allows for some more advanced usages.
+
+### 8.1 Common Properties	
+
+It is also possible to set so-called "common properties" that will then be automatically attached to all telemetry data items.
+
+#### Objective-C
+
+```objectivec
+[MSAITelemetryManager setCommonProperties:@{@"custom info":@"some value"}];
+```
+
+#### Swift
+
+```swift
+MSAITelemetryManager.setCommonProperties(["custom info":"some value"])
 ```
 
 <a name="autolifecycle"></a>
-## 8. Automatic collection of lifecycle events
+## 9. Automatic collection of lifecycle events
 
 Automatic collection of lifecycle events is **enabled by default**. This means that Application Insights automatically tracks the appearance of a view controller and manages sessions for you.
 
-### 8.1. Page views
-The automatic tracking of view controller appearance can be disabled between setup and start of the SDK.
+### 9.1. Page views
+The automatic tracking of viewcontroller appearance can be disabled between setup and start of the SDK.
 
 
 ```objectivec
@@ -302,7 +324,7 @@ The automatic tracking of view controller appearance can be disabled between set
 [MSAIApplicationInsights start]; //start using the SDK
 ```
 
-### 8.2. Sessions
+### 9.2. Sessions
 
 By default, the Application Insights for iOS SDK starts a new session when the containing app is restarted (this means a 'cold start', i.e. when the app has not already been in memory prior to being launched) or when it has been in the background for more then 20 seconds. 
 
@@ -321,7 +343,7 @@ This then requires you to manage sessions manually:
 [MSAIApplicationInsights renewSessionWithId:@"4815162342"];
 ```
 
-### 8.3. Users
+### 9.3. Users
 
 Normally, a random anonymous ID is automatically generated for every user of your app by the SDK. Alternatively you can set your own user ID which will then be attached to all telemetry events and crashes:
 ```objectivec
@@ -329,7 +351,7 @@ Normally, a random anonymous ID is automatically generated for every user of you
 ```
 
 <a name="crashreporting"></a>
-## 9. Crash Reporting
+## 10. Crash Reporting
 
 The Application Insights SDK enables crash reporting **per default**. Crashes will be immediately sent to the server the next time the app is launched.
 To provide you with the best crash reporting, we are using [PLCrashReporter]("https://github.com/plausiblelabs/plcrashreporter") in [Version 1.2 / Commit 273a7e7cd4b77485a584ac82e77b7c857558e2f9]("https://github.com/plausiblelabs/plcrashreporter/commit/273a7e7cd4b77485a584ac82e77b7c857558e2f9").
@@ -345,7 +367,7 @@ This feature can be disabled as follows:
 ```
 
 <a name="additionalconfig"></a>
-## 10.  Set Custom Server Endpoint
+## 11.  Set Custom Server Endpoint
 
 You can also configure a different server endpoint for the SDK if needed using a full URL
 
@@ -358,13 +380,13 @@ You can also configure a different server endpoint for the SDK if needed using a
 ```
 
 <a id="documentation"></a>
-## 11. Documentation
+## 12. Documentation
 
 Our documentation can be found on [CocoaDocs](http://cocoadocs.org/docsets/ApplicationInsights/1.0-beta.3/).
 
 
 <a id="contributing"></a>
-## 12. Contributing
+## 13. Contributing
 
 We're looking forward to your contributions via pull requests.
 
@@ -376,6 +398,6 @@ We're looking forward to your contributions via pull requests.
 * [Cocoapods](https://cocoapods.org/)
 
 <a id="contact"></a>
-## 13. Contact
+## 14. Contact
 
 If you have further questions or are running into trouble that cannot be resolved by any of the steps here, feel free to open a Github issue here or contact us at [AppInsights-iOS@microsoft.com](mailto:AppInsights-ios@microsoft.com)

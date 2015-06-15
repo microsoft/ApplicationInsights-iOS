@@ -1,5 +1,5 @@
 #import <Foundation/Foundation.h>
-#import "ApplicationInsights.h"
+#import "MSAINullability.h"
 
 @class MSAICrashManager;
 
