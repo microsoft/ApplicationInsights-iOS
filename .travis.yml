@@ -32,7 +32,7 @@ script:
   - set -o pipefail
   - COMMAND='xcodebuild -project "$PROJECT" -scheme "$SCHEME" -sdk "$SDK" -configuration "$CONFIGURATION"'
   - if [ $RUN_TESTS == "YES" ]; then
-      COMMAND+=' -destination "$DESTINATION" test';
+      COMMAND+=' -destination "$DESTINATION" clean test';
     fi
   - COMMAND+=' | xcpretty -c'
   - eval $COMMAND

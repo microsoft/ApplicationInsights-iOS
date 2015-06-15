@@ -6,7 +6,7 @@
 #define MOCKITO_SHORTHAND
 #import <OCMockitoIOS/OCMockitoIOS.h>
 
-#import "ApplicationInsights.h"
+#import "MSAINullability.h"
 #import "MSAIAppClient.h"
 #import "MSAIHTTPOperation.h"
 #import "MSAITestHelper.h"

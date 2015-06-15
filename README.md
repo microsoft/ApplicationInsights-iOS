@@ -261,14 +261,6 @@ After you have set up the SDK as [described above](#setup), the ```MSAITelemetry
 
 // Send custom metrics
 [MSAITelemetryManager trackMetricWithName:@"Test metric" value:42.2];
-
-// Track handled exceptions
-NSArray *zeroItemArray = [NSArray new];
-@try{
-	NSString *fooString = zeroItemArray[3];
-}@catch(NSException *exception){
-	[MSAITelemetryManager trackException:exception];
-}
 ```
 
 ### 7.2 Swift
@@ -306,13 +298,13 @@ It is also possible to set so-called "common properties" that will then be autom
 #### Objective-C
 
 ```objectivec
-[MSAITelemetryManager setCommonProperties:@{@"data origin":}];
+[MSAITelemetryManager setCommonProperties:@{@"custom info":@"some value"}];
 ```
 
 #### Swift
 
 ```swift
-MSAITelemetryManager.setCommonProperties(["":""])
+MSAITelemetryManager.setCommonProperties(["custom info":"some value"])
 ```
 
 <a name="autolifecycle"></a>

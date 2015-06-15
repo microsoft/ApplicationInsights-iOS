@@ -5,8 +5,6 @@
 #define HC_SHORTHAND
 #import <OCHamcrestIOS/OCHamcrestIOS.h>
 
-#import "ApplicationInsights.h"
-#import "ApplicationInsightsPrivate.h"
 #import "MSAIAppClient.h"
 #import "MSAITelemetryManager.h"
 #import "MSAITelemetryManagerPrivate.h"

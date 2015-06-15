@@ -6,11 +6,9 @@
 #define MOCKITO_SHORTHAND
 #import <OCMockitoIOS/OCMockitoIOS.h>
 
-#import "ApplicationInsights.h"
 #import "MSAIHelper.h"
 #import "MSAIKeychainUtils.h"
 #import "ApplicationInsightsPrivate.h"
-
 
 @interface MSAIHelperTests : XCTestCase
 

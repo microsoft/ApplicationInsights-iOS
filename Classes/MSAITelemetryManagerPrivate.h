@@ -1,6 +1,9 @@
 #import "ApplicationInsights.h"
 
 #if MSAI_FEATURE_TELEMETRY
+
+#import "MSAITelemetryManager.h"
+
 @class MSAITelemetryData;
 
 NS_ASSUME_NONNULL_BEGIN

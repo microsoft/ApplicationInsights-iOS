@@ -39,10 +39,11 @@ static MSAICrashManagerCallbacks msaiCrashCallbacks = {
 
 // Proxy implementation for PLCrashReporter to keep our interface stable while this can change
 static void plcr_post_crash_callback(siginfo_t *info, ucontext_t *uap, void *context) {
+  msai_save_events_callback(info, uap, context);
+
   if(msaiCrashCallbacks.handleSignal != NULL) {
     msaiCrashCallbacks.handleSignal(context);
   }
-  msai_save_events_callback(info, uap, context);
 }
 
 // Proxy that is set as a callback when the developer defined a custom callback.
