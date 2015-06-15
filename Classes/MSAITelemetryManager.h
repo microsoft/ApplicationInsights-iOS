@@ -1,5 +1,7 @@
 #import "ApplicationInsights.h"
 
+#if MSAI_FEATURE_TELEMETRY
+
 NS_ASSUME_NONNULL_BEGIN
 /**
 * MSAITelemetryManager is the component of the Application Insights SDK for iOS that is responsible for all things
@@ -220,3 +222,5 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 NS_ASSUME_NONNULL_END
+
+#endif /* MSAI_FEATURE_TELEMETY */

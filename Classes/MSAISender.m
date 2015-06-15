@@ -4,7 +4,6 @@
 #import "MSAIPersistence.h"
 #import "MSAIGZIP.h"
 #import "MSAIEnvelope.h"
-#import "ApplicationInsights.h"
 #import "ApplicationInsightsPrivate.h"
 #import "MSAIApplicationInsights.h"
 
