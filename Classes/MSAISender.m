@@ -119,8 +119,8 @@ static NSUInteger const defaultRequestLimit = 10;
       [[MSAIPersistence sharedInstance] giveBackRequestedPath:path];
     }
   }];
-  
-  [self.appClient enqeueHTTPOperation:operation];
+
+  [self.appClient enqueueHTTPOperation:operation];
 }
 
 #pragma mark - Helper

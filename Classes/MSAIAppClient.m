@@ -102,16 +102,16 @@
 - (void)getPath:(NSString *)path parameters:(NSDictionary *)params completion:(MSAINetworkCompletionBlock)completion {
   NSURLRequest *request = [self requestWithMethod:@"GET" path:path parameters:params];
   MSAIHTTPOperation *op = [self operationWithURLRequest:request queue:dispatch_get_main_queue() completion:completion];
-  [self enqeueHTTPOperation:op];
+  [self enqueueHTTPOperation:op];
 }
 
 - (void)postPath:(NSString *)path parameters:(NSDictionary *)params completion:(MSAINetworkCompletionBlock)completion {
   NSURLRequest *request = [self requestWithMethod:@"POST" path:path parameters:params];
   MSAIHTTPOperation *op = [self operationWithURLRequest:request queue:dispatch_get_main_queue() completion:completion];
-  [self enqeueHTTPOperation:op];
+  [self enqueueHTTPOperation:op];
 }
 
-- (void)enqeueHTTPOperation:(MSAIHTTPOperation *)operation {
+- (void)enqueueHTTPOperation:(MSAIHTTPOperation *)operation {
   [self.operationQueue addOperation:operation];
 }
 
