@@ -50,7 +50,7 @@ NSString *msai_utcDateString(NSDate *date){
   // NSDateFormatter is not thread-safe prior to iOS 7
   if (msai_isPreiOS7Environment()) {
     NSMutableDictionary *threadDictionary = [NSThread currentThread].threadDictionary;
-    NSDateFormatter *dateFormatter = threadDictionary[kMSAIUtcDateFormatter];
+    dateFormatter = threadDictionary[kMSAIUtcDateFormatter];
     
     if (!dateFormatter) {
       dateFormatter = [NSDateFormatter new];
