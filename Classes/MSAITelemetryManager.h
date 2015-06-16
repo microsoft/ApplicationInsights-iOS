@@ -1,3 +1,4 @@
+#import <Foundation/Foundation.h>
 #import "ApplicationInsights.h"
 
 #if MSAI_FEATURE_TELEMETRY
