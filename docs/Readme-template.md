@@ -175,7 +175,7 @@ If you are working with an older project which doesn't support clang modules yet
     - `SystemConfiguration`
     - `Security`
     - `libz`
-    - `CoreTelephony`(only required if iOS > 7.0)
+    - `CoreTelephony`
 
 Note that this also means that you can't use the `@import` syntax mentioned in the [Modify Code](#modify) section but have to stick to the old `#import <ApplicationInsights/ApplicationInsights.h>`.
 
