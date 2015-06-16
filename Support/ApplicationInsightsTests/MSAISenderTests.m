@@ -66,7 +66,7 @@
   MSAIAppClient *mockClient = mock(MSAIAppClient.class);
   _sut.appClient = mockClient;
   [_sut sendRequest:[NSURLRequest new] path:@""];
-  [verify(mockClient) enqeueHTTPOperation:anything()];
+  [verify(mockClient) enqueueHTTPOperation:anything()];
 }
 
 - (void)testDeleteDataWithStatusCodeWorks{

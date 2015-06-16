@@ -32,7 +32,7 @@
       NSString *appenderFormat = [path rangeOfString:@"?"].location == NSNotFound ? @"?%@" : @"&%@";
       
       endpoint = [NSURL URLWithString:[absoluteURLString stringByAppendingFormat:appenderFormat,
-                                       [self.class queryStringFromParameters:params withEncoding:NSUTF8StringEncoding]]];
+                                      [self.class queryStringFromParameters:params]]];
       [request setURL:endpoint];
     } else {
       //TODO: Boundary should be the same as the one in appendData
@@ -81,7 +81,7 @@
 }
 
 
-+ (NSString *) queryStringFromParameters:(NSDictionary *) params withEncoding:(NSStringEncoding) encoding {
++ (NSString *)queryStringFromParameters:(NSDictionary *)params {
   NSMutableString *queryString = [NSMutableString new];
   [params enumerateKeysAndObjectsUsingBlock:^(NSString* key, NSString* value, BOOL *stop) {
     NSAssert([key isKindOfClass:[NSString class]], @"Query parameters can only be string-string pairs");
@@ -102,16 +102,16 @@
 - (void)getPath:(NSString *)path parameters:(NSDictionary *)params completion:(MSAINetworkCompletionBlock)completion {
   NSURLRequest *request = [self requestWithMethod:@"GET" path:path parameters:params];
   MSAIHTTPOperation *op = [self operationWithURLRequest:request queue:dispatch_get_main_queue() completion:completion];
-  [self enqeueHTTPOperation:op];
+  [self enqueueHTTPOperation:op];
 }
 
 - (void)postPath:(NSString *)path parameters:(NSDictionary *)params completion:(MSAINetworkCompletionBlock)completion {
   NSURLRequest *request = [self requestWithMethod:@"POST" path:path parameters:params];
   MSAIHTTPOperation *op = [self operationWithURLRequest:request queue:dispatch_get_main_queue() completion:completion];
-  [self enqeueHTTPOperation:op];
+  [self enqueueHTTPOperation:op];
 }
 
-- (void)enqeueHTTPOperation:(MSAIHTTPOperation *)operation {
+- (void)enqueueHTTPOperation:(MSAIHTTPOperation *)operation {
   [self.operationQueue addOperation:operation];
 }
 

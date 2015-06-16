@@ -3,16 +3,10 @@
 #import "MSAISenderPrivate.h"
 #import "MSAIPersistence.h"
 #import "MSAIGZIP.h"
-#import "MSAIEnvelope.h"
 #import "ApplicationInsightsPrivate.h"
-#import "MSAIApplicationInsights.h"
 
 static char const *kPersistenceQueueString = "com.microsoft.ApplicationInsights.senderQueue";
 static NSUInteger const defaultRequestLimit = 10;
-
-@interface MSAISender ()
-
-@end
 
 @implementation MSAISender
 
@@ -119,8 +113,8 @@ static NSUInteger const defaultRequestLimit = 10;
       [[MSAIPersistence sharedInstance] giveBackRequestedPath:path];
     }
   }];
-  
-  [self.appClient enqeueHTTPOperation:operation];
+
+  [self.appClient enqueueHTTPOperation:operation];
 }
 
 #pragma mark - Helper
