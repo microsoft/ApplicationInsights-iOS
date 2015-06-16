@@ -219,6 +219,65 @@ The following points need to be considered to use the Application Insights SDK w
 }
 ```
 
+### 5.4 WatchKit Apps
+
+WatchKit apps don't use regular `UIViewControllers` but rather `WKInterfaceController` subclasses. These have a different lifecycle than you might be used to.
+To make sure that the Application Insights SDK is only instantiated once in the WatchKit app's lifecycle we recommend using a helper class similar to this:
+
+```objectivec
+@import Foundation;
+
+@interface MSAIWatchSDKSetup : NSObject
+
++ (void)setupApplicationInsightsIfNeeded;
+
+@end
+```
+
+```objectivec
+#import "MSAIWatchSDKSetup.h"
+#import "ApplicationInsights.h"
+
+static BOOL applicationInsightsIsSetup = NO;
+
+@implementation MSAIWatchSDKSetup
+
++ (void)setupApplicationInsightsIfNeeded {
+  if (!applicationInsightsIsSetup) {
+    [MSAIApplicationInsights setup];
+    [MSAIApplicationInsights start];
+    applicationInsightsIsSetup = YES;
+  }
+}
+
+@end
+```
+
+Then, in each of your WKInterfaceControllers, you should do this:
+
+```objectivec
+#import "InterfaceController.h"
+#import "ApplicationInsights.h"
+#import "MSAIWatchSDKSetup.h"
+
+@implementation InterfaceController
+
+- (void)awakeWithContext:(id)context {
+  [super awakeWithContext:context];
+  [MSAIWatchSDKSetup setupApplicationInsightsIfNeeded];
+}
+
+- (void)willActivate {
+  [super willActivate];
+}
+
+- (void)didDeactivate {
+  [super didDeactivate];
+}
+
+@end
+```
+
 <a name="developermode"></a>
 ## 6. Developer Mode
 
@@ -269,6 +328,14 @@ After you have set up the SDK as [described above](#setup), the ```MSAITelemetry
 
 // Send custom metrics
 [MSAITelemetryManager trackMetricWithName:@"Test metric" value:42.2];
+
+// Track handled exceptions
+NSArray *zeroItemArray = [NSArray new];
+@try {
+	NSString *fooString = zeroItemArray[3];
+} @catch(NSException *exception) {
+	[MSAITelemetryManager trackException:exception];
+}
 ```
 
 ### 7.2 Swift
