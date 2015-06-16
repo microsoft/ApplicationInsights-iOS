@@ -8,10 +8,6 @@
 static char const *kPersistenceQueueString = "com.microsoft.ApplicationInsights.senderQueue";
 static NSUInteger const defaultRequestLimit = 10;
 
-@interface MSAISender ()
-
-@end
-
 @implementation MSAISender
 
 @synthesize runningRequestsCount = _runningRequestsCount;
