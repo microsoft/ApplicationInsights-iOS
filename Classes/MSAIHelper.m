@@ -80,7 +80,7 @@ NSString *msai_utcDateString(NSDate *date){
   return dateString;
 }
 
-NSString *msai_base64String(NSData * data, unsigned long length) {
+NSString *msai_base64String(NSData *data) {
 #if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_6_1
   SEL base64EncodingSelector = NSSelectorFromString(@"base64EncodedStringWithOptions:");
   if ([data respondsToSelector:base64EncodingSelector]) {
