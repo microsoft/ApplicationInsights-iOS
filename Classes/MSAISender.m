@@ -3,9 +3,7 @@
 #import "MSAISenderPrivate.h"
 #import "MSAIPersistence.h"
 #import "MSAIGZIP.h"
-#import "MSAIEnvelope.h"
 #import "ApplicationInsightsPrivate.h"
-#import "MSAIApplicationInsights.h"
 
 static char const *kPersistenceQueueString = "com.microsoft.ApplicationInsights.senderQueue";
 static NSUInteger const defaultRequestLimit = 10;
