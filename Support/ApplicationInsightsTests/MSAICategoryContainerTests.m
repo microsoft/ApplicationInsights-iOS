@@ -48,9 +48,10 @@
   
   shouldTrack = msai_shouldTrackPageView([UITabBarController new]);
   XCTAssertFalse(shouldTrack);
-  
-  shouldTrack = msai_shouldTrackPageView([UISplitViewController new]);
-  XCTAssertFalse(shouldTrack);
+  if ([UIDevice currentDevice].orientation == UIUserInterfaceIdiomPad) {
+    shouldTrack = msai_shouldTrackPageView([UISplitViewController new]);
+    XCTAssertFalse(shouldTrack);
+  }
   
 //  shouldTrack = msai_shouldTrackPageView([UIInputWindowController new]);
 //  XCTAssertFalse(shouldTrack);
