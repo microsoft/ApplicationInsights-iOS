@@ -33,22 +33,22 @@ The SDK runs on devices with iOS 6.0 or higher.
 	[MSAIApplicationInsights renewSessionWithId:@"4815162342"];
 	```
 
-* Allow to specify the amount of time that an app has to have been in the background before a new session is triggered.
+* Allow to specify the amount of time that an app has to remain in the background before a new session is triggered.
 
 	``` objectivec
 	[MSAIApplicationInsights setAppBackgroundTimeBeforeSessionExpires:60];
 	```
 
 * Make our sending-retry policy more robust and only delete data on unrecoverable HTTP status codes.
-* Trigger saving of queued-up date when the app goes to the background since then there is a high probability it might be removed from memory by the OS.
-* Add our Xcode docset part of the downloaded archive.
+* Trigger saving of queued-up date when the app goes to the background since it's very likely that app might be removed from memory by the OS.
+* Add our Xcode docset to the the downloaded archive.
 * Several small fixes, cleanups and optimizations under the hood. 
 
 See [here](https://github.com/Microsoft/ApplicationInsights-iOS/releases) for the release notes of previous versions.
 
 <a name="breakingchanges"></a>
 ## 2. Breaking Changes
-Starting with the first 1.0 stable release, we will start deprecating API instead of breaking old ones.
+There haven't been any breaking changes since 1.0-beta.2. In case the API of the SDK changes, we will deprecate methods, etc. before removing them.
 
 * **[1.0-beta.2]** ```MSAIAppInsights``` was the the central entry-point to use the Application Insights SDK. It has been renamed to  ```MSAIApplicationInsights```. 
 * **[1.0-beta.2]** Setting the custom server URL now requires the complete URL to the server
@@ -104,7 +104,7 @@ From our experience, 3rd-party libraries usually reside inside a subdirectory (l
 	```objectivec
 	[[MSAIApplicationInsights sharedInstance] setup];
 	// Do some additional configuration if needed here
-	...
+	//... more of your other setup code here ...
 	[[MSAIApplicationInsights sharedInstance] start];
 	```
 

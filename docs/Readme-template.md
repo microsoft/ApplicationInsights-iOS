@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/Microsoft/ApplicationInsights-iOS.svg?branch=master)](https://travis-ci.org/Microsoft/ApplicationInsights-iOS)
 
-# Application Insights for iOS (1.0-beta.3)
+# Application Insights for iOS (1.0-beta.4)
 
 This is the repository of the iOS SDK for Application Insights. [Application Insights](http://azure.microsoft.com/en-us/services/application-insights/) is a service that allows developers to keep their applications available, performing, and succeeding. The SDK enables you to send telemetry of various kinds (events, traces, exceptions, etc.) to the Application Insights service where your data can be visualized in the Azure Portal.
 
@@ -33,22 +33,22 @@ The SDK runs on devices with iOS 6.0 or higher.
 	[MSAIApplicationInsights renewSessionWithId:@"4815162342"];
 	```
 
-* Allow to specify the amount of time that an app has to have been in the background before a new session is triggered.
+* Allow to specify the amount of time that an app has to remain in the background before a new session is triggered.
 
 	``` objectivec
 	[MSAIApplicationInsights setAppBackgroundTimeBeforeSessionExpires:60];
 	```
 
 * Make our sending-retry policy more robust and only delete data on unrecoverable HTTP status codes.
-* Trigger saving of queued-up date when the app goes to the background since then there is a high probability it might be removed from memory by the OS.
-* Add our Xcode docset part of the downloaded archive.
+* Trigger saving of queued-up date when the app goes to the background since it's very likely that app might be removed from memory by the OS.
+* Add our Xcode docset to the the downloaded archive.
 * Several small fixes, cleanups and optimizations under the hood. 
 
 See [here](https://github.com/Microsoft/ApplicationInsights-iOS/releases) for the release notes of previous versions.
 
 <a name="breakingchanges"></a>
 ## 2. Breaking Changes
-Starting with the first 1.0 stable release, we will start deprecating API instead of breaking old ones.
+There haven't been any breaking changes since 1.0-beta.2. In case the API of the SDK changes, we will deprecate methods, etc. before removing them.
 
 * **[1.0-beta.2]** ```MSAIAppInsights``` was the the central entry-point to use the Application Insights SDK. It has been renamed to  ```MSAIApplicationInsights```. 
 * **[1.0-beta.2]** Setting the custom server URL now requires the complete URL to the server
@@ -104,7 +104,7 @@ From our experience, 3rd-party libraries usually reside inside a subdirectory (l
 	```objectivec
 	[[MSAIApplicationInsights sharedInstance] setup];
 	// Do some additional configuration if needed here
-	...
+	//... more of your other setup code here ...
 	[[MSAIApplicationInsights sharedInstance] start];
 	```
 
@@ -192,7 +192,7 @@ As soon as Application Insights 1.0 is available, the version doesn't have to be
 
 ```ruby
 platform :ios, '8.0'
-pod "ApplicationInsights", '1.0-beta.3'
+pod "ApplicationInsights", '1.0-beta.4'
 ```
 
 ### 5.4 iOS 8 Extensions
@@ -457,7 +457,7 @@ You can also configure a different server endpoint for the SDK if needed using a
 <a id="documentation"></a>
 ## 12. Documentation
 
-Our documentation can be found on [CocoaDocs](http://cocoadocs.org/docsets/ApplicationInsights/1.0-beta.3/).
+Our documentation can be found on [CocoaDocs](http://cocoadocs.org/docsets/ApplicationInsights/1.0-beta.4/).
 
 
 <a id="contributing"></a>
