@@ -70,18 +70,18 @@ static NSUInteger const defaultRequestLimit = 10;
     typeof(self) strongSelf = weakSelf;
     NSString *path = [[MSAIPersistence sharedInstance] requestNextPath];
     NSData *data = [[MSAIPersistence sharedInstance] dataAtPath:path];
-    
     [strongSelf sendData:data withPath:path];
   });
 }
 
 - (void)sendData:(NSData * __nonnull)data withPath:(NSString * __nonnull)path {
-  
-  if(data) {
+  if(data && data.length > 0) {
     NSString *contentType = [self contentTypeForData:data];
 
     NSData *gzippedData = [data gzippedData];
     NSURLRequest *request = [self requestForData:gzippedData withContentType:contentType];
+    
+    MSAILog(@"Will send %@ to %@",[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding], request.URL);
     
     [self sendRequest:request path:path];
     
