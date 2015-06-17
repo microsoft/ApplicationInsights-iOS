@@ -26,28 +26,42 @@
   [self msai_viewWillAppear:animated];
 #if MSAI_FEATURE_TELEMETRY
   if(![MSAITelemetryManager sharedManager].autoPageViewTrackingDisabled) {
-    NSArray *containerViewControllerClasses = @ [@"UINavigationController", @"UITabBarController", @"UISplitViewController", @"UIInputWindowController", @"UIPageViewController"];
     
-    // Check if current class is a kind of one of the known container view controller classes.
-    for (NSString *classString in containerViewControllerClasses) {
-      Class aContainerClass = NSClassFromString(classString);
-      if ([self isKindOfClass:aContainerClass]) { return; }
+    if (!msai_shouldTrackPageView(self)) {
+      return;;
     }
     
-    NSString *className = NSStringFromClass([self class]);
+    NSString *pageViewName = msai_pageViewNameForViewController(self);
     
-    NSString *pageViewName;
-    if (self.title && (self.title.length > 0)) {
-      pageViewName = [NSString stringWithFormat:@"%@ %@", className, self.title];
-    } else {
-      pageViewName = className;
-    }
     [[MSAITelemetryManager sharedManager] trackPageView:pageViewName];
   }
-#endif /* MSAI_FEATURE_TELEMETRY */
 }
 
+#endif /* MSAI_FEATURE_TELEMETRY */
+
 @end
+
+BOOL msai_shouldTrackPageView(UIViewController *viewController) {
+  NSArray *containerViewControllerClasses = @ [@"UINavigationController", @"UITabBarController", @"UISplitViewController", @"UIInputWindowController", @"UIPageViewController"];
+  
+  // Check if current class is a kind of one of the known container view controller classes.
+  for (NSString *classString in containerViewControllerClasses) {
+    Class aContainerClass = NSClassFromString(classString);
+    if ([viewController isKindOfClass:aContainerClass]) {
+      return NO;
+    }
+  }
+  return YES;
+}
+
+NSString* msai_pageViewNameForViewController(UIViewController *viewController) {
+  NSString *className = NSStringFromClass([viewController class]);
+  
+  if (viewController.title && (viewController.title.length > 0)) {
+    return [NSString stringWithFormat:@"%@ %@", className, viewController.title];
+  }
+  return className;
+}
 
 @implementation MSAICategoryContainer
 

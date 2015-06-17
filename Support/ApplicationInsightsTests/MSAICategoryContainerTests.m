@@ -37,4 +37,45 @@
   [mockTelemetryManager stopMocking];
 }
 
+- (void)testShouldTrackPageView {
+  BOOL shouldTrack;
+  
+  shouldTrack = msai_shouldTrackPageView([UIViewController new]);
+  XCTAssertTrue(shouldTrack);
+  
+  shouldTrack = msai_shouldTrackPageView([UINavigationController new]);
+  XCTAssertFalse(shouldTrack);
+  
+  shouldTrack = msai_shouldTrackPageView([UITabBarController new]);
+  XCTAssertFalse(shouldTrack);
+  
+  shouldTrack = msai_shouldTrackPageView([UISplitViewController new]);
+  XCTAssertFalse(shouldTrack);
+  
+//  shouldTrack = msai_shouldTrackPageView([UIInputWindowController new]);
+//  XCTAssertFalse(shouldTrack);
+  
+  shouldTrack = msai_shouldTrackPageView([UIPageViewController new]);
+  XCTAssertFalse(shouldTrack);
+}
+
+- (void)testPageViewNameForViewController {
+  NSString *pageViewName = @"";
+  NSString *testTitle = @"TestTitle";
+  
+  UINavigationController *testViewController = [UINavigationController new];
+  testViewController.title = testTitle;
+  
+  pageViewName = msai_pageViewNameForViewController(testViewController);
+  
+  XCTAssertEqualObjects(pageViewName, @"UINavigationController TestTitle");
+  
+  
+  testViewController = [UINavigationController new];
+  
+  pageViewName = msai_pageViewNameForViewController(testViewController);
+  
+  XCTAssertEqualObjects(pageViewName, @"UINavigationController");
+}
+
 @end
