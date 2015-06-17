@@ -403,12 +403,12 @@ The automatic tracking of viewcontroller appearance can be disabled between setu
 
 By default, the Application Insights for iOS SDK starts a new session when the containing app is restarted (this means a 'cold start', i.e. when the app has not already been in memory prior to being launched) or when it has been in the background for more then 20 seconds. 
 
-You can either change this time frame:
+You can either change this timeframe:
 ``` objectivec
 [MSAIApplicationInsights setAppBackgroundTimeBeforeSessionExpires:60];
 ```
 
-turn of automatic session completely:
+Turn of automatic session management completely:
 ``` objectivec
 [MSAIApplicationInsights setAutoSessionManagementDisabled:YES];
 ```
