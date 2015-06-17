@@ -15,28 +15,29 @@ The SDK runs on devices with iOS 6.0 or higher.
 5. [Advanced Setup](#advancedsetup)
 6. [Developer Mode](#developermode)
 7. [Basic Usage](#basicusage)
-8. [Automatic collection of life-cycle events](#autolifecycle)
-9. [Crash Reporting](#crashreporting)
-10. [Set Custom Server Endpoint](#additionalconfig)
-11. [Documentation](#documentation)
-12. [Contributing](#contributing)
-13. [Contact](#contact)
+8. [Advanced Usage](#advancedusage)
+9. [Automatic collection of life-cycle events](#autolifecycle)
+10. [Crash Reporting](#crashreporting)
+11. [Set Custom Server Endpoint](#additionalconfig)
+12. [Documentation](#documentation)
+13. [Contributing](#contributing)
+14. [Contact](#contact)
 
 <a name="releasenotes"></a>
 ## 1. Release Notes
 
 * Add new API to be able to manually set session and user IDs.
 
-``` objectivec
-[MSAIApplicationInsights setUserId:@"your_user_id"];
-[MSAIApplicationInsights renewSessionWithId:@"4815162342"];
-```
+	``` objectivec
+	[MSAIApplicationInsights setUserId:@"your_user_id"];
+	[MSAIApplicationInsights renewSessionWithId:@"4815162342"];
+	```
 
 * Allow to specify the amount of time that an app has to have been in the background before a new session is triggered.
 
-``` objectivec
-[MSAIApplicationInsights setAppBackgroundTimeBeforeSessionExpires:60];
-```
+	``` objectivec
+	[MSAIApplicationInsights setAppBackgroundTimeBeforeSessionExpires:60];
+	```
 
 * Make our sending-retry policy more robust and only delete data on unrecoverable HTTP status codes.
 * Trigger saving of queued-up date when the app goes to the background since then there is a high probability it might be removed from memory by the OS.
@@ -79,32 +80,22 @@ From our experience, 3rd-party libraries usually reside inside a subdirectory (l
 <a id="setupxcode"></a>
 ### 4.4 Set up the SDK in Xcode
 
-1. We recommend to use Xcode's group-feature to create a group for 3rd-party-libraries similar to the structure of our files on disk. For example,  similar to the file structure in 4.1 above, our projects have a group called `Vendor`.
+1. We recommend to use Xcode's group-feature to create a group for 3rd-party-libraries similar to the structure of our files on disk. For example,  similar to the file structure in 4.3 above, our projects have a group called `Vendor`.
 2. Make sure the `Project Navigator` is visible (⌘+1)
 3. Drag & drop `ApplicationInsights.framework` from your window in the `Finder` into your project in Xcode and move it to the desired location in the `Project Navigator` (e.g. into the group called `Vendor`)
 4. A popup will appear. Select `Create groups for any added folders` and set the checkmark for your target. Then click `Finish`.
-5. Select your project in the `Project Navigator` (⌘+1).
-6. Select your app target.
-7. Select the tab `Build Phases`.
-8. Expand `Link Binary With Libraries`.
-9. Add the following system frameworks, if they are missing:
-	- `UIKit`
-	- `Foundation`
-	- `SystemConfiguration`
-	- `Security`
-	- `libz`
-	- `CoreTelephony`(only required if iOS > 7.0)
-9. Open the `Info.plist` of your app target and add a new field of type *String*. Name it `MSAIInstrumentationKey` and set your Application Insights instrumentation key from 4.1 as its value.
+5. Open the `Info.plist` of your app target and add a new field of type *String*. Name it `MSAIInstrumentationKey` and set your Application Insights instrumentation key from 4.1 as its value.
 
+<a id="modifycode"/>
 ### 4.5 Modify Code 
 
 **Objective-C**
 
 1. Open your `AppDelegate.m` file.
-2. Add the following line at the top of the file below your own #import statements:
+2. Add the following line at the top of the file below your own `import` statements:
 
 	```objectivec
-	#import <ApplicationInsights/ApplicationInsights.h>
+	@import ApplicationInsights;
 	```
 
 3. Search for the method `application:didFinishLaunchingWithOptions:`
@@ -117,20 +108,20 @@ From our experience, 3rd-party libraries usually reside inside a subdirectory (l
 	[[MSAIApplicationInsights sharedInstance] start];
 	```
 
-You can also use the following shortcuts:
+	You can also use the following shortcuts:
 
-```objectivec
-[MSAIApplicationInsights setup];
-[MSAIApplicationInsights start];
-```
+	```objectivec
+	[MSAIApplicationInsights setup];
+	[MSAIApplicationInsights start];
+	```
 
 **Swift**
 
 1. Open your `AppDelegate.swift` file.
-2. Add the following line at the top of the file below your own #import statements:
+2. Add the following line at the top of the file below your own import statements:
     
 	```swift
-	#import ApplicationInsights
+	import ApplicationInsights
 	```
 
 3. Search for the method 
@@ -146,13 +137,13 @@ You can also use the following shortcuts:
 	MSAIApplicationInsights.sharedInstance().start();
 	```
     
-You can also use the following shortcuts:
+	You can also use the following shortcuts:
 
-```swift
-MSAIApplicationInsights.setup();
-MSAIApplicationInsights.start();
-```
-    
+	```swift
+	MSAIApplicationInsights.setup()
+	MSAIApplicationInsights.start()
+	```
+
 **Congratulation, now you're all set to use Application Insights! See [Basic Usage](#basicusage) on how to use Application Insights.**
 
 <a id="advancedsetup"></a>
@@ -170,8 +161,26 @@ It is also possible to set the instrumentation key of your app in code. This wil
 [MSAIApplicationInsights start];
 ```
 
+<a id="linkmanually"/>
+### 5.2 Linking System Frameworks manually
 
-### 5.2 Setup with CocoaPods
+If you are working with an older project which doesn't support clang modules yet or you for some reason turned off the `Enable Modules (C and Objective-C` and `Link Frameworks Automatically` options in Xcode, you have to manually link some system frameworks:
+
+1. Select your project in the `Project Navigator` (⌘+1).
+2. Select your app target.
+3. Select the tab `Build Phases`.
+4. Expand `Link Binary With Libraries`.
+5. Add the following system frameworks, if they are missing:
+    - `UIKit`
+    - `Foundation`
+    - `SystemConfiguration`
+    - `Security`
+    - `libz`
+    - `CoreTelephony`
+
+Note that this also means that you can't use the `@import` syntax mentioned in the [Modify Code](#modify) section but have to stick to the old `#import <ApplicationInsights/ApplicationInsights.h>`.
+
+### 5.3 Setup with CocoaPods
 
 [CocoaPods](http://cocoapods.org) is a dependency manager for Objective-C, which automates and simplifies the process of using 3rd-party libraries like ApplicationInsights in your projects. To learn how to setup CocoaPods for your project, visit the [official CocoaPods website](http://cocoapods.org/).
 
@@ -186,7 +195,7 @@ platform :ios, '8.0'
 pod "ApplicationInsights", '1.0-beta.3'
 ```
 
-### 5.3 iOS 8 Extensions
+### 5.4 iOS 8 Extensions
 
 The following points need to be considered to use the Application Insights SDK with iOS 8 Extensions:
 
@@ -208,6 +217,65 @@ The following points need to be considered to use the Application Insights SDK w
         self.didSetupApplicationInsightsSDK = YES;
     }
 }
+```
+
+### 5.4 WatchKit Extensions
+
+WatchKit extensions don't use regular `UIViewControllers` but rather `WKInterfaceController` subclasses. These have a different lifecycle than you might be used to.
+To make sure that the Application Insights SDK is only instantiated once in the WatchKit extension's lifecycle we recommend using a helper class similar to this:
+
+```objectivec
+@import Foundation;
+
+@interface MSAIWatchSDKSetup : NSObject
+
++ (void)setupApplicationInsightsIfNeeded;
+
+@end
+```
+
+```objectivec
+#import "MSAIWatchSDKSetup.h"
+#import "ApplicationInsights.h"
+
+static BOOL applicationInsightsIsSetup = NO;
+
+@implementation MSAIWatchSDKSetup
+
++ (void)setupApplicationInsightsIfNeeded {
+  if (!applicationInsightsIsSetup) {
+    [MSAIApplicationInsights setup];
+    [MSAIApplicationInsights start];
+    applicationInsightsIsSetup = YES;
+  }
+}
+
+@end
+```
+
+Then, in each of your WKInterfaceControllers where you want to use the Application Insights SDK, you should do this:
+
+```objectivec
+#import "InterfaceController.h"
+#import "ApplicationInsights.h"
+#import "MSAIWatchSDKSetup.h"
+
+@implementation InterfaceController
+
+- (void)awakeWithContext:(id)context {
+  [super awakeWithContext:context];
+  [MSAIWatchSDKSetup setupApplicationInsightsIfNeeded];
+}
+
+- (void)willActivate {
+  [super willActivate];
+}
+
+- (void)didDeactivate {
+  [super didDeactivate];
+}
+
+@end
 ```
 
 <a name="developermode"></a>
@@ -260,38 +328,67 @@ After you have set up the SDK as [described above](#setup), the ```MSAITelemetry
 
 // Send custom metrics
 [MSAITelemetryManager trackMetricWithName:@"Test metric" value:42.2];
+
+// Track handled exceptions
+NSArray *zeroItemArray = [NSArray new];
+@try {
+	NSString *fooString = zeroItemArray[3];
+} @catch(NSException *exception) {
+	[MSAITelemetryManager trackException:exception];
+}
 ```
 
 ### 7.2 Swift
 
 ```swift
 // Send an event with custom properties and measuremnts data
-MSAITelemetryManager.trackEventWithName(name:"Hello World event!", 
-                                  properties:@{"Test property 1":"Some value",
-                                              "Test property 2":"Some other value"},
-                                measurements:@{"Test measurement 1":@(4.8),
-                                              "Test measurement 2":@(15.16),
-                                              "Test measurement 3":@(23.42)});
+MSAITelemetryManager.trackEventWithName("Hello World event!", 
+								  properties:["Test property 1":"Some value",
+											  "Test property 2":"Some other value"],
+							    measurements:["Test measurement 1":4.8,
+											  "Test measurement 2":15.16,
+										      "Test measurement 3":23.42])
 
 // Send a message
-MSAITelemetryManager.trackTraceWithMessage(message:"Test message");
+MSAITelemetryManager.trackTraceWithMessage("Test message")
 
 // Manually send pageviews
-MSAITelemetryManager.trackPageView(pageView:"MyViewController",
-                                   duration:300,
-                                 properties:@{"Test measurement 1":@(4.8)});
+MSAITelemetryManager.trackPageView("MyViewController",
+								   duration:300,
+							     properties:["Test measurement 1":4.8])
 
 // Send a message
-MSAITelemetryManager.trackMetricWithName(name:"Test metric", value:42.2);
+MSAITelemetryManager.trackMetricWithName("Test metric", value:42.2)
+```
+
+<a name="advancedusage"></a>
+## 8. Advanced Usage
+
+The SDK also allows for some more advanced usages.
+
+### 8.1 Common Properties	
+
+It is also possible to set so-called "common properties" that will then be automatically attached to all telemetry data items.
+
+#### Objective-C
+
+```objectivec
+[MSAITelemetryManager setCommonProperties:@{@"custom info":@"some value"}];
+```
+
+#### Swift
+
+```swift
+MSAITelemetryManager.setCommonProperties(["custom info":"some value"])
 ```
 
 <a name="autolifecycle"></a>
-## 8. Automatic collection of lifecycle events
+## 9. Automatic collection of lifecycle events
 
 Automatic collection of lifecycle events is **enabled by default**. This means that Application Insights automatically tracks the appearance of a view controller and manages sessions for you.
 
-### 8.1. Page views
-The automatic tracking of view controller appearance can be disabled between setup and start of the SDK.
+### 9.1. Page views
+The automatic tracking of viewcontroller appearance can be disabled between setup and start of the SDK.
 
 
 ```objectivec
@@ -302,7 +399,7 @@ The automatic tracking of view controller appearance can be disabled between set
 [MSAIApplicationInsights start]; //start using the SDK
 ```
 
-### 8.2. Sessions
+### 9.2. Sessions
 
 By default, the Application Insights for iOS SDK starts a new session when the containing app is restarted (this means a 'cold start', i.e. when the app has not already been in memory prior to being launched) or when it has been in the background for more then 20 seconds. 
 
@@ -321,7 +418,7 @@ This then requires you to manage sessions manually:
 [MSAIApplicationInsights renewSessionWithId:@"4815162342"];
 ```
 
-### 8.3. Users
+### 9.3. Users
 
 Normally, a random anonymous ID is automatically generated for every user of your app by the SDK. Alternatively you can set your own user ID which will then be attached to all telemetry events and crashes:
 ```objectivec
@@ -329,7 +426,7 @@ Normally, a random anonymous ID is automatically generated for every user of you
 ```
 
 <a name="crashreporting"></a>
-## 9. Crash Reporting
+## 10. Crash Reporting
 
 The Application Insights SDK enables crash reporting **per default**. Crashes will be immediately sent to the server the next time the app is launched.
 To provide you with the best crash reporting, we are using [PLCrashReporter]("https://github.com/plausiblelabs/plcrashreporter") in [Version 1.2 / Commit 273a7e7cd4b77485a584ac82e77b7c857558e2f9]("https://github.com/plausiblelabs/plcrashreporter/commit/273a7e7cd4b77485a584ac82e77b7c857558e2f9").
@@ -345,7 +442,7 @@ This feature can be disabled as follows:
 ```
 
 <a name="additionalconfig"></a>
-## 10.  Set Custom Server Endpoint
+## 11.  Set Custom Server Endpoint
 
 You can also configure a different server endpoint for the SDK if needed using a full URL
 
@@ -358,13 +455,13 @@ You can also configure a different server endpoint for the SDK if needed using a
 ```
 
 <a id="documentation"></a>
-## 11. Documentation
+## 12. Documentation
 
 Our documentation can be found on [CocoaDocs](http://cocoadocs.org/docsets/ApplicationInsights/1.0-beta.3/).
 
 
 <a id="contributing"></a>
-## 12. Contributing
+## 13. Contributing
 
 We're looking forward to your contributions via pull requests.
 
@@ -376,6 +473,6 @@ We're looking forward to your contributions via pull requests.
 * [Cocoapods](https://cocoapods.org/)
 
 <a id="contact"></a>
-## 13. Contact
+## 14. Contact
 
 If you have further questions or are running into trouble that cannot be resolved by any of the steps here, feel free to open a Github issue here or contact us at [AppInsights-iOS@microsoft.com](mailto:AppInsights-ios@microsoft.com)

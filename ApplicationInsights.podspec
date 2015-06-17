@@ -15,9 +15,8 @@ Pod::Spec.new do |s|
   s.platform        = :ios, '6.0'
   s.requires_arc    = true
 
-  s.frameworks      = 'UIKit', 'Foundation', 'SystemConfiguration', 'Security'
-  s.libraries       = 'z'
-  s.weak_framework  = 'CoreTelephony'
+  s.frameworks      = 'UIKit', 'Foundation', 'SystemConfiguration', 'Security', 'CoreTelephony'
+  s.libraries       = 'z', 'c++'
 
   s.ios.vendored_frameworks = 'ApplicationInsights/ApplicationInsights.framework'
   s.preserve_path   = 'ApplicationInsights/README.md'

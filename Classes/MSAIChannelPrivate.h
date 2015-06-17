@@ -10,8 +10,8 @@
 @class MSAICrashData;
 @class MSAIOrderedDictionary;
 
-FOUNDATION_EXTERN  char * __nonnull MSAISafeJsonEventsString;
 NS_ASSUME_NONNULL_BEGIN
+
 FOUNDATION_EXPORT NSInteger const debugBatchInterval;
 FOUNDATION_EXPORT NSInteger const debugMaxBatchCount;
 
@@ -49,28 +49,42 @@ FOUNDATION_EXPORT char *MSAISafeJsonEventsString;
 @property (nonatomic, strong) NSMutableArray *dataItemQueue;
 
 /**
+ *  An integer value that keeps tracks of the number of data items added to the JSON Stream string.
+ */
+@property (nonatomic, assign) NSUInteger dataItemCount;
+
+/**
+ *  Enqueue telemetry data (events, metrics, exceptions, traces) before processing it.
+ *
+ *  @param dictionary The dictionary object, which should be processed.
+ */
+- (void)enqueueDictionary:(MSAIOrderedDictionary *)dictionary;
+
+///-----------------------------------------------------------------------------
+/// @name JSON Stream
+///-----------------------------------------------------------------------------
+
+/**
+ *  Adds the specified dictionary to the JSON Stream string.
+ *
+ *  @param dictionary The dictionary object which is to be added to the JSON Stream queue string.
+ */
+- (void)appendDictionaryToJsonStream:(MSAIOrderedDictionary *)dictionary;
+
+/**
  *  A C function that serializes a given dictionary to JSON and appends it to a char string
  *
  *  @param dictionary A dictionary which will be serialized to JSON and then appended to the string.
  *  @param string The C string which the dictionary's JSON representation will be appended to.
  */
-void msai_appendDictionaryToSafeJsonString(NSDictionary *dictionary, char *__nonnull*__nonnull string);
+void msai_appendStringToSafeJsonStream(NSString *string, char *__nonnull*__nonnull jsonStream);
 
 /**
  *  Reset MSAISafeJsonEventsString so we can start appending JSON dictionaries.
  *
  *  @param string The string that will be reset.
  */
-void msai_resetSafeJsonString(char *__nonnull*__nonnull string);
-
-/**
- *  Enqueue telemetry data (events, metrics, exceptions, traces) before processing it.
- *
- *  @param dictionary   the dictionary object, which should be processed
- */
-- (void)enqueueDictionary:(MSAIOrderedDictionary *)dictionary;
-
-- (void)addDictionaryToQueues:(MSAIOrderedDictionary *)dictionary;
+void msai_resetSafeJsonStream(char *__nonnull*__nonnull jsonStream);
 
 /**
  *  Directly process telemetry data (crashs) without enqueuing it first.

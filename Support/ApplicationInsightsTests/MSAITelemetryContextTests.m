@@ -50,19 +50,21 @@
   assertThat(_sut.instrumentationKey, notNilValue());
 }
 
+#ifndef CI
 - (void)testContextDictionaryPerformance {
-    [self measureBlock:^{
+  [self measureBlock:^{
       for (int i = 0; i < 1000; ++i) {
         [_sut contextDictionary];
       }
     }];
 }
+#endif
 
 #pragma mark - Setup helpers
 
 - (MSAITelemetryContext *)telemetryContext{
   
-  MSAIContext *context = [[MSAIContext alloc]initWithInstrumentationKey:@"123"];
+  MSAIContext *context = [[MSAIContext alloc] initWithInstrumentationKey:@"123"];
   MSAITelemetryContext *telemetryContext = [[MSAITelemetryContext alloc] initWithAppContext:context];
 
   return telemetryContext;

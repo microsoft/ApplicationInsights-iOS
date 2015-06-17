@@ -6,7 +6,7 @@
 #define MOCKITO_SHORTHAND
 #import <OCMockitoIOS/OCMockitoIOS.h>
 
-#import "ApplicationInsights.h"
+#import "MSAINullability.h"
 #import "MSAIAppClient.h"
 #import "MSAIHTTPOperation.h"
 #import "MSAITestHelper.h"
@@ -136,7 +136,7 @@
   assertThatUnsignedLong(_sut.operationQueue.operationCount, equalToUnsignedLong(0));
   [_sut.operationQueue setSuspended:YES];
   MSAIHTTPOperation *op = [MSAIHTTPOperation new];
-  [_sut enqeueHTTPOperation:op];
+  [_sut enqueueHTTPOperation:op];
   
   assertThatUnsignedLong(_sut.operationQueue.operationCount, equalToUnsignedLong(1));
 }
@@ -146,15 +146,15 @@
   NSURLRequest *requestGet = [_sut requestWithMethod:@"GET" path:nil parameters:nil];
   NSURLRequest *requestPut = [_sut requestWithMethod:@"PUT" path:nil parameters:nil];
   NSURLRequest *requestPost = [_sut requestWithMethod:@"POST" path:nil parameters:nil];
-  [_sut enqeueHTTPOperation:[_sut operationWithURLRequest:requestGet
-                                                    queue:dispatch_get_main_queue()
-                                               completion:nil]];
-  [_sut enqeueHTTPOperation:[_sut operationWithURLRequest:requestPut
-                                                    queue:dispatch_get_main_queue()
-                                               completion:nil]];
-  [_sut enqeueHTTPOperation:[_sut operationWithURLRequest:requestPost
-                                                    queue:dispatch_get_main_queue()
-                                               completion:nil]];
+  [_sut enqueueHTTPOperation:[_sut operationWithURLRequest:requestGet
+                                                     queue:dispatch_get_main_queue()
+                                                completion:nil]];
+  [_sut enqueueHTTPOperation:[_sut operationWithURLRequest:requestPut
+                                                     queue:dispatch_get_main_queue()
+                                                completion:nil]];
+  [_sut enqueueHTTPOperation:[_sut operationWithURLRequest:requestPost
+                                                     queue:dispatch_get_main_queue()
+                                                completion:nil]];
   assertThatUnsignedLong(_sut.operationQueue.operationCount, equalToUnsignedLong(3));
   NSUInteger numCancelled = [_sut cancelAllOperations];
   assertThatUnsignedLong(numCancelled, equalToUnsignedLong(3));
@@ -165,15 +165,15 @@
   NSURLRequest *requestGet = [_sut requestWithMethod:@"GET" path:@"test" parameters:nil];
   NSURLRequest *requestPut = [_sut requestWithMethod:@"PUT" path:@"Another/acas" parameters:nil];
   NSURLRequest *requestPost = [_sut requestWithMethod:@"POST" path:nil parameters:nil];
-  [_sut enqeueHTTPOperation:[_sut operationWithURLRequest:requestGet
-                                                    queue:dispatch_get_main_queue()
-                                               completion:nil]];
-  [_sut enqeueHTTPOperation:[_sut operationWithURLRequest:requestPut
-                                                    queue:dispatch_get_main_queue()
-                                               completion:nil]];
-  [_sut enqeueHTTPOperation:[_sut operationWithURLRequest:requestPost
-                                                    queue:dispatch_get_main_queue()
-                                               completion:nil]];
+  [_sut enqueueHTTPOperation:[_sut operationWithURLRequest:requestGet
+                                                     queue:dispatch_get_main_queue()
+                                                completion:nil]];
+  [_sut enqueueHTTPOperation:[_sut operationWithURLRequest:requestPut
+                                                     queue:dispatch_get_main_queue()
+                                                completion:nil]];
+  [_sut enqueueHTTPOperation:[_sut operationWithURLRequest:requestPost
+                                                     queue:dispatch_get_main_queue()
+                                                completion:nil]];
   assertThatUnsignedLong(_sut.operationQueue.operationCount, equalToUnsignedLong(3));
   NSUInteger numCancelled = [_sut cancelAllOperations];
   assertThatUnsignedLong(numCancelled, equalToUnsignedLong(3));
@@ -185,16 +185,16 @@
   NSURLRequest *requestPut = [_sut requestWithMethod:@"PUT" path:@"Another/acas" parameters:nil];
   NSURLRequest *requestPost = [_sut requestWithMethod:@"POST" path:nil parameters:nil];
   [_sut.operationQueue setSuspended:YES];
-  
-  [_sut enqeueHTTPOperation:[_sut operationWithURLRequest:requestGet
-                                                    queue:dispatch_get_main_queue()
-                                               completion:nil]];
-  [_sut enqeueHTTPOperation:[_sut operationWithURLRequest:requestPut
-                                                    queue:dispatch_get_main_queue()
-                                               completion:nil]];
-  [_sut enqeueHTTPOperation:[_sut operationWithURLRequest:requestPost
-                                                    queue:dispatch_get_main_queue()
-                                               completion:nil]];
+
+  [_sut enqueueHTTPOperation:[_sut operationWithURLRequest:requestGet
+                                                     queue:dispatch_get_main_queue()
+                                                completion:nil]];
+  [_sut enqueueHTTPOperation:[_sut operationWithURLRequest:requestPut
+                                                     queue:dispatch_get_main_queue()
+                                                completion:nil]];
+  [_sut enqueueHTTPOperation:[_sut operationWithURLRequest:requestPost
+                                                     queue:dispatch_get_main_queue()
+                                                completion:nil]];
   assertThatUnsignedLong(_sut.operationQueue.operationCount, equalToUnsignedLong(3));
   NSUInteger numCancelled = [_sut cancelOperationsWithPath:@"Another/acas" method:nil];
   assertThatUnsignedLong(numCancelled, equalToUnsignedLong(1));
@@ -204,15 +204,15 @@
   NSURLRequest *requestGet = [_sut requestWithMethod:@"GET" path:@"test" parameters:nil];
   NSURLRequest *requestPut = [_sut requestWithMethod:@"PUT" path:@"Another/acas" parameters:nil];
   NSURLRequest *requestPost = [_sut requestWithMethod:@"POST" path:nil parameters:nil];
-  [_sut enqeueHTTPOperation:[_sut operationWithURLRequest:requestGet
-                                                    queue:dispatch_get_main_queue()
-                                               completion:nil]];
-  [_sut enqeueHTTPOperation:[_sut operationWithURLRequest:requestPut
-                                                    queue:dispatch_get_main_queue()
-                                               completion:nil]];
-  [_sut enqeueHTTPOperation:[_sut operationWithURLRequest:requestPost
-                                                    queue:dispatch_get_main_queue()
-                                               completion:nil]];
+  [_sut enqueueHTTPOperation:[_sut operationWithURLRequest:requestGet
+                                                     queue:dispatch_get_main_queue()
+                                                completion:nil]];
+  [_sut enqueueHTTPOperation:[_sut operationWithURLRequest:requestPut
+                                                     queue:dispatch_get_main_queue()
+                                                completion:nil]];
+  [_sut enqueueHTTPOperation:[_sut operationWithURLRequest:requestPost
+                                                     queue:dispatch_get_main_queue()
+                                                completion:nil]];
   assertThatUnsignedLong(_sut.operationQueue.operationCount, equalToUnsignedLong(3));
   NSUInteger numCancelled = [_sut cancelOperationsWithPath:nil method:@"POST"];
   assertThatUnsignedLong(numCancelled, equalToUnsignedLong(1));
@@ -222,15 +222,15 @@
   NSURLRequest *requestGet = [_sut requestWithMethod:@"GET" path:@"test" parameters:nil];
   NSURLRequest *requestPut = [_sut requestWithMethod:@"PUT" path:@"Another/acas" parameters:nil];
   NSURLRequest *requestPost = [_sut requestWithMethod:@"POST" path:nil parameters:nil];
-  [_sut enqeueHTTPOperation:[_sut operationWithURLRequest:requestGet
-                                                    queue:dispatch_get_main_queue()
-                                               completion:nil]];
-  [_sut enqeueHTTPOperation:[_sut operationWithURLRequest:requestPut
-                                                    queue:dispatch_get_main_queue()
-                                               completion:nil]];
-  [_sut enqeueHTTPOperation:[_sut operationWithURLRequest:requestPost
-                                                    queue:dispatch_get_main_queue()
-                                               completion:nil]];
+  [_sut enqueueHTTPOperation:[_sut operationWithURLRequest:requestGet
+                                                     queue:dispatch_get_main_queue()
+                                                completion:nil]];
+  [_sut enqueueHTTPOperation:[_sut operationWithURLRequest:requestPut
+                                                     queue:dispatch_get_main_queue()
+                                                completion:nil]];
+  [_sut enqueueHTTPOperation:[_sut operationWithURLRequest:requestPost
+                                                     queue:dispatch_get_main_queue()
+                                                completion:nil]];
   assertThatUnsignedLong(_sut.operationQueue.operationCount, equalToUnsignedLong(3));
   NSUInteger numCancelled = [_sut cancelOperationsWithPath:@"Another/acas" method:@"PUT"];
   assertThatUnsignedLong(numCancelled, equalToUnsignedLong(1));

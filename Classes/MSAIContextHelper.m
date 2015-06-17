@@ -46,6 +46,7 @@ NSString *const kMSAISessionInfoSession = @"MSAISessionInfoSession";
   if (self = [super init]) {
     _operationsQueue = dispatch_queue_create(MSAISessionOperationsQueue, DISPATCH_QUEUE_SERIAL);
     
+    _autoSessionManagementDisabled = NO;
     _appBackgroundTimeBeforeSessionExpires = defaultSessionExpirationTime;
     
     NSMutableDictionary *restoredMetaData = [[[MSAIPersistence sharedInstance] metaData] mutableCopy];

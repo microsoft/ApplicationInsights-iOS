@@ -1,6 +1,7 @@
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
 #import <OCMock/OCMock.h>
+#import "MSAITelemetryManager.h"
 #import "MSAICategoryContainer.h"
 
 @interface MSAICategoryContainerTests : XCTestCase

@@ -1,5 +1,5 @@
 #import <Foundation/Foundation.h>
-#import "ApplicationInsights.h"
+#import "MSAINullability.h"
 
 FOUNDATION_EXPORT NSString *const kMSAIApplicationWasLaunched;
 

@@ -1,3 +1,8 @@
+#import <Foundation/Foundation.h>
+#import "ApplicationInsights.h"
+
+#if MSAI_FEATURE_TELEMETRY
+
 NS_ASSUME_NONNULL_BEGIN
 /**
 * MSAITelemetryManager is the component of the Application Insights SDK for iOS that is responsible for all things
@@ -17,6 +22,26 @@ NS_ASSUME_NONNULL_BEGIN
 *  @return the shared instance
 */
 + (instancetype)sharedManager;
+
+///-----------------------------------------------------------------------------
+/// @name Common Properties
+///-----------------------------------------------------------------------------
+
+/**
+ *  Set any dictionary of key-value pairs which will then be attached to every telemetry item that is sent.
+ *
+ *  @param commonProperties The dictionary containing the key-value pairs.
+ *  
+ *  @warning All of the values in this dictionary have to be NSJSONSerialization compatible!
+ */
++ (void)setCommonProperties:(NSDictionary *)commonProperties;
+
+/**
+ *  The dictionary of key-value pares that will be attached to every telemetry item.
+ *
+ *  @warning All of the values in this dictionary have to be NSJSONSerialization compatible!
+ */
+@property (nonatomic, strong) NSDictionary *commonProperties;
 
 ///-----------------------------------------------------------------------------
 /// @name Track data
@@ -198,3 +223,5 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 NS_ASSUME_NONNULL_END
+
+#endif /* MSAI_FEATURE_TELEMETY */

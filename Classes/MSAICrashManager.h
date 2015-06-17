@@ -1,7 +1,6 @@
 #import <Foundation/Foundation.h>
-
-@class MSAICrashDetails;
-@class MSAIContext;
+#import "MSAINullability.h"
+#import "MSAICrashDetails.h"
 
 NS_ASSUME_NONNULL_BEGIN
 /**
