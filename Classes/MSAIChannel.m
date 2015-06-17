@@ -72,6 +72,9 @@ static dispatch_once_t once_token;
 
 - (void)persistDataItemQueue {
   [self invalidateTimer];
+  if(strlen(MSAISafeJsonEventsString) == 0) {
+    return;
+  }
   
   NSData *bundle = [NSData dataWithBytes:MSAISafeJsonEventsString length:strlen(MSAISafeJsonEventsString)];
   [[MSAIPersistence sharedInstance] persistBundle:bundle ofType:MSAIPersistenceTypeRegular withCompletionBlock:nil];
