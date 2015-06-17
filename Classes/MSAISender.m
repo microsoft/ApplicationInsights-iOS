@@ -80,9 +80,6 @@ static NSUInteger const defaultRequestLimit = 10;
 
     NSData *gzippedData = [data gzippedData];
     NSURLRequest *request = [self requestForData:gzippedData withContentType:contentType];
-    
-    MSAILog(@"Will send %@ to %@",[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding], request.URL);
-    
     [self sendRequest:request path:path];
     
   } else {
