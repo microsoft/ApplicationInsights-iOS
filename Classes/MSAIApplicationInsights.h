@@ -1,5 +1,6 @@
 #import <Foundation/Foundation.h>
 #import "MSAINullability.h"
+#import "MSAIUser.h"
 
 NS_ASSUME_NONNULL_BEGIN
 /**
@@ -167,7 +168,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  *  @param userId The string which will be used as the current user's ID.
  */
-+ (void)setUserId:(NSString *)userId;
++ (void)setUserId:(NSString *)userId __deprecated_msg("Use setUserWithConfigurationBlock: instead!");
 
 /**
  *  Manually set the current user ID. This ID will automatically be persisted and attached to all appropriate telemetry and crash events.
@@ -175,7 +176,23 @@ NS_ASSUME_NONNULL_BEGIN
  *
  *  @param userId The string which will be used as the current user's ID.
  */
-- (void)setUserId:(NSString *)userId;
+- (void)setUserId:(NSString *)userId __deprecated_msg("Use setUserWithConfigurationBlock: instead!");
+
+/**
+ *  Use this method to configure the current user's context.
+ *
+ *  @param userConfigurationBlock This block gets the current user as an input.
+ *  Within the block you can update the user object's values to up-to-date.
+ */
++ (void)setUserWithConfigurationBlock:(void (^)(MSAIUser *user))userConfigurationBlock;
+
+/**
+ *  Use this method to configure the current user's context.
+ *
+ *  @param userConfigurationBlock This block gets the current user as an input.
+ *  Within the block you can update the user object's values to up-to-date.
+ */
+- (void)setUserWithConfigurationBlock:(void (^)(MSAIUser *user))userConfigurationBlock;
 
 /**
  *  Manually trigger a new session start.
