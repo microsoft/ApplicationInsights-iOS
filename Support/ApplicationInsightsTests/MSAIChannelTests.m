@@ -46,7 +46,6 @@
 }
 
 - (void)testInstanceInitialised {
-  XCTAssertTrue([self.sut.dataItemQueue isEqualToArray:[NSMutableArray array]]);
   XCTAssertEqual((const int)self.sut.senderBatchSize, debugMaxBatchCount);
   XCTAssertEqual((const int)self.sut.senderInterval, debugBatchInterval);
 }
