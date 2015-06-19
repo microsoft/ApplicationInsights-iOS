@@ -90,6 +90,7 @@
 		1ECA8F4D192B5BD8006B9416 /* MSAICrashDetailsPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 1ECA8F4B192B5BD8006B9416 /* MSAICrashDetailsPrivate.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		594931B3422F36B9D1DA449C /* MSAIPersistence.h in Headers */ = {isa = PBXBuildFile; fileRef = 594931F0F69C22CBB67A2AD9 /* MSAIPersistence.h */; };
 		59493E4E3899627127FA6760 /* MSAIPersistence.m in Sources */ = {isa = PBXBuildFile; fileRef = 59493E91C1D38C3FC5F77D19 /* MSAIPersistence.m */; };
+		8000A3D41B0E973F009F2B29 /* MSAICategoryContainerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8000A3D31B0E973F009F2B29 /* MSAICategoryContainerTests.m */; };
 		8004739C1ABB8FC200BBFE62 /* MSAIPersistencePrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 8004739B1ABB8FC200BBFE62 /* MSAIPersistencePrivate.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		803871BD1A94C0A600BF295F /* MSAIPageViewLogging_UIViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 1BC8596D1A7ACC040018FB6B /* MSAIPageViewLogging_UIViewController.h */; };
 		803871C01A94C26500BF295F /* MSAICrashManagerPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 1EFF03D717F20F8300A5F13C /* MSAICrashManagerPrivate.h */; settings = {ATTRIBUTES = (Private, ); }; };
@@ -297,6 +298,7 @@
 		1EFF03D717F20F8300A5F13C /* MSAICrashManagerPrivate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MSAICrashManagerPrivate.h; sourceTree = "<group>"; };
 		594931F0F69C22CBB67A2AD9 /* MSAIPersistence.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAIPersistence.h; sourceTree = "<group>"; };
 		59493E91C1D38C3FC5F77D19 /* MSAIPersistence.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAIPersistence.m; sourceTree = "<group>"; };
+		8000A3D31B0E973F009F2B29 /* MSAICategoryContainerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAICategoryContainerTests.m; path = ApplicationInsightsTests/MSAICategoryContainerTests.m; sourceTree = SOURCE_ROOT; };
 		8000A3D21B0E8D83009F2B29 /* ApplicationInsights-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "ApplicationInsights-Info.plist"; sourceTree = "<group>"; };
 		8004739B1ABB8FC200BBFE62 /* MSAIPersistencePrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAIPersistencePrivate.h; sourceTree = "<group>"; };
 		80677CDA1B2EF23000B324E5 /* MSAINullability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAINullability.h; sourceTree = "<group>"; };
@@ -599,6 +601,7 @@
 				80E1A4101AE54B5300603B0A /* MSAITestsDependencyInjection.m */,
 				80E1A4111AE54B5300603B0A /* MSAIUserTests.m */,
 				1E5A459716F0DFC200B55C04 /* Supporting Files */,
+				8000A3D31B0E973F009F2B29 /* MSAICategoryContainerTests.m */,
 			);
 			name = "ApplicationInsights Tests";
 			path = ApplicationInsightsTests;
@@ -1080,6 +1083,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				80E1A4151AE54B5300603B0A /* MSAIBaseTests.m in Sources */,
+				8000A3D41B0E973F009F2B29 /* MSAICategoryContainerTests.m in Sources */,
 				80E1A42F1AE54B5300603B0A /* MSAISenderTests.m in Sources */,
 				80E1A4291AE54B5300603B0A /* MSAIPageViewDataTests.m in Sources */,
 				80E1A4181AE54B5300603B0A /* MSAICrashDataProviderTests.m in Sources */,
