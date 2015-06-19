@@ -330,7 +330,7 @@ NSString *const kMSAISessionInfoSession = @"MSAISessionInfoSession";
     NSMutableDictionary *sessions = strongSelf.metaData[@"sessions"];
     NSMutableDictionary *users = strongSelf.metaData[@"users"];
     
-    if (sessions.count > 0) {
+    if (sessions.count > 1) {
       // Get most recent session
       NSArray *sortedKeys = [strongSelf sortedKeysOfDictionay:sessions];
       NSString *recentSessionKey = sortedKeys.firstObject;
@@ -340,7 +340,7 @@ NSString *const kMSAISessionInfoSession = @"MSAISessionInfoSession";
       [sessions removeAllObjects];
       sessions[recentSessionKey] = lastSession;
     }
-    if (users.count > 0) {
+    if (users.count > 1) {
       // Get most recent session
       NSArray *sortedKeys = [strongSelf sortedKeysOfDictionay:users];
       NSString *recentUserKey = sortedKeys.firstObject;
