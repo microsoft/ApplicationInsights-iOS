@@ -249,20 +249,12 @@ static char *const MSAICommonPropertiesQueue = "com.microsoft.ApplicationInsight
                               message:(NSString *)message
                            stacktrace:(NSString *)stacktrace
                               handled:(BOOL)handled{
-  if(!_managerInitialised) return;
-    
-  MSAIExceptionDetails *details = [MSAIExceptionDetails new];
-  details.hasFullStack = (stacktrace) ? YES : NO;
-  details.message = message;
-  details.stack = stacktrace;
-  details.typeName = type;
-  //TODO: parse stacktrace & provide name of handledAt
-  
-  MSAIExceptionData *data = [MSAIExceptionData new];
-  data.handledAt = (handled) ? @"handled" : @"";
-  data.exceptions = @[details].mutableCopy;
-  
-  [self processDataItem:data];
+  MSAIEnvelope *envelope = [[MSAIEnvelopeManager sharedManager] envelopeForManagedExceptionWithType:type
+                                                                                            message:message
+                                                                                         stacktrace:stacktrace
+                                                                                            handled:handled];
+  MSAIOrderedDictionary *dict = [envelope serializeToDictionary];
+  [[MSAIChannel sharedChannel] processDictionary:dict withCompletionBlock:nil];
   
   if(!handled){
     [[MSAIContextHelper sharedInstance] ignoreCrashForSessionWithDate:[NSDate date]];
@@ -338,16 +330,6 @@ static char *const MSAICommonPropertiesQueue = "com.microsoft.ApplicationInsight
     MSAILog(@"The data pipeline is saturated right now and the data item named %@ was dropped.", dataItem.name);
   }
 }
-
-#if MSAI_FEATURE_XAMARIN
-
-- (void)processDataItem:(MSAITelemetryData *)dataItem {
-  MSAIEnvelope *envelope = [[MSAIEnvelopeManager sharedManager] envelopeForTelemetryData:dataItem];
-  MSAIOrderedDictionary *dict = [envelope serializeToDictionary];
-  [[MSAIChannel sharedChannel] processDictionary:dict withCompletionBlock:nil];
-}
-
-#endif /* MSAI_FEATURE_XAMARIN */
 
 - (void)addCommonPropertiesToDataItem:(MSAITelemetryData *)dataItem {
   NSMutableDictionary *mergedProperties = self.commonProperties.mutableCopy;
