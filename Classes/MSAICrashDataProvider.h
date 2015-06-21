@@ -3,6 +3,7 @@
 
 @class MSAIEnvelope;
 @class MSAIPLCrashReport;
+@class MSAIExceptionData;
 
 NS_ASSUME_NONNULL_BEGIN
 /**
@@ -28,7 +29,16 @@ typedef NS_ENUM (NSInteger, MSAIBinaryImageType) {
 }
 
 + (MSAIEnvelope *)crashDataForCrashReport:(MSAIPLCrashReport *)report handledException:(nullable NSException *)exception;
+
 + (MSAIEnvelope *)crashDataForCrashReport:(MSAIPLCrashReport *)report;
+
+#if MSAI_FEATURE_XAMARIN
+
++ (MSAIExceptionData *)exceptionDataForExceptionWithType:(NSString *)type
+                                            message:(NSString *)message
+                                         stacktrace:(NSString *)stacktrace
+                                            handled:(BOOL)handled;
+#endif /* MSAI_FEATURE_XAMARIN */
 
 @end
 NS_ASSUME_NONNULL_END

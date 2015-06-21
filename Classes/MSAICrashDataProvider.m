@@ -58,6 +58,12 @@
 #import "MSAIEnvelopeManagerPrivate.h"
 #import "MSAIEnvelopeManager.h"
 
+#ifdef MSAI_FEATURE_XAMARIN
+#import "MSAIStackFrame.h"
+#import "MSAIExceptionData.h"
+#import "MSAIExceptionDetails.h"
+#endif /* MSAI_FEATURE_XAMARIN */
+
 /*
  * XXX: The ARM64 CPU type, and ARM_V7S and ARM_V8 Mach-O CPU subtypes are not
  * defined in the Mac OS X 10.8 headers.
@@ -618,5 +624,71 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
   }
   return nil;
 }
+
+#if MSAI_FEATURE_XAMARIN
+
++ (MSAIExceptionData *)exceptionDataForExceptionWithType:(NSString *)type
+                                            message:(NSString *)message
+                                         stacktrace:(NSString *)stacktrace
+                                            handled:(BOOL)handled{
+  MSAIExceptionDetails *details = [MSAIExceptionDetails new];
+  details.typeName = type;
+  details.message = message;
+  
+  if(stacktrace){
+    details.stack = stacktrace;
+    NSArray *stackframes = [self stackframesForStacktrace:stacktrace];
+    if(stackframes.count >= 1){
+      details.parsedStack = stackframes;
+      details.hasFullStack = YES;
+    }
+  }
+  
+  MSAIExceptionData *data = [MSAIExceptionData new];
+  data.handledAt = @"";
+  data.exceptions = @[details].mutableCopy;
+  
+  return data;
+}
+
++ (NSArray *)stackframesForStacktrace:(NSString *)stacktrace{
+  
+  NSMutableArray * frames;
+  
+  if(stacktrace){
+    frames = [NSMutableArray new];
+    NSArray *lines = [stacktrace componentsSeparatedByString:@"\n"];
+    for(NSString *frameInfo in lines){
+      MSAIStackFrame *frame = [self stackframeForStackLine:frameInfo];
+      if(frame){
+        [frames addObject:frame];
+      }else{
+        return nil;
+      }
+    }
+  }
+  return frames;
+}
+
++ (MSAIStackFrame *)stackframeForStackLine:(NSString *)stackLine{
+  
+  MSAIStackFrame *frame;
+  if(stackLine){
+    NSArray * frameComponents = [stackLine componentsSeparatedByString:@" "];
+    if(frameComponents.count > 3){
+      frame = [MSAIStackFrame new];
+      frame.method = [NSString stringWithFormat:@"%@%@", frameComponents[1], frameComponents[2]];
+
+      NSArray * fileAndLine = [frameComponents.lastObject componentsSeparatedByString:@":"];
+      if((fileAndLine.count == 2) && ([fileAndLine[1] intValue] > 0)){
+        frame.line = @([fileAndLine[1] intValue]);
+        frame.fileName = fileAndLine[0];
+      }
+    }
+  }
+  return frame;
+}
+
+#endif /* MSAI_FEATURE_XAMARIN */
 
 @end
