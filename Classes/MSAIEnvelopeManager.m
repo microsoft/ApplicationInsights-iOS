@@ -78,4 +78,21 @@ static NSInteger const schemaVersion = 2;
   return [MSAICrashDataProvider crashDataForCrashReport:report handledException:exception];
 }
 
+#if MSAI_FEATURE_XAMARIN
+
+- (MSAIEnvelope *)envelopeForManagedExceptionWithType:(NSString *)type
+                                              message:(NSString *)message
+                                           stacktrace:(NSString *)stacktrace
+                                              handled:(BOOL)handled{
+  
+  MSAIExceptionData *exceptionData = [MSAICrashDataProvider exceptionDataForExceptionWithType:type
+                                                                                      message:message
+                                                                                   stacktrace:stacktrace
+                                                                                      handled:handled];
+  MSAIEnvelope *envelope = [self envelopeForTelemetryData:exceptionData];
+  return envelope;
+}
+
+#endif /* MSAI_FEATURE_XAMARIN */
+
 @end

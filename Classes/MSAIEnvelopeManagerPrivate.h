@@ -72,5 +72,24 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (MSAIEnvelope *)envelopeForCrashReport:(MSAIPLCrashReport *)report exception:(nullable NSException *)exception;
 
+#if MSAI_FEATURE_XAMARIN
+
+/**
+ *  Creates an envelope object based on the information of a managed exception. This method is
+ *  used to send managed unhandled exception thrown by managed code
+ *
+ *  @param type       the exception type as string
+ *  @param message    the exception message
+ *  @param stacktrace the stacktrace for the exception
+ *  @param handled    a flag that indicates whether the exception was handled or not
+ *
+ *  @return an envelope object that contains a managed unhandled exception
+ */
+- (MSAIEnvelope *)envelopeForManagedExceptionWithType:(NSString *)type
+                                              message:(NSString *)message
+                                           stacktrace:(NSString *)stacktrace
+                                              handled:(BOOL)handled;
+#endif /* MSAI_FEATURE_XAMARIN */
+
 @end
 NS_ASSUME_NONNULL_END
