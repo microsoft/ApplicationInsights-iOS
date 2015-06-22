@@ -56,12 +56,6 @@
   XCTAssertEqual(newUser.userId.length, 36U);
 }
 
-- (void)testNewUserWithId {
-  MSAIUser *newUser = [self newUserWithId:@"testId1"];
-  XCTAssertNotNil(newUser);
-  XCTAssertEqual(newUser.userId, @"testId1");
-}
-
 - (void)testSetCurrentUserId {
   NSString *testId = @"testId2";
   
@@ -80,6 +74,39 @@
   [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
   
   OCMVerifyAll(self.mockNotificationCenter);
+}
+
+- (void)testSetUserWithConfigurationBlock {
+  self.sut = OCMPartialMock(self.sut);
+  
+  NSString *testUserId = @"testUserId";
+  NSString *testAccountId = @"testAccountId";
+  
+  [self.sut setUserWithConfigurationBlock:^(MSAIUser *user) {
+    user.userId = testUserId;
+    user.accountId = testAccountId;
+  }];
+
+  OCMVerify([self.sut setCurrentUser:[OCMArg checkWithBlock:^BOOL(MSAIUser *user) {
+    if (([user.userId isEqualToString:testUserId]) && ([user.accountId isEqualToString:testAccountId])) {
+      return YES;
+    }
+    return NO;
+  }]]);
+ 
+  // Test changing only one attribute
+  NSString *testAccountId2 = @"testAccountId2";
+  
+  [self.sut setUserWithConfigurationBlock:^(MSAIUser *user) {
+    user.accountId = testAccountId2;
+  }];
+  
+  OCMVerify([self.sut setCurrentUser:[OCMArg checkWithBlock:^BOOL(MSAIUser *user) {
+    if (([user.userId isEqualToString:testUserId]) && ([user.accountId isEqualToString:testAccountId2])) {
+      return YES;
+    }
+    return NO;
+  }]]);
 }
 
 - (void)testAddUser {
