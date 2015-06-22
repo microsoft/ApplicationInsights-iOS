@@ -1,30 +1,14 @@
-#ifndef MSAI_h
-#define MSAI_h
-
-// Define nullability fallback for backwards compatibility
-#if !__has_feature(nullability)
-#define NS_ASSUME_NONNULL_BEGIN
-#define NS_ASSUME_NONNULL_END
-#define nullable
-#define nonnull
-#define null_unspecified
-#define null_resettable
-#define __nullable
-#define __nonnull
-#define __null_unspecified
-#endif
 
 #import "ApplicationInsightsFeatureConfig.h"
+#import "MSAINullability.h"
 #import "MSAIApplicationInsights.h"
 
 #if MSAI_FEATURE_CRASH_REPORTER
 #import "MSAICrashManager.h"
 #import "MSAICrashManagerDelegate.h"
-#import "MSAICrashDetails.h"
 #endif /* MSAI_FEATURE_CRASH_REPORTER */
 
 #if MSAI_FEATURE_TELEMETRY
-#import "MSAICategoryContainer.h"
 #import "MSAITelemetryManager.h"
 #endif /* MSAI_FEATURE_TELEMETRY */
 
@@ -72,5 +56,3 @@ extern NSString *const __unused kMSAIErrorDomain;
 NS_ASSUME_NONNULL_END
 
 #endif /* MSAI_FEATURE_CRASH_REPORTER */
-
-#endif /* MSAI_h */

@@ -25,16 +25,21 @@
 #import "MSAIEnvelope.h"
 #import "MSAIEnvelopeManager.h"
 #import "MSAIEnvelopeManagerPrivate.h"
-#import "MSAISessionHelper.h"
-#import "MSAISessionHelperPrivate.h"
+#import "MSAIContextHelper.h"
+#import "MSAIContextHelperPrivate.h"
 #import "MSAISessionStateData.h"
 
 static char *const MSAITelemetryEventQueue = "com.microsoft.ApplicationInsights.telemetryEventQueue";
+static char *const MSAICommonPropertiesQueue = "com.microsoft.ApplicationInsights.commonPropertiesQueue";
 
 @implementation MSAITelemetryManager{
+  id _appDidEnterBackgroundObserver;
+  id _appWillResignActiveObserver;
   id _sessionStartedObserver;
   id _sessionEndedObserver;
 }
+
+@synthesize commonProperties = _commonProperties;
 
 #pragma mark - Configure manager
 
@@ -50,6 +55,8 @@ static char *const MSAITelemetryEventQueue = "com.microsoft.ApplicationInsights.
 - (instancetype)init {
   if ((self = [super init])) {
     _telemetryEventQueue = dispatch_queue_create(MSAITelemetryEventQueue,DISPATCH_QUEUE_CONCURRENT);
+    _commonPropertiesQueue = dispatch_queue_create(MSAICommonPropertiesQueue, DISPATCH_QUEUE_CONCURRENT);
+    _commonProperties = [NSDictionary new];
   }
   return self;
 }
@@ -66,24 +73,42 @@ static char *const MSAITelemetryEventQueue = "com.microsoft.ApplicationInsights.
   NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
   __weak typeof(self) weakSelf = self;
   
+  if (!_appDidEnterBackgroundObserver) {
+    _appDidEnterBackgroundObserver = [center addObserverForName:UIApplicationDidEnterBackgroundNotification
+                                                         object:nil
+                                                          queue:NSOperationQueue.mainQueue
+                                                     usingBlock:^(NSNotification *notification) {
+                                                       [[MSAIChannel sharedChannel] persistDataItemQueue];
+                                                     }];
+  }
+  
+  if (!_appWillResignActiveObserver) {
+    _appWillResignActiveObserver = [center addObserverForName:UIApplicationWillResignActiveNotification
+                                                         object:nil
+                                                          queue:NSOperationQueue.mainQueue
+                                                     usingBlock:^(NSNotification *notification) {
+                                                       [[MSAIChannel sharedChannel] persistDataItemQueue];
+                                                     }];
+  }
+  
   if(!_sessionStartedObserver){
-    [center addObserverForName:MSAISessionStartedNotification
-                        object:nil
-                         queue:NSOperationQueue.mainQueue
-                    usingBlock:^(NSNotification *notification) {
-                      typeof(self) strongSelf = weakSelf;
-                      [strongSelf trackSessionStart];
-                    }];
+    _sessionStartedObserver = [center addObserverForName:MSAISessionStartedNotification
+                                                  object:nil
+                                                   queue:NSOperationQueue.mainQueue
+                                              usingBlock:^(NSNotification *notification) {
+                                                typeof(self) strongSelf = weakSelf;
+                                                [strongSelf trackSessionStart];
+                                              }];
   }
   if(!_sessionEndedObserver){
-    [center addObserverForName:MSAISessionEndedNotification
-                        object:nil
-                         queue:NSOperationQueue.mainQueue
-                    usingBlock:^(NSNotification *notification) {
-                      typeof(self) strongSelf = weakSelf;
-
-                      [strongSelf trackSessionEnd];
-                    }];
+    _sessionEndedObserver = [center addObserverForName:MSAISessionEndedNotification
+                                                object:nil
+                                                 queue:NSOperationQueue.mainQueue
+                                            usingBlock:^(NSNotification *notification) {
+                                              typeof(self) strongSelf = weakSelf;
+                                              
+                                              [strongSelf trackSessionEnd];
+                                            }];
   }
 }
 
@@ -91,6 +116,26 @@ static char *const MSAITelemetryEventQueue = "com.microsoft.ApplicationInsights.
   [[NSNotificationCenter defaultCenter] removeObserver:self];
   _sessionStartedObserver = nil;
   _sessionEndedObserver = nil;
+}
+
+#pragma mark - Common Properties
+
++ (void)setCommonProperties:(NSDictionary *)commonProperties {
+  [[self sharedManager] setCommonProperties:commonProperties];
+}
+
+- (void)setCommonProperties:(NSDictionary *)commonProperties {
+  dispatch_barrier_async(_commonPropertiesQueue, ^{
+    _commonProperties = commonProperties;
+  });
+}
+
+- (NSDictionary *)commonProperties {
+  __block NSDictionary *properties = nil;
+  dispatch_sync(_commonPropertiesQueue, ^{
+    properties = _commonProperties.copy;
+  });
+  return properties;
 }
 
 #pragma mark - Track data
@@ -192,7 +237,7 @@ static char *const MSAITelemetryEventQueue = "com.microsoft.ApplicationInsights.
 
 - (void)trackException:(NSException *)exception{
   pthread_t thread = pthread_self();
-
+  
   dispatch_async(_telemetryEventQueue, ^{
     PLCrashReporterSignalHandlerType signalHandlerType = PLCrashReporterSignalHandlerTypeBSD;
     PLCrashReporterSymbolicationStrategy symbolicationStrategy = PLCrashReporterSymbolicationStrategyAll;
@@ -245,10 +290,19 @@ static char *const MSAITelemetryEventQueue = "com.microsoft.ApplicationInsights.
 
 - (void)trackDataItem:(MSAITelemetryData *)dataItem {
   if(![[MSAIChannel sharedChannel] isQueueBusy]){
+    [self addCommonPropertiesToDataItem:dataItem];
     MSAIEnvelope *envelope = [[MSAIEnvelopeManager sharedManager] envelopeForTelemetryData:dataItem];
     MSAIOrderedDictionary *dict = [envelope serializeToDictionary];
     [[MSAIChannel sharedChannel] enqueueDictionary:dict];
+  } else {
+    MSAILog(@"The data pipeline is saturated right now and the data item named %@ was dropped.", dataItem.name);
   }
+}
+
+- (void)addCommonPropertiesToDataItem:(MSAITelemetryData *)dataItem {
+  NSMutableDictionary *mergedProperties = self.commonProperties.mutableCopy;
+  [mergedProperties addEntriesFromDictionary:dataItem.properties];
+  dataItem.properties = mergedProperties;
 }
 
 #pragma mark - Session update
@@ -256,8 +310,9 @@ static char *const MSAITelemetryEventQueue = "com.microsoft.ApplicationInsights.
 - (void)trackSessionStart {
   MSAISessionStateData *sessionState = [MSAISessionStateData new];
   sessionState.state = MSAISessionState_start;
-
+  
   if(![[MSAIChannel sharedChannel] isQueueBusy]){
+    [self addCommonPropertiesToDataItem:sessionState];
     MSAIEnvelope *envelope = [[MSAIEnvelopeManager sharedManager] envelopeForTelemetryData:sessionState];
     envelope.tags[@"ai.session.isNew"] = @"true";
     MSAIOrderedDictionary *dict = [envelope serializeToDictionary];

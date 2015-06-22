@@ -1,6 +1,9 @@
 #import "ApplicationInsights.h"
 
 #if MSAI_FEATURE_TELEMETRY
+
+#import "MSAITelemetryManager.h"
+
 @class MSAITelemetryData;
 
 NS_ASSUME_NONNULL_BEGIN
@@ -42,9 +45,14 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong)dispatch_queue_t telemetryEventQueue;
 
 /**
+ *  A concurrent queue which makes writing and accessing the commonProperties thread-safe.
+ */
+@property (nonatomic, strong) dispatch_queue_t commonPropertiesQueue;
+
+/**
  * Converts the tracked to an envelope object and forwards it to the channel.
  *
- * @param telemetry the data which should be forwareded by the channel
+ * @param telemetry the data which should be forwarded by the channel
  */
 - (void)trackDataItem:(MSAITelemetryData *)dataItem;
 

@@ -5,13 +5,11 @@
 #define HC_SHORTHAND
 #import <OCHamcrestIOS/OCHamcrestIOS.h>
 
-#import "ApplicationInsights.h"
-#import "ApplicationInsightsPrivate.h"
 #import "MSAIAppClient.h"
 #import "MSAITelemetryManager.h"
 #import "MSAITelemetryManagerPrivate.h"
 #import "MSAITestsDependencyInjection.h"
-#import "MSAISessionHelperPrivate.h"
+#import "MSAIContextHelperPrivate.h"
 
 @interface MSAITelemetryManagerTests : MSAITestsDependencyInjection
 

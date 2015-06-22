@@ -1,4 +1,5 @@
 #import "ApplicationInsights.h"
+#import "MSAICrashDetails.h"
 
 NS_ASSUME_NONNULL_BEGIN
 extern NSString *const __unused kMSAICrashKillSignal;

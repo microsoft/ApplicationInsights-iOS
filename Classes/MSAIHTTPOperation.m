@@ -65,16 +65,16 @@
 
 #pragma mark - NSURLConnectionDelegate
 
--(void)connection:(NSURLConnection*)connection didReceiveResponse:(NSURLResponse*)response {
+- (void)connection:(NSURLConnection*)connection didReceiveResponse:(NSURLResponse*)response {
   _data = [[NSMutableData alloc] init];
   _response = (id)response;
 }
 
--(void)connection:(NSURLConnection*)connection didReceiveData:(NSData*)data {
+- (void)connection:(NSURLConnection*)connection didReceiveData:(NSData*)data {
   [_data appendData:data];
 }
 
--(void)connection:(NSURLConnection*)connection didFailWithError:(NSError*)error {
+- (void)connection:(NSURLConnection*)connection didFailWithError:(NSError*)error {
   //FINISHED and failed
   _error = error;
   _data = nil;
@@ -82,7 +82,7 @@
   [self finish];
 }
 
--(void)connectionDidFinishLoading:(NSURLConnection*)connection {
+- (void)connectionDidFinishLoading:(NSURLConnection*)connection {
   [self finish];
 }
 
@@ -91,7 +91,7 @@
   return _data;
 }
 
-- (void)setCompletion:(MSAINetworkCompletionBlock)completion {
+- (void)setCompletion:(MSAINetworkCompletionBlock)completion onQueue:(dispatch_queue_t)queue {
   if(!completion) {
     [super setCompletionBlock:nil];
   } else {
@@ -99,7 +99,7 @@
     [super setCompletionBlock:^{
       typeof(self) strongSelf = weakSelf;
       if(strongSelf) {
-        dispatch_async(dispatch_get_main_queue(), ^{
+        dispatch_async(queue ? queue : dispatch_get_main_queue(), ^{
           if(!strongSelf.isCancelled) {
             completion(strongSelf, strongSelf->_data, strongSelf->_error);
           }

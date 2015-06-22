@@ -49,13 +49,15 @@
   [self checkEnvelopeTemplate:template];
 }
 
+#ifndef CI
 - (void)testEnvelopePerformance {
-    [self measureBlock:^{
-      for (int i = 0; i < 1000; ++i) {
-        [_sut envelope];
-      }
-    }];
+  [self measureBlock:^{
+    for (int i = 0; i < 1000; ++i) {
+      [_sut envelope];
+    }
+  }];
 }
+#endif
 
 - (void)testThatItInstantiatesEnvelopeForTelemetryData {
   MSAIEventData *testEvent = [MSAIEventData new];

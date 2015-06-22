@@ -1,4 +1,5 @@
 #import "MSAIPersistence.h"
+#import "MSAIPersistencePrivate.h"
 #import "MSAIEnvelope.h"
 #import "MSAICrashData.h"
 #import "ApplicationInsightsPrivate.h"
@@ -7,7 +8,7 @@
 NSString *const kHighPrioString = @"highPrio";
 NSString *const kRegularPrioString = @"regularPrio";
 NSString *const kCrashTemplateString = @"crashTemplate";
-NSString *const kSessionIdsString = @"sessionIds";
+NSString *const kSessionIdsString = @"metaData";
 NSString *const kFileBaseString = @"app-insights-bundle-";
 
 NSString *const MSAIPersistenceSuccessNotification = @"MSAIPersistenceSuccessNotification";
@@ -21,7 +22,7 @@ NSUInteger const defaultFileCount = 50;
 
 #pragma mark - Public
 
-+ (instancetype)sharedInstance{
++ (instancetype)sharedInstance {
   static MSAIPersistence *sharedInstance;
   static dispatch_once_t onceToken;
   
@@ -32,7 +33,7 @@ NSUInteger const defaultFileCount = 50;
   return sharedInstance;
 }
 
-- (instancetype)init{
+- (instancetype)init {
   self = [super init];
   if ( self ) {
     _persistenceQueue = dispatch_queue_create(kPersistenceQueueString, DISPATCH_QUEUE_SERIAL);
@@ -46,7 +47,7 @@ NSUInteger const defaultFileCount = 50;
 }
 
 //TODO remove the completion block and implement notification-handling in MSAICrashManager
-- (void)persistBundle:(NSArray *)bundle ofType:(MSAIPersistenceType)type withCompletionBlock:(void (^)(BOOL success))completionBlock {
+- (void)persistBundle:(NSData *)bundle ofType:(MSAIPersistenceType)type withCompletionBlock:(nullable void (^)(BOOL success))completionBlock {
   [self persistBundle:bundle ofType:type enableNotifications:YES withCompletionBlock:completionBlock];
 }
 
@@ -55,18 +56,15 @@ NSUInteger const defaultFileCount = 50;
  * In case if type MSAIPersistenceTypeCrashTemplate, we don't send out a kMSAIPersistenceSuccessNotification.
  *
  */
-- (void)persistBundle:(NSArray *)bundle ofType:(MSAIPersistenceType)type enableNotifications:(BOOL)sendNotifications withCompletionBlock:(void (^)(BOOL success))completionBlock {
+- (void)persistBundle:(NSData *)bundle ofType:(MSAIPersistenceType)type enableNotifications:(BOOL)sendNotifications withCompletionBlock:(void (^)(BOOL success))completionBlock {
   
-  if(bundle && bundle.count > 0) {
     NSString *fileURL = [self newFileURLForPersitenceType:type];
     
-    NSData *data = [self dataForBundle:bundle withPersistenceTye:type];
-    
-    if(data) {
+    if(bundle) {
       __weak typeof(self) weakSelf = self;
       dispatch_async(self.persistenceQueue, ^{
         typeof(self) strongSelf = weakSelf;
-        BOOL success = [data writeToFile:fileURL atomically:YES];
+        BOOL success = [bundle writeToFile:fileURL atomically:YES];
         if(success) {
           MSAILog(@"Wrote %@", fileURL);
           if(sendNotifications && type != MSAIPersistenceTypeCrashTemplate) {
@@ -87,14 +85,13 @@ NSUInteger const defaultFileCount = 50;
       MSAILog(@"Unable to write %@", fileURL);
       //TODO send out a fail notification?
     }
-  }
 }
 
-- (void)persistSessionIds:(NSDictionary *)sessionIds {
-  NSString *fileURL = [self newFileURLForPersitenceType:MSAIPersistenceTypeSessionIds];
+- (void)persistMetaData:(NSDictionary *)metaData {
+  NSString *fileURL = [self newFileURLForPersitenceType:MSAIPersistenceTypeMetaData];
   
   dispatch_async(self.persistenceQueue, ^{
-    [NSKeyedArchiver archiveRootObject:sessionIds toFile:fileURL];
+    [NSKeyedArchiver archiveRootObject:metaData toFile:fileURL];
   });
 }
 
@@ -124,7 +121,8 @@ NSUInteger const defaultFileCount = 50;
  * Method used to persist the "fake" crash reports. Crash templates are handled but are similar to the other bundle
  * types under the hood.
  */
-- (void)persistCrashTemplateBundle:(NSArray *)bundle {
+- (void)persistCrashTemplate:(MSAIEnvelope *)crashTemplate {
+  NSData *bundle = [NSKeyedArchiver archivedDataWithRootObject:@[crashTemplate]];
   [self persistBundle:bundle ofType:MSAIPersistenceTypeCrashTemplate withCompletionBlock:nil];
 }
 
@@ -133,7 +131,7 @@ NSUInteger const defaultFileCount = 50;
  */
 - (NSArray *)crashTemplateBundle {
   NSString *path = [self nextURLWithPriority:MSAIPersistenceTypeCrashTemplate];
-  if(path && [path isKindOfClass:[NSString class]] && path.length > 0) {
+  if(path && path.length > 0) {
     NSArray *bundle = [self bundleAtPath:path];
     if(bundle) {
       return bundle;
@@ -154,13 +152,13 @@ NSUInteger const defaultFileCount = 50;
   return bundle;
 }
 
-- (NSDictionary *)sessionIds {
-  NSDictionary *sessionIds = nil;
-  NSString *path = [self newFileURLForPersitenceType:MSAIPersistenceTypeSessionIds];
+- (NSDictionary *)metaData {
+  NSDictionary *metaData = nil;
+  NSString *path = [self newFileURLForPersitenceType:MSAIPersistenceTypeMetaData];
   if(path) {
-    sessionIds = [NSKeyedUnarchiver unarchiveObjectWithFile:path];
+    metaData = [NSKeyedUnarchiver unarchiveObjectWithFile:path];
   }
-  return sessionIds;
+  return metaData;
 }
 
 - (NSData *)dataAtPath:(NSString *)path {
@@ -231,7 +229,7 @@ NSUInteger const defaultFileCount = 50;
       filePath = [[fileDir stringByAppendingPathComponent:kCrashTemplateString] stringByAppendingPathComponent:kCrashTemplateString];
       break;
     };
-    case MSAIPersistenceTypeSessionIds: {
+    case MSAIPersistenceTypeMetaData: {
       [self createFolderAtPathIfNeeded:[fileDir stringByAppendingPathComponent:kSessionIdsString]];
       filePath = [[fileDir stringByAppendingPathComponent:kSessionIdsString] stringByAppendingPathComponent:kSessionIdsString];
       break;
@@ -290,7 +288,7 @@ NSUInteger const defaultFileCount = 50;
   NSString *directoryPath = [self folderPathForPersistenceType:type];
   NSError *error = nil;
   NSArray *fileNames = [[NSFileManager defaultManager] contentsOfDirectoryAtURL:[NSURL fileURLWithPath:directoryPath]
-                                                     includingPropertiesForKeys:[NSArray arrayWithObject:NSURLNameKey]
+                                                     includingPropertiesForKeys:@[NSURLNameKey]
                                                                         options:NSDirectoryEnumerationSkipsHiddenFiles
                                                                           error:&error];
   
@@ -335,7 +333,7 @@ NSUInteger const defaultFileCount = 50;
       subfolderPath = kRegularPrioString;
       break;
     }
-    case MSAIPersistenceTypeSessionIds: {
+    case MSAIPersistenceTypeMetaData: {
       subfolderPath = kSessionIdsString;
       break;
     }
@@ -343,21 +341,6 @@ NSUInteger const defaultFileCount = 50;
   NSString *path = [persistenceFolder stringByAppendingPathComponent:subfolderPath];
   
   return path;
-}
-
-- (NSData *)dataForBundle:(NSArray *)bundle withPersistenceTye:(MSAIPersistenceType)persistenceType{
-  NSData *data = nil;
-  
-  if(persistenceType == MSAIPersistenceTypeCrashTemplate){
-    data = [NSKeyedArchiver archivedDataWithRootObject:bundle];
-  }else{
-    NSError *error = nil;
-    data = [NSJSONSerialization dataWithJSONObject:bundle options:NSJSONWritingPrettyPrinted error:&error];
-    if (data == nil) {
-      MSAILog(@"Unable to convert JSON to NSData: %@", [error localizedDescription]);
-    }
-  }
-  return data;
 }
 
 /**

@@ -15,14 +15,14 @@ static NSInteger const schemaVersion = 2;
 
 #pragma mark - Initialize and configure singleton instance
 
-- (void)configureWithTelemetryContext:(MSAITelemetryContext *)telemetryContext{
+- (void)configureWithTelemetryContext:(MSAITelemetryContext *)telemetryContext {
 
   @synchronized(self) {
     _telemetryContext = telemetryContext;
   }
 }
 
-+ (id)sharedManager {
++ (instancetype)sharedManager {
   static MSAIEnvelopeManager *sharedManager = nil;
   
   static dispatch_once_t onceToken;
@@ -34,7 +34,7 @@ static NSInteger const schemaVersion = 2;
 
 #pragma mark - Create envelope objects
 
-- (MSAIEnvelope *)envelope{
+- (MSAIEnvelope *)envelope {
   MSAIEnvelope *envelope = [MSAIEnvelope new];
   envelope.appId = msai_mainBundleIdentifier();
   envelope.appVer = _telemetryContext.application.version;
@@ -56,7 +56,7 @@ static NSInteger const schemaVersion = 2;
   return envelope;
 }
 
-- (MSAIEnvelope *)envelopeForTelemetryData:(MSAITelemetryData *)telemetryData{
+- (MSAIEnvelope *)envelopeForTelemetryData:(MSAITelemetryData *)telemetryData {
   telemetryData.version = @(schemaVersion);
   
   MSAIData *data = [MSAIData new];
@@ -70,11 +70,11 @@ static NSInteger const schemaVersion = 2;
   return envelope;
 }
 
-- (MSAIEnvelope *)envelopeForCrashReport:(MSAIPLCrashReport *)report{
+- (MSAIEnvelope *)envelopeForCrashReport:(MSAIPLCrashReport *)report {
   return [self envelopeForCrashReport:report exception:nil];
 }
 
-- (MSAIEnvelope *)envelopeForCrashReport:(MSAIPLCrashReport *)report exception:(NSException *)exception{
+- (MSAIEnvelope *)envelopeForCrashReport:(MSAIPLCrashReport *)report exception:(NSException *)exception {
   return [MSAICrashDataProvider crashDataForCrashReport:report handledException:exception];
 }
 

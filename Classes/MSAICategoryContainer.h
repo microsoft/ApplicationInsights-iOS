@@ -1,5 +1,5 @@
+#import "MSAINullability.h"
 #import "MSAIPageViewLogging_UIViewController.h"
-#import "ApplicationInsights.h"
 
 NS_ASSUME_NONNULL_BEGIN
 @interface MSAICategoryContainer : NSObject
@@ -7,4 +7,8 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)activateCategory;
 
 @end
+
+BOOL msai_shouldTrackPageView(UIViewController *viewController);
+NSString* msai_pageViewNameForViewController(UIViewController *viewController);
+
 NS_ASSUME_NONNULL_END

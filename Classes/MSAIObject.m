@@ -1,6 +1,5 @@
 #import "ApplicationInsightsPrivate.h"
 #import "MSAIObject.h"
-#import "MSAIDomain.h"
 
 @implementation MSAIObject
 

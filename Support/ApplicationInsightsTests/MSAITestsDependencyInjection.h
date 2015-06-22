@@ -10,8 +10,9 @@
 
 @interface MSAITestsDependencyInjection : XCTestCase
 
-- (void)setMockNotificationCenter:(NSNotificationCenter *)notificationCenter;
-- (NSNotificationCenter *)mockNotificationCenter;
+- (void)setMockNotificationCenter:(id)mockNotificationCenter;
+- (id)mockNotificationCenter;
+
 - (void)setMockUserDefaults:(NSUserDefaults *)userDefaults;
 - (NSUserDefaults *)mockUserDefaults;
 
