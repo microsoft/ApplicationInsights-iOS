@@ -76,6 +76,13 @@ FOUNDATION_EXPORT NSString *const kMSAIApplicationWasLaunched;
 - (void)setUserWithConfigurationBlock:(void (^)(MSAIUser *user))userConfigurationBlock;
 
 /**
+ *  Set a new user. This method automatically adds this user to the automatic store with the current time as a timestamp.
+ *
+ *  @param user The string that represents the current user
+ */
+- (void)setCurrentUser:(nonnull MSAIUser *)user;
+
+/**
  *  Add a MSAIUser object to the automatic meta data store.
  *
  *  @param user Any MSAIUser object which should be stored for later reference.
