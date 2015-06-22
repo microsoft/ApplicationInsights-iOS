@@ -1,7 +1,8 @@
 #import <Foundation/Foundation.h>
 #import "MSAIContextHelper.h"
-#import "MSAISession.h"
-#import "MSAIUser.h"
+
+@class MSAISession;
+@class MSAIUser;
 
 NS_ASSUME_NONNULL_BEGIN
 

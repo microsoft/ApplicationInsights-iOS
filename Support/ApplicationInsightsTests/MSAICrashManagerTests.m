@@ -10,7 +10,7 @@
 #import "MSAICrashManager.h"
 #import "MSAICrashManagerPrivate.h"
 #import "MSAIContextPrivate.h"
-#import "MSAIPersistence.h"
+#import "MSAIPersistencePrivate.h"
 #import "MSAIEnvelope.h"
 #import "MSAICrashData.h"
 #import "MSAITestHelper.h"

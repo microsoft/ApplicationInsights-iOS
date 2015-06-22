@@ -24,23 +24,55 @@
 
 - (void)msai_viewWillAppear:(BOOL)animated {
   [self msai_viewWillAppear:animated];
-#if MSAI_FEATURE_TELEMETRY  
-  if(![MSAITelemetryManager sharedManager].autoPageViewTrackingDisabled){
-    NSString *pageViewName = [NSString stringWithFormat:@"%@ %@", NSStringFromClass([self class]), self.title];
-    [MSAITelemetryManager trackPageView:pageViewName];
+#if MSAI_FEATURE_TELEMETRY
+  if(![MSAITelemetryManager sharedManager].autoPageViewTrackingDisabled) {
+    
+    if (!msai_shouldTrackPageView(self)) {
+      return;;
+    }
+    
+    NSString *pageViewName = msai_pageViewNameForViewController(self);
+    
+    [[MSAITelemetryManager sharedManager] trackPageView:pageViewName];
   }
-#endif /* MSAI_FEATURE_TELEMETRY */
 }
+
+#endif /* MSAI_FEATURE_TELEMETRY */
 
 @end
 
+BOOL msai_shouldTrackPageView(UIViewController *viewController) {
+  NSArray *containerViewControllerClasses = @ [@"UINavigationController", @"UITabBarController", @"UISplitViewController", @"UIInputWindowController", @"UIPageViewController"];
+  
+  // Check if current class is a kind of one of the known container view controller classes.
+  for (NSString *classString in containerViewControllerClasses) {
+    Class aContainerClass = NSClassFromString(classString);
+    if ([viewController isKindOfClass:aContainerClass]) {
+      return NO;
+    }
+  }
+  return YES;
+}
+
+NSString* msai_pageViewNameForViewController(UIViewController *viewController) {
+  NSString *className = NSStringFromClass([viewController class]);
+  
+  if (viewController.title && (viewController.title.length > 0)) {
+    return [NSString stringWithFormat:@"%@ %@", className, viewController.title];
+  }
+  return className;
+}
+
 @implementation MSAICategoryContainer
 
-+ (void)activateCategory{
++ (void)activateCategory {
   [UIViewController swizzleViewWillAppear];
 }
 
 @end
+
+
+#pragma mark - GZIP library
 
 
 //

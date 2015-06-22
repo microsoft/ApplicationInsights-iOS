@@ -3,7 +3,7 @@
 #import "MSAITelemetryContextPrivate.h"
 #import "ApplicationInsightsPrivate.h"
 #import "MSAIHelper.h"
-#import "MSAIPersistence.h"
+#import "MSAIPersistencePrivate.h"
 
 NSInteger const defaultMaxBatchCount = 50;
 NSInteger const defaultBatchInterval = 15;
@@ -38,7 +38,6 @@ static dispatch_once_t once_token;
 
 - (instancetype)init {
   if(self = [super init]) {
-    _dataItemQueue = [NSMutableArray array];
     _dataItemCount = 0;
     if (msai_isDebuggerAttached()) {
       _senderBatchSize = debugMaxBatchCount;
@@ -54,17 +53,6 @@ static dispatch_once_t once_token;
 }
 
 #pragma mark - Queue management
-
-- (NSMutableArray *)dataItemQueue {
-  __block NSMutableArray *queue = nil;
-  __weak typeof(self) weakSelf = self;
-  dispatch_sync(self.dataItemsOperations, ^{
-    typeof(self) strongSelf = weakSelf;
-    
-    queue = [NSMutableArray arrayWithArray:strongSelf->_dataItemQueue];
-  });
-  return queue;
-}
 
 - (BOOL)isQueueBusy{
   return ![[MSAIPersistence sharedInstance] isFreeSpaceAvailable];

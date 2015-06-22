@@ -58,8 +58,10 @@
   if(self.userId != nil) {
     [dict setObject:self.userId forKey:@"userId"];
   }
-  [dict setObject:self.tags forKey:@"tags"];
-  
+  if(self.tags != nil) {
+    [dict setObject:self.tags forKey:@"tags"];
+  }
+    
   MSAIOrderedDictionary *dataDict = [self.data serializeToDictionary];
   if ([NSJSONSerialization isValidJSONObject:dataDict]) {
     [dict setObject:dataDict forKey:@"data"];

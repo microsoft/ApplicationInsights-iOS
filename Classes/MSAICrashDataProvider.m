@@ -55,6 +55,8 @@
 #import "MSAIContextHelperPrivate.h"
 #import "MSAIEnvelope.h"
 #import "MSAIData.h"
+#import "MSAIUser.h"
+#import "MSAISession.h"
 #import "MSAIEnvelopeManagerPrivate.h"
 #import "MSAIEnvelopeManager.h"
 
