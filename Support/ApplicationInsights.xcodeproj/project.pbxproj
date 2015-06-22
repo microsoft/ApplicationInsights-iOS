@@ -92,6 +92,7 @@
 		59493E4E3899627127FA6760 /* MSAIPersistence.m in Sources */ = {isa = PBXBuildFile; fileRef = 59493E91C1D38C3FC5F77D19 /* MSAIPersistence.m */; };
 		8000A3D41B0E973F009F2B29 /* MSAICategoryContainerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8000A3D31B0E973F009F2B29 /* MSAICategoryContainerTests.m */; };
 		8004739C1ABB8FC200BBFE62 /* MSAIPersistencePrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 8004739B1ABB8FC200BBFE62 /* MSAIPersistencePrivate.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		8013B42C1B38411500E98417 /* OHHTTPStubs.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8013B42B1B38411500E98417 /* OHHTTPStubs.framework */; };
 		803871BD1A94C0A600BF295F /* MSAIPageViewLogging_UIViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 1BC8596D1A7ACC040018FB6B /* MSAIPageViewLogging_UIViewController.h */; };
 		803871C01A94C26500BF295F /* MSAICrashManagerPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 1EFF03D717F20F8300A5F13C /* MSAICrashManagerPrivate.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		803871C21A94C26500BF295F /* MSAIContextPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B62F4DA1A692A6F00EB5AD0 /* MSAIContextPrivate.h */; settings = {ATTRIBUTES = (Private, ); }; };
@@ -298,9 +299,10 @@
 		1EFF03D717F20F8300A5F13C /* MSAICrashManagerPrivate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MSAICrashManagerPrivate.h; sourceTree = "<group>"; };
 		594931F0F69C22CBB67A2AD9 /* MSAIPersistence.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAIPersistence.h; sourceTree = "<group>"; };
 		59493E91C1D38C3FC5F77D19 /* MSAIPersistence.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAIPersistence.m; sourceTree = "<group>"; };
-		8000A3D31B0E973F009F2B29 /* MSAICategoryContainerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAICategoryContainerTests.m; path = ApplicationInsightsTests/MSAICategoryContainerTests.m; sourceTree = SOURCE_ROOT; };
 		8000A3D21B0E8D83009F2B29 /* ApplicationInsights-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "ApplicationInsights-Info.plist"; sourceTree = "<group>"; };
+		8000A3D31B0E973F009F2B29 /* MSAICategoryContainerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAICategoryContainerTests.m; path = ApplicationInsightsTests/MSAICategoryContainerTests.m; sourceTree = SOURCE_ROOT; };
 		8004739B1ABB8FC200BBFE62 /* MSAIPersistencePrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAIPersistencePrivate.h; sourceTree = "<group>"; };
+		8013B42B1B38411500E98417 /* OHHTTPStubs.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = OHHTTPStubs.framework; sourceTree = "<group>"; };
 		80677CDA1B2EF23000B324E5 /* MSAINullability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAINullability.h; sourceTree = "<group>"; };
 		807CFD661A71294E004EA1B6 /* MSAIOrderedDictionary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAIOrderedDictionary.h; sourceTree = "<group>"; };
 		807CFD671A71294E004EA1B6 /* MSAIOrderedDictionary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAIOrderedDictionary.m; sourceTree = "<group>"; };
@@ -444,6 +446,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8013B42C1B38411500E98417 /* OHHTTPStubs.framework in Frameworks */,
 				80E1A45A1AE54D6200603B0A /* libOCMock.a in Frameworks */,
 				80ECBD1F1ADE9E39005CACF4 /* libz.dylib in Frameworks */,
 				1B3B73081A94BC8E008DCADA /* CoreTelephony.framework in Frameworks */,
@@ -615,6 +618,7 @@
 				80E1A4391AE54B6C00603B0A /* ApplicationInsightsTests-Prefix.pch */,
 				80E1A44D1AE54C8500603B0A /* libOCMock.a */,
 				80E1A44E1AE54C8500603B0A /* OCMock */,
+				8013B42B1B38411500E98417 /* OHHTTPStubs.framework */,
 				80E1A44B1AE54C7800603B0A /* OCHamcrestIOS.framework */,
 				80E1A4461AE54B6C00603B0A /* OCMockitoIOS.framework */,
 			);
