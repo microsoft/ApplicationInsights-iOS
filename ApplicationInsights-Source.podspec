@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = "ApplicationInsights-Source"
-  s.version          = "1.0-beta.2"
+  s.version          = "1.0-beta.3"
   s.summary          = "Microsoft Application Insights SDK for iOS"
   s.description      = <<-DESC
 	                   Application Insights is a service that allows developers to keep their applications available, performant, and successful. 
@@ -14,11 +14,10 @@ Pod::Spec.new do |s|
 
   s.platform     = :ios, '6.0'
   s.requires_arc = true
-  s.frameworks   = 'CFNetwork', 'Foundation', 'Security', 'SystemConfiguration', 'UIKit'
+  s.frameworks   = 'CFNetwork', 'Foundation', 'Security', 'SystemConfiguration', 'UIKit', 'CoreTelephony'
   s.libraries    = 'z'
-  s.weak_frameworks = 'CoreTelephony'
 
-  s.xcconfig                = { 'GCC_PREPROCESSOR_DEFINITIONS' => %{$(inherited) MSAI_VERSION="@\\"#{s.version}\\"" MSAI_C_VERSION="\\"#{s.version}\\"" MSAI_BUILD="@\\"2\\"" MSAI_C_BUILD="\\"2\\""} }
+  s.xcconfig                = { 'GCC_PREPROCESSOR_DEFINITIONS' => %{$(inherited) MSAI_VERSION="@\\"#{s.version}\\"" MSAI_C_VERSION="\\"#{s.version}\\"" MSAI_BUILD="@\\"3\\"" MSAI_C_BUILD="\\"3\\""} }
   s.source_files            = 'Classes'
   s.private_header_files    = 'Classes/*Private.h'
   s.vendored_frameworks     = 'Vendor/CrashReporter.framework'
