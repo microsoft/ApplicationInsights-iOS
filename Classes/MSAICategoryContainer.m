@@ -35,9 +35,8 @@
     
     [[MSAITelemetryManager sharedManager] trackPageView:pageViewName];
   }
-}
-
 #endif /* MSAI_FEATURE_TELEMETRY */
+}
 
 @end
 
