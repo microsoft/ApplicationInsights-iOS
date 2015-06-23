@@ -420,9 +420,12 @@ This then requires you to manage sessions manually:
 
 ### 9.3. Users
 
-Normally, a random anonymous ID is automatically generated for every user of your app by the SDK. Alternatively you can set your own user ID which will then be attached to all telemetry events and crashes:
+Normally, a random anonymous ID is automatically generated for every user of your app by the SDK. Alternatively you can set your own user ID or other user attributes, which will then be attached to all telemetry events and crashes:
 ```objectivec
-[MSAIApplicationInsights setUserId:@"your_user_id"];
+  [[MSAIApplicationInsights sharedInstance] setUserWithConfigurationBlock:^(MSAIUser *user) {
+    user.userId = @"your_user_id";
+    user.accountId = @"user@example.com";
+  }];
 ```
 
 <a name="crashreporting"></a>

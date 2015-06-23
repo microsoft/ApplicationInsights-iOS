@@ -155,7 +155,7 @@
 		807CFDCF1A712974004EA1B6 /* MSAISeverityLevel.h in Headers */ = {isa = PBXBuildFile; fileRef = 807CFD9E1A712974004EA1B6 /* MSAISeverityLevel.h */; };
 		807CFDD01A712974004EA1B6 /* MSAIStackFrame.h in Headers */ = {isa = PBXBuildFile; fileRef = 807CFD9F1A712974004EA1B6 /* MSAIStackFrame.h */; };
 		807CFDD11A712974004EA1B6 /* MSAIStackFrame.m in Sources */ = {isa = PBXBuildFile; fileRef = 807CFDA01A712974004EA1B6 /* MSAIStackFrame.m */; };
-		807CFDD21A712974004EA1B6 /* MSAIUser.h in Headers */ = {isa = PBXBuildFile; fileRef = 807CFDA11A712974004EA1B6 /* MSAIUser.h */; };
+		807CFDD21A712974004EA1B6 /* MSAIUser.h in Headers */ = {isa = PBXBuildFile; fileRef = 807CFDA11A712974004EA1B6 /* MSAIUser.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		807CFDD31A712974004EA1B6 /* MSAIUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 807CFDA21A712974004EA1B6 /* MSAIUser.m */; };
 		809E9E5A1AC455D9008A1AB5 /* MSAISessionState.h in Headers */ = {isa = PBXBuildFile; fileRef = 809E9E571AC455D9008A1AB5 /* MSAISessionState.h */; };
 		809E9E5B1AC455D9008A1AB5 /* MSAISessionStateData.h in Headers */ = {isa = PBXBuildFile; fileRef = 809E9E581AC455D9008A1AB5 /* MSAISessionStateData.h */; };
