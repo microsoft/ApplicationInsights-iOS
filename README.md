@@ -47,8 +47,8 @@ Note that this means that the old way of setting the user ID, `setUserId:`, is n
 * Switch to sending data in JSON Stream format to improve compatibility with different server backends.
 * Improve crash reports by sending additional exception information.
 * Add instructions to Readme about how to setup the SDK with WatchKit extensions.
-* Add logging incase the developer tries to send objects that are not NSJSONSerialization compatible.
-* Fix issues with the backwars compatiblity of the nullability annotation.
+* Add logging in case the developer tries to send objects that are not NSJSONSerialization compatible.
+* Fix issues with the backwards compatibility of the nullability annotation.
 * Various other small improvements and fixes.
 
 See [here](https://github.com/Microsoft/ApplicationInsights-iOS/releases) for the release notes of previous versions.
@@ -57,7 +57,7 @@ See [here](https://github.com/Microsoft/ApplicationInsights-iOS/releases) for th
 ## 2. Breaking Changes
 There haven't been any breaking changes since 1.0-beta.2. In case the API of the SDK changes, we will deprecate methods, etc. before removing them.
 
-* **[1.0-beta.2]** ```MSAIAppInsights``` was the the central entry-point to use the Application Insights SDK. It has been renamed to  ```MSAIApplicationInsights```. 
+* **[1.0-beta.2]** ```MSAIAppInsights``` was the central entry-point to use the Application Insights SDK. It has been renamed to  ```MSAIApplicationInsights```. 
 * **[1.0-beta.2]** Setting the custom server URL now requires the complete URL to the server
 
 <a id="requirements"></a>
