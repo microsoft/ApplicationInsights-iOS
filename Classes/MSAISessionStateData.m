@@ -1,4 +1,6 @@
 #import "MSAISessionStateData.h"
+#import "MSAIOrderedDictionary.h"
+
 /// Data contract class for type SessionStateData.
 @implementation MSAISessionStateData
 @synthesize envelopeTypeName = _envelopeTypeName;
@@ -28,7 +30,7 @@
 
 #pragma mark - NSCoding
 
-- (id)initWithCoder:(NSCoder *)coder {
+- (instancetype)initWithCoder:(NSCoder *)coder {
   self = [super initWithCoder:coder];
   if(self) {
     _envelopeTypeName =[coder decodeObjectForKey:@"envelopeTypeName"];

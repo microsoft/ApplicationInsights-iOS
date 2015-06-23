@@ -1,6 +1,6 @@
 #import <Foundation/Foundation.h>
-#import "ApplicationInsights.h"
-#import "ApplicationInsights.h"
+#import "MSAINullability.h"
+#import "MSAIUser.h"
 
 NS_ASSUME_NONNULL_BEGIN
 /**
@@ -79,7 +79,7 @@ NS_ASSUME_NONNULL_BEGIN
  * Defines the server URL to send data to or request data from. By default this is set 
  * to the Application Insights servers and there rarely should be a need to modify that.
  * If you set your custom server URL, make sure you set the full URL (e.g. https://yourdomain.com/track/)
- * @warning This property needs to be set before calling `startManager`.
+ * @warning This property needs to be set before calling `start`.
  */
 @property (nonatomic, strong) NSString *serverURL;
 
@@ -142,6 +142,8 @@ NS_ASSUME_NONNULL_BEGIN
  */
 + (void)setAutoPageViewTrackingDisabled:(BOOL)autoPageViewTrackingDisabled;
 
+#endif /* MSAI_FEATURE_TELEMETRY */
+
 /**
  *  Flag that determines whether sessions will automatically be renewed when the app starts and goes to the background for more than 20 seconds.
  *  If YES, sessions are not automatically renewed and the developer has to manually trigger a session renewal or set a specific session ID.
@@ -166,7 +168,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  *  @param userId The string which will be used as the current user's ID.
  */
-+ (void)setUserId:(NSString *)userId;
++ (void)setUserId:(NSString *)userId __deprecated_msg("Use setUserWithConfigurationBlock: instead!");
 
 /**
  *  Manually set the current user ID. This ID will automatically be persisted and attached to all appropriate telemetry and crash events.
@@ -174,7 +176,23 @@ NS_ASSUME_NONNULL_BEGIN
  *
  *  @param userId The string which will be used as the current user's ID.
  */
-- (void)setUserId:(NSString *)userId;
+- (void)setUserId:(NSString *)userId __deprecated_msg("Use setUserWithConfigurationBlock: instead!");
+
+/**
+ *  Use this method to configure the current user's context.
+ *
+ *  @param userConfigurationBlock This block gets the current user as an input.
+ *  Within the block you can update the user object's values to up-to-date.
+ */
++ (void)setUserWithConfigurationBlock:(void (^)(MSAIUser *user))userConfigurationBlock;
+
+/**
+ *  Use this method to configure the current user's context.
+ *
+ *  @param userConfigurationBlock This block gets the current user as an input.
+ *  Within the block you can update the user object's values to up-to-date.
+ */
+- (void)setUserWithConfigurationBlock:(void (^)(MSAIUser *user))userConfigurationBlock;
 
 /**
  *  Manually trigger a new session start.
@@ -222,8 +240,6 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (void)renewSessionWithId:(NSString *)sessionId;
 
-#endif /* MSAI_FEATURE_TELEMETRY */
-
 ///-----------------------------------------------------------------------------
 /// @name Environment
 ///-----------------------------------------------------------------------------
@@ -248,30 +264,6 @@ NS_ASSUME_NONNULL_BEGIN
  * @warning This property needs to be set before calling `startManager`
  */
 @property (nonatomic, assign, getter=isDebugLogEnabled) BOOL debugLogEnabled;
-
-///-----------------------------------------------------------------------------
-/// @name Testing integration
-///-----------------------------------------------------------------------------
-
-/**
- * Pings the server with the Application Insights app identifiers used for initialization.
- * Call this method once for debugging purposes to test if your SDK setup code
- * reaches the server successfully.
- * Once invoked, check the apps page on Application Insights for a verification.
- * If you setup the SDK with a beta and live identifier, a call to both app IDs will be done.
- * This call is ignored if the app is running in the App Store!.
- */
-+ (void)testIdentifier;
-
-/**
- * Pings the server with the Application Insights app identifiers used for initialization.
- * Call this method once for debugging purposes to test if your SDK setup code
- * reaches the server successfully.
- * Once invoked, check the apps page on Application Insights for a verification.
- * If you setup the SDK with a beta and live identifier, a call to both app IDs will be done.
- * This call is ignored if the app is running in the App Store!.
- */
-- (void)testIdentifier;
 
 ///-----------------------------------------------------------------------------
 /// @name Getting SDK meta data

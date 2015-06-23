@@ -1,5 +1,6 @@
 #import <XCTest/XCTest.h>
 #import "MSAIRemoteDependencyData.h"
+#import "MSAIOrderedDictionary.h"
 
 @interface MSAIRemoteDependencyDataTests : XCTestCase
 

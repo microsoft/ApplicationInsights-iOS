@@ -1,18 +1,12 @@
 #import "MSAISender.h"
 #import "MSAIAppClient.h"
 #import "MSAISenderPrivate.h"
-#import "MSAIPersistence.h"
+#import "MSAIPersistencePrivate.h"
 #import "MSAIGZIP.h"
-#import "MSAIEnvelope.h"
-#import "ApplicationInsights.h"
 #import "ApplicationInsightsPrivate.h"
-#import "MSAIApplicationInsights.h"
 
+static char const *kPersistenceQueueString = "com.microsoft.ApplicationInsights.senderQueue";
 static NSUInteger const defaultRequestLimit = 10;
-
-@interface MSAISender ()
-
-@end
 
 @implementation MSAISender
 
@@ -30,9 +24,16 @@ static NSUInteger const defaultRequestLimit = 10;
   return sharedInstance;
 }
 
+- (instancetype)init {
+  if ((self = [super init])) {
+    _senderQueue = dispatch_queue_create(kPersistenceQueueString, DISPATCH_QUEUE_CONCURRENT);
+  }
+  return self;
+}
+
 #pragma mark - Network status
 
-- (void)configureWithAppClient:(MSAIAppClient *)appClient {
+- (void)configureWithAppClient:(MSAIAppClient * __nonnull)appClient {
   self.appClient = appClient;
   self.maxRequestCount = defaultRequestLimit;
   [self registerObservers];
@@ -57,7 +58,6 @@ static NSUInteger const defaultRequestLimit = 10;
 #pragma mark - Sending
 
 - (void)sendSavedData{
-  
   @synchronized(self){
     if(_runningRequestsCount < _maxRequestCount){
       _runningRequestsCount++;
@@ -70,39 +70,38 @@ static NSUInteger const defaultRequestLimit = 10;
     typeof(self) strongSelf = weakSelf;
     NSString *path = [[MSAIPersistence sharedInstance] requestNextPath];
     NSData *data = [[MSAIPersistence sharedInstance] dataAtPath:path];
-    NSData *gzippedData = [data gzippedData];
-    [strongSelf sendData:gzippedData withPath:path];
+    [strongSelf sendData:data withPath:path];
   });
 }
 
-- (void)sendData:(NSData *)data withPath:(NSString *)path{
-  
-  if(data) {
-    NSURLRequest *request = [self requestForData:data];
+- (void)sendData:(NSData * __nonnull)data withPath:(NSString * __nonnull)path {
+  if(data && data.length > 0) {
+    NSString *contentType = [self contentTypeForData:data];
+
+    NSData *gzippedData = [data gzippedData];
+    NSURLRequest *request = [self requestForData:gzippedData withContentType:contentType];
     [self sendRequest:request path:path];
     
-  }else{
+  } else {
     self.runningRequestsCount -= 1;
   }
 }
 
-- (void)sendRequest:(NSURLRequest *)request path:(NSString *)path{
+- (void)sendRequest:(NSURLRequest * __nonnull)request path:(NSString * __nonnull)path {
   
   if(!path || !request) return;
   
   __weak typeof(self) weakSelf = self;
-  MSAIHTTPOperation *operation = [self.appClient operationWithURLRequest:request completion:^(MSAIHTTPOperation *operation, NSData *responseData, NSError *error) {
+  MSAIHTTPOperation *operation = [self.appClient operationWithURLRequest:request queue:self.senderQueue completion:^(MSAIHTTPOperation *operation, NSData *responseData, NSError *error) {
     typeof(self) strongSelf = weakSelf;
-    
+
     self.runningRequestsCount -= 1;
     NSInteger statusCode = [operation.response statusCode];
 
     if(responseData && [self shouldDeleteDataWithStatusCode:statusCode]) {
       //we delete data that was either sent successfully or if we have a non-recoverable error
       MSAILog(@"Sent data with status code: %ld", (long) statusCode);
-      if (responseData) {
-        MSAILog(@"Response data:\n%@", [NSJSONSerialization JSONObjectWithData:responseData options:0 error:nil]);
-      }
+      MSAILog(@"Response data:\n%@", [NSJSONSerialization JSONObjectWithData:responseData options:0 error:nil]);
       [[MSAIPersistence sharedInstance] deleteFileAtPath:path];
       [strongSelf sendSavedData];
     } else {
@@ -111,22 +110,13 @@ static NSUInteger const defaultRequestLimit = 10;
       [[MSAIPersistence sharedInstance] giveBackRequestedPath:path];
     }
   }];
-  
-  [self.appClient enqeueHTTPOperation:operation];
-}
 
-//TODO remove this because it is never used and it's not public?
-- (void)sendRequest:(NSURLRequest *)request withCompletionBlock:(MSAINetworkCompletionBlock)completion{
-  
-  MSAIHTTPOperation *operation = [_appClient
-                                  operationWithURLRequest:request
-                                  completion:completion];
-  [_appClient enqeueHTTPOperation:operation];
+  [self.appClient enqueueHTTPOperation:operation];
 }
 
 #pragma mark - Helper
 
-- (NSURLRequest *)requestForData:(NSData *)data {
+- (NSURLRequest *)requestForData:(NSData * __nonnull)data withContentType:(NSString * __nonnull)contentType {
   NSMutableURLRequest *request = [self.appClient requestWithMethod:@"POST"
                                                               path:self.endpointPath
                                                         parameters:nil];
@@ -136,7 +126,7 @@ static NSUInteger const defaultRequestLimit = 10;
   
   NSDictionary *headers = @{@"Charset": @"UTF-8",
                             @"Content-Encoding": @"gzip",
-                            @"Content-Type": @"application/json",
+                            @"Content-Type": contentType,
                             @"Accept-Encoding": @"gzip"};
   [request setAllHTTPHeaderFields:headers];
   
@@ -149,6 +139,22 @@ static NSUInteger const defaultRequestLimit = 10;
   NSArray *recoverableStatusCodes = @[@429, @408, @500, @503, @511];
 
   return ![recoverableStatusCodes containsObject:@(statusCode)];
+}
+
+- (NSString *)contentTypeForData:(NSData *)data {
+  NSString *contentType;
+  static const uint8_t LINEBREAK_SIGNATURE = (0x0a);
+  UInt8 lastByte = 0;
+  if (data && data.length > 0) {
+    [data getBytes:&lastByte range:NSMakeRange(data.length-1, 1)];
+  }
+  
+  if (data && (data.length > sizeof(uint8_t)) && (lastByte == LINEBREAK_SIGNATURE)) {
+    contentType = @"application/x-json-stream";
+  } else {
+    contentType = @"application/json";
+  }
+  return contentType;
 }
 
 #pragma mark - Getter/Setter

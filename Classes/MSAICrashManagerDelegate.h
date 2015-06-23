@@ -1,4 +1,5 @@
 #import <Foundation/Foundation.h>
+#import "MSAINullability.h"
 
 @class MSAICrashManager;
 

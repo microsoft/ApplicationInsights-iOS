@@ -1,4 +1,7 @@
 #import "MSAIMessageData.h"
+#import "MSAIOrderedDictionary.h"
+#import "MSAIEnums.h"
+
 /// Data contract class for type MessageData.
 @implementation MSAIMessageData
 @synthesize envelopeTypeName = _envelopeTypeName;
@@ -35,7 +38,7 @@
 
 #pragma mark - NSCoding
 
-- (id)initWithCoder:(NSCoder *)coder {
+- (instancetype)initWithCoder:(NSCoder *)coder {
   self = [super initWithCoder:coder];
   if(self) {
     self.message = [coder decodeObjectForKey:@"self.message"];

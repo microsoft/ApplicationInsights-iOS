@@ -1,5 +1,3 @@
-#import "MSAIObject.h"
-#import "MSAITelemetryData.h"
 #import "MSAIDomain.h"
 
 @interface MSAIRequestData : MSAIDomain <NSCoding>

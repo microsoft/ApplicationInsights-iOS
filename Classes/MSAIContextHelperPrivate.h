@@ -1,16 +1,17 @@
 #import <Foundation/Foundation.h>
 #import "MSAIContextHelper.h"
-#import "MSAISession.h"
-#import "MSAIUser.h"
+
+@class MSAISession;
+@class MSAIUser;
 
 NS_ASSUME_NONNULL_BEGIN
 
 FOUNDATION_EXPORT NSString *const MSAISessionStartedNotification;
 FOUNDATION_EXPORT NSString *const MSAISessionEndedNotification;
-FOUNDATION_EXPORT NSString *const kMSAISessionInfoSession;
+FOUNDATION_EXPORT NSString *const kMSAISessionInfo;
 
-FOUNDATION_EXPORT NSString *const MSAIUserIdChangedNotification;
-FOUNDATION_EXPORT NSString *const kMSAIUserInfoUserId;
+FOUNDATION_EXPORT NSString *const MSAIUserChangedNotification;
+FOUNDATION_EXPORT NSString *const kMSAIUserInfo;
 
 FOUNDATION_EXPORT NSString *const kMSAIApplicationWasLaunched;
 
@@ -55,17 +56,6 @@ FOUNDATION_EXPORT NSString *const kMSAIApplicationWasLaunched;
  */
 - (MSAIUser *)newUser;
 
-/**
- *  Creates a new user with a given user ID
- *
- *  @param userId A string which will be used as the user object's user ID
- *
- *  @return A new user object with the given ID
- *  @see newUser
- */
-- (MSAIUser *)newUserWithId:(NSString *)userId;
-
-
 ///-----------------------------------------------------------------------------
 /// @name Manual User ID Management
 ///-----------------------------------------------------------------------------
@@ -76,6 +66,21 @@ FOUNDATION_EXPORT NSString *const kMSAIApplicationWasLaunched;
  *  @param userId The string that represents the current user's ID
  */
 - (void)setCurrentUserId:(NSString *)userId;
+
+/**
+ *  Use this method to configure the current user's context.
+ *
+ *  @param userConfigurationBlock This block gets the current user as an input.
+ *  Within the block you can update the user object's values to up-to-date.
+ */
+- (void)setUserWithConfigurationBlock:(void (^)(MSAIUser *user))userConfigurationBlock;
+
+/**
+ *  Set a new user. This method automatically adds this user to the automatic store with the current time as a timestamp.
+ *
+ *  @param user The string that represents the current user
+ */
+- (void)setCurrentUser:(nonnull MSAIUser *)user;
 
 /**
  *  Add a MSAIUser object to the automatic meta data store.
@@ -208,14 +213,14 @@ FOUNDATION_EXPORT NSString *const kMSAIApplicationWasLaunched;
 /**
  *  Send a notification when the current user has changed.
  *
- *  @param userInfo A dictionary containing the new current user ID as kMSAIUserInfoUserId.
+ *  @param userInfo A dictionary containing the new current user ID as kMSAIUserInfo.
  */
-- (void)sendUserIdChangedNotificationWithUserInfo:(NSDictionary *)userInfo;
+- (void)sendUserChangedNotificationWithUserInfo:(NSDictionary *)userInfo;
 
 /**
  *  Send a notificaion when a new session has started.
  *
- *  @param userInfo A dictionary containing the new MSAISession object as kMSAISessionInfoSession.
+ *  @param userInfo A dictionary containing the new MSAISession object as kMSAISessionInfo.
  */
 - (void)sendSessionStartedNotificationWithUserInfo:(NSDictionary *)userInfo;
 

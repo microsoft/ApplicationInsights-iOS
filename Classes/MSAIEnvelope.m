@@ -1,4 +1,6 @@
 #import "MSAIEnvelope.h"
+#import "MSAIOrderedDictionary.h"
+#import "MSAIData.h"
 
 /// Data contract class for type Envelope.
 @implementation MSAIEnvelope
@@ -58,18 +60,22 @@
   if(self.userId != nil) {
     [dict setObject:self.userId forKey:@"userId"];
   }
-  [dict setObject:self.tags forKey:@"tags"];
-  
+  if(self.tags != nil) {
+    [dict setObject:self.tags forKey:@"tags"];
+  }
+    
   MSAIOrderedDictionary *dataDict = [self.data serializeToDictionary];
   if ([NSJSONSerialization isValidJSONObject:dataDict]) {
     [dict setObject:dataDict forKey:@"data"];
+  } else {
+    NSLog(@"[ApplicationInsights] Some of the telemetry data was not NSJSONSerialization compatible and could not be serialized!");
   }
   return dict;
 }
 
 #pragma mark - NSCoding
 
-- (id)initWithCoder:(NSCoder *)coder {
+- (instancetype)initWithCoder:(NSCoder *)coder {
   self = [super init];
   if(self) {
     self.version = [coder decodeObjectForKey:@"self.version"];

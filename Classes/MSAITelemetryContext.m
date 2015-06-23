@@ -7,6 +7,7 @@
 #import "MSAIContextHelperPrivate.h"
 #import "MSAIReachability.h"
 #import "MSAIReachabilityPrivate.h"
+#import "MSAIOrderedDictionary.h"
 
 NSString *const kMSAITelemetrySessionId = @"MSAITelemetrySessionId";
 NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
@@ -40,6 +41,8 @@ NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
     
     MSAISession *sessionContext = [[MSAIContextHelper sharedInstance] newSession];
     [[MSAIContextHelper sharedInstance] addSession:sessionContext withDate:[NSDate date]];
+    NSDictionary *userInfo = @{kMSAISessionInfo : sessionContext};
+    [[MSAIContextHelper sharedInstance] sendSessionStartedNotificationWithUserInfo:userInfo];
     
     MSAIOperation *operationContext = [MSAIOperation new];
     
@@ -69,20 +72,20 @@ NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
   return self;
 }
 
-- (void)dealloc{
+- (void)dealloc {
   [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 #pragma mark - Network
 
-- (void)configureNetworkStatusTracking{
+- (void)configureNetworkStatusTracking {
   [[MSAIReachability sharedInstance] startNetworkStatusTracking];
   _device.network = [[MSAIReachability sharedInstance] descriptionForActiveReachabilityType];
   NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
   [center addObserver:self selector:@selector(updateNetworkType:) name:kMSAIReachabilityTypeChangedNotification object:nil];
 }
 
--(void)updateNetworkType:(NSNotification *)notification{
+- (void)updateNetworkType:(NSNotification *)notification {
   
   @synchronized(self){
     _device.network = [notification userInfo][kMSAIReachabilityUserInfoName];
@@ -98,7 +101,7 @@ NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
                        queue:nil
                   usingBlock:^(NSNotification *notification) {
                     NSDictionary *userInfo = notification.userInfo;
-                    MSAISession *session = userInfo[kMSAISessionInfoSession];
+                    MSAISession *session = userInfo[kMSAISessionInfo];
                     _session = session;
                   }];
 }
@@ -107,16 +110,14 @@ NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
 
 - (void)configureUserTracking {
   NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-  [center addObserverForName:MSAIUserIdChangedNotification
+  [center addObserverForName:MSAIUserChangedNotification
                       object:nil
                        queue:nil
                   usingBlock:^(NSNotification *note) {
                     NSDictionary *userInfo = note.userInfo;
-                    NSString *userId = userInfo[kMSAIUserInfoUserId];
+                    MSAIUser *user = userInfo[kMSAIUserInfo];
                     if (_user) {
-                      _user.userId = userId;
-                    } else {
-                      _user = [[MSAIContextHelper sharedInstance] newUserWithId:userId];
+                      _user = user;
                     }
                   }];
   

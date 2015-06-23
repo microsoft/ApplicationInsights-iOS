@@ -7,6 +7,7 @@
 #define MOCKITO_SHORTHAND
 #import <OCMockitoIOS/OCMockitoIOS.h>
 
+#import "MSAIHelper.h"
 #import "MSAISession.h"
 #import "MSAIUser.h"
 #import "MSAIContextHelper.h"
@@ -55,17 +56,16 @@
   XCTAssertEqual(newUser.userId.length, 36U);
 }
 
-- (void)testNewUserWithId {
-  MSAIUser *newUser = [self.sut newUserWithId:@"testId1"];
-  XCTAssertNotNil(newUser);
-  XCTAssertEqual(newUser.userId, @"testId1");
-}
-
 - (void)testSetCurrentUserId {
   NSString *testId = @"testId2";
   
-  
-  OCMExpect([self.mockNotificationCenter postNotificationName:MSAIUserIdChangedNotification object:self.sut userInfo:@{kMSAIUserInfoUserId: testId}]);
+  OCMExpect([self.mockNotificationCenter postNotificationName:MSAIUserChangedNotification object:self.sut userInfo:[OCMArg checkWithBlock:^BOOL(NSDictionary *userInfo) {
+    MSAIUser *user = userInfo[kMSAIUserInfo];
+    if ([user.userId isEqualToString:testId]) {
+      return YES;
+    }
+    return NO;
+  }]]);
   
   [self.sut setCurrentUserId:testId];
   NSString *userId = [self.sut userForDate:[NSDate date]].userId;
@@ -76,18 +76,51 @@
   OCMVerifyAll(self.mockNotificationCenter);
 }
 
+- (void)testSetUserWithConfigurationBlock {
+  self.sut = OCMPartialMock(self.sut);
+  
+  NSString *testUserId = @"testUserId";
+  NSString *testAccountId = @"testAccountId";
+  
+  [self.sut setUserWithConfigurationBlock:^(MSAIUser *user) {
+    user.userId = testUserId;
+    user.accountId = testAccountId;
+  }];
+
+  OCMVerify([self.sut setCurrentUser:[OCMArg checkWithBlock:^BOOL(MSAIUser *user) {
+    if (([user.userId isEqualToString:testUserId]) && ([user.accountId isEqualToString:testAccountId])) {
+      return YES;
+    }
+    return NO;
+  }]]);
+ 
+  // Test changing only one attribute
+  NSString *testAccountId2 = @"testAccountId2";
+  
+  [self.sut setUserWithConfigurationBlock:^(MSAIUser *user) {
+    user.accountId = testAccountId2;
+  }];
+  
+  OCMVerify([self.sut setCurrentUser:[OCMArg checkWithBlock:^BOOL(MSAIUser *user) {
+    if (([user.userId isEqualToString:testUserId]) && ([user.accountId isEqualToString:testAccountId2])) {
+      return YES;
+    }
+    return NO;
+  }]]);
+}
+
 - (void)testAddUser {
-  XCTAssert([self.sut.metaData[@"users"] count] == 0);
+  XCTAssert([(NSDictionary *)self.sut.metaData[@"users"] count] == 0);
   MSAIUser *testUser = [MSAIUser new];
   [self.sut addUser:testUser forDate:[NSDate dateWithTimeIntervalSince1970:23]];
-  XCTAssert([self.sut.metaData[@"users"] count] == 1);
+  XCTAssert([(NSDictionary *)self.sut.metaData[@"users"] count] == 1);
   XCTAssertEqualObjects(testUser, self.sut.metaData[@"users"][@"23"]);
 }
 
 - (void)testUserForDate {
-  MSAIUser *user1 = [self.sut newUserWithId:@"10"];
-  MSAIUser *user2 = [self.sut newUserWithId:@"20"];
-  MSAIUser *user3 = [self.sut newUserWithId:@"30"];
+  MSAIUser *user1 = [self newUserWithId:@"10"];
+  MSAIUser *user2 = [self newUserWithId:@"20"];
+  MSAIUser *user3 = [self newUserWithId:@"30"];
   
   [self.sut addUser:user1 forDate:[NSDate dateWithTimeIntervalSince1970:3]];
   [self.sut addUser:user2 forDate:[NSDate dateWithTimeIntervalSince1970:33]];
@@ -113,9 +146,9 @@
 }
 
 - (void)testRemoveUserId {
-  MSAIUser *userA = [self.sut newUserWithId:@"a"];
-  MSAIUser *userB = [self.sut newUserWithId:@"b"];
-  MSAIUser *userC = [self.sut newUserWithId:@"c"];
+  MSAIUser *userA = [self newUserWithId:@"a"];
+  MSAIUser *userB = [self newUserWithId:@"b"];
+  MSAIUser *userC = [self newUserWithId:@"c"];
   
   [self.sut addUser:userA forDate:[NSDate dateWithTimeIntervalSince1970:0]];
   [self.sut addUser:userB forDate:[NSDate dateWithTimeIntervalSince1970:1]];
@@ -124,7 +157,7 @@
   [self.sut removeUserId:@"b"];
   
   XCTAssertEqual(self.sut.metaData.count, 2U);
-  XCTAssertEqual([self.sut.metaData[@"users"] count], 2U);
+  XCTAssertEqual([(NSDictionary *)self.sut.metaData[@"users"] count], 2U);
   XCTAssertEqualObjects(self.sut.metaData[@"users"][@"0"], userA);
   XCTAssertEqualObjects(self.sut.metaData[@"users"][@"2"], userC);
   XCTAssertNil(self.sut.metaData[@"users"][@"1"]);
@@ -149,13 +182,13 @@
 
 - (void)testRenewSessionWithId {
   self.sut = OCMPartialMock(self.sut);
-  XCTAssertEqual([self.sut.metaData[@"sessions"] count], 0U);
+  XCTAssertEqual([(NSDictionary *)self.sut.metaData[@"sessions"] count], 0U);
   
   NSString *testId = @"1337";
   [self.sut renewSessionWithId:testId];
   
   OCMVerify([self.sut sendSessionStartedNotificationWithUserInfo:[OCMArg checkWithBlock:^BOOL(NSDictionary *userInfo) {
-    MSAISession *session = userInfo[kMSAISessionInfoSession];
+    MSAISession *session = userInfo[kMSAISessionInfo];
     if ([session.sessionId isEqualToString:testId])  {
       return YES;
     }
@@ -214,7 +247,7 @@
   [self.sut removeSession:[self sessionWithId:@"b"]];
   
   XCTAssertEqual(self.sut.metaData.count, 2U);
-  XCTAssertEqual([self.sut.metaData[@"sessions"] count], 2U);
+  XCTAssertEqual([(NSDictionary *)self.sut.metaData[@"sessions"] count], 2U);
   XCTAssertNotNil(self.sut.metaData[@"sessions"][@"0"]);
   XCTAssertNotNil(self.sut.metaData[@"sessions"][@"2"]);
   XCTAssertNil(self.sut.metaData[@"sessions"][@"1"]);
@@ -225,8 +258,8 @@
 
 - (void)testCleanUpMetaData {
   XCTAssertEqual(self.sut.metaData.count, 2U);
-  XCTAssertEqual([self.sut.metaData[@"sessions"] count], 0U);
-  XCTAssertEqual([self.sut.metaData[@"users"] count ], 0U);
+  XCTAssertEqual([(NSDictionary *)self.sut.metaData[@"sessions"] count], 0U);
+  XCTAssertEqual([(NSDictionary *)self.sut.metaData[@"users"] count ], 0U);
   
   
   MSAISession *sessionA = [self sessionWithId:@"a"];
@@ -236,20 +269,20 @@
   [self.sut addSession:sessionA withDate:[NSDate dateWithTimeIntervalSince1970:3]];
   [self.sut addSession:sessionB withDate:[NSDate dateWithTimeIntervalSince1970:33]];
   [self.sut addSession:sessionC withDate:[NSDate dateWithTimeIntervalSince1970:333]];
-  XCTAssertEqual([self.sut.metaData[@"sessions"] count], 3U);
+  XCTAssertEqual([(NSDictionary *)self.sut.metaData[@"sessions"] count], 3U);
   
-  MSAIUser *user1 = [self.sut newUserWithId:@"1"];
-  MSAIUser *user2 = [self.sut newUserWithId:@"2"];
+  MSAIUser *user1 = [self newUserWithId:@"1"];
+  MSAIUser *user2 = [self newUserWithId:@"2"];
   
   [self.sut addUser:user1 forDate:[NSDate dateWithTimeIntervalSince1970:777]];
   [self.sut addUser:user2 forDate:[NSDate dateWithTimeIntervalSince1970:7777]];
-  XCTAssertEqual([self.sut.metaData[@"users"] count], 2U);
+  XCTAssertEqual([(NSDictionary *)self.sut.metaData[@"users"] count], 2U);
   
   [self.sut cleanUpMetaData];
   
   XCTAssertEqual(self.sut.metaData.count, 2U);
-  XCTAssertEqual([self.sut.metaData[@"sessions"] count], 1U);
-  XCTAssertEqual([self.sut.metaData[@"users"] count ], 1U);
+  XCTAssertEqual([(NSDictionary *)self.sut.metaData[@"sessions"] count], 1U);
+  XCTAssertEqual([(NSDictionary *)self.sut.metaData[@"users"] count ], 1U);
   
   XCTAssertNil(self.sut.metaData[@"sessions"][@"3"]);
   XCTAssertNil(self.sut.metaData[@"sessions"][@"33"]);
@@ -288,6 +321,13 @@
   session.isFirst = @"false";
   
   return session;
+}
+
+- (MSAIUser *)newUserWithId:(NSString *)userId {
+  return ({ MSAIUser *user = [MSAIUser new];
+    user.userId = userId ?: msai_appAnonID();
+    user;
+  });
 }
 
 @end

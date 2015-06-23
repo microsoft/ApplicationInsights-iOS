@@ -1,4 +1,6 @@
 #import "MSAIData.h"
+#import "MSAIOrderedDictionary.h"
+
 /// Data contract class for type Data.
 @implementation MSAIData
 
@@ -18,13 +20,15 @@
     MSAIOrderedDictionary *baseDataDict = [self.baseData serializeToDictionary];
     if ([NSJSONSerialization isValidJSONObject:baseDataDict]) {
         [dict setObject:baseDataDict forKey:@"baseData"];
+    } else {
+        NSLog(@"[ApplicationInsights] Some of the telemetry data was not NSJSONSerialization compatible and could not be serialized!");
     }
     return dict;
 }
 
 #pragma mark - NSCoding
 
-- (id)initWithCoder:(NSCoder *)coder {
+- (instancetype)initWithCoder:(NSCoder *)coder {
   self = [super initWithCoder:coder];
   if(self) {
     self.baseData = [coder decodeObjectForKey:@"self.baseData"];

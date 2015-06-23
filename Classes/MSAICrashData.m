@@ -1,4 +1,9 @@
 #import "MSAICrashData.h"
+#import "MSAICrashDataHeaders.h"
+#import "MSAICrashDataBinary.h"
+#import "MSAICrashDataThread.h"
+#import "MSAIOrderedDictionary.h"
+
 /// Data contract class for type CrashData.
 @implementation MSAICrashData
 @synthesize envelopeTypeName = _envelopeTypeName;
@@ -9,7 +14,7 @@
   if (self = [super init]) {
     _envelopeTypeName = @"Microsoft.ApplicationInsights.Crash";
     _dataTypeName = @"CrashData";
-    self.version = [NSNumber numberWithInt:2];
+    self.version = @2;
     self.threads = [NSMutableArray new];
     self.binaries = [NSMutableArray new];
   }
@@ -25,6 +30,8 @@
   MSAIOrderedDictionary *headersDict = [self.headers serializeToDictionary];
   if ([NSJSONSerialization isValidJSONObject:headersDict]) {
     [dict setObject:headersDict forKey:@"headers"];
+  } else {
+    NSLog(@"[ApplicationInsights] Some of the telemetry data was not NSJSONSerialization compatible and could not be serialized!");
   }
   if (self.threads != nil) {
     NSMutableArray *threadsArray = [NSMutableArray array];
@@ -43,7 +50,7 @@
   return dict;
 }
 
-- (id)initWithCoder:(NSCoder *)coder {
+- (instancetype)initWithCoder:(NSCoder *)coder {
   self = [super initWithCoder:coder];
   if(self) {
     self.headers = [coder decodeObjectForKey:@"self.headers"];

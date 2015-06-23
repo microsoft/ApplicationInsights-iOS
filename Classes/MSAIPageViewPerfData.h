@@ -1,7 +1,4 @@
 #import "MSAIPageViewData.h"
-#import "MSAIObject.h"
-#import "MSAITelemetryData.h"
-#import "MSAIDomain.h"
 
 @interface MSAIPageViewPerfData : MSAIPageViewData <NSCoding>
 

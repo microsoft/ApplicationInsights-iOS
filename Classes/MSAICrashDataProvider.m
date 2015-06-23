@@ -49,14 +49,18 @@
 #import "MSAICrashData.h"
 #import "MSAICrashDataHeaders.h"
 #import "MSAICrashDataBinary.h"
+#import "MSAICrashDataThread.h"
 #import "MSAICrashDataThreadFrame.h"
 #import "MSAIHelper.h"
 #import "MSAIContextHelper.h"
 #import "MSAIContextHelperPrivate.h"
 #import "MSAIEnvelope.h"
 #import "MSAIData.h"
+#import "MSAIUser.h"
+#import "MSAISession.h"
 #import "MSAIEnvelopeManagerPrivate.h"
 #import "MSAIEnvelopeManager.h"
+#import "MSAIOrderedDictionary.h"
 
 /*
  * XXX: The ARM64 CPU type, and ARM_V7S and ARM_V8 Mach-O CPU subtypes are not
@@ -414,7 +418,7 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
   
   /* Uncaught Exception */
   if (report.hasExceptionInfo) {
-    crashHeaders.exceptionReason = report.exceptionInfo.exceptionReason;
+    crashHeaders.exceptionReason = [NSString stringWithFormat:@"%@: %@", report.exceptionInfo.exceptionName, report.exceptionInfo.exceptionReason];
   } else if (crashed_thread != nil) {
     // try to find the selector in case this was a crash in obj_msgSend
     // we search this wether the crash happend in obj_msgSend or not since we don't have the symbol!

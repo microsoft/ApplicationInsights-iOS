@@ -1,4 +1,8 @@
 #import "MSAIExceptionData.h"
+#import "MSAIOrderedDictionary.h"
+#import "MSAIEnums.h"
+#import "MSAIExceptionDetails.h"
+
 /// Data contract class for type ExceptionData.
 @implementation MSAIExceptionData
 @synthesize envelopeTypeName = _envelopeTypeName;
@@ -41,7 +45,7 @@
 
 #pragma mark - NSCoding
 
-- (id)initWithCoder:(NSCoder *)coder {
+- (instancetype)initWithCoder:(NSCoder *)coder {
   self = [super initWithCoder:coder];
   if(self) {
     self.handledAt = [coder decodeObjectForKey:@"self.handledAt"];
