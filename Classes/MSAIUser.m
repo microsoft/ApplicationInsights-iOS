@@ -1,4 +1,6 @@
 #import "MSAIUser.h"
+#import "MSAIOrderedDictionary.h"
+
 /// Data contract class for type User.
 @implementation MSAIUser
 
@@ -32,7 +34,7 @@
 
 #pragma mark - NSCoding
 
-- (id)initWithCoder:(NSCoder *)coder {
+- (instancetype)initWithCoder:(NSCoder *)coder {
   self = [super initWithCoder:coder];
   if(self) {
     self.accountAcquisitionDate = [coder decodeObjectForKey:@"self.accountAcquisitionDate"];

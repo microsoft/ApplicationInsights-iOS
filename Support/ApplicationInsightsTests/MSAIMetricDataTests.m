@@ -1,6 +1,7 @@
 #import <XCTest/XCTest.h>
 #import "MSAIMetricData.h"
 #import "MSAIDataPoint.h"
+#import "MSAIOrderedDictionary.h"
 
 @interface MSAIMetricDataTests : XCTestCase
 

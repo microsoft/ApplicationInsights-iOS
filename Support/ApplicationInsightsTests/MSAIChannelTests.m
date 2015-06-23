@@ -15,6 +15,7 @@
 #import "MSAITelemetryContextPrivate.h"
 #import "MSAIPersistence.h"
 #import "MSAIEnvelope.h"
+#import "MSAIOrderedDictionary.h"
 
 @interface MSAIChannelTests : XCTestCase
 

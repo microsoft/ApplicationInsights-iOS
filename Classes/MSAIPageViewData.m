@@ -1,4 +1,6 @@
 #import "MSAIPageViewData.h"
+#import "MSAIOrderedDictionary.h"
+
 /// Data contract class for type PageViewData.
 @implementation MSAIPageViewData
 @synthesize envelopeTypeName = _envelopeTypeName;
@@ -30,7 +32,7 @@
 
 #pragma mark - NSCoding
 
-- (id)initWithCoder:(NSCoder *)coder {
+- (instancetype)initWithCoder:(NSCoder *)coder {
   self = [super initWithCoder:coder];
   if(self) {
     self.url = [coder decodeObjectForKey:@"self.url"];

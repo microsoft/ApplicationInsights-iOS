@@ -178,10 +178,6 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (void)setUserId:(NSString *)userId __deprecated_msg("Use setUserWithConfigurationBlock: instead!");
 
-// Workaround an Xcode bug where block autocompletion does not properly work when the code is nullability annotated
-NS_ASSUME_NONNULL_END
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wnullability-completeness"
 /**
  *  Use this method to configure the current user's context.
  *
@@ -197,8 +193,6 @@ NS_ASSUME_NONNULL_END
  *  Within the block you can update the user object's values to up-to-date.
  */
 - (void)setUserWithConfigurationBlock:(void (^)(MSAIUser *user))userConfigurationBlock;
-#pragma clang diagnostic pop
-NS_ASSUME_NONNULL_BEGIN
 
 /**
  *  Manually trigger a new session start.

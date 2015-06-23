@@ -1,4 +1,6 @@
 #import "MSAIInternal.h"
+#import "MSAIOrderedDictionary.h"
+
 /// Data contract class for type Internal.
 @implementation MSAIInternal
 
@@ -26,7 +28,7 @@
 
 #pragma mark - NSCoding
 
-- (id)initWithCoder:(NSCoder *)coder {
+- (instancetype)initWithCoder:(NSCoder *)coder {
   self = [super init];
   if(self) {
     self.sdkVersion = [coder decodeObjectForKey:@"self.sdkVersion"];

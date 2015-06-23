@@ -1,4 +1,6 @@
 #import "MSAIDevice.h"
+#import "MSAIOrderedDictionary.h"
+
 /// Data contract class for type Device.
 @implementation MSAIDevice
 
@@ -62,7 +64,7 @@
 
 #pragma mark - NSCoding
 
-- (id)initWithCoder:(NSCoder *)coder {
+- (instancetype)initWithCoder:(NSCoder *)coder {
   self = [super init];
   if(self) {
     self.deviceId = [coder decodeObjectForKey:@"self.deviceId"];

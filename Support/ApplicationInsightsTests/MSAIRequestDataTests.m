@@ -1,5 +1,6 @@
 #import <XCTest/XCTest.h>
 #import "MSAIRequestData.h"
+#import "MSAIOrderedDictionary.h"
 
 @interface MSAIRequestDataTests : XCTestCase
 

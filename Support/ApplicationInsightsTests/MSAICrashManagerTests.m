@@ -12,6 +12,7 @@
 #import "MSAIContextPrivate.h"
 #import "MSAIPersistencePrivate.h"
 #import "MSAIEnvelope.h"
+#import "MSAIBase.h"
 #import "MSAICrashData.h"
 #import "MSAITestHelper.h"
 #import "MSAITelemetryContext.h"

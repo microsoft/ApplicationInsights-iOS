@@ -7,6 +7,7 @@
 #import "MSAIContextHelperPrivate.h"
 #import "MSAIReachability.h"
 #import "MSAIReachabilityPrivate.h"
+#import "MSAIOrderedDictionary.h"
 
 NSString *const kMSAITelemetrySessionId = @"MSAITelemetrySessionId";
 NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";

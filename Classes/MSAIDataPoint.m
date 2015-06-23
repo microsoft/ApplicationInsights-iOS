@@ -1,4 +1,5 @@
 #import "MSAIDataPoint.h"
+#import "MSAIOrderedDictionary.h"
 
 /// Data contract class for type DataPoint.
 @implementation MSAIDataPoint
@@ -41,7 +42,7 @@
 
 #pragma mark - NSCoding
 
-- (id)initWithCoder:(NSCoder *)coder {
+- (instancetype)initWithCoder:(NSCoder *)coder {
   self = [self init];
   if(self) {
     self.name = [coder decodeObjectForKey:@"self.name"];

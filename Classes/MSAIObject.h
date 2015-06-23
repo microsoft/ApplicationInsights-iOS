@@ -1,6 +1,5 @@
 #import <Foundation/Foundation.h>
-#import "MSAIEnums.h"
-#import "MSAIOrderedDictionary.h"
+@class MSAIOrderedDictionary;
 
 @interface MSAIObject : NSObject <NSCoding>
 

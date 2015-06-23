@@ -8,6 +8,7 @@
 
 #import "MSAIEnvelope.h"
 #import "MSAIPersistencePrivate.h"
+#import "MSAIOrderedDictionary.h"
 
 typedef void (^MSAIPersistenceTestBlock)(BOOL);
 

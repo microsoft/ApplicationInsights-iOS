@@ -104,7 +104,7 @@
 		80677CDB1B2EF23000B324E5 /* MSAINullability.h in Headers */ = {isa = PBXBuildFile; fileRef = 80677CDA1B2EF23000B324E5 /* MSAINullability.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		807CFD681A71294E004EA1B6 /* MSAIOrderedDictionary.h in Headers */ = {isa = PBXBuildFile; fileRef = 807CFD661A71294E004EA1B6 /* MSAIOrderedDictionary.h */; };
 		807CFD691A71294E004EA1B6 /* MSAIOrderedDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 807CFD671A71294E004EA1B6 /* MSAIOrderedDictionary.m */; };
-		807CFD6E1A712969004EA1B6 /* MSAIObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 807CFD6A1A712969004EA1B6 /* MSAIObject.h */; };
+		807CFD6E1A712969004EA1B6 /* MSAIObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 807CFD6A1A712969004EA1B6 /* MSAIObject.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		807CFD6F1A712969004EA1B6 /* MSAIObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 807CFD6B1A712969004EA1B6 /* MSAIObject.m */; };
 		807CFD701A712969004EA1B6 /* MSAITelemetryData.h in Headers */ = {isa = PBXBuildFile; fileRef = 807CFD6C1A712969004EA1B6 /* MSAITelemetryData.h */; };
 		807CFD711A712969004EA1B6 /* MSAITelemetryData.m in Sources */ = {isa = PBXBuildFile; fileRef = 807CFD6D1A712969004EA1B6 /* MSAITelemetryData.m */; };
@@ -298,8 +298,8 @@
 		1EFF03D717F20F8300A5F13C /* MSAICrashManagerPrivate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MSAICrashManagerPrivate.h; sourceTree = "<group>"; };
 		594931F0F69C22CBB67A2AD9 /* MSAIPersistence.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAIPersistence.h; sourceTree = "<group>"; };
 		59493E91C1D38C3FC5F77D19 /* MSAIPersistence.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAIPersistence.m; sourceTree = "<group>"; };
-		8000A3D31B0E973F009F2B29 /* MSAICategoryContainerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAICategoryContainerTests.m; path = ApplicationInsightsTests/MSAICategoryContainerTests.m; sourceTree = SOURCE_ROOT; };
 		8000A3D21B0E8D83009F2B29 /* ApplicationInsights-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "ApplicationInsights-Info.plist"; sourceTree = "<group>"; };
+		8000A3D31B0E973F009F2B29 /* MSAICategoryContainerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAICategoryContainerTests.m; path = ApplicationInsightsTests/MSAICategoryContainerTests.m; sourceTree = SOURCE_ROOT; };
 		8004739B1ABB8FC200BBFE62 /* MSAIPersistencePrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAIPersistencePrivate.h; sourceTree = "<group>"; };
 		80677CDA1B2EF23000B324E5 /* MSAINullability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAINullability.h; sourceTree = "<group>"; };
 		807CFD661A71294E004EA1B6 /* MSAIOrderedDictionary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAIOrderedDictionary.h; sourceTree = "<group>"; };
