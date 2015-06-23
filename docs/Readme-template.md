@@ -26,7 +26,8 @@ The SDK runs on devices with iOS 6.0 or higher.
 <a name="releasenotes"></a>
 ## 1. Release Notes
 
-* Allow for easier integration in most projects using the `@import ApplicationInsights;` syntax. This makes manual linking of system frameworks unnecessary!
+* Make integration a lot easier, using the `@import ApplicationInsights;` syntax. This makes manual linking of system frameworks unnecessary!
+(_Note: Requires support for modules. This is enabled by default for all projects created with Xcode 5 or newer._)
 * Add feature to set common properties that will apply to all telemetry data items.
 
     ```objectivec
