@@ -26,23 +26,30 @@ The SDK runs on devices with iOS 6.0 or higher.
 <a name="releasenotes"></a>
 ## 1. Release Notes
 
-* Add new API to be able to manually set session and user IDs.
+* Allow for easier integration in most projects using the `@import ApplicationInsights;` syntax. This makes manual linking of system frameworks unnecessary!
+* Add feature to set common properties that will apply to all telemetry data items.
 
-	``` objectivec
-	[MSAIApplicationInsights setUserId:@"your_user_id"];
-	[MSAIApplicationInsights renewSessionWithId:@"4815162342"];
-	```
+    ```objectivec
+    [MSAITelemetryManager setCommonProperties:@{@"custom info":@"some value"}];
+    ```
 
-* Allow to specify the amount of time that an app has to remain in the background before a new session is triggered.
+* Allow for further customization of user context fields.
+Note that this means that the old way of setting the user ID, `setUserId:`, is now deprecated!
 
-	``` objectivec
-	[MSAIApplicationInsights setAppBackgroundTimeBeforeSessionExpires:60];
-	```
+    ```objectivec
+      [[MSAIApplicationInsights sharedInstance] setUserWithConfigurationBlock:^(MSAIUser *user) {
+        user.userId = @"your_user_id";
+        user.accountId = @"user@example.com";
+      }];
+    ```
 
-* Make our sending-retry policy more robust and only delete data on unrecoverable HTTP status codes.
-* Trigger saving of queued-up date when the app goes to the background since it's very likely that app might be removed from memory by the OS.
-* Add our Xcode docset to the the downloaded archive.
-* Several small fixes, cleanups and optimizations under the hood. 
+* Add support for unhandled C++ exceptions
+* Switch to sending data in JSON Stream format to improve compatibility with different server backends.
+* Improve crash reports by sending additional exception information.
+* Add instructions to Readme about how to setup the SDK with WatchKit extensions.
+* Add logging incase the developer tries to send objects that are not NSJSONSerialization compatible.
+* Fix issues with the backwars compatiblity of the nullability annotation.
+* Various other small improvements and fixes.
 
 See [here](https://github.com/Microsoft/ApplicationInsights-iOS/releases) for the release notes of previous versions.
 
