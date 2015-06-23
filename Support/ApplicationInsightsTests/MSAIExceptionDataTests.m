@@ -1,5 +1,7 @@
 #import <XCTest/XCTest.h>
 #import "MSAIExceptionData.h"
+#import "MSAIExceptionDetails.h"
+#import "MSAIOrderedDictionary.h"
 
 @interface MSAIExceptionDataTests : XCTestCase
 

@@ -1,4 +1,6 @@
 #import "MSAICrashDataBinary.h"
+#import "MSAIOrderedDictionary.h"
+
 /// Data contract class for type CrashDataBinary.
 @implementation MSAICrashDataBinary
 
@@ -41,7 +43,7 @@
 
 #pragma mark - NSCoding
 
-- (id)initWithCoder:(NSCoder *)coder {
+- (instancetype)initWithCoder:(NSCoder *)coder {
   self = [super initWithCoder:coder];
   if(self) {
     self.startAddress = [coder decodeObjectForKey:@"self.startAddress"];

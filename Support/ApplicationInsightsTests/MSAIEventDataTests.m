@@ -1,5 +1,6 @@
 #import <XCTest/XCTest.h>
 #import "MSAIEventData.h"
+#import "MSAIOrderedDictionary.h"
 
 @interface MSAIEventDataTests : XCTestCase
 

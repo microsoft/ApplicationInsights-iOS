@@ -1,4 +1,6 @@
 #import "MSAIOperation.h"
+#import "MSAIOrderedDictionary.h"
+
 /// Data contract class for type Operation.
 @implementation MSAIOperation
 
@@ -32,7 +34,7 @@
 
 #pragma mark - NSCoding
 
-- (id)initWithCoder:(NSCoder *)coder {
+- (instancetype)initWithCoder:(NSCoder *)coder {
   self = [super initWithCoder:coder];
   if(self) {
     self.operationId = [coder decodeObjectForKey:@"self.operationId"];

@@ -1,4 +1,6 @@
 #import "MSAICrashDataThreadFrame.h"
+#import "MSAIOrderedDictionary.h"
+
 /// Data contract class for type CrashDataThreadFrame.
 @implementation MSAICrashDataThreadFrame
 
@@ -31,7 +33,7 @@
 
 #pragma mark - NSCoding
 
-- (id)initWithCoder:(NSCoder *)coder {
+- (instancetype)initWithCoder:(NSCoder *)coder {
   self = [super initWithCoder:coder];
   if(self) {
     self.address = [coder decodeObjectForKey:@"self.address"];

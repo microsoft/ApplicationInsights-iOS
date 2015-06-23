@@ -6,7 +6,7 @@
 
 @property (nonatomic, strong) NSString *baseType;
 
-- (id)initWithCoder:(NSCoder *)coder;
+- (instancetype)initWithCoder:(NSCoder *)coder;
 
 - (void)encodeWithCoder:(NSCoder *)coder;
 

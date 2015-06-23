@@ -49,6 +49,7 @@
 #import "MSAICrashData.h"
 #import "MSAICrashDataHeaders.h"
 #import "MSAICrashDataBinary.h"
+#import "MSAICrashDataThread.h"
 #import "MSAICrashDataThreadFrame.h"
 #import "MSAIHelper.h"
 #import "MSAIContextHelper.h"
@@ -59,6 +60,7 @@
 #import "MSAISession.h"
 #import "MSAIEnvelopeManagerPrivate.h"
 #import "MSAIEnvelopeManager.h"
+#import "MSAIOrderedDictionary.h"
 
 /*
  * XXX: The ARM64 CPU type, and ARM_V7S and ARM_V8 Mach-O CPU subtypes are not

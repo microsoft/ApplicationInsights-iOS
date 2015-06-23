@@ -8,6 +8,7 @@
 #import "MSAICrashDataProvider.h"
 #import "MSAICrashDetailsPrivate.h"
 #import "MSAICrashData.h"
+#import "MSAICrashDataHeaders.h"
 #import "MSAICrashCXXExceptionHandler.h"
 #import "MSAIChannel.h"
 #import "MSAIChannelPrivate.h"

@@ -1,5 +1,6 @@
 #import <XCTest/XCTest.h>
 #import "MSAIEnvelope.h"
+#import "MSAIOrderedDictionary.h"
 
 @interface MSAIEnvelopeTests : XCTestCase
 

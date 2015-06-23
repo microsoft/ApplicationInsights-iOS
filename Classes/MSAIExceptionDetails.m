@@ -1,5 +1,7 @@
 #import "MSAIExceptionDetails.h"
 #import "MSAIStackFrame.h"
+#import "MSAIOrderedDictionary.h"
+
 /// Data contract class for type ExceptionDetails.
 @implementation MSAIExceptionDetails
 
@@ -47,7 +49,7 @@
 
 #pragma mark - NSCoding
 
-- (id)initWithCoder:(NSCoder *)coder {
+- (instancetype)initWithCoder:(NSCoder *)coder {
   self = [super init];
   if(self) {
     self.exceptionDetailsId = [coder decodeObjectForKey:@"self.exceptionDetailsId"];

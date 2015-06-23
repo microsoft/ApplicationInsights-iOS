@@ -1,9 +1,5 @@
-#import "MSAICrashDataHeaders.h"
-#import "MSAICrashDataThread.h"
-#import "MSAICrashDataBinary.h"
-#import "MSAIObject.h"
-#import "MSAITelemetryData.h"
 #import "MSAIDomain.h"
+@class MSAICrashDataHeaders;
 
 @interface MSAICrashData : MSAIDomain <NSCoding>
 
@@ -13,7 +9,7 @@
 @property (nonatomic, strong) NSMutableArray *threads;
 @property (nonatomic, strong) NSMutableArray *binaries;
 
-- (id)initWithCoder:(NSCoder *)coder;
+- (instancetype)initWithCoder:(NSCoder *)coder;
 
 - (void)encodeWithCoder:(NSCoder *)coder;
 

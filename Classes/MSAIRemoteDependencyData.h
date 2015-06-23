@@ -1,6 +1,7 @@
-#import "MSAIObject.h"
-#import "MSAITelemetryData.h"
 #import "MSAIDomain.h"
+#import "MSAIDataPointType.h"
+#import "MSAIDependencyKind.h"
+#import "MSAIDependencySourceType.h"
 
 @interface MSAIRemoteDependencyData : MSAIDomain <NSCoding>
 
