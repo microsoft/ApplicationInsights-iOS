@@ -637,7 +637,7 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
   
   if(stacktrace){
     details.stack = stacktrace;
-    NSArray *stackframes = [self stackframesForStacktrace:stacktrace];
+    NSMutableArray *stackframes = [self stackframesForStacktrace:stacktrace];
     if(stackframes.count >= 1){
       details.parsedStack = stackframes;
       details.hasFullStack = YES;
@@ -651,7 +651,7 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
   return data;
 }
 
-+ (NSArray *)stackframesForStacktrace:(NSString *)stacktrace{
++ (NSMutableArray *)stackframesForStacktrace:(NSString *)stacktrace{
   
   NSMutableArray * frames;
   
@@ -671,24 +671,25 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
 }
 
 + (MSAIStackFrame *)stackframeForStackLine:(NSString *)stackLine{
-  
   MSAIStackFrame *frame;
   if(stackLine){
-    NSArray * frameComponents = [stackLine componentsSeparatedByString:@" "];
-    if(frameComponents.count > 3){
-      frame = [MSAIStackFrame new];
-      frame.method = [NSString stringWithFormat:@"%@%@", frameComponents[1], frameComponents[2]];
+      
+    frame = [MSAIStackFrame new];
+    frame.method = [self methodNameFromLine:stackLine];
 
-      NSArray * fileAndLine = [frameComponents.lastObject componentsSeparatedByString:@":"];
-      if((fileAndLine.count == 2) && ([fileAndLine[1] intValue] > 0)){
-        frame.line = @([fileAndLine[1] intValue]);
-        frame.fileName = fileAndLine[0];
-      }
-    }
   }
   return frame;
 }
 
 #endif /* MSAI_FEATURE_XAMARIN */
+
++ (NSString *)methodNameFromLine:(NSString *)line{
+  NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"^\\s*at\\s(.*\\(.*\\))" options:NSRegularExpressionAnchorsMatchLines error:NULL];
+  NSTextCheckingResult *found = [regex firstMatchInString:line options:0 range:NSMakeRange(0, line.length)];
+  NSInteger index = (found.numberOfRanges > 0) ? 1 : 0;
+  NSString *methodName = [line substringWithRange:[found rangeAtIndex:index]];
+  
+  return methodName;
+}
 
 @end
