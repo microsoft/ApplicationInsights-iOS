@@ -677,23 +677,25 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
 + (MSAIStackFrame *)stackframeForStackLine:(NSString *)stackLine{
   MSAIStackFrame *frame;
   if(stackLine){
-      
-    frame = [MSAIStackFrame new];
-    frame.method = [self methodNameFromLine:stackLine];
+    NSRegularExpression *regexMethod = [NSRegularExpression regularExpressionWithPattern:@"^\\s*at\\s(.*\\(.*\\))" options:NSRegularExpressionAnchorsMatchLines error:NULL];
+    NSTextCheckingResult *foundMethod = [regexMethod firstMatchInString:stackLine options:0 range:NSMakeRange(0, stackLine.length)];
 
+    if(foundMethod.numberOfRanges > 1){
+      frame = [MSAIStackFrame new];
+      frame.method = [stackLine substringWithRange:[foundMethod rangeAtIndex:1]];
+      
+      NSRegularExpression *regexFileAndLine = [NSRegularExpression regularExpressionWithPattern:@"in\\s\\((.*):([0-9s]+)\\)" options:NSRegularExpressionAnchorsMatchLines error:NULL];
+      NSTextCheckingResult *foundFileAndLine = [regexFileAndLine firstMatchInString:stackLine options:0 range:NSMakeRange(0, stackLine.length)];
+      
+      if(foundFileAndLine.numberOfRanges > 2){
+        frame.fileName = [stackLine substringWithRange:[foundFileAndLine rangeAtIndex:1]];
+        frame.line = @([[stackLine substringWithRange:[foundFileAndLine rangeAtIndex:2]] intValue]);
+      }
+    }
   }
   return frame;
 }
 
 #endif /* MSAI_FEATURE_XAMARIN */
-
-+ (NSString *)methodNameFromLine:(NSString *)line{
-  NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"^\\s*at\\s(.*\\(.*\\))" options:NSRegularExpressionAnchorsMatchLines error:NULL];
-  NSTextCheckingResult *found = [regex firstMatchInString:line options:0 range:NSMakeRange(0, line.length)];
-  NSInteger index = (found.numberOfRanges > 0) ? 1 : 0;
-  NSString *methodName = [line substringWithRange:[found rangeAtIndex:index]];
-  
-  return methodName;
-}
 
 @end
