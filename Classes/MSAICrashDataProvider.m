@@ -649,7 +649,7 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
   }
   
   MSAIExceptionData *data = [MSAIExceptionData new];
-  data.handledAt = @"";
+  data.handledAt = handled ? @"HANDLED" : @"UNHANDLED";
   data.exceptions = @[details].mutableCopy;
   
   return data;
@@ -667,7 +667,7 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
       if(frame){
         [frames addObject:frame];
       }else{
-        return nil;
+        //
       }
     }
   }
@@ -684,7 +684,7 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
       frame = [MSAIStackFrame new];
       frame.method = [stackLine substringWithRange:[foundMethod rangeAtIndex:1]];
       
-      NSRegularExpression *regexFileAndLine = [NSRegularExpression regularExpressionWithPattern:@"in\\s\\((.*):([0-9s]+)\\)" options:NSRegularExpressionAnchorsMatchLines error:NULL];
+      NSRegularExpression *regexFileAndLine = [NSRegularExpression regularExpressionWithPattern:@"in\\s(.*):([0-9s]+)\\s*" options:NSRegularExpressionAnchorsMatchLines error:NULL];
       NSTextCheckingResult *foundFileAndLine = [regexFileAndLine firstMatchInString:stackLine options:0 range:NSMakeRange(0, stackLine.length)];
       
       if(foundFileAndLine.numberOfRanges > 2){
