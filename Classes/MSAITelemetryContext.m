@@ -41,7 +41,7 @@ NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
     
     MSAISession *sessionContext = [[MSAIContextHelper sharedInstance] newSession];
     [[MSAIContextHelper sharedInstance] addSession:sessionContext withDate:[NSDate date]];
-    NSDictionary *userInfo = @{kMSAISessionInfoSession: sessionContext};
+    NSDictionary *userInfo = @{kMSAISessionInfo : sessionContext};
     [[MSAIContextHelper sharedInstance] sendSessionStartedNotificationWithUserInfo:userInfo];
     
     MSAIOperation *operationContext = [MSAIOperation new];
