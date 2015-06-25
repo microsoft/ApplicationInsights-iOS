@@ -1,6 +1,9 @@
 #import "MSAIRequestData.h"
+#import "MSAIOrderedDictionary.h"
+
 /// Data contract class for type RequestData.
 @implementation MSAIRequestData
+
 @synthesize envelopeTypeName = _envelopeTypeName;
 @synthesize dataTypeName = _dataTypeName;
 
@@ -52,7 +55,7 @@
 
 #pragma mark - NSCoding
 
-- (id)initWithCoder:(NSCoder *)coder {
+- (instancetype)initWithCoder:(NSCoder *)coder {
   self = [super initWithCoder:coder];
   if(self) {
     self.requestDataId = [coder decodeObjectForKey:@"self.requestDataId"];

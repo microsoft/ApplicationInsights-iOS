@@ -28,6 +28,7 @@
 #import "MSAIContextHelper.h"
 #import "MSAIContextHelperPrivate.h"
 #import "MSAISessionStateData.h"
+#import "MSAIOrderedDictionary.h"
 
 #if MSAI_FEATURE_XAMARIN
 #import "MSAIExceptionData.h"

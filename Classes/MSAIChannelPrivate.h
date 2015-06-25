@@ -17,7 +17,6 @@ FOUNDATION_EXPORT NSInteger const debugMaxBatchCount;
 
 FOUNDATION_EXPORT NSInteger const defaultBatchInterval;
 FOUNDATION_EXPORT NSInteger const defaultMaxBatchCount;
-FOUNDATION_EXPORT char *MSAISafeJsonEventsString;
 
 @interface MSAIChannel ()
 
@@ -44,11 +43,6 @@ FOUNDATION_EXPORT char *MSAISafeJsonEventsString;
 @property (nonatomic, strong) dispatch_queue_t dataItemsOperations;
 
 /**
- *  An array for collecting data, which should be sent to the telemetry server.
- */
-@property (nonatomic, strong) NSMutableArray *dataItemQueue;
-
-/**
  *  An integer value that keeps tracks of the number of data items added to the JSON Stream string.
  */
 @property (nonatomic, assign) NSUInteger dataItemCount;
@@ -59,6 +53,11 @@ FOUNDATION_EXPORT char *MSAISafeJsonEventsString;
  *  @param dictionary The dictionary object, which should be processed.
  */
 - (void)enqueueDictionary:(MSAIOrderedDictionary *)dictionary;
+
+/**
+ *  Manually trigger the MSAIChannel to persist all items currently in its data item queue.
+ */
+- (void)persistDataItemQueue;
 
 ///-----------------------------------------------------------------------------
 /// @name JSON Stream

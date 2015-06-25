@@ -1,6 +1,4 @@
 #import "MSAIObject.h"
-#import "MSAITelemetryData.h"
-#import "MSAIDomain.h"
 
 @interface MSAIDevice : MSAIObject <NSCoding>
 
@@ -19,7 +17,7 @@
 @property (nonatomic, strong) NSString *type;
 @property (nonatomic, strong) NSString *vmName;
 
-- (id)initWithCoder:(NSCoder *)coder;
+- (instancetype)initWithCoder:(NSCoder *)coder;
 
 - (void)encodeWithCoder:(NSCoder *)coder;
 

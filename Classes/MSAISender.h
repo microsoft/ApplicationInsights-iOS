@@ -8,7 +8,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface MSAISender : NSObject
 
 /**
- *  Triggers sending the saved data. Does nothing if nothing has been persisted, yet. This method should be called by MSAITelemetryMnager on app start.
+ *  Triggers sending the saved data. Does nothing if nothing has been persisted, yet. This method should be called by MSAITelemetryManager on app start.
  */
 - (void)sendSavedData;
 

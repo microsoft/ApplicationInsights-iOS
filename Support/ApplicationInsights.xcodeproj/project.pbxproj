@@ -82,7 +82,7 @@
 		1E754E601621FBB70070AB92 /* MSAICrashDataProvider.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E754E5A1621FBB70070AB92 /* MSAICrashDataProvider.h */; };
 		1E754E611621FBB70070AB92 /* MSAICrashDataProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E754E5B1621FBB70070AB92 /* MSAICrashDataProvider.m */; };
 		1E84DB3417E099BA00AC83FD /* ApplicationInsightsFeatureConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E84DB3317E0977C00AC83FD /* ApplicationInsightsFeatureConfig.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		1E90FD7318EDB86400CF0417 /* MSAICrashDetails.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E90FD7118EDB86400CF0417 /* MSAICrashDetails.h */; };
+		1E90FD7318EDB86400CF0417 /* MSAICrashDetails.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E90FD7118EDB86400CF0417 /* MSAICrashDetails.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1E90FD7418EDB86400CF0417 /* MSAICrashDetails.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E90FD7218EDB86400CF0417 /* MSAICrashDetails.m */; };
 		1EA1170016F4D32C001C015C /* libApplicationInsights.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E5954F215B6F24A00A03429 /* libApplicationInsights.a */; };
 		1EB2E4C618FD4CEA008BB1CF /* MSAITelemetryManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 1EB2E4C418FD4CEA008BB1CF /* MSAITelemetryManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -90,6 +90,7 @@
 		1ECA8F4D192B5BD8006B9416 /* MSAICrashDetailsPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 1ECA8F4B192B5BD8006B9416 /* MSAICrashDetailsPrivate.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		594931B3422F36B9D1DA449C /* MSAIPersistence.h in Headers */ = {isa = PBXBuildFile; fileRef = 594931F0F69C22CBB67A2AD9 /* MSAIPersistence.h */; };
 		59493E4E3899627127FA6760 /* MSAIPersistence.m in Sources */ = {isa = PBXBuildFile; fileRef = 59493E91C1D38C3FC5F77D19 /* MSAIPersistence.m */; };
+		8000A3D41B0E973F009F2B29 /* MSAICategoryContainerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8000A3D31B0E973F009F2B29 /* MSAICategoryContainerTests.m */; };
 		8004739C1ABB8FC200BBFE62 /* MSAIPersistencePrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 8004739B1ABB8FC200BBFE62 /* MSAIPersistencePrivate.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		803871BD1A94C0A600BF295F /* MSAIPageViewLogging_UIViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 1BC8596D1A7ACC040018FB6B /* MSAIPageViewLogging_UIViewController.h */; };
 		803871C01A94C26500BF295F /* MSAICrashManagerPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 1EFF03D717F20F8300A5F13C /* MSAICrashManagerPrivate.h */; settings = {ATTRIBUTES = (Private, ); }; };
@@ -103,7 +104,7 @@
 		80677CDB1B2EF23000B324E5 /* MSAINullability.h in Headers */ = {isa = PBXBuildFile; fileRef = 80677CDA1B2EF23000B324E5 /* MSAINullability.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		807CFD681A71294E004EA1B6 /* MSAIOrderedDictionary.h in Headers */ = {isa = PBXBuildFile; fileRef = 807CFD661A71294E004EA1B6 /* MSAIOrderedDictionary.h */; };
 		807CFD691A71294E004EA1B6 /* MSAIOrderedDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = 807CFD671A71294E004EA1B6 /* MSAIOrderedDictionary.m */; };
-		807CFD6E1A712969004EA1B6 /* MSAIObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 807CFD6A1A712969004EA1B6 /* MSAIObject.h */; };
+		807CFD6E1A712969004EA1B6 /* MSAIObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 807CFD6A1A712969004EA1B6 /* MSAIObject.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		807CFD6F1A712969004EA1B6 /* MSAIObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 807CFD6B1A712969004EA1B6 /* MSAIObject.m */; };
 		807CFD701A712969004EA1B6 /* MSAITelemetryData.h in Headers */ = {isa = PBXBuildFile; fileRef = 807CFD6C1A712969004EA1B6 /* MSAITelemetryData.h */; };
 		807CFD711A712969004EA1B6 /* MSAITelemetryData.m in Sources */ = {isa = PBXBuildFile; fileRef = 807CFD6D1A712969004EA1B6 /* MSAITelemetryData.m */; };
@@ -154,7 +155,7 @@
 		807CFDCF1A712974004EA1B6 /* MSAISeverityLevel.h in Headers */ = {isa = PBXBuildFile; fileRef = 807CFD9E1A712974004EA1B6 /* MSAISeverityLevel.h */; };
 		807CFDD01A712974004EA1B6 /* MSAIStackFrame.h in Headers */ = {isa = PBXBuildFile; fileRef = 807CFD9F1A712974004EA1B6 /* MSAIStackFrame.h */; };
 		807CFDD11A712974004EA1B6 /* MSAIStackFrame.m in Sources */ = {isa = PBXBuildFile; fileRef = 807CFDA01A712974004EA1B6 /* MSAIStackFrame.m */; };
-		807CFDD21A712974004EA1B6 /* MSAIUser.h in Headers */ = {isa = PBXBuildFile; fileRef = 807CFDA11A712974004EA1B6 /* MSAIUser.h */; };
+		807CFDD21A712974004EA1B6 /* MSAIUser.h in Headers */ = {isa = PBXBuildFile; fileRef = 807CFDA11A712974004EA1B6 /* MSAIUser.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		807CFDD31A712974004EA1B6 /* MSAIUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 807CFDA21A712974004EA1B6 /* MSAIUser.m */; };
 		809E9E5A1AC455D9008A1AB5 /* MSAISessionState.h in Headers */ = {isa = PBXBuildFile; fileRef = 809E9E571AC455D9008A1AB5 /* MSAISessionState.h */; };
 		809E9E5B1AC455D9008A1AB5 /* MSAISessionStateData.h in Headers */ = {isa = PBXBuildFile; fileRef = 809E9E581AC455D9008A1AB5 /* MSAISessionStateData.h */; };
@@ -298,6 +299,7 @@
 		594931F0F69C22CBB67A2AD9 /* MSAIPersistence.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAIPersistence.h; sourceTree = "<group>"; };
 		59493E91C1D38C3FC5F77D19 /* MSAIPersistence.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAIPersistence.m; sourceTree = "<group>"; };
 		8000A3D21B0E8D83009F2B29 /* ApplicationInsights-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "ApplicationInsights-Info.plist"; sourceTree = "<group>"; };
+		8000A3D31B0E973F009F2B29 /* MSAICategoryContainerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAICategoryContainerTests.m; path = ApplicationInsightsTests/MSAICategoryContainerTests.m; sourceTree = SOURCE_ROOT; };
 		8004739B1ABB8FC200BBFE62 /* MSAIPersistencePrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAIPersistencePrivate.h; sourceTree = "<group>"; };
 		80677CDA1B2EF23000B324E5 /* MSAINullability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAINullability.h; sourceTree = "<group>"; };
 		807CFD661A71294E004EA1B6 /* MSAIOrderedDictionary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAIOrderedDictionary.h; sourceTree = "<group>"; };
@@ -599,6 +601,7 @@
 				80E1A4101AE54B5300603B0A /* MSAITestsDependencyInjection.m */,
 				80E1A4111AE54B5300603B0A /* MSAIUserTests.m */,
 				1E5A459716F0DFC200B55C04 /* Supporting Files */,
+				8000A3D31B0E973F009F2B29 /* MSAICategoryContainerTests.m */,
 			);
 			name = "ApplicationInsights Tests";
 			path = ApplicationInsightsTests;
@@ -976,7 +979,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Sets the target folders and the final framework product.\nFMK_NAME=ApplicationInsights\nFMK_VERSION=A\n\n# Documentation\nAIS_DOCSET_VERSION_NAME=\"com.microsoft.applicationinsights.${AIS_DOCSET_NAME}-${VERSION_STRING}\"\n\n# Install dir will be the final output to the framework.\n# The following line create it in the root folder of the current project.\nPRODUCTS_DIR=${SRCROOT}/../Products\nZIP_FOLDER=${FMK_NAME}\nTEMP_DIR=${PRODUCTS_DIR}/${ZIP_FOLDER}\nINSTALL_DIR=${TEMP_DIR}/${FMK_NAME}.framework\n\n# Working dir will be deleted after the framework creation.\nWRK_DIR=build\nDEVICE_DIR=${WRK_DIR}/Release-iphoneos\nSIMULATOR_DIR=${WRK_DIR}/Release-iphonesimulator\n\n# Building the full featured SDK\n\n# Building both architectures.\nxcodebuild -project \"ApplicationInsights.xcodeproj\" -configuration \"Release\" -target \"${FMK_NAME}\" -sdk iphoneos\nxcodebuild -project \"ApplicationInsights.xcodeproj\" -configuration \"Release\" -target \"${FMK_NAME}\" -sdk iphonesimulator\n\n# Cleaning the oldest.\nif [ -d \"${TEMP_DIR}\" ]\nthen\nrm -rf \"${TEMP_DIR}\"\nfi\n\n# Creates and renews the final product folder.\nmkdir -p \"${INSTALL_DIR}\"\nmkdir -p \"${INSTALL_DIR}/Modules\"\nmkdir -p \"${INSTALL_DIR}/Versions\"\nmkdir -p \"${INSTALL_DIR}/Versions/${FMK_VERSION}\"\nmkdir -p \"${INSTALL_DIR}/Versions/${FMK_VERSION}/Resources\"\nmkdir -p \"${INSTALL_DIR}/Versions/${FMK_VERSION}/Headers\"\n\n# Creates the internal links.\n# It MUST uses relative path, otherwise will not work when the folder is copied/moved.\nln -s \"${FMK_VERSION}\" \"${INSTALL_DIR}/Versions/Current\"\nln -s \"Versions/Current/Headers\" \"${INSTALL_DIR}/Headers\"\nln -s \"Versions/Current/Resources\" \"${INSTALL_DIR}/Resources\"\nln -s \"Versions/Current/${FMK_NAME}\" \"${INSTALL_DIR}/${FMK_NAME}\"\n\n# Copy the swift import file\ncp -f \"${SRCROOT}/module.modulemap\" \"${INSTALL_DIR}/Modules/\"\n\n# Copies the headers and resources files to the final product folder.\ncp -R \"${SRCROOT}/build/Release-iphoneos/include/${FMK_NAME}/\" \"${INSTALL_DIR}/Versions/${FMK_VERSION}/Headers/\"\ncp -f \"${SRCROOT}/${FMK_NAME}.xcconfig\" \"${INSTALL_DIR}/Versions/${FMK_VERSION}/Resources/\"\n\n# Uses the Lipo Tool to merge both binary files (i386 + armv6/armv7) into one Universal final product.\nlipo -create \"${DEVICE_DIR}/lib${FMK_NAME}.a\" \"${SIMULATOR_DIR}/lib${FMK_NAME}.a\" -output \"${INSTALL_DIR}/Versions/${FMK_VERSION}/${FMK_NAME}\"\n\n# Combine the CrashReporter static library into a new ApplicationInsights static library file if they are not already present and copy the public headers too\nif [ -z $(otool -L \"${INSTALL_DIR}/Versions/${FMK_VERSION}/${FMK_NAME}\" | grep 'libCrashReporter') ]\nthen\nlibtool -static -o \"${INSTALL_DIR}/Versions/${FMK_VERSION}/${FMK_NAME}\" \"${INSTALL_DIR}/Versions/${FMK_VERSION}/${FMK_NAME}\" \"${SRCROOT}/../Vendor/CrashReporter.framework/Versions/A/CrashReporter\"\nfi\n\n# Move the crash reporting only framework into a new folder\n#mkdir \"${INSTALL_DIR}/../${FMK_NAME}CrashOnly\"\n#mv \"${INSTALL_DIR}\" \"${INSTALL_DIR}/../${FMK_NAME}CrashOnly/${FMK_NAME}.framework\"\n\n#rm -r \"${WRK_DIR}\"\n\n\n# copy license, changelog, documentation, integration json\n#cp -f \"${SRCROOT}/../Docs/Changelog-template.md\" \"${TEMP_DIR}/CHANGELOG\"\ncp -f \"${SRCROOT}/../Docs/Readme-template.md\" \"${TEMP_DIR}/README.md\"\ncp -f \"${SRCROOT}/../Docs/Readme-template.md\" \"${SRCROOT}/../README.md\"\ncp -f \"${SRCROOT}/../LICENSE\" \"${TEMP_DIR}\"\nmkdir \"${TEMP_DIR}/${AIS_DOCSET_VERSION_NAME}.docset\"\ncp -R \"${SRCROOT}/../documentation/docset/Contents\" \"${TEMP_DIR}/${AIS_DOCSET_VERSION_NAME}.docset\"\n\n# build zip\ncd \"${PRODUCTS_DIR}\"\nrm -f \"${FMK_NAME}-${VERSION_STRING}.zip\"\nzip -yr \"${FMK_NAME}-${VERSION_STRING}.zip\" \"${ZIP_FOLDER}\" -x \\*/.*\n";
+			shellScript = "# Sets the target folders and the final framework product.\nFMK_NAME=ApplicationInsights\nFMK_VERSION=A\n\n# Documentation\nAIS_DOCSET_VERSION_NAME=\"com.microsoft.applicationinsights.${AIS_DOCSET_NAME}-${VERSION_STRING}\"\n\n# Install dir will be the final output to the framework.\n# The following line create it in the root folder of the current project.\nPRODUCTS_DIR=${SRCROOT}/../Products\nZIP_FOLDER=${FMK_NAME}\nTEMP_DIR=${PRODUCTS_DIR}/${ZIP_FOLDER}\nINSTALL_DIR=${TEMP_DIR}/${FMK_NAME}.framework\n\n# Working dir will be deleted after the framework creation.\nWRK_DIR=build\nDEVICE_DIR=${WRK_DIR}/Release-iphoneos\nSIMULATOR_DIR=${WRK_DIR}/Release-iphonesimulator\n\n# Building the full featured SDK\n\n# Building both architectures.\nxcodebuild -project \"ApplicationInsights.xcodeproj\" -configuration \"Release\" -target \"${FMK_NAME}\" -sdk iphoneos\nxcodebuild -project \"ApplicationInsights.xcodeproj\" -configuration \"Release\" -target \"${FMK_NAME}\" -sdk iphonesimulator\n\n# Cleaning the products directory to make sure we have the latest files in it.\nif [ -d \"${PRODUCTS_DIR}\" ]\nthen\nrm -rf \"${PRODUCTS_DIR}\"\nfi\n\n# Creates and renews the final product folder.\nmkdir -p \"${INSTALL_DIR}\"\nmkdir -p \"${INSTALL_DIR}/Modules\"\nmkdir -p \"${INSTALL_DIR}/Versions\"\nmkdir -p \"${INSTALL_DIR}/Versions/${FMK_VERSION}\"\nmkdir -p \"${INSTALL_DIR}/Versions/${FMK_VERSION}/Resources\"\nmkdir -p \"${INSTALL_DIR}/Versions/${FMK_VERSION}/Headers\"\n\n# Creates the internal links.\n# It MUST uses relative path, otherwise will not work when the folder is copied/moved.\nln -s \"${FMK_VERSION}\" \"${INSTALL_DIR}/Versions/Current\"\nln -s \"Versions/Current/Headers\" \"${INSTALL_DIR}/Headers\"\nln -s \"Versions/Current/Resources\" \"${INSTALL_DIR}/Resources\"\nln -s \"Versions/Current/${FMK_NAME}\" \"${INSTALL_DIR}/${FMK_NAME}\"\n\n# Copy the swift import file\ncp -f \"${SRCROOT}/module.modulemap\" \"${INSTALL_DIR}/Modules/\"\n\n# Copies the headers and resources files to the final product folder.\ncp -R \"${SRCROOT}/build/Release-iphoneos/include/${FMK_NAME}/\" \"${INSTALL_DIR}/Versions/${FMK_VERSION}/Headers/\"\ncp -f \"${SRCROOT}/${FMK_NAME}.xcconfig\" \"${INSTALL_DIR}/Versions/${FMK_VERSION}/Resources/\"\n\n# Uses the Lipo Tool to merge both binary files (i386 + armv6/armv7) into one Universal final product.\nlipo -create \"${DEVICE_DIR}/lib${FMK_NAME}.a\" \"${SIMULATOR_DIR}/lib${FMK_NAME}.a\" -output \"${INSTALL_DIR}/Versions/${FMK_VERSION}/${FMK_NAME}\"\n\n# Combine the CrashReporter static library into a new ApplicationInsights static library file if they are not already present and copy the public headers too\nif [ -z $(otool -L \"${INSTALL_DIR}/Versions/${FMK_VERSION}/${FMK_NAME}\" | grep 'libCrashReporter') ]\nthen\nlibtool -static -o \"${INSTALL_DIR}/Versions/${FMK_VERSION}/${FMK_NAME}\" \"${INSTALL_DIR}/Versions/${FMK_VERSION}/${FMK_NAME}\" \"${SRCROOT}/../Vendor/CrashReporter.framework/Versions/A/CrashReporter\"\nfi\n\n# Move the crash reporting only framework into a new folder\n#mkdir \"${INSTALL_DIR}/../${FMK_NAME}CrashOnly\"\n#mv \"${INSTALL_DIR}\" \"${INSTALL_DIR}/../${FMK_NAME}CrashOnly/${FMK_NAME}.framework\"\n\n#rm -r \"${WRK_DIR}\"\n\n\n# copy license, changelog, documentation, integration json\n#cp -f \"${SRCROOT}/../Docs/Changelog-template.md\" \"${TEMP_DIR}/CHANGELOG\"\ncp -f \"${SRCROOT}/../Docs/Readme-template.md\" \"${TEMP_DIR}/README.md\"\ncp -f \"${SRCROOT}/../Docs/Readme-template.md\" \"${SRCROOT}/../README.md\"\ncp -f \"${SRCROOT}/../LICENSE\" \"${TEMP_DIR}\"\nmkdir \"${TEMP_DIR}/${AIS_DOCSET_VERSION_NAME}.docset\"\ncp -R \"${SRCROOT}/../documentation/docset/Contents\" \"${TEMP_DIR}/${AIS_DOCSET_VERSION_NAME}.docset\"\n\n# build zip\ncd \"${PRODUCTS_DIR}\"\nrm -f \"${FMK_NAME}-${VERSION_STRING}.zip\"\nzip -yr \"${FMK_NAME}-${VERSION_STRING}.zip\" \"${ZIP_FOLDER}\" -x \\*/.*\n";
 		};
 		1E8E66B215BC3D8200632A2E /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1070,6 +1073,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				80E1A4151AE54B5300603B0A /* MSAIBaseTests.m in Sources */,
+				8000A3D41B0E973F009F2B29 /* MSAICategoryContainerTests.m in Sources */,
 				80E1A42F1AE54B5300603B0A /* MSAISenderTests.m in Sources */,
 				80E1A4291AE54B5300603B0A /* MSAIPageViewDataTests.m in Sources */,
 				80E1A4181AE54B5300603B0A /* MSAICrashDataProviderTests.m in Sources */,
@@ -1217,13 +1221,14 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ApplicationInsightsTests/ApplicationInsightsTests-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
 					"$(inherited)",
+					"DEBUG=1",
 				);
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					"$(SRCROOT)/../Classes",
 					"$(SRCROOT)/ApplicationInsightsTests",
 				);
 				INFOPLIST_FILE = "ApplicationInsightsTests/ApplicationInsightsTests-Info.plist";
@@ -1270,6 +1275,7 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					"$(SRCROOT)/../Classes",
 					"$(SRCROOT)/ApplicationInsightsTests",
 				);
 				INFOPLIST_FILE = "ApplicationInsightsTests/ApplicationInsightsTests-Info.plist";
@@ -1399,14 +1405,15 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ApplicationInsightsTests/ApplicationInsightsTests-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
 					"$(inherited)",
+					"DEBUG=1",
 				);
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GENERATE_PROFILING_CODE = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					"$(SRCROOT)/../Classes",
 					"$(SRCROOT)/ApplicationInsightsTests",
 				);
 				INFOPLIST_FILE = "ApplicationInsightsTests/ApplicationInsightsTests-Info.plist";

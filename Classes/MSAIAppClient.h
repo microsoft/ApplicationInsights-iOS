@@ -74,7 +74,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  *	@param	operation	operation to add
  */
-- (void)enqeueHTTPOperation:(MSAIHTTPOperation *)operation;
+- (void)enqueueHTTPOperation:(MSAIHTTPOperation *)operation;
 
 /**
  *	cancels the specified operations

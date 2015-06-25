@@ -1,4 +1,6 @@
 #import "MSAIPageViewPerfData.h"
+#import "MSAIOrderedDictionary.h"
+
 /// Data contract class for type PageViewPerfData.
 @implementation MSAIPageViewPerfData
 @synthesize envelopeTypeName = _envelopeTypeName;
@@ -39,7 +41,7 @@
 
 #pragma mark - NSCoding
 
-- (id)initWithCoder:(NSCoder *)coder {
+- (instancetype)initWithCoder:(NSCoder *)coder {
   self = [super initWithCoder:coder];
   if(self) {
     self.perfTotal = [coder decodeObjectForKey:@"self.perfTotal"];

@@ -1,5 +1,5 @@
-#import "MSAIExceptionDetails.h"
 #import "MSAIDomain.h"
+#import "MSAIEnums.h"
 
 @interface MSAIExceptionData : MSAIDomain <NSCoding>
 
@@ -10,7 +10,7 @@
 @property (nonatomic, assign) MSAISeverityLevel severityLevel;
 @property (nonatomic, strong) MSAIOrderedDictionary *measurements;
 
-- (id)initWithCoder:(NSCoder *)coder;
+- (instancetype)initWithCoder:(NSCoder *)coder;
 
 - (void)encodeWithCoder:(NSCoder *)coder;
 

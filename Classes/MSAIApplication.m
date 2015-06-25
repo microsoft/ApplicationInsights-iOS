@@ -1,4 +1,6 @@
 #import "MSAIApplication.h"
+#import "MSAIOrderedDictionary.h"
+
 /// Data contract class for type Application.
 @implementation MSAIApplication
 
@@ -23,7 +25,7 @@
 
 #pragma mark - NSCoding
 
-- (id)initWithCoder:(NSCoder *)coder {
+- (instancetype)initWithCoder:(NSCoder *)coder {
   self = [super init];
   if(self) {
     self.version = [coder decodeObjectForKey:@"self.version"];

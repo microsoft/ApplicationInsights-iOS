@@ -1,6 +1,5 @@
 #import "MSAIObject.h"
-#import "MSAITelemetryData.h"
-#import "MSAIDomain.h"
+#import "MSAIDataPointType.h"
 
 @interface MSAIDataPoint : MSAIObject <NSCoding>
 
@@ -12,7 +11,7 @@
 @property (nonatomic, strong) NSNumber *max;
 @property (nonatomic, strong) NSNumber *stdDev;
 
-- (id)initWithCoder:(NSCoder *)coder;
+- (instancetype)initWithCoder:(NSCoder *)coder;
 
 - (void)encodeWithCoder:(NSCoder *)coder;
 

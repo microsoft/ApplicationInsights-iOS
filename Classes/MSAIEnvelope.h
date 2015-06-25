@@ -1,7 +1,5 @@
-#import "MSAIBase.h"
 #import "MSAIObject.h"
-#import "MSAITelemetryData.h"
-#import "MSAIDomain.h"
+@class MSAIBase;
 
 @interface MSAIEnvelope : MSAIObject <NSCoding>
 

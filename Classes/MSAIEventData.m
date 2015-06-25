@@ -1,4 +1,6 @@
 #import "MSAIEventData.h"
+#import "MSAIOrderedDictionary.h"
+
 /// Data contract class for type EventData.
 @implementation MSAIEventData
 @synthesize envelopeTypeName = _envelopeTypeName;
@@ -38,7 +40,7 @@
 
 #pragma mark - NSCoding
 
-- (id)initWithCoder:(NSCoder *)coder {
+- (instancetype)initWithCoder:(NSCoder *)coder {
   self = [super initWithCoder:coder];
   if(self) {
     self.measurements = [coder decodeObjectForKey:@"self.measurements"];

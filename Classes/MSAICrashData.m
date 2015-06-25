@@ -1,4 +1,9 @@
 #import "MSAICrashData.h"
+#import "MSAICrashDataHeaders.h"
+#import "MSAICrashDataBinary.h"
+#import "MSAICrashDataThread.h"
+#import "MSAIOrderedDictionary.h"
+
 /// Data contract class for type CrashData.
 @implementation MSAICrashData
 @synthesize envelopeTypeName = _envelopeTypeName;
@@ -45,7 +50,7 @@
   return dict;
 }
 
-- (id)initWithCoder:(NSCoder *)coder {
+- (instancetype)initWithCoder:(NSCoder *)coder {
   self = [super initWithCoder:coder];
   if(self) {
     self.headers = [coder decodeObjectForKey:@"self.headers"];

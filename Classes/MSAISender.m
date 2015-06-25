@@ -1,18 +1,12 @@
 #import "MSAISender.h"
 #import "MSAIAppClient.h"
 #import "MSAISenderPrivate.h"
-#import "MSAIPersistence.h"
+#import "MSAIPersistencePrivate.h"
 #import "MSAIGZIP.h"
-#import "MSAIEnvelope.h"
 #import "ApplicationInsightsPrivate.h"
-#import "MSAIApplicationInsights.h"
 
 static char const *kPersistenceQueueString = "com.microsoft.ApplicationInsights.senderQueue";
 static NSUInteger const defaultRequestLimit = 10;
-
-@interface MSAISender ()
-
-@end
 
 @implementation MSAISender
 
@@ -76,19 +70,16 @@ static NSUInteger const defaultRequestLimit = 10;
     typeof(self) strongSelf = weakSelf;
     NSString *path = [[MSAIPersistence sharedInstance] requestNextPath];
     NSData *data = [[MSAIPersistence sharedInstance] dataAtPath:path];
-    
     [strongSelf sendData:data withPath:path];
   });
 }
 
 - (void)sendData:(NSData * __nonnull)data withPath:(NSString * __nonnull)path {
-  
-  if(data) {
+  if(data && data.length > 0) {
     NSString *contentType = [self contentTypeForData:data];
 
     NSData *gzippedData = [data gzippedData];
     NSURLRequest *request = [self requestForData:gzippedData withContentType:contentType];
-    
     [self sendRequest:request path:path];
     
   } else {
@@ -119,8 +110,8 @@ static NSUInteger const defaultRequestLimit = 10;
       [[MSAIPersistence sharedInstance] giveBackRequestedPath:path];
     }
   }];
-  
-  [self.appClient enqeueHTTPOperation:operation];
+
+  [self.appClient enqueueHTTPOperation:operation];
 }
 
 #pragma mark - Helper

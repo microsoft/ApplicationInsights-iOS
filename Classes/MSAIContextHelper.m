@@ -1,7 +1,9 @@
 #import "ApplicationInsightsPrivate.h"
 #import "MSAIContextHelper.h"
 #import "MSAIContextHelperPrivate.h"
-#import "MSAIPersistence.h"
+#import "MSAIPersistencePrivate.h"
+#import "MSAIUser.h"
+#import "MSAISession.h"
 #import "MSAISessionStateData.h"
 
 #import "MSAITelemetryManagerPrivate.h"
@@ -19,12 +21,12 @@ NSUInteger const defaultSessionExpirationTime = 20;
 NSString *const kMSAIApplicationDidEnterBackgroundTime = @"MSAIApplicationDidEnterBackgroundTime";
 NSString *const kMSAIApplicationWasLaunched = @"MSAIApplicationWasLaunched";
 
-NSString *const MSAIUserIdChangedNotification = @"MSAIUserIdChangedNotification";
-NSString *const kMSAIUserInfoUserId = @"MSAIUserIdInfoUserId";
+NSString *const MSAIUserChangedNotification = @"MSAIUserChangedNotification";
+NSString *const kMSAIUserInfo = @"MSAIUserInfo";
 
 NSString *const MSAISessionStartedNotification = @"MSAISessionStartedNotification";
 NSString *const MSAISessionEndedNotification = @"MSAISessionEndedNotification";
-NSString *const kMSAISessionInfoSession = @"MSAISessionInfoSession";
+NSString *const kMSAISessionInfo = @"MSAISessionInfo";
 
 @implementation MSAIContextHelper {
   id _appWillEnterForegroundObserver;
@@ -65,24 +67,40 @@ NSString *const kMSAISessionInfoSession = @"MSAISessionInfoSession";
 #pragma mark Create New Users
 
 - (MSAIUser *)newUser {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wnonnull"
-  return [self newUserWithId:nil];
-#pragma clang diagnostic pop
-}
-
-- (MSAIUser *)newUserWithId:(NSString *)userId {
-  return ({ MSAIUser *user = [MSAIUser new];
-    user.userId = userId ?: msai_appAnonID();
+  return ({
+    MSAIUser *user = [MSAIUser new];
+    user.userId = msai_appAnonID();
     user;
   });
 }
 
 #pragma mark Manual User ID Management
-
+  
 - (void)setCurrentUserId:(NSString *)userId {
-  [self addUser:[self newUserWithId:userId] forDate:[NSDate date]];
-  [self sendUserIdChangedNotificationWithUserInfo:@{kMSAIUserInfoUserId : userId}];
+  [self setUserWithConfigurationBlock:^(MSAIUser * __nonnull user) {
+    user.userId = userId;
+  }];
+}
+
+- (void)setUserWithConfigurationBlock:(void (^)(MSAIUser *user))userConfigurationBlock {
+  MSAIUser *__block currentUser = [self userForDate:[NSDate date]];
+  
+  if (!currentUser) {
+    currentUser = [self newUser];
+  }
+  
+  userConfigurationBlock(currentUser);
+  
+  if (!currentUser) {
+    return;
+  }
+  
+  [self setCurrentUser:currentUser];
+}
+
+- (void)setCurrentUser:(nonnull MSAIUser *)user {
+  [self addUser:user forDate:[NSDate date]];
+  [self sendUserChangedNotificationWithUserInfo:@{kMSAIUserInfo : user}];
 }
 
 - (void)addUser:(MSAIUser *)user forDate:(NSDate *)date {
@@ -233,7 +251,7 @@ NSString *const kMSAISessionInfoSession = @"MSAISessionInfoSession";
   MSAISession *session = [self newSessionWithId:sessionId];
   [self addSession:session withDate:[NSDate date]];
 
-  NSDictionary *userInfo = @{kMSAISessionInfoSession: session};
+  NSDictionary *userInfo = @{kMSAISessionInfo: session};
   [self sendSessionStartedNotificationWithUserInfo:userInfo];
 }
 
@@ -330,9 +348,9 @@ NSString *const kMSAISessionInfoSession = @"MSAISessionInfoSession";
 
 #pragma mark - Notifications
 
-- (void)sendUserIdChangedNotificationWithUserInfo:(NSDictionary *)userInfo {
+- (void)sendUserChangedNotificationWithUserInfo:(NSDictionary *)userInfo {
   dispatch_async(dispatch_get_main_queue(), ^{
-    [[NSNotificationCenter defaultCenter] postNotificationName:MSAIUserIdChangedNotification
+    [[NSNotificationCenter defaultCenter] postNotificationName:MSAIUserChangedNotification
                                                         object:self
                                                       userInfo:userInfo];
   });
@@ -365,7 +383,7 @@ NSString *const kMSAISessionInfoSession = @"MSAISessionInfoSession";
     NSMutableDictionary *sessions = strongSelf.metaData[@"sessions"];
     NSMutableDictionary *users = strongSelf.metaData[@"users"];
     
-    if (sessions.count > 0) {
+    if (sessions.count > 1) {
       // Get most recent session
       NSArray *sortedKeys = [strongSelf sortedKeysOfDictionay:sessions];
       NSString *recentSessionKey = sortedKeys.firstObject;
@@ -375,7 +393,7 @@ NSString *const kMSAISessionInfoSession = @"MSAISessionInfoSession";
       [sessions removeAllObjects];
       sessions[recentSessionKey] = lastSession;
     }
-    if (users.count > 0) {
+    if (users.count > 1) {
       // Get most recent session
       NSArray *sortedKeys = [strongSelf sortedKeysOfDictionay:users];
       NSString *recentUserKey = sortedKeys.firstObject;

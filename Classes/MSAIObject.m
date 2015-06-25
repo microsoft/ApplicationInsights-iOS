@@ -1,6 +1,6 @@
 #import "ApplicationInsightsPrivate.h"
 #import "MSAIObject.h"
-#import "MSAIDomain.h"
+#import "MSAIOrderedDictionary.h"
 
 @implementation MSAIObject
 
@@ -35,7 +35,7 @@
 - (void)encodeWithCoder:(NSCoder *)coder {
 }
 
-- (id)initWithCoder:(NSCoder *)coder {
+- (instancetype)initWithCoder:(NSCoder *)coder {
   return [super init];
 }
 

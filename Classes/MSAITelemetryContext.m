@@ -7,6 +7,7 @@
 #import "MSAIContextHelperPrivate.h"
 #import "MSAIReachability.h"
 #import "MSAIReachabilityPrivate.h"
+#import "MSAIOrderedDictionary.h"
 
 NSString *const kMSAITelemetrySessionId = @"MSAITelemetrySessionId";
 NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
@@ -100,7 +101,7 @@ NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
                        queue:nil
                   usingBlock:^(NSNotification *notification) {
                     NSDictionary *userInfo = notification.userInfo;
-                    MSAISession *session = userInfo[kMSAISessionInfoSession];
+                    MSAISession *session = userInfo[kMSAISessionInfo];
                     _session = session;
                   }];
 }
@@ -109,16 +110,14 @@ NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
 
 - (void)configureUserTracking {
   NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-  [center addObserverForName:MSAIUserIdChangedNotification
+  [center addObserverForName:MSAIUserChangedNotification
                       object:nil
                        queue:nil
                   usingBlock:^(NSNotification *note) {
                     NSDictionary *userInfo = note.userInfo;
-                    NSString *userId = userInfo[kMSAIUserInfoUserId];
+                    MSAIUser *user = userInfo[kMSAIUserInfo];
                     if (_user) {
-                      _user.userId = userId;
-                    } else {
-                      _user = [[MSAIContextHelper sharedInstance] newUserWithId:userId];
+                      _user = user;
                     }
                   }];
   

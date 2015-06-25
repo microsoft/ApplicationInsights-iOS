@@ -1,4 +1,6 @@
 #import "MSAISession.h"
+#import "MSAIOrderedDictionary.h"
+
 /// Data contract class for type Session.
 @implementation MSAISession
 
@@ -29,7 +31,7 @@
 
 #pragma mark - NSCoding
 
-- (id)initWithCoder:(NSCoder *)coder {
+- (instancetype)initWithCoder:(NSCoder *)coder {
   self = [super initWithCoder:coder];
   if(self) {
     self.sessionId = [coder decodeObjectForKey:@"self.sessionId"];

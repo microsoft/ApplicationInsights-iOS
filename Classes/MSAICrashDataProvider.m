@@ -49,14 +49,18 @@
 #import "MSAICrashData.h"
 #import "MSAICrashDataHeaders.h"
 #import "MSAICrashDataBinary.h"
+#import "MSAICrashDataThread.h"
 #import "MSAICrashDataThreadFrame.h"
 #import "MSAIHelper.h"
 #import "MSAIContextHelper.h"
 #import "MSAIContextHelperPrivate.h"
 #import "MSAIEnvelope.h"
 #import "MSAIData.h"
+#import "MSAIUser.h"
+#import "MSAISession.h"
 #import "MSAIEnvelopeManagerPrivate.h"
 #import "MSAIEnvelopeManager.h"
+#import "MSAIOrderedDictionary.h"
 
 #ifdef MSAI_FEATURE_XAMARIN
 #import "MSAIStackFrame.h"

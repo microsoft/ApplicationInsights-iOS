@@ -1,4 +1,5 @@
 #import "MSAIPersistence.h"
+#import "MSAIPersistencePrivate.h"
 #import "MSAIEnvelope.h"
 #import "MSAICrashData.h"
 #import "ApplicationInsightsPrivate.h"
