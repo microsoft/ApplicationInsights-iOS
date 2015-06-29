@@ -144,8 +144,8 @@ static void uncaught_cxx_exception_handler(const MSAICrashUncaughtCXXExceptionIn
 *	 Main startup sequence initializing PLCrashReporter if it wasn't disabled
 */
 - (void)startManager {
-  if(self.isCrashManagerDisabled) return;
-  if(![MSAICrashManager sharedManager].isSetupCorrectly) {
+  if (self.isCrashManagerDisabled) {return;}
+  if (![MSAICrashManager sharedManager].isSetupCorrectly) {
     [self checkCrashManagerDisabled];
 
     [self registerObservers];
