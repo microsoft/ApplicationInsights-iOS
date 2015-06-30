@@ -697,7 +697,11 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
       
       if(foundFileAndLine.numberOfRanges > 2){
         frame.fileName = [stackLine substringWithRange:[foundFileAndLine rangeAtIndex:1]];
-        frame.line = @([[stackLine substringWithRange:[foundFileAndLine rangeAtIndex:2]] intValue]);
+        
+        int lineNumber = [[stackLine substringWithRange:[foundFileAndLine rangeAtIndex:2]] intValue];
+        if(lineNumber > 0){
+          frame.line = @(lineNumber);
+        }
       }
     }
   }
