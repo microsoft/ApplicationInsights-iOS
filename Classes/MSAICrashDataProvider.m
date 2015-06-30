@@ -685,14 +685,14 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
 + (MSAIStackFrame *)stackframeForStackLine:(NSString *)stackLine{
   MSAIStackFrame *frame;
   if(stackLine){
-    NSRegularExpression *regexMethod = [NSRegularExpression regularExpressionWithPattern:@"^\\s*at\\s(.*\\(.*\\))" options:NSRegularExpressionAnchorsMatchLines error:NULL];
+    NSRegularExpression *regexMethod = [NSRegularExpression regularExpressionWithPattern:@"^\\s*at\\s(.*\\(.*\\)).*" options:NSRegularExpressionAnchorsMatchLines error:NULL];
     NSTextCheckingResult *foundMethod = [regexMethod firstMatchInString:stackLine options:0 range:NSMakeRange(0, stackLine.length)];
 
     if(foundMethod.numberOfRanges > 1){
       frame = [MSAIStackFrame new];
       frame.method = [stackLine substringWithRange:[foundMethod rangeAtIndex:1]];
       
-      NSRegularExpression *regexFileAndLine = [NSRegularExpression regularExpressionWithPattern:@"in\\s(.*):([0-9s]+)\\s*" options:NSRegularExpressionAnchorsMatchLines error:NULL];
+      NSRegularExpression *regexFileAndLine = [NSRegularExpression regularExpressionWithPattern:@".*in\\s(.*):([0-9s]+)\\s*" options:NSRegularExpressionAnchorsMatchLines error:NULL];
       NSTextCheckingResult *foundFileAndLine = [regexFileAndLine firstMatchInString:stackLine options:0 range:NSMakeRange(0, stackLine.length)];
       
       if(foundFileAndLine.numberOfRanges > 2){
