@@ -15,6 +15,9 @@ FOUNDATION_EXPORT NSString *const kMSAIUserInfo;
 
 FOUNDATION_EXPORT NSString *const kMSAIApplicationWasLaunched;
 
+FOUNDATION_EXPORT NSString *const kMSAIMetaDataSessionInfo;
+FOUNDATION_EXPORT NSString *const kMSAIMetaDataSessionCrashHandled;
+
 @interface MSAIContextHelper ()
 
 ///-----------------------------------------------------------------------------
@@ -180,15 +183,6 @@ FOUNDATION_EXPORT NSString *const kMSAIApplicationWasLaunched;
  *  @return the sessionId of the session, in which the crash occured
  */
 - (MSAISession *)sessionForDate:(NSDate *)date;
-
-/**
- *  Removes the entry for a given sessionId.
- *
- *  @param sessionId The session ID of the plist entry which should be removed
- *
- *  @return Returns YES if the ID was found and successfully removed.
- */
-- (BOOL)removeSession:(MSAISession *)session;
 
 #if MSAI_FEATURE_XAMARIN
 

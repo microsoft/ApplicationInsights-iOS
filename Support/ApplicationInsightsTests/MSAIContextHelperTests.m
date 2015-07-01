@@ -204,7 +204,7 @@
   [self.sut addSession:session withDate:date];
   
   XCTAssertEqual(((NSMutableDictionary *)self.sut.metaData[@"sessions"]).count, 1U);
-  XCTAssertEqualObjects(self.sut.metaData[@"sessions"][timestamp], session);
+  XCTAssertEqualObjects(self.sut.metaData[@"sessions"][timestamp][kMSAIMetaDataSessionInfo], session);
 }
 
 - (void)testSessionForDate {
@@ -233,25 +233,6 @@
   
   session = [self.sut sessionForDate:[NSDate dateWithTimeIntervalSince1970:333+1337]];
   XCTAssertEqual(session, session3);
-}
-
-- (void)testRemoveSession {
-  MSAISession *sessionA = [self sessionWithId:@"a"];
-  MSAISession *sessionB = [self sessionWithId:@"b"];
-  MSAISession *sessionC = [self sessionWithId:@"c"];
-  
-  [self.sut addSession:sessionA withDate:[NSDate dateWithTimeIntervalSince1970:0]];
-  [self.sut addSession:sessionB withDate:[NSDate dateWithTimeIntervalSince1970:1]];
-  [self.sut addSession:sessionC withDate:[NSDate dateWithTimeIntervalSince1970:2]];
-  
-  [self.sut removeSession:[self sessionWithId:@"b"]];
-  
-  XCTAssertEqual(self.sut.metaData.count, 2U);
-  XCTAssertEqual([(NSDictionary *)self.sut.metaData[@"sessions"] count], 2U);
-  XCTAssertNotNil(self.sut.metaData[@"sessions"][@"0"]);
-  XCTAssertNotNil(self.sut.metaData[@"sessions"][@"2"]);
-  XCTAssertNil(self.sut.metaData[@"sessions"][@"1"]);
-  
 }
 
 #pragma mark -
@@ -286,7 +267,7 @@
   
   XCTAssertNil(self.sut.metaData[@"sessions"][@"3"]);
   XCTAssertNil(self.sut.metaData[@"sessions"][@"33"]);
-  XCTAssertEqualObjects(self.sut.metaData[@"sessions"][@"333"], sessionC);
+  XCTAssertEqualObjects(self.sut.metaData[@"sessions"][@"333"][kMSAIMetaDataSessionInfo], sessionC);
   
   XCTAssertNil(self.sut.metaData[@"users"][@"777"]);
   XCTAssertEqualObjects(self.sut.metaData[@"users"][@"7777"], user2);
