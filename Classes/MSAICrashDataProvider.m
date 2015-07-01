@@ -685,7 +685,7 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
 + (MSAIStackFrame *)stackframeForStackLine:(NSString *)stackLine{
   MSAIStackFrame *frame;
   if(stackLine){
-    NSRegularExpression *regexMethod = [NSRegularExpression regularExpressionWithPattern:@"^\\s*at\\s(.*\\(.*\\)).*" options:NSRegularExpressionAnchorsMatchLines error:NULL];
+    NSRegularExpression *regexMethod = [NSRegularExpression regularExpressionWithPattern:@"^\\s*at\\s*(.*\\(.*\\)).*" options:NSRegularExpressionAnchorsMatchLines error:NULL];
     NSTextCheckingResult *foundMethod = [regexMethod firstMatchInString:stackLine options:0 range:NSMakeRange(0, stackLine.length)];
 
     if(foundMethod.numberOfRanges > 1){
