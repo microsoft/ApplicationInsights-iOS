@@ -5,7 +5,7 @@
 #import "ApplicationInsightsPrivate.h"
 #import "MSAIHelper.h"
 #import "MSAICrashManagerPrivate.h"
-#import "MSAICrashDataProvider.h"
+#import "MSAICrashDataProviderPrivate.h"
 #import "MSAICrashDetailsPrivate.h"
 #import "MSAICrashData.h"
 #import "MSAICrashDataHeaders.h"
