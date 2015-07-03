@@ -26,31 +26,9 @@ The SDK runs on devices with iOS 6.0 or higher.
 <a name="releasenotes"></a>
 ## 1. Release Notes
 
-* Make integration a lot easier, using the `@import ApplicationInsights;` syntax. This makes manual linking of system frameworks unnecessary!
-(_Note: Requires support for modules. This is enabled by default for all projects created with Xcode 5 or newer._)
-* Add feature to set common properties that will apply to all telemetry data items.
-
-    ```objectivec
-    [MSAITelemetryManager setCommonProperties:@{@"custom info":@"some value"}];
-    ```
-
-* Allow for further customization of user context fields.
-Note that this means that the old way of setting the user ID, `setUserId:`, is now deprecated!
-
-    ```objectivec
-      [[MSAIApplicationInsights sharedInstance] setUserWithConfigurationBlock:^(MSAIUser *user) {
-        user.userId = @"your_user_id";
-        user.accountId = @"user@example.com";
-      }];
-    ```
-
-* Add support for unhandled C++ exceptions
-* Switch to sending data in JSON Stream format to improve compatibility with different server backends.
-* Improve crash reports by sending additional exception information.
-* Add instructions to Readme about how to setup the SDK with WatchKit extensions.
-* Add logging incase the developer tries to send objects that are not NSJSONSerialization compatible.
-* Fix issues with the backwars compatiblity of the nullability annotation.
-* Various other small improvements and fixes.
+* Important improvements to crash reports.
+* We now filter some pageviews from standard view controllers in order to reduce noise and make pageviews more useful.
+* Smaller refactorings and improvements.
 
 See [here](https://github.com/Microsoft/ApplicationInsights-iOS/releases) for the release notes of previous versions.
 
