@@ -62,6 +62,12 @@
 #import "MSAIEnvelopeManager.h"
 #import "MSAIOrderedDictionary.h"
 
+#ifdef MSAI_FEATURE_XAMARIN
+#import "MSAIStackFrame.h"
+#import "MSAIExceptionData.h"
+#import "MSAIExceptionDetails.h"
+#endif /* MSAI_FEATURE_XAMARIN */
+
 /*
  * XXX: The ARM64 CPU type, and ARM_V7S and ARM_V8 Mach-O CPU subtypes are not
  * defined in the Mac OS X 10.8 headers.
@@ -622,5 +628,86 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
   }
   return nil;
 }
+
+#if MSAI_FEATURE_XAMARIN
+
++ (MSAIExceptionData *)exceptionDataForExceptionWithType:(NSString *)type
+                                            message:(NSString *)message
+                                         stacktrace:(NSString *)stacktrace
+                                            handled:(BOOL)handled{
+  MSAIExceptionDetails *details = [MSAIExceptionDetails new];
+  details.typeName = type;
+  details.message = message;
+  
+  if(stacktrace){
+    details.stack = stacktrace;
+    NSMutableArray *stackframes = [self stackframesForStacktrace:stacktrace];
+    if(stackframes.count >= 1){
+      details.parsedStack = stackframes;
+      details.hasFullStack = YES;
+    }
+  }
+  
+  MSAIExceptionData *data = [MSAIExceptionData new];
+  data.handledAt = handled ? @"HANDLED" : @"UNHANDLED";
+  data.exceptions = @[details].mutableCopy;
+  
+  return data;
+}
+
++ (NSMutableArray *)stackframesForStacktrace:(NSString *)stacktrace{
+  
+  NSMutableArray * frames;
+  
+  if(stacktrace){
+    frames = [NSMutableArray new];
+    NSArray *lines = [stacktrace componentsSeparatedByString:@"\n"];
+    
+    
+    for(NSString *frameInfo in lines){
+      
+      MSAIStackFrame *frame = [self stackframeForStackLine:frameInfo];
+      if(frame){
+        [frames addObject:frame];
+      }
+    }
+    
+    // level values have to be upside down. We have assign this value afterwards, since we do not know how many valid frame objects get created.
+    NSUInteger level = frames.count -1;
+    for(MSAIStackFrame *frame in frames){
+      frame.level = @(level);
+      level--;
+    }
+  }
+  return frames;
+}
+
++ (MSAIStackFrame *)stackframeForStackLine:(NSString *)stackLine{
+  MSAIStackFrame *frame;
+  if(stackLine){
+    NSRegularExpression *regexMethod = [NSRegularExpression regularExpressionWithPattern:@"^\\s*at\\s*(.*\\(.*\\)).*" options:NSRegularExpressionAnchorsMatchLines error:NULL];
+    NSTextCheckingResult *foundMethod = [regexMethod firstMatchInString:stackLine options:0 range:NSMakeRange(0, stackLine.length)];
+
+    if(foundMethod.numberOfRanges > 1){
+      frame = [MSAIStackFrame new];
+      frame.method = [stackLine substringWithRange:[foundMethod rangeAtIndex:1]];
+      
+      NSRegularExpression *regexFileAndLine = [NSRegularExpression regularExpressionWithPattern:@".*in\\s(.*):([0-9s]+)\\s*" options:NSRegularExpressionAnchorsMatchLines error:NULL];
+      NSTextCheckingResult *foundFileAndLine = [regexFileAndLine firstMatchInString:stackLine options:0 range:NSMakeRange(0, stackLine.length)];
+      
+      if(foundFileAndLine.numberOfRanges > 2){
+        frame.fileName = [stackLine substringWithRange:[foundFileAndLine rangeAtIndex:1]];
+        
+        int lineNumber = [[stackLine substringWithRange:[foundFileAndLine rangeAtIndex:2]] intValue];
+        if(lineNumber > 0){
+          frame.line = @(lineNumber);
+        }
+      }
+    }
+  }
+  return frame;
+}
+
+#endif /* MSAI_FEATURE_XAMARIN */
 
 @end

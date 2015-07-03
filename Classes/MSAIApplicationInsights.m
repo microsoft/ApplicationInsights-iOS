@@ -128,7 +128,6 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
       [MSAITelemetryManager sharedManager].autoPageViewTrackingDisabled = YES;
     }
     
-    
     MSAILog(@"INFO: Starting MSAITelemetryManager");
     [[MSAITelemetryManager sharedManager] startManager];
   }
@@ -314,6 +313,7 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 }
 
 + (void)renewSessionWithId:(NSString *)sessionId {
+  // Call of instance method should be enough, remove setAutoSessionManagementDisabled
   [[self sharedInstance] setAutoSessionManagementDisabled:YES];
   [[self sharedInstance] renewSessionWithId:sessionId];
 }

@@ -15,6 +15,9 @@ FOUNDATION_EXPORT NSString *const kMSAIUserInfo;
 
 FOUNDATION_EXPORT NSString *const kMSAIApplicationWasLaunched;
 
+FOUNDATION_EXPORT NSString *const kMSAIMetaDataSessionInfo;
+FOUNDATION_EXPORT NSString *const kMSAIMetaDataSessionCrashHandled;
+
 @interface MSAIContextHelper ()
 
 ///-----------------------------------------------------------------------------
@@ -181,15 +184,19 @@ FOUNDATION_EXPORT NSString *const kMSAIApplicationWasLaunched;
  */
 - (MSAISession *)sessionForDate:(NSDate *)date;
 
-/**
- *  Removes the entry for a given sessionId.
- *
- *  @param sessionId The session ID of the plist entry which should be removed
- *
- *  @return Returns YES if the ID was found and successfully removed.
- */
-- (BOOL)removeSession:(MSAISession *)session;
+#if MSAI_FEATURE_XAMARIN
 
+/**
+ *  Tells the SDK to not report native crashes occured in the next oldest session. This gives you the possibility to
+ *  processing managed unhandled exceptions from managed code.
+ *
+ *  @param date the creation date of a crash report
+ */
+- (void)ignoreCrashForSessionWithDate:(NSDate *)date;
+
+- (BOOL)shouldIgnoreCrashForSessionWithDate:(NSDate *)date;
+
+#endif /* MSAI_FEATURE_XAMARIN */
 
 ///-----------------------------------------------------------------------------
 /// @name Session Lifecycle

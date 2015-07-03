@@ -30,6 +30,11 @@
 #import "MSAISessionStateData.h"
 #import "MSAIOrderedDictionary.h"
 
+#if MSAI_FEATURE_XAMARIN
+#import "MSAIExceptionData.h"
+#import "MSAIExceptionDetails.h"
+#endif /* MSAI_FEATURE_XAMARIN */
+
 static char *const MSAITelemetryEventQueue = "com.microsoft.ApplicationInsights.telemetryEventQueue";
 static char *const MSAICommonPropertiesQueue = "com.microsoft.ApplicationInsights.commonPropertiesQueue";
 
@@ -232,6 +237,33 @@ static char *const MSAICommonPropertiesQueue = "com.microsoft.ApplicationInsight
   });
 }
 
+#if MSAI_FEATURE_XAMARIN
+
++ (void)trackManagedExceptionWithType:(NSString *)type
+                              message:(NSString *)message
+                           stacktrace:(NSString *)stacktrace
+                              handled:(BOOL)handled{
+  [[self sharedManager] trackManagedExceptionWithType:type message:message stacktrace:stacktrace handled:handled];
+}
+
+- (void)trackManagedExceptionWithType:(NSString *)type
+                              message:(NSString *)message
+                           stacktrace:(NSString *)stacktrace
+                              handled:(BOOL)handled{
+  MSAIEnvelope *envelope = [[MSAIEnvelopeManager sharedManager] envelopeForManagedExceptionWithType:type
+                                                                                            message:message
+                                                                                         stacktrace:stacktrace
+                                                                                            handled:handled];
+  MSAIOrderedDictionary *dict = [envelope serializeToDictionary];
+  [[MSAIChannel sharedChannel] processDictionary:dict withCompletionBlock:nil];
+  
+  if(!handled){
+    [[MSAIContextHelper sharedInstance] ignoreCrashForSessionWithDate:[NSDate date]];
+  }
+}
+
+#endif /* MSAI_FEATURE_XAMARIN */
+
 + (void)trackException:(NSException *)exception{
   [[self sharedManager]trackException:exception];
 }
@@ -320,7 +352,6 @@ static char *const MSAICommonPropertiesQueue = "com.microsoft.ApplicationInsight
     [[MSAIChannel sharedChannel] enqueueDictionary:dict];
   }
 }
-
 
 - (void)trackSessionEnd {
   MSAISessionStateData *sessionState = [MSAISessionStateData new];

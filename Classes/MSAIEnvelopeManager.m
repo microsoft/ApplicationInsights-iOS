@@ -6,7 +6,7 @@
 #import "MSAITelemetryContext.h"
 #import "MSAITelemetryContextPrivate.h"
 #import "MSAIHelper.h"
-#import "MSAICrashDataProvider.h"
+#import "MSAICrashDataProviderPrivate.h"
 #import "MSAIHelper.h"
 
 static NSInteger const schemaVersion = 2;
@@ -77,5 +77,22 @@ static NSInteger const schemaVersion = 2;
 - (MSAIEnvelope *)envelopeForCrashReport:(MSAIPLCrashReport *)report exception:(NSException *)exception {
   return [MSAICrashDataProvider crashDataForCrashReport:report handledException:exception];
 }
+
+#if MSAI_FEATURE_XAMARIN
+
+- (MSAIEnvelope *)envelopeForManagedExceptionWithType:(NSString *)type
+                                              message:(NSString *)message
+                                           stacktrace:(NSString *)stacktrace
+                                              handled:(BOOL)handled{
+  
+  MSAIExceptionData *exceptionData = [MSAICrashDataProvider exceptionDataForExceptionWithType:type
+                                                                                      message:message
+                                                                                   stacktrace:stacktrace
+                                                                                      handled:handled];
+  MSAIEnvelope *envelope = [self envelopeForTelemetryData:exceptionData];
+  return envelope;
+}
+
+#endif /* MSAI_FEATURE_XAMARIN */
 
 @end

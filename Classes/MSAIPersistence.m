@@ -90,7 +90,7 @@ NSUInteger const defaultFileCount = 50;
 - (void)persistMetaData:(NSDictionary *)metaData {
   NSString *fileURL = [self newFileURLForPersitenceType:MSAIPersistenceTypeMetaData];
   
-  dispatch_async(self.persistenceQueue, ^{
+  dispatch_sync(self.persistenceQueue, ^{
     [NSKeyedArchiver archiveRootObject:metaData toFile:fileURL];
   });
 }

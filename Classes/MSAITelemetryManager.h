@@ -4,6 +4,9 @@
 #if MSAI_FEATURE_TELEMETRY
 
 NS_ASSUME_NONNULL_BEGIN
+
+@class MSAIExceptionData;
+
 /**
 * MSAITelemetryManager is the component of the Application Insights SDK for iOS that is responsible for all things
 * that are related to metrics and tracking.
@@ -134,6 +137,23 @@ NS_ASSUME_NONNULL_BEGIN
  */
 + (void)trackException:(NSException *)exception;
 
+#if MSAI_FEATURE_XAMARIN
+
+/**
+ *  Track managed handled exception.
+ *
+ *  @param type the exception type
+ *  @param message the exception message
+ *  @param stacktrace the stacktrace for the exception
+ *  @param handled a flag which determines if the exception was handled or not
+ */
++ (void)trackManagedExceptionWithType:(NSString *)type
+                              message:(NSString *)message
+                           stacktrace:(NSString *)stacktrace
+                              handled:(BOOL)handled;
+
+#endif /* MSAI_FEATURE_XAMARIN */
+
 /**
  *  Track the event by event name.
  *
@@ -213,13 +233,30 @@ NS_ASSUME_NONNULL_BEGIN
  *  @param properties key-value pairs which can contain additional information about the page view
  */
 - (void)trackPageView:(NSString *)pageName duration:(long)duration properties:(nullable NSDictionary *)properties;
-
+  
 /**
  *  Track handled exception.
  *
  *  @param exception the handled exception, which should be send to the server.
  */
 - (void)trackException:(NSException *)exception;
+
+#if MSAI_FEATURE_XAMARIN
+
+/**
+ *  Track managed handled exception.
+ *
+ *  @param type the exception type
+ *  @param message the exception message
+ *  @param stacktrace the stacktrace for the exception
+ *  @param handled a flag which determines if the exception was handled or not
+ */
+- (void)trackManagedExceptionWithType:(NSString *)type
+                              message:(NSString *)message
+                           stacktrace:(NSString *)stacktrace
+                              handled:(BOOL)handled;
+
+#endif /* MSAI_FEATURE_XAMARIN */
 
 @end
 NS_ASSUME_NONNULL_END
