@@ -531,7 +531,9 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
     binary.endAddress = [NSString stringWithFormat:fmt, endAddress];
     
     BOOL binaryIsInAddresses = [self isBinaryWithStart:startAddress end:endAddress inAddresses:addresses];
-    if(binaryIsInAddresses){
+    MSAIBinaryImageType imageType = [self imageTypeForImagePath:imageInfo.imageName processPath:report.processInfo.processPath];
+    
+    if (binaryIsInAddresses || (imageType != MSAIBinaryImageTypeOther)) {
       
       /* Remove username from the image path */
       NSString *imageName = @"";
@@ -576,6 +578,37 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
     }
   }
   return NO;
+}
+
+/* Determine if in binary image is the app executable or app specific framework */
++ (MSAIBinaryImageType)imageTypeForImagePath:(NSString *)imagePath processPath:(NSString *)processPath {
+  MSAIBinaryImageType imageType = MSAIBinaryImageTypeOther;
+  
+  NSString *standardizedImagePath = [[imagePath stringByStandardizingPath] lowercaseString];
+  imagePath = [imagePath lowercaseString];
+  processPath = [processPath lowercaseString];
+  
+  NSRange appRange = [standardizedImagePath rangeOfString: @".app/"];
+  
+  // Exclude iOS swift dylibs. These are provided as part of the app binary by Xcode for now, but we never get a dSYM for those.
+  NSRange swiftLibRange = [standardizedImagePath rangeOfString:@"frameworks/libswift"];
+  BOOL dylibSuffix = [standardizedImagePath hasSuffix:@".dylib"];
+  
+  if (appRange.location != NSNotFound && !(swiftLibRange.location != NSNotFound && dylibSuffix)) {
+    NSString *appBundleContentsPath = [standardizedImagePath substringToIndex:appRange.location + 5];
+    
+    if ([standardizedImagePath isEqual: processPath] ||
+        // Fix issue with iOS 8 `stringByStandardizingPath` removing leading `/private` path (when not running in the debugger or simulator only)
+        [imagePath hasPrefix:processPath]) {
+      imageType = MSAIBinaryImageTypeAppBinary;
+    } else if ([standardizedImagePath hasPrefix:appBundleContentsPath] ||
+               // Fix issue with iOS 8 `stringByStandardizingPath` removing leading `/private` path (when not running in the debugger or simulator only)
+               [imagePath hasPrefix:appBundleContentsPath]) {
+      imageType = MSAIBinaryImageTypeAppFramework;
+    }
+  }
+  
+  return imageType;
 }
 
 /**
