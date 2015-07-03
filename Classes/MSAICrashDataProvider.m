@@ -208,8 +208,6 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
 
 + (MSAIEnvelope *)crashDataForCrashReport:(MSAIPLCrashReport *)report handledException:(NSException *)exception{
   
-  NSMutableArray *addresses = [NSMutableArray new];
-  
   MSAIEnvelope *envelope = [[MSAIEnvelopeManager sharedManager] envelope];
   
   /* System info */
@@ -450,6 +448,8 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
   }
   
   crashData.headers = crashHeaders;
+  
+  NSMutableArray *addresses = [NSMutableArray new];
   
   /* If an exception stack trace is available, output an Apple-compatible backtrace. */
   if (report.exceptionInfo != nil && report.exceptionInfo.stackFrames != nil && [report.exceptionInfo.stackFrames count] > 0) {
