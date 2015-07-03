@@ -530,14 +530,17 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
     uint64_t endAddress = imageInfo.imageBaseAddress + (MAX((uint64_t)1, imageInfo.imageSize) - 1);
     binary.endAddress = [NSString stringWithFormat:fmt, endAddress];
     
-    if([self isBinaryWithStart:startAddress end:endAddress inAddresses:addresses]){
+    BOOL binaryIsInAddresses = [self isBinaryWithStart:startAddress end:endAddress inAddresses:addresses];
+    if(binaryIsInAddresses){
       
       /* Remove username from the image path */
       NSString *imageName = @"";
-      if (imageInfo.imageName && [imageInfo.imageName length] > 0)
+      if (imageInfo.imageName && [imageInfo.imageName length] > 0) {
         imageName = [imageInfo.imageName stringByAbbreviatingWithTildeInPath];
-      if ([imageName length] > 0 && [[imageName substringToIndex:1] isEqualToString:@"~"])
+      }
+      if ([imageName length] > 0 && [[imageName substringToIndex:1] isEqualToString:@"~"]) {
         imageName = [NSString stringWithFormat:@"/Users/USER%@", [imageName substringFromIndex:1]];
+      }
       
       binary.path = imageName;
       binary.name = [imageInfo.imageName lastPathComponent];
