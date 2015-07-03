@@ -507,6 +507,7 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
           
           if(threadData.frames.count > 0){
             [[(MSAICrashDataThreadFrame *)threadData.frames[0] registers] setValue:formattedRegValue forKey:formattedRegName];
+            [addresses addObject:[NSNumber numberWithUnsignedLongLong:reg.registerValue]];
           }
           break;
         }
