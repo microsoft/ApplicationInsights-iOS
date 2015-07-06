@@ -208,8 +208,6 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
 
 + (MSAIEnvelope *)crashDataForCrashReport:(MSAIPLCrashReport *)report handledException:(NSException *)exception{
   
-  NSMutableArray *addresses = [NSMutableArray new];
-  
   MSAIEnvelope *envelope = [[MSAIEnvelopeManager sharedManager] envelope];
   
   /* System info */
@@ -366,10 +364,12 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
         processPath = report.processInfo.processPath;
         
         /* Remove username from the path */
+#if TARGET_IPHONE_SIMULATOR
         if ([processPath length] > 0)
           processPath = [processPath stringByAbbreviatingWithTildeInPath];
         if ([processPath length] > 0 && [[processPath substringToIndex:1] isEqualToString:@"~"])
           processPath = [NSString stringWithFormat:@"/Users/USER%@", [processPath substringFromIndex:1]];
+#endif
       }
       
       /* Parent Process Name */
@@ -451,6 +451,8 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
   
   crashData.headers = crashHeaders;
   
+  NSMutableArray *addresses = [NSMutableArray new];
+  
   /* If an exception stack trace is available, output an Apple-compatible backtrace. */
   if (report.exceptionInfo != nil && report.exceptionInfo.stackFrames != nil && [report.exceptionInfo.stackFrames count] > 0) {
     MSAIPLCrashReportExceptionInfo *exception = report.exceptionInfo;
@@ -507,6 +509,7 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
           
           if(threadData.frames.count > 0){
             [[(MSAICrashDataThreadFrame *)threadData.frames[0] registers] setValue:formattedRegValue forKey:formattedRegName];
+            [addresses addObject:[NSNumber numberWithUnsignedLongLong:reg.registerValue]];
           }
           break;
         }
@@ -529,14 +532,25 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
     uint64_t endAddress = imageInfo.imageBaseAddress + (MAX((uint64_t)1, imageInfo.imageSize) - 1);
     binary.endAddress = [NSString stringWithFormat:fmt, endAddress];
     
-    if([self isBinaryWithStart:startAddress end:endAddress inAddresses:addresses]){
+    BOOL binaryIsInAddresses = [self isBinaryWithStart:startAddress end:endAddress inAddresses:addresses];
+    MSAIBinaryImageType imageType = [self imageTypeForImagePath:imageInfo.imageName processPath:report.processInfo.processPath];
+    
+    if (binaryIsInAddresses || (imageType != MSAIBinaryImageTypeOther)) {
       
       /* Remove username from the image path */
       NSString *imageName = @"";
-      if (imageInfo.imageName && [imageInfo.imageName length] > 0)
+      if (imageInfo.imageName && [imageInfo.imageName length] > 0) {
+#if TARGET_IPHONE_SIMULATOR
         imageName = [imageInfo.imageName stringByAbbreviatingWithTildeInPath];
-      if ([imageName length] > 0 && [[imageName substringToIndex:1] isEqualToString:@"~"])
+#else
+        imageName = imageInfo.imageName;
+#endif
+      }
+#if TARGET_IPHONE_SIMULATOR
+      if ([imageName length] > 0 && [[imageName substringToIndex:1] isEqualToString:@"~"]) {
         imageName = [NSString stringWithFormat:@"/Users/USER%@", [imageName substringFromIndex:1]];
+      }
+#endif
       
       binary.path = imageName;
       binary.name = [imageInfo.imageName lastPathComponent];
@@ -572,6 +586,37 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
     }
   }
   return NO;
+}
+
+/* Determine if in binary image is the app executable or app specific framework */
++ (MSAIBinaryImageType)imageTypeForImagePath:(NSString *)imagePath processPath:(NSString *)processPath {
+  MSAIBinaryImageType imageType = MSAIBinaryImageTypeOther;
+  
+  NSString *standardizedImagePath = [[imagePath stringByStandardizingPath] lowercaseString];
+  imagePath = [imagePath lowercaseString];
+  processPath = [processPath lowercaseString];
+  
+  NSRange appRange = [standardizedImagePath rangeOfString: @".app/"];
+  
+  // Exclude iOS swift dylibs. These are provided as part of the app binary by Xcode for now, but we never get a dSYM for those.
+  NSRange swiftLibRange = [standardizedImagePath rangeOfString:@"frameworks/libswift"];
+  BOOL dylibSuffix = [standardizedImagePath hasSuffix:@".dylib"];
+  
+  if (appRange.location != NSNotFound && !(swiftLibRange.location != NSNotFound && dylibSuffix)) {
+    NSString *appBundleContentsPath = [standardizedImagePath substringToIndex:appRange.location + 5];
+    
+    if ([standardizedImagePath isEqual: processPath] ||
+        // Fix issue with iOS 8 `stringByStandardizingPath` removing leading `/private` path (when not running in the debugger or simulator only)
+        [imagePath hasPrefix:processPath]) {
+      imageType = MSAIBinaryImageTypeAppBinary;
+    } else if ([standardizedImagePath hasPrefix:appBundleContentsPath] ||
+               // Fix issue with iOS 8 `stringByStandardizingPath` removing leading `/private` path (when not running in the debugger or simulator only)
+               [imagePath hasPrefix:appBundleContentsPath]) {
+      imageType = MSAIBinaryImageTypeAppFramework;
+    }
+  }
+  
+  return imageType;
 }
 
 /**

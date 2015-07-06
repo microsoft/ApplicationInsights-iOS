@@ -38,6 +38,7 @@ static dispatch_once_t once_token;
 
 - (instancetype)init {
   if(self = [super init]) {
+    msai_resetSafeJsonStream(&MSAISafeJsonEventsString);
     _dataItemCount = 0;
     if (msai_isDebuggerAttached()) {
       _senderBatchSize = debugMaxBatchCount;
@@ -60,7 +61,7 @@ static dispatch_once_t once_token;
 
 - (void)persistDataItemQueue {
   [self invalidateTimer];
-  if(strlen(MSAISafeJsonEventsString) == 0) {
+  if(!MSAISafeJsonEventsString || strlen(MSAISafeJsonEventsString) == 0) {
     return;
   }
   
@@ -72,7 +73,7 @@ static dispatch_once_t once_token;
 }
 
 - (void)resetQueue {
-  msai_resetSafeJsonStream(&(MSAISafeJsonEventsString));
+  msai_resetSafeJsonStream(&MSAISafeJsonEventsString);
   _dataItemCount = 0;
 }
 

@@ -80,11 +80,11 @@ static PLCrashReporterCallbacks defaultCallback = {
 //
 // We'll evaluate this further to see if there is a safe solution.
 //
-@interface BITCrashCXXExceptionWrapperException : NSException
+@interface MSAICrashCXXExceptionWrapperException : NSException
 - (instancetype)initWithCXXExceptionInfo:(const MSAICrashUncaughtCXXExceptionInfo *)info;
 @end
 
-@implementation BITCrashCXXExceptionWrapperException {
+@implementation MSAICrashCXXExceptionWrapperException {
   const MSAICrashUncaughtCXXExceptionInfo *_info;
 }
 
@@ -116,7 +116,7 @@ static PLCrashReporterCallbacks defaultCallback = {
 // C++ Exception Handler
 static void uncaught_cxx_exception_handler(const MSAICrashUncaughtCXXExceptionInfo *info) {
   // This relies on a LOT of sneaky internal knowledge of how PLCR works and should not be considered a long-term solution.
-  NSGetUncaughtExceptionHandler()([[BITCrashCXXExceptionWrapperException alloc] initWithCXXExceptionInfo:info]);
+  NSGetUncaughtExceptionHandler()([[MSAICrashCXXExceptionWrapperException alloc] initWithCXXExceptionInfo:info]);
   abort();
 }
 
@@ -144,8 +144,8 @@ static void uncaught_cxx_exception_handler(const MSAICrashUncaughtCXXExceptionIn
 *	 Main startup sequence initializing PLCrashReporter if it wasn't disabled
 */
 - (void)startManager {
-  if(self.isCrashManagerDisabled) return;
-  if(![MSAICrashManager sharedManager].isSetupCorrectly) {
+  if (self.isCrashManagerDisabled) {return;}
+  if (![MSAICrashManager sharedManager].isSetupCorrectly) {
     [self checkCrashManagerDisabled];
 
     [self registerObservers];
