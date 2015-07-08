@@ -418,7 +418,7 @@ Normally, a random anonymous ID is automatically generated for every user of you
 ## 10. Crash Reporting
 
 The Application Insights SDK enables crash reporting **per default**. Crashes will be immediately sent to the server the next time the app is launched.
-To provide you with the best crash reporting, we are using [PLCrashReporter]("https://github.com/plausiblelabs/plcrashreporter") in [Version 1.2 / Commit 273a7e7cd4b77485a584ac82e77b7c857558e2f9]("https://github.com/plausiblelabs/plcrashreporter/commit/273a7e7cd4b77485a584ac82e77b7c857558e2f9").
+To provide you with the best crash reporting, we are using [PLCrashReporter]("https://github.com/plausiblelabs/plcrashreporter") in [Version 1.3 / Commit 73f4ad5aa1796978f22b63aed3f8490b215b2c07]("https://github.com/plausiblelabs/plcrashreporter/commit/73f4ad5aa1796978f22b63aed3f8490b215b2c07").
 
 This feature can be disabled as follows:
 
