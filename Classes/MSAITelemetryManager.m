@@ -296,7 +296,9 @@ static char *const MSAICommonPropertiesQueue = "com.microsoft.ApplicationInsight
     MSAIOrderedDictionary *dict = [envelope serializeToDictionary];
     [[MSAIChannel sharedChannel] enqueueDictionary:dict];
   } else {
-    MSAILog(@"The data pipeline is saturated right now and the data item named %@ was dropped.", dataItem.name);
+    if (dataItem && dataItem.name) {
+      MSAILog(@"The data pipeline is saturated right now and the data item named %@ was dropped.", dataItem.name);
+    }
   }
 }
 
