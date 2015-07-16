@@ -30,6 +30,9 @@
         [dict setObject:self.userId forKey:@"ai.user.id"];
     }
     return dict;
+  if(self.storeRegion != nil) {
+    [dict setObject:self.storeRegion forKey:@"ai.user.storeRegion"];
+  }
 }
 
 #pragma mark - NSCoding
@@ -41,6 +44,7 @@
     self.accountId = [coder decodeObjectForKey:@"self.accountId"];
     self.userAgent = [coder decodeObjectForKey:@"self.userAgent"];
     self.userId = [coder decodeObjectForKey:@"self.userId"];
+    self.storeRegion = [coder decodeObjectForKey:@"self.storeRegion"];
   }
 
   return self;
@@ -52,6 +56,7 @@
   [coder encodeObject:self.accountId forKey:@"self.accountId"];
   [coder encodeObject:self.userAgent forKey:@"self.userAgent"];
   [coder encodeObject:self.userId forKey:@"self.userId"];
+  [coder encodeObject:self.storeRegion forKey:@"self.storeRegion"];
 }
 
 

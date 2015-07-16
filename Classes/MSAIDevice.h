@@ -15,11 +15,11 @@
 @property (nonatomic, strong) NSString *roleName;
 @property (nonatomic, strong) NSString *screenResolution;
 @property (nonatomic, strong) NSString *type;
-@property (nonatomic, strong) NSString *vmName;
 
 - (instancetype)initWithCoder:(NSCoder *)coder;
 
 - (void)encodeWithCoder:(NSCoder *)coder;
 
+@property (nonatomic, copy) NSString *machineName;
 
 @end

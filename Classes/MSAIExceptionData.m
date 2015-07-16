@@ -30,6 +30,12 @@
     if (self.handledAt != nil) {
         [dict setObject:self.handledAt forKey:@"handledAt"];
     }
+    if (self.problemId != nil) {
+      [dict setObject:self.problemId forKey:@"problemId"];
+    }
+    if (self.crashThreadId != nil) {
+      [dict setObject:self.crashThreadId forKey:@"crashThreadId"];
+    }
     if (self.exceptions != nil) {
         NSMutableArray *exceptionsArray = [NSMutableArray array];
         for (MSAIExceptionDetails *exceptionsElement in self.exceptions) {
@@ -38,6 +44,12 @@
         [dict setObject:exceptionsArray forKey:@"exceptions"];
     }
   [dict setObject:@((int) self.severityLevel) forKey:@"severityLevel"];
+  if(self.problemId != nil) {
+    [dict setObject:self.problemId forKey:@"problemId"];
+  }
+  if(self.crashThreadId != nil) {
+    [dict setObject:self.crashThreadId forKey:@"crashThreadId"];
+  }
     [dict setObject:self.properties forKey:@"properties"];
     [dict setObject:self.measurements forKey:@"measurements"];
     return dict;
@@ -51,6 +63,8 @@
     self.handledAt = [coder decodeObjectForKey:@"self.handledAt"];
     self.exceptions = [coder decodeObjectForKey:@"self.exceptions"];
     self.severityLevel = (MSAISeverityLevel) [coder decodeIntForKey:@"self.severityLevel"];
+    self.problemId = [coder decodeObjectForKey:@"self.problemId"];
+    self.crashThreadId = [coder decodeObjectForKey:@"self.crashThreadId"];
     self.measurements = [coder decodeObjectForKey:@"self.measurements"];
   }
 
@@ -62,6 +76,8 @@
   [coder encodeObject:self.handledAt forKey:@"self.handledAt"];
   [coder encodeObject:self.exceptions forKey:@"self.exceptions"];
   [coder encodeInt:self.severityLevel forKey:@"self.severityLevel"];
+  [coder encodeObject:self.problemId forKey:@"self.problemId"];
+  [coder encodeObject:self.crashThreadId forKey:@"self.crashThreadId"];
   [coder encodeObject:self.measurements forKey:@"self.measurements"];
 }
 

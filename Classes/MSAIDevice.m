@@ -56,8 +56,8 @@
     if (self.type != nil) {
         [dict setObject:self.type forKey:@"ai.device.type"];
     }
-    if (self.vmName != nil) {
-        [dict setObject:self.vmName forKey:@"ai.device.vmName"];
+    if (self.machineName != nil) {
+        [dict setObject:self.machineName forKey:@"ai.device.machineName"];
     }
     return dict;
 }
@@ -80,7 +80,7 @@
     self.roleName = [coder decodeObjectForKey:@"self.roleName"];
     self.screenResolution = [coder decodeObjectForKey:@"self.screenResolution"];
     self.type = [coder decodeObjectForKey:@"self.type"];
-    self.vmName = [coder decodeObjectForKey:@"self.vmName"];
+    self.machineName = [coder decodeObjectForKey:@"self.machineName"];
   }
 
   return self;
@@ -100,7 +100,7 @@
   [coder encodeObject:self.roleName forKey:@"self.roleName"];
   [coder encodeObject:self.screenResolution forKey:@"self.screenResolution"];
   [coder encodeObject:self.type forKey:@"self.type"];
-  [coder encodeObject:self.vmName forKey:@"self.vmName"];
+  [coder encodeObject:self.machineName forKey:@"self.machineName"];
 }
 
 

@@ -29,6 +29,9 @@
     if (self.rootId != nil) {
         [dict setObject:self.rootId forKey:@"ai.operation.rootId"];
     }
+    if (self.syntheticSource != nil) {
+      [dict setObject:self.syntheticSource forKey:@"ai.operation.syntheticSource"];
+    }
     return dict;
 }
 
@@ -41,6 +44,7 @@
     self.name = [coder decodeObjectForKey:@"self.name"];
     self.parentId = [coder decodeObjectForKey:@"self.parentId"];
     self.rootId = [coder decodeObjectForKey:@"self.rootId"];
+    self.syntheticSource = [coder decodeObjectForKey:@"self.syntheticSource"];
   }
 
   return self;
@@ -52,6 +56,7 @@
   [coder encodeObject:self.name forKey:@"self.name"];
   [coder encodeObject:self.parentId forKey:@"self.parentId"];
   [coder encodeObject:self.rootId forKey:@"self.rootId"];
+  [coder encodeObject:self.syntheticSource forKey:@"self.syntheticSource"];
 }
 
 @end

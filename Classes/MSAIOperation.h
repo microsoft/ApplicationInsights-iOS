@@ -6,5 +6,6 @@
 @property (nonatomic, strong) NSString *name;
 @property (nonatomic, strong) NSString *parentId;
 @property (nonatomic, strong) NSString *rootId;
+@property (nonatomic, copy) NSString *syntheticSource;
 
 @end
