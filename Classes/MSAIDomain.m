@@ -7,7 +7,7 @@
 /// Initializes a new instance of the class.
 - (instancetype)init {
     if (self = [super init]) {
-        _envelopeTypeName = @"Microsoft.ApplicationInsights.Do";
+        _envelopeTypeName = @"Microsoft.ApplicationInsights.Domain";
         _dataTypeName = @"Domain";
     }
     return self;

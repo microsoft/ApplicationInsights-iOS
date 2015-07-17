@@ -29,10 +29,10 @@
     if (self.userId != nil) {
         [dict setObject:self.userId forKey:@"ai.user.id"];
     }
+    if(self.storeRegion != nil) {
+        [dict setObject:self.storeRegion forKey:@"ai.user.storeRegion"];
+    }
     return dict;
-  if(self.storeRegion != nil) {
-    [dict setObject:self.storeRegion forKey:@"ai.user.storeRegion"];
-  }
 }
 
 #pragma mark - NSCoding

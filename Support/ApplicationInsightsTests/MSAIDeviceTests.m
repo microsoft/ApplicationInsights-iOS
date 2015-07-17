@@ -179,13 +179,13 @@
 - (void)testvm_namePropertyWorksAsExpected {
     NSString *expected = @"Test string";
     MSAIDevice *item = [MSAIDevice new];
-    item.vmName = expected;
-    NSString *actual = item.vmName;
+    item.machineName = expected;
+    NSString *actual = item.machineName;
     XCTAssertTrue([actual isEqualToString:expected]);
     
     expected = @"Other string";
-    item.vmName = expected;
-    actual = item.vmName;
+    item.machineName = expected;
+    actual = item.machineName;
     XCTAssertTrue([actual isEqualToString:expected]);
 }
 
@@ -204,9 +204,9 @@
     item.roleName = @"Test string";
     item.screenResolution = @"Test string";
     item.type = @"Test string";
-    item.vmName = @"Test string";
+    item.machineName = @"Test string";
     NSString *actual = [item serializeToString];
-    NSString *expected = @"{\"ai.device.id\":\"Test string\",\"ai.device.ip\":\"Test string\",\"ai.device.language\":\"Test string\",\"ai.device.locale\":\"Test string\",\"ai.device.model\":\"Test string\",\"ai.device.network\":\"Test string\",\"ai.device.oemName\":\"Test string\",\"ai.device.os\":\"Test string\",\"ai.device.osVersion\":\"Test string\",\"ai.device.roleInstance\":\"Test string\",\"ai.device.roleName\":\"Test string\",\"ai.device.screenResolution\":\"Test string\",\"ai.device.type\":\"Test string\",\"ai.device.vmName\":\"Test string\"}";
+    NSString *expected = @"{\"ai.device.id\":\"Test string\",\"ai.device.ip\":\"Test string\",\"ai.device.language\":\"Test string\",\"ai.device.locale\":\"Test string\",\"ai.device.model\":\"Test string\",\"ai.device.network\":\"Test string\",\"ai.device.oemName\":\"Test string\",\"ai.device.os\":\"Test string\",\"ai.device.osVersion\":\"Test string\",\"ai.device.roleInstance\":\"Test string\",\"ai.device.roleName\":\"Test string\",\"ai.device.screenResolution\":\"Test string\",\"ai.device.type\":\"Test string\",\"ai.device.machineName\":\"Test string\"}";
     XCTAssertTrue([actual isEqualToString:expected]);
 }
 
