@@ -31,8 +31,8 @@
 - (instancetype)initWithCoder:(NSCoder *)coder {
   self = [super init];
   if(self) {
-    self.sdkVersion = [coder decodeObjectForKey:@"self.sdkVersion"];
-    self.agentVersion = [coder decodeObjectForKey:@"self.agentVersion"];
+    _sdkVersion = [coder decodeObjectForKey:@"self.sdkVersion"];
+    _agentVersion = [coder decodeObjectForKey:@"self.agentVersion"];
   }
 
   return self;

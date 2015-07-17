@@ -35,8 +35,8 @@
 - (instancetype)initWithCoder:(NSCoder *)coder {
   self = [super initWithCoder:coder];
   if(self) {
-    self.url = [coder decodeObjectForKey:@"self.url"];
-    self.duration = [coder decodeObjectForKey:@"self.duration"];
+    _url = [coder decodeObjectForKey:@"self.url"];
+    _duration = [coder decodeObjectForKey:@"self.duration"];
   }
 
   return self;

@@ -28,7 +28,7 @@
 - (instancetype)initWithCoder:(NSCoder *)coder {
   self = [super init];
   if(self) {
-    self.ip = [coder decodeObjectForKey:@"self.ip"];
+    _ip = [coder decodeObjectForKey:@"self.ip"];
   }
 
   return self;

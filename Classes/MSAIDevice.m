@@ -67,20 +67,20 @@
 - (instancetype)initWithCoder:(NSCoder *)coder {
   self = [super init];
   if(self) {
-    self.deviceId = [coder decodeObjectForKey:@"self.deviceId"];
-    self.ip = [coder decodeObjectForKey:@"self.ip"];
-    self.language = [coder decodeObjectForKey:@"self.language"];
-    self.locale = [coder decodeObjectForKey:@"self.locale"];
-    self.model = [coder decodeObjectForKey:@"self.model"];
-    self.network = [coder decodeObjectForKey:@"self.network"];
-    self.oemName = [coder decodeObjectForKey:@"self.oemName"];
-    self.os = [coder decodeObjectForKey:@"self.os"];
-    self.osVersion = [coder decodeObjectForKey:@"self.osVersion"];
-    self.roleInstance = [coder decodeObjectForKey:@"self.roleInstance"];
-    self.roleName = [coder decodeObjectForKey:@"self.roleName"];
-    self.screenResolution = [coder decodeObjectForKey:@"self.screenResolution"];
-    self.type = [coder decodeObjectForKey:@"self.type"];
-    self.machineName = [coder decodeObjectForKey:@"self.machineName"];
+    _deviceId = [coder decodeObjectForKey:@"self.deviceId"];
+    _ip = [coder decodeObjectForKey:@"self.ip"];
+    _language = [coder decodeObjectForKey:@"self.language"];
+    _locale = [coder decodeObjectForKey:@"self.locale"];
+    _model = [coder decodeObjectForKey:@"self.model"];
+    _network = [coder decodeObjectForKey:@"self.network"];
+    _oemName = [coder decodeObjectForKey:@"self.oemName"];
+    _os = [coder decodeObjectForKey:@"self.os"];
+    _osVersion = [coder decodeObjectForKey:@"self.osVersion"];
+    _roleInstance = [coder decodeObjectForKey:@"self.roleInstance"];
+    _roleName = [coder decodeObjectForKey:@"self.roleName"];
+    _screenResolution = [coder decodeObjectForKey:@"self.screenResolution"];
+    _type = [coder decodeObjectForKey:@"self.type"];
+    _machineName = [coder decodeObjectForKey:@"self.machineName"];
   }
 
   return self;

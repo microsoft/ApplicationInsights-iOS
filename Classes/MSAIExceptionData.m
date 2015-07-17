@@ -60,12 +60,12 @@
 - (instancetype)initWithCoder:(NSCoder *)coder {
   self = [super initWithCoder:coder];
   if(self) {
-    self.handledAt = [coder decodeObjectForKey:@"self.handledAt"];
-    self.exceptions = [coder decodeObjectForKey:@"self.exceptions"];
-    self.severityLevel = (MSAISeverityLevel) [coder decodeIntForKey:@"self.severityLevel"];
+    _handledAt = [coder decodeObjectForKey:@"self.handledAt"];
+    _exceptions = [coder decodeObjectForKey:@"self.exceptions"];
+    _severityLevel = (MSAISeverityLevel) [coder decodeIntForKey:@"self.severityLevel"];
     self.problemId = [coder decodeObjectForKey:@"self.problemId"];
     self.crashThreadId = [coder decodeObjectForKey:@"self.crashThreadId"];
-    self.measurements = [coder decodeObjectForKey:@"self.measurements"];
+    _measurements = [coder decodeObjectForKey:@"self.measurements"];
   }
 
   return self;

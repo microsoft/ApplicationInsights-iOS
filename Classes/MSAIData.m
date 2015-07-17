@@ -31,7 +31,7 @@
 - (instancetype)initWithCoder:(NSCoder *)coder {
   self = [super initWithCoder:coder];
   if(self) {
-    self.baseData = [coder decodeObjectForKey:@"self.baseData"];
+    _baseData = [coder decodeObjectForKey:@"self.baseData"];
   }
 
   return self;

@@ -6,15 +6,17 @@
 
 @synthesize envelopeTypeName = _envelopeTypeName;
 @synthesize dataTypeName = _dataTypeName;
+@synthesize version = _version;
+@synthesize properties = _properties;
 
 /// Initializes a new instance of the class.
 - (instancetype)init {
     if (self = [super init]) {
         _envelopeTypeName = @"Microsoft.ApplicationInsights.Request";
         _dataTypeName = @"RequestData";
-        self.version = @2;
-        self.properties = [MSAIOrderedDictionary new];
-        self.measurements = [MSAIOrderedDictionary new];
+        _version = @2;
+        _properties = [MSAIOrderedDictionary new];
+        _measurements = [MSAIOrderedDictionary new];
     }
     return self;
 }
@@ -58,14 +60,14 @@
 - (instancetype)initWithCoder:(NSCoder *)coder {
   self = [super initWithCoder:coder];
   if(self) {
-    self.requestDataId = [coder decodeObjectForKey:@"self.requestDataId"];
-    self.startTime = [coder decodeObjectForKey:@"self.startTime"];
-    self.duration = [coder decodeObjectForKey:@"self.duration"];
-    self.responseCode = [coder decodeObjectForKey:@"self.responseCode"];
-    self.success = [coder decodeBoolForKey:@"self.success"];
-    self.httpMethod = [coder decodeObjectForKey:@"self.httpMethod"];
-    self.url = [coder decodeObjectForKey:@"self.url"];
-    self.measurements = [coder decodeObjectForKey:@"self.measurements"];
+    _requestDataId = [coder decodeObjectForKey:@"self.requestDataId"];
+    _startTime = [coder decodeObjectForKey:@"self.startTime"];
+    _duration = [coder decodeObjectForKey:@"self.duration"];
+    _responseCode = [coder decodeObjectForKey:@"self.responseCode"];
+    _success = [coder decodeBoolForKey:@"self.success"];
+    _httpMethod = [coder decodeObjectForKey:@"self.httpMethod"];
+    _url = [coder decodeObjectForKey:@"self.url"];
+    _measurements = [coder decodeObjectForKey:@"self.measurements"];
   }
 
   return self;
