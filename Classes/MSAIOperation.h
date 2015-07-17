@@ -2,10 +2,10 @@
 
 @interface MSAIOperation : MSAIObject <NSCoding>
 
-@property (nonatomic, strong) NSString *operationId;
-@property (nonatomic, strong) NSString *name;
-@property (nonatomic, strong) NSString *parentId;
-@property (nonatomic, strong) NSString *rootId;
+@property (nonatomic, copy) NSString *operationId;
+@property (nonatomic, copy) NSString *name;
+@property (nonatomic, copy) NSString *parentId;
+@property (nonatomic, copy) NSString *rootId;
 @property (nonatomic, copy) NSString *syntheticSource;
 
 @end

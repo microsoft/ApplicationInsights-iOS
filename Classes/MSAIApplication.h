@@ -2,7 +2,7 @@
 
 @interface MSAIApplication : MSAIObject <NSCoding>
 
-@property (nonatomic, strong) NSString *version;
+@property (nonatomic, copy) NSString *version;
 
 - (instancetype)initWithCoder:(NSCoder *)coder;
 
