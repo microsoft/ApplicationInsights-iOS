@@ -122,10 +122,10 @@ static NSUInteger const defaultRequestLimit = 10;
   if(!path || !request) { return; }
   
   __weak typeof(self) weakSelf = self;
-  MSAIHTTPOperation *operation = [self.appClient operationWithURLRequest:request queue:self.senderQueue completion:^(MSAIHTTPOperation *operation, NSData *responseData, NSError *error) {
+  MSAIHTTPOperation *operation = [self.appClient operationWithURLRequest:request queue:self.senderQueue completion:^(MSAIHTTPOperation *completedOperation, NSData *responseData, NSError *error) {
     typeof(self) strongSelf = weakSelf;
 
-    NSInteger statusCode = [operation.response statusCode];
+    NSInteger statusCode = [completedOperation.response statusCode];
     [strongSelf handleUploadResultWithPath:path responseData:responseData error:error statusCode:statusCode];
   }];
 
