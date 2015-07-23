@@ -1,17 +1,12 @@
 #import "MSAIMessageData.h"
 #import "MSAIOrderedDictionary.h"
-#import "MSAIEnums.h"
 
 /// Data contract class for type MessageData.
 @implementation MSAIMessageData
-@synthesize envelopeTypeName = _envelopeTypeName;
-@synthesize dataTypeName = _dataTypeName;
 
 /// Initializes a new instance of the class.
 - (instancetype)init {
-  if (self = [super init]) {
-    _envelopeTypeName = @"Microsoft.ApplicationInsights.Message";
-    _dataTypeName = @"MessageData";
+  if(self = [super init]) {
     self.version = @2;
     self.properties = [MSAIOrderedDictionary new];
   }
@@ -24,13 +19,11 @@
 ///
 - (MSAIOrderedDictionary *)serializeToDictionary {
   MSAIOrderedDictionary *dict = [super serializeToDictionary];
-  if (self.message != nil) {
+  if(self.message != nil) {
     [dict setObject:self.message forKey:@"message"];
   }
-  
   [dict setObject:@((int) self.severityLevel) forKey:@"severityLevel"];
-  
-  if(self.properties){
+  if(self.properties != nil) {
     [dict setObject:self.properties forKey:@"properties"];
   }
   return dict;
@@ -44,7 +37,6 @@
     self.message = [coder decodeObjectForKey:@"self.message"];
     self.severityLevel = (MSAISeverityLevel) [coder decodeIntForKey:@"self.severityLevel"];
   }
-
   return self;
 }
 
@@ -53,6 +45,5 @@
   [coder encodeObject:self.message forKey:@"self.message"];
   [coder encodeInt:self.severityLevel forKey:@"self.severityLevel"];
 }
-
 
 @end

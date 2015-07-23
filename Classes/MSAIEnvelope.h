@@ -1,9 +1,11 @@
+#import "MSAIBase.h"
 #import "MSAIObject.h"
-@class MSAIBase;
+#import "MSAITelemetryData.h"
+#import "MSAIDomain.h"
 
 @interface MSAIEnvelope : MSAIObject <NSCoding>
 
-@property (nonatomic, copy) NSNumber *version;
+@property (nonatomic, strong) NSNumber *version;
 @property (nonatomic, copy) NSString *name;
 @property (nonatomic, copy) NSString *time;
 @property (nonatomic, strong) NSNumber *sampleRate;
@@ -19,5 +21,7 @@
 @property (nonatomic, strong) MSAIOrderedDictionary *tags;
 @property (nonatomic, strong) MSAIBase *data;
 
+- (instancetype)initWithCoder:(NSCoder *)coder;
+- (void)encodeWithCoder:(NSCoder *)coder;
 
 @end

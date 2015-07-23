@@ -1,6 +1,4 @@
 #import "MSAIDataPoint.h"
-#import "MSAIOrderedDictionary.h"
-
 /// Data contract class for type DataPoint.
 @implementation MSAIDataPoint
 
@@ -21,21 +19,21 @@
   if(self.name != nil) {
     [dict setObject:self.name forKey:@"name"];
   }
-  dict[@"kind"] = @((int) self.kind);
+  [dict setObject:[NSNumber numberWithInt:(int)self.kind] forKey:@"kind"];
   if(self.value != nil) {
-    dict[@"value"] = self.value;
+    [dict setObject:self.value forKey:@"value"];
   }
   if(self.count != nil) {
-    dict[@"count"] = self.count;
+    [dict setObject:self.count forKey:@"count"];
   }
   if(self.min != nil) {
-    dict[@"min"] = self.min;
+    [dict setObject:self.min forKey:@"min"];
   }
   if(self.max != nil) {
-    dict[@"max"] = self.max;
+    [dict setObject:self.max forKey:@"max"];
   }
   if(self.stdDev != nil) {
-    dict[@"stdDev"] = self.stdDev;
+    [dict setObject:self.stdDev forKey:@"stdDev"];
   }
   return dict;
 }
@@ -43,7 +41,7 @@
 #pragma mark - NSCoding
 
 - (instancetype)initWithCoder:(NSCoder *)coder {
-  self = [self init];
+  self = [super initWithCoder:coder];
   if(self) {
     self.name = [coder decodeObjectForKey:@"self.name"];
     self.kind = (MSAIDataPointType) [coder decodeIntForKey:@"self.kind"];
@@ -53,11 +51,11 @@
     self.max = [coder decodeObjectForKey:@"self.max"];
     self.stdDev = [coder decodeObjectForKey:@"self.stdDev"];
   }
-
   return self;
 }
 
 - (void)encodeWithCoder:(NSCoder *)coder {
+  [super encodeWithCoder:coder];
   [coder encodeObject:self.name forKey:@"self.name"];
   [coder encodeInt:self.kind forKey:@"self.kind"];
   [coder encodeObject:self.value forKey:@"self.value"];
@@ -66,6 +64,5 @@
   [coder encodeObject:self.max forKey:@"self.max"];
   [coder encodeObject:self.stdDev forKey:@"self.stdDev"];
 }
-
 
 @end

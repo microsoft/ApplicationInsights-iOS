@@ -1,22 +1,15 @@
 #import "MSAIRequestData.h"
-#import "MSAIOrderedDictionary.h"
-
 /// Data contract class for type RequestData.
 @implementation MSAIRequestData
 
-@synthesize envelopeTypeName = _envelopeTypeName;
-@synthesize dataTypeName = _dataTypeName;
-
 /// Initializes a new instance of the class.
 - (instancetype)init {
-    if (self = [super init]) {
-        _envelopeTypeName = @"Microsoft.ApplicationInsights.Request";
-        _dataTypeName = @"RequestData";
-        self.version = @2;
-        self.properties = [MSAIOrderedDictionary new];
-        self.measurements = [MSAIOrderedDictionary new];
-    }
-    return self;
+  if(self = [super init]) {
+    self.version = @2;
+    self.properties = [MSAIOrderedDictionary new];
+    self.measurements = [MSAIOrderedDictionary new];
+  }
+  return self;
 }
 
 ///
@@ -24,33 +17,37 @@
 /// @param dictionary to which the members of this class will be added.
 ///
 - (MSAIOrderedDictionary *)serializeToDictionary {
-    MSAIOrderedDictionary *dict = [super serializeToDictionary];
-    if (self.requestDataId != nil) {
-        [dict setObject:self.requestDataId forKey:@"id"];
-    }
-    if (self.name != nil) {
-        [dict setObject:self.name forKey:@"name"];
-    }
-    if (self.startTime != nil) {
-        [dict setObject:self.startTime forKey:@"startTime"];
-    }
-    if (self.duration != nil) {
-        [dict setObject:self.duration forKey:@"duration"];
-    }
-    if (self.responseCode != nil) {
-        [dict setObject:self.responseCode forKey:@"responseCode"];
-    }
-    NSString *strsuccess = [NSString stringWithFormat:@"%s", (self.success) ? "true" : "false"];
-    [dict setObject:strsuccess forKey:@"success"];
-    if (self.httpMethod != nil) {
-        [dict setObject:self.httpMethod forKey:@"httpMethod"];
-    }
-    if (self.url != nil) {
-        [dict setObject:self.url forKey:@"url"];
-    }
+  MSAIOrderedDictionary *dict = [super serializeToDictionary];
+  if(self.requestDataId != nil) {
+    [dict setObject:self.requestDataId forKey:@"id"];
+  }
+  if(self.name != nil) {
+    [dict setObject:self.name forKey:@"name"];
+  }
+  if(self.startTime != nil) {
+    [dict setObject:self.startTime forKey:@"startTime"];
+  }
+  if(self.duration != nil) {
+    [dict setObject:self.duration forKey:@"duration"];
+  }
+  if(self.responseCode != nil) {
+    [dict setObject:self.responseCode forKey:@"responseCode"];
+  }
+  NSString *strsuccess = [NSString stringWithFormat:@"%s", (self.success) ? "true" : "false"];
+  [dict setObject:strsuccess forKey:@"success"];
+  if(self.httpMethod != nil) {
+    [dict setObject:self.httpMethod forKey:@"httpMethod"];
+  }
+  if(self.url != nil) {
+    [dict setObject:self.url forKey:@"url"];
+  }
+  if(self.properties != nil) {
     [dict setObject:self.properties forKey:@"properties"];
+  }
+  if(self.measurements != nil) {
     [dict setObject:self.measurements forKey:@"measurements"];
-    return dict;
+  }
+  return dict;
 }
 
 #pragma mark - NSCoding
@@ -67,7 +64,6 @@
     self.url = [coder decodeObjectForKey:@"self.url"];
     self.measurements = [coder decodeObjectForKey:@"self.measurements"];
   }
-
   return self;
 }
 
@@ -82,6 +78,5 @@
   [coder encodeObject:self.url forKey:@"self.url"];
   [coder encodeObject:self.measurements forKey:@"self.measurements"];
 }
-
 
 @end

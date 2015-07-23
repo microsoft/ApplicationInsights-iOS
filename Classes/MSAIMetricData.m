@@ -1,17 +1,10 @@
 #import "MSAIMetricData.h"
-#import "MSAIOrderedDictionary.h"
-#import "MSAIDataPoint.h"
-
 /// Data contract class for type MetricData.
 @implementation MSAIMetricData
-@synthesize envelopeTypeName = _envelopeTypeName;
-@synthesize dataTypeName = _dataTypeName;
 
 /// Initializes a new instance of the class.
 - (instancetype)init {
-  if (self = [super init]) {
-    _envelopeTypeName = @"Microsoft.ApplicationInsights.Metric";
-    _dataTypeName = @"MetricData";
+  if(self = [super init]) {
     self.version = @2;
     self.metrics = [NSMutableArray new];
     self.properties = [MSAIOrderedDictionary new];
@@ -25,17 +18,16 @@
 ///
 - (MSAIOrderedDictionary *)serializeToDictionary {
   MSAIOrderedDictionary *dict = [super serializeToDictionary];
-  if (self.metrics != nil) {
+  if(self.metrics != nil) {
     NSMutableArray *metricsArray = [NSMutableArray array];
     for (MSAIDataPoint *metricsElement in self.metrics) {
       [metricsArray addObject:[metricsElement serializeToDictionary]];
     }
     [dict setObject:metricsArray forKey:@"metrics"];
   }
-  if(self.properties){
+  if(self.properties != nil) {
     [dict setObject:self.properties forKey:@"properties"];
   }
-  
   return dict;
 }
 
@@ -46,7 +38,6 @@
   if(self) {
     self.metrics = [coder decodeObjectForKey:@"self.metrics"];
   }
-
   return self;
 }
 
@@ -54,6 +45,5 @@
   [super encodeWithCoder:coder];
   [coder encodeObject:self.metrics forKey:@"self.metrics"];
 }
-
 
 @end
