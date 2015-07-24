@@ -1,5 +1,4 @@
 #import "MSAITelemetryData.h"
-#import "MSAIOrderedDictionary.h"
 
 @implementation MSAITelemetryData
 
@@ -21,7 +20,7 @@
     self.name = [coder decodeObjectForKey:@"self.name"];
     self.properties = [coder decodeObjectForKey:@"self.properties"];
   }
-
+  
   return self;
 }
 
@@ -31,6 +30,5 @@
   [coder encodeObject:self.name forKey:@"self.name"];
   [coder encodeObject:self.properties forKey:@"self.properties"];
 }
-
 
 @end

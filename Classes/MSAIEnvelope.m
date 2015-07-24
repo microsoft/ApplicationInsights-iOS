@@ -1,7 +1,4 @@
 #import "MSAIEnvelope.h"
-#import "MSAIOrderedDictionary.h"
-#import "MSAIData.h"
-
 /// Data contract class for type Envelope.
 @implementation MSAIEnvelope
 
@@ -63,7 +60,6 @@
   if(self.tags != nil) {
     [dict setObject:self.tags forKey:@"tags"];
   }
-    
   MSAIOrderedDictionary *dataDict = [self.data serializeToDictionary];
   if ([NSJSONSerialization isValidJSONObject:dataDict]) {
     [dict setObject:dataDict forKey:@"data"];
@@ -76,7 +72,7 @@
 #pragma mark - NSCoding
 
 - (instancetype)initWithCoder:(NSCoder *)coder {
-  self = [super init];
+  self = [super initWithCoder:coder];
   if(self) {
     self.version = [coder decodeObjectForKey:@"self.version"];
     self.name = [coder decodeObjectForKey:@"self.name"];
@@ -94,11 +90,11 @@
     self.tags = [coder decodeObjectForKey:@"self.tags"];
     self.data = [coder decodeObjectForKey:@"self.data"];
   }
-
   return self;
 }
 
 - (void)encodeWithCoder:(NSCoder *)coder {
+  [super encodeWithCoder:coder];
   [coder encodeObject:self.version forKey:@"self.version"];
   [coder encodeObject:self.name forKey:@"self.name"];
   [coder encodeObject:self.time forKey:@"self.time"];
@@ -115,6 +111,5 @@
   [coder encodeObject:self.tags forKey:@"self.tags"];
   [coder encodeObject:self.data forKey:@"self.data"];
 }
-
 
 @end

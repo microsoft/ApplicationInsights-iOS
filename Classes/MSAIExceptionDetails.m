@@ -1,17 +1,14 @@
 #import "MSAIExceptionDetails.h"
-#import "MSAIStackFrame.h"
-#import "MSAIOrderedDictionary.h"
-
 /// Data contract class for type ExceptionDetails.
 @implementation MSAIExceptionDetails
 
 /// Initializes a new instance of the class.
 - (instancetype)init {
-    if (self = [super init]) {
-        self.hasFullStack = true;
-        self.parsedStack = [NSMutableArray new];
-    }
-    return self;
+  if(self = [super init]) {
+    self.hasFullStack = true;
+    self.parsedStack = [NSMutableArray new];
+  }
+  return self;
 }
 
 ///
@@ -19,38 +16,38 @@
 /// @param dictionary to which the members of this class will be added.
 ///
 - (MSAIOrderedDictionary *)serializeToDictionary {
-    MSAIOrderedDictionary *dict = [super serializeToDictionary];
-    if (self.exceptionDetailsId != nil) {
-        [dict setObject:self.exceptionDetailsId forKey:@"id"];
+  MSAIOrderedDictionary *dict = [super serializeToDictionary];
+  if(self.exceptionDetailsId != nil) {
+    [dict setObject:self.exceptionDetailsId forKey:@"id"];
+  }
+  if(self.outerId != nil) {
+    [dict setObject:self.outerId forKey:@"outerId"];
+  }
+  if(self.typeName != nil) {
+    [dict setObject:self.typeName forKey:@"typeName"];
+  }
+  if(self.message != nil) {
+    [dict setObject:self.message forKey:@"message"];
+  }
+  NSString *strhasFullStack = [NSString stringWithFormat:@"%s", (self.hasFullStack) ? "true" : "false"];
+  [dict setObject:strhasFullStack forKey:@"hasFullStack"];
+  if(self.stack != nil) {
+    [dict setObject:self.stack forKey:@"stack"];
+  }
+  if(self.parsedStack != nil) {
+    NSMutableArray *parsedStackArray = [NSMutableArray array];
+    for (MSAIStackFrame *parsedStackElement in self.parsedStack) {
+      [parsedStackArray addObject:[parsedStackElement serializeToDictionary]];
     }
-    if (self.outerId != nil) {
-        [dict setObject:self.outerId forKey:@"outerId"];
-    }
-    if (self.typeName != nil) {
-        [dict setObject:self.typeName forKey:@"typeName"];
-    }
-    if (self.message != nil) {
-        [dict setObject:self.message forKey:@"message"];
-    }
-    NSString *strhasFullStack = [NSString stringWithFormat:@"%s", (self.hasFullStack) ? "true" : "false"];
-    [dict setObject:strhasFullStack forKey:@"hasFullStack"];
-    if (self.stack != nil) {
-        [dict setObject:self.stack forKey:@"stack"];
-    }
-    if (self.parsedStack != nil) {
-        NSMutableArray *parsedStackArray = [NSMutableArray array];
-        for (MSAIStackFrame *parsedStackElement in self.parsedStack) {
-            [parsedStackArray addObject:[parsedStackElement serializeToDictionary]];
-        }
-        [dict setObject:parsedStackArray forKey:@"parsedStack"];
-    }
-    return dict;
+    [dict setObject:parsedStackArray forKey:@"parsedStack"];
+  }
+  return dict;
 }
 
 #pragma mark - NSCoding
 
 - (instancetype)initWithCoder:(NSCoder *)coder {
-  self = [super init];
+  self = [super initWithCoder:coder];
   if(self) {
     self.exceptionDetailsId = [coder decodeObjectForKey:@"self.exceptionDetailsId"];
     self.outerId = [coder decodeObjectForKey:@"self.outerId"];
@@ -60,11 +57,11 @@
     self.stack = [coder decodeObjectForKey:@"self.stack"];
     self.parsedStack = [coder decodeObjectForKey:@"self.parsedStack"];
   }
-
   return self;
 }
 
 - (void)encodeWithCoder:(NSCoder *)coder {
+  [super encodeWithCoder:coder];
   [coder encodeObject:self.exceptionDetailsId forKey:@"self.exceptionDetailsId"];
   [coder encodeObject:self.outerId forKey:@"self.outerId"];
   [coder encodeObject:self.typeName forKey:@"self.typeName"];
@@ -73,6 +70,5 @@
   [coder encodeObject:self.stack forKey:@"self.stack"];
   [coder encodeObject:self.parsedStack forKey:@"self.parsedStack"];
 }
-
 
 @end

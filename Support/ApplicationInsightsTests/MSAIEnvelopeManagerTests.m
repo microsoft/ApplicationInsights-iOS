@@ -65,13 +65,11 @@
   
   MSAIEnvelope *envelope = [_sut envelopeForTelemetryData:testEvent];
   assertThat(envelope.data, notNilValue());
-  assertThat(envelope.name, equalTo(@"Microsoft.ApplicationInsights.Event"));
   
   MSAIData *data = (MSAIData *)envelope.data;
   [self checkEnvelopeTemplate:envelope];
   assertThat(data.baseData, instanceOf([MSAIEventData class]));
   assertThat([(MSAIEventData *)data.baseData name], equalTo(@"Test event"));
-  assertThat(data.baseType, equalTo(@"EventData"));
 }
 
 - (void)testThatItInstantiatesEnvelopeForCrash {
@@ -86,7 +84,6 @@
   
   [self checkEnvelopeTemplate:envelope];
   assertThat(envelope.data, notNilValue());
-  assertThat(envelope.name, equalTo(@"Microsoft.ApplicationInsights.Crash"));
 }
 
 #pragma mark - Helper
