@@ -37,6 +37,8 @@
     MSAIPageViewData *item = [MSAIPageViewData new];
     item.url = @"Test string";
     item.duration = @"Test string";
+    item.referrer = @"Test referrer";
+    item.referrerData = @"Test data";
     NSString *actual = [item serializeToString];
     NSString *expected = @"{\"ver\":2,\"properties\":{},\"measurements\":{},\"url\":\"Test string\",\"duration\":\"Test string\"}";
     XCTAssertTrue([actual isEqualToString:expected]);

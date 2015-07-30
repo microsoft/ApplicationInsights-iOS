@@ -7,16 +7,18 @@
 @implementation MSAIExceptionData
 @synthesize envelopeTypeName = _envelopeTypeName;
 @synthesize dataTypeName = _dataTypeName;
+@synthesize version = _version;
+@synthesize properties = _properties;
 
 /// Initializes a new instance of the class.
 - (instancetype)init {
     if (self = [super init]) {
         _envelopeTypeName = @"Microsoft.ApplicationInsights.Exception";
         _dataTypeName = @"ExceptionData";
-        self.version = @2;
-        self.exceptions = [NSMutableArray new];
-        self.properties = [MSAIOrderedDictionary new];
-        self.measurements = [MSAIOrderedDictionary new];
+        _version = @2;
+        _exceptions = [NSMutableArray new];
+        _properties = [MSAIOrderedDictionary new];
+        _measurements = [MSAIOrderedDictionary new];
     }
     return self;
 }
@@ -63,8 +65,8 @@
     _handledAt = [coder decodeObjectForKey:@"self.handledAt"];
     _exceptions = [coder decodeObjectForKey:@"self.exceptions"];
     _severityLevel = (MSAISeverityLevel) [coder decodeIntForKey:@"self.severityLevel"];
-    self.problemId = [coder decodeObjectForKey:@"self.problemId"];
-    self.crashThreadId = [coder decodeObjectForKey:@"self.crashThreadId"];
+    _problemId = [coder decodeObjectForKey:@"self.problemId"];
+    _crashThreadId = [coder decodeObjectForKey:@"self.crashThreadId"];
     _measurements = [coder decodeObjectForKey:@"self.measurements"];
   }
 

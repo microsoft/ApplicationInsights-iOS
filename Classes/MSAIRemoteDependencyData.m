@@ -15,7 +15,7 @@
         _dataTypeName = @"RemoteDependencyData";
         _version = @2;
         _kind = MSAIDataPointType_measurement;
-        _dependencyKind = MSAIDependencyKind_undefined;
+        _dependencyKind = MSAIDependencyKind_other;
         _success = true;
         _dependencySource = MSAIDependencySourceType_undefined;
         _properties = [MSAIOrderedDictionary new];
@@ -54,8 +54,16 @@
     NSString *strasync = [NSString stringWithFormat:@"%s", (self.async) ? "true" : "false"];
     [dict setObject:strasync forKey:@"async"];
   [dict setObject:@((int) self.dependencySource) forKey:@"dependencySource"];
+  if(self.commandName != nil) {
+    [dict setObject:self.commandName forKey:@"commandName"];
+  }
+  if(self.dependencyTypeName != nil) {
+    [dict setObject:self.dependencyTypeName forKey:@"dependencyTypeName"];
+  }
+  if(self.properties != nil) {
     [dict setObject:self.properties forKey:@"properties"];
-    return dict;
+  }
+  return dict;
 }
 
 #pragma mark - NSCoding
@@ -73,6 +81,8 @@
     _success = [coder decodeBoolForKey:@"self.success"];
     _async = [coder decodeBoolForKey:@"self.async"];
     _dependencySource = (MSAIDependencySourceType) [coder decodeIntForKey:@"self.dependencySource"];
+    _commandName = [coder decodeObjectForKey:@"self.commandName"];
+    _dependencyTypeName = [coder decodeObjectForKey:@"self.dependencyTypeName"];
   }
 
   return self;
@@ -90,6 +100,8 @@
   [coder encodeBool:self.success forKey:@"self.success"];
   [coder encodeBool:self.async forKey:@"self.async"];
   [coder encodeInt:self.dependencySource forKey:@"self.dependencySource"];
+  [coder encodeObject:self.commandName forKey:@"self.commandName"];
+  [coder encodeObject:self.dependencyTypeName forKey:@"self.dependencyTypeName"];
 }
 
 

@@ -25,7 +25,16 @@
     if(self.storeRegion != nil) {
         [dict setObject:self.storeRegion forKey:@"ai.user.storeRegion"];
     }
-    return dict;
+    if(self.authUserId != nil) {
+        [dict setObject:self.authUserId forKey:@"ai.user.authUserId"];
+    }
+    if(self.anonUserAcquisitionDate != nil) {
+        [dict setObject:self.anonUserAcquisitionDate forKey:@"ai.user.anonUserAcquisitionDate"];
+    }
+    if(self.authUserAcquisitionDate != nil) {
+        [dict setObject:self.authUserAcquisitionDate forKey:@"ai.user.authUserAcquisitionDate"];
+    }
+  return dict;
 }
 
 #pragma mark - NSCoding
@@ -37,7 +46,10 @@
     _accountId = [coder decodeObjectForKey:@"self.accountId"];
     _userAgent = [coder decodeObjectForKey:@"self.userAgent"];
     _userId = [coder decodeObjectForKey:@"self.userId"];
-    self.storeRegion = [coder decodeObjectForKey:@"self.storeRegion"];
+    _storeRegion = [coder decodeObjectForKey:@"self.storeRegion"];
+    _authUserId = [coder decodeObjectForKey:@"self.authUserId"];
+    _anonUserAcquisitionDate = [coder decodeObjectForKey:@"self.anonUserAcquisitionDate"];
+    _authUserAcquisitionDate = [coder decodeObjectForKey:@"self.authUserAcquisitionDate"];
   }
 
   return self;
@@ -50,6 +62,9 @@
   [coder encodeObject:self.userAgent forKey:@"self.userAgent"];
   [coder encodeObject:self.userId forKey:@"self.userId"];
   [coder encodeObject:self.storeRegion forKey:@"self.storeRegion"];
+  [coder encodeObject:self.authUserId forKey:@"self.authUserId"];
+  [coder encodeObject:self.anonUserAcquisitionDate forKey:@"self.anonUserAcquisitionDate"];
+  [coder encodeObject:self.authUserAcquisitionDate forKey:@"self.authUserAcquisitionDate"];
 }
 
 

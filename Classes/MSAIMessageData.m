@@ -6,14 +6,16 @@
 @implementation MSAIMessageData
 @synthesize envelopeTypeName = _envelopeTypeName;
 @synthesize dataTypeName = _dataTypeName;
+@synthesize version = _version;
+@synthesize properties = _properties;
 
 /// Initializes a new instance of the class.
 - (instancetype)init {
   if (self = [super init]) {
     _envelopeTypeName = @"Microsoft.ApplicationInsights.Message";
     _dataTypeName = @"MessageData";
-    self.version = @2;
-    self.properties = [MSAIOrderedDictionary new];
+    _version = @2;
+    _properties = [MSAIOrderedDictionary new];
   }
   return self;
 }

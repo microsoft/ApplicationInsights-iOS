@@ -25,7 +25,10 @@
     if (self.syntheticSource != nil) {
       [dict setObject:self.syntheticSource forKey:@"ai.operation.syntheticSource"];
     }
-    return dict;
+    if(self.isSynthetic != nil) {
+      [dict setObject:self.isSynthetic forKey:@"ai.operation.isSynthetic"];
+    }
+  return dict;
 }
 
 #pragma mark - NSCoding
@@ -37,7 +40,8 @@
     _name = [coder decodeObjectForKey:@"self.name"];
     _parentId = [coder decodeObjectForKey:@"self.parentId"];
     _rootId = [coder decodeObjectForKey:@"self.rootId"];
-    self.syntheticSource = [coder decodeObjectForKey:@"self.syntheticSource"];
+    _syntheticSource = [coder decodeObjectForKey:@"self.syntheticSource"];
+    _isSynthetic = [coder decodeObjectForKey:@"self.isSynthetic"];
   }
 
   return self;
@@ -50,6 +54,7 @@
   [coder encodeObject:self.parentId forKey:@"self.parentId"];
   [coder encodeObject:self.rootId forKey:@"self.rootId"];
   [coder encodeObject:self.syntheticSource forKey:@"self.syntheticSource"];
+  [coder encodeObject:self.isSynthetic forKey:@"self.isSynthetic"];
 }
 
 @end

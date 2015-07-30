@@ -5,15 +5,18 @@
 @implementation MSAIEventData
 @synthesize envelopeTypeName = _envelopeTypeName;
 @synthesize dataTypeName = _dataTypeName;
+@synthesize version = _version;
+@synthesize properties = _properties;
+@synthesize measurements = _measurements;
 
 /// Initializes a new instance of the class.
 - (instancetype)init {
   if (self = [super init]) {
     _envelopeTypeName = @"Microsoft.ApplicationInsights.Event";
     _dataTypeName = @"EventData";
-    self.version = @2;
-    self.properties = [MSAIOrderedDictionary new];
-    self.measurements = [MSAIOrderedDictionary new];
+    _version = @2;
+    _properties = [MSAIOrderedDictionary new];
+    _measurements = [MSAIOrderedDictionary new];
   }
   return self;
 }
@@ -43,6 +46,10 @@
 - (instancetype)initWithCoder:(NSCoder *)coder {
   self = [super initWithCoder:coder];
   if(self) {
+    _envelopeTypeName = [coder decodeObjectForKey:@"self.envelopeTypeName"];
+    _dataTypeName = [coder decodeObjectForKey:@"self.dataTypeName"];
+    _version = [coder decodeObjectForKey:@"self.version"];
+    _properties = [coder decodeObjectForKey:@"self.properties"];
     _measurements = [coder decodeObjectForKey:@"self.measurements"];
   }
 
@@ -51,6 +58,10 @@
 
 - (void)encodeWithCoder:(NSCoder *)coder {
   [super encodeWithCoder:coder];
+  [coder encodeObject:self.envelopeTypeName forKey:@"self.envelopeTypeName"];
+  [coder encodeObject:self.dataTypeName forKey:@"self.dataTypeName"];
+  [coder encodeObject:self.version forKey:@"self.version"];
+  [coder encodeObject:self.properties forKey:@"self.properties"];
   [coder encodeObject:self.measurements forKey:@"self.measurements"];
 }
 

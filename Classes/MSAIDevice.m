@@ -4,13 +4,6 @@
 /// Data contract class for type Device.
 @implementation MSAIDevice
 
-/// Initializes a new instance of the class.
-- (instancetype)init {
-    if (self = [super init]) {
-    }
-    return self;
-}
-
 ///
 /// Adds all members of this class to a dictionary
 /// @param dictionary to which the members of this class will be added.
@@ -34,6 +27,9 @@
     }
     if (self.network != nil) {
         [dict setObject:self.network forKey:@"ai.device.network"];
+    }
+    if(self.networkName != nil) {
+        [dict setObject:self.networkName forKey:@"ai.device.networkName"];
     }
     if (self.oemName != nil) {
         [dict setObject:self.oemName forKey:@"ai.device.oemName"];
@@ -59,7 +55,10 @@
     if (self.machineName != nil) {
         [dict setObject:self.machineName forKey:@"ai.device.machineName"];
     }
-    return dict;
+    if(self.vmName != nil) {
+        [dict setObject:self.vmName forKey:@"ai.device.vmName"];
+    }
+  return dict;
 }
 
 #pragma mark - NSCoding
@@ -81,18 +80,22 @@
     _screenResolution = [coder decodeObjectForKey:@"self.screenResolution"];
     _type = [coder decodeObjectForKey:@"self.type"];
     _machineName = [coder decodeObjectForKey:@"self.machineName"];
+    _networkName = [coder decodeObjectForKey:@"self.networkName"];
+    _vmName = [coder decodeObjectForKey:@"self.vmName"];
   }
 
   return self;
 }
 
 - (void)encodeWithCoder:(NSCoder *)coder {
+  [super encodeWithCoder:coder];
   [coder encodeObject:self.deviceId forKey:@"self.deviceId"];
   [coder encodeObject:self.ip forKey:@"self.ip"];
   [coder encodeObject:self.language forKey:@"self.language"];
   [coder encodeObject:self.locale forKey:@"self.locale"];
   [coder encodeObject:self.model forKey:@"self.model"];
   [coder encodeObject:self.network forKey:@"self.network"];
+  [coder encodeObject:self.networkName forKey:@"self.networkName"];
   [coder encodeObject:self.oemName forKey:@"self.oemName"];
   [coder encodeObject:self.os forKey:@"self.os"];
   [coder encodeObject:self.osVersion forKey:@"self.osVersion"];
@@ -101,6 +104,7 @@
   [coder encodeObject:self.screenResolution forKey:@"self.screenResolution"];
   [coder encodeObject:self.type forKey:@"self.type"];
   [coder encodeObject:self.machineName forKey:@"self.machineName"];
+  [coder encodeObject:self.vmName forKey:@"self.vmName"];
 }
 
 

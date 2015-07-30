@@ -4,13 +4,6 @@
 /// Data contract class for type CrashDataBinary.
 @implementation MSAICrashDataBinary
 
-/// Initializes a new instance of the class.
-- (instancetype)init {
-    if (self = [super init]) {
-    }
-    return self;
-}
-
 ///
 /// Adds all members of this class to a dictionary
 /// @param dictionary to which the members of this class will be added.
@@ -46,13 +39,13 @@
 - (instancetype)initWithCoder:(NSCoder *)coder {
   self = [super initWithCoder:coder];
   if(self) {
-    self.startAddress = [coder decodeObjectForKey:@"self.startAddress"];
-    self.endAddress = [coder decodeObjectForKey:@"self.endAddress"];
-    self.name = [coder decodeObjectForKey:@"self.name"];
-    self.cpuType = [coder decodeObjectForKey:@"self.cpuType"];
-    self.cpuSubType = [coder decodeObjectForKey:@"self.cpuSubType"];
-    self.uuid = [coder decodeObjectForKey:@"self.uuid"];
-    self.path = [coder decodeObjectForKey:@"self.path"];
+    _startAddress = [coder decodeObjectForKey:@"self.startAddress"];
+    _endAddress = [coder decodeObjectForKey:@"self.endAddress"];
+    _name = [coder decodeObjectForKey:@"self.name"];
+    _cpuType = [coder decodeObjectForKey:@"self.cpuType"];
+    _cpuSubType = [coder decodeObjectForKey:@"self.cpuSubType"];
+    _uuid = [coder decodeObjectForKey:@"self.uuid"];
+    _path = [coder decodeObjectForKey:@"self.path"];
   }
 
   return self;

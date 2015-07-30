@@ -7,7 +7,7 @@
 /// Initializes a new instance of the class.
 - (instancetype)init {
     if (self = [super init]) {
-        self.registers = [MSAIOrderedDictionary new];
+        _registers = [MSAIOrderedDictionary new];
     }
     return self;
 }
@@ -36,9 +36,9 @@
 - (instancetype)initWithCoder:(NSCoder *)coder {
   self = [super initWithCoder:coder];
   if(self) {
-    self.address = [coder decodeObjectForKey:@"self.address"];
-    self.symbol = [coder decodeObjectForKey:@"self.symbol"];
-    self.registers = [coder decodeObjectForKey:@"self.registers"];
+    _address = [coder decodeObjectForKey:@"self.address"];
+    _symbol = [coder decodeObjectForKey:@"self.symbol"];
+    _registers = [coder decodeObjectForKey:@"self.registers"];
   }
 
   return self;

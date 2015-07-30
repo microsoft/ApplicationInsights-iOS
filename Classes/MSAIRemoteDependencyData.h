@@ -17,5 +17,7 @@
 @property (nonatomic, assign) BOOL success;
 @property (nonatomic, assign) BOOL async;
 @property (nonatomic, assign) MSAIDependencySourceType dependencySource;
+@property (nonatomic, copy) NSString *commandName;
+@property (nonatomic, copy) NSString *dependencyTypeName;
 
 @end

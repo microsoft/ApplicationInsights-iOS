@@ -8,7 +8,7 @@
 /// Initializes a new instance of the class.
 - (instancetype)init {
     if (self = [super init]) {
-        self.frames = [NSMutableArray new];
+        _frames = [NSMutableArray new];
     }
     return self;
 }
@@ -37,8 +37,8 @@
 - (instancetype)initWithCoder:(NSCoder *)coder {
   self = [super initWithCoder:coder];
   if(self) {
-    self.crashDataThreadId = [coder decodeObjectForKey:@"self.crashDataThreadId"];
-    self.frames = [coder decodeObjectForKey:@"self.frames"];
+    _crashDataThreadId = [coder decodeObjectForKey:@"self.crashDataThreadId"];
+    _frames = [coder decodeObjectForKey:@"self.frames"];
   }
 
   return self;
