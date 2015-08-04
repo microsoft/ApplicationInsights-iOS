@@ -277,11 +277,11 @@ static char *const MSAICommonPropertiesQueue = "com.microsoft.ApplicationInsight
   [self trackPageView:pageName duration:duration properties:properties measurements:nil];
 }
 
-+ (void)trackPageView:(NSString *)pageName duration:(long)duration properties:(nullable NSDictionary *)properties measurements:(nullable NSDictionary *)measurements{
++ (void)trackPageView:(NSString *)pageName duration:(long)duration properties:(NSDictionary *)properties measurements:(NSDictionary *)measurements{
   [[self sharedManager] trackPageView:pageName duration:duration properties:properties measurements:measurements];
 }
 
-- (void)trackPageView:(NSString *)pageName duration:(long)duration properties:(nullable NSDictionary *)properties measurements:(nullable NSDictionary *)measurements{
+- (void)trackPageView:(NSString *)pageName duration:(long)duration properties:(NSDictionary *)properties measurements:(NSDictionary *)measurements{
   __weak typeof(self) weakSelf = self;
   dispatch_async(_telemetryEventQueue, ^{
     if(!_managerInitialised) return;
