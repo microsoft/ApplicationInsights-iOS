@@ -123,9 +123,19 @@ NS_ASSUME_NONNULL_BEGIN
  *
  *  @param pageName Name of the page/view which is being tracked.
  *  @param duration time the page has been viewed. This method is ideally called when a page view ends. The time has to be calculated by the developer.
- *  @param properties key-value pairs which can contain additional information about the page view
+ *  @param properties key-value pairs which can contain additional information about the page view.
  */
 + (void)trackPageView:(NSString *)pageName duration:(long)duration properties:(nullable NSDictionary *)properties;
+
+/**
+ * Track pageView by name of the page.
+ *
+ *  @param pageName Name of the page/view which is being tracked.
+ *  @param duration time the page has been viewed. This method is ideally called when a page view ends. The time has to be calculated by the developer.
+ *  @param properties key-value pairs which can contain additional information about the page view.
+ *  @param measurements key value pairs, which contain custom metrics.
+ */
++ (void)trackPageView:(NSString *)pageName duration:(long)duration properties:(nullable NSDictionary *)properties measurements:(nullable NSDictionary *)measurements;
 
 /**
  *  Track handled exception.
@@ -210,9 +220,10 @@ NS_ASSUME_NONNULL_BEGIN
  *
  *  @param pageName Name of the page/view which is being tracked.
  *  @param duration time the page has been viewed. This method is ideally called when a page view ends. The time has to be calculated by the developer.
- *  @param properties key-value pairs which can contain additional information about the page view
+ *  @param properties key-value pairs which can contain additional information about the page view.
+ *  @param measurements key value pairs, which contain custom metrics.
  */
-- (void)trackPageView:(NSString *)pageName duration:(long)duration properties:(nullable NSDictionary *)properties;
+- (void)trackPageView:(NSString *)pageName duration:(long)duration properties:(nullable NSDictionary *)properties measurements:(nullable NSDictionary *)measurements;
 
 /**
  *  Track handled exception.

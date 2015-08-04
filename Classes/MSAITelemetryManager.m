@@ -254,35 +254,44 @@ static char *const MSAICommonPropertiesQueue = "com.microsoft.ApplicationInsight
 }
 
 + (void)trackPageView:(NSString *)pageName {
-  [self trackPageView:pageName duration:0];
+  [[self sharedManager] trackPageView:pageName duration:0 properties:nil measurements:nil];
 }
 
 - (void)trackPageView:(NSString *)pageName {
-  [self trackPageView:pageName duration:0];
+  [self trackPageView:pageName duration:0 properties:nil measurements:nil];
 }
 
 + (void)trackPageView:(NSString *)pageName duration:(long)duration {
-  [self trackPageView:pageName duration:duration properties:nil];
+  [[self sharedManager] trackPageView:pageName duration:duration properties:nil measurements:nil];
 }
 
 - (void)trackPageView:(NSString *)pageName duration:(long)duration {
-  [self trackPageView:pageName duration:duration properties:nil];
+  [self trackPageView:pageName duration:duration properties:nil measurements:nil];
 }
 
 + (void)trackPageView:(NSString *)pageName duration:(long)duration properties:(NSDictionary *)properties {
-  [[self sharedManager] trackPageView:pageName duration:duration properties:properties];
+  [[self sharedManager] trackPageView:pageName duration:duration properties:properties measurements:nil];
 }
 
 - (void)trackPageView:(NSString *)pageName duration:(long)duration properties:(NSDictionary *)properties {
+  [self trackPageView:pageName duration:duration properties:properties measurements:nil];
+}
+
++ (void)trackPageView:(NSString *)pageName duration:(long)duration properties:(nullable NSDictionary *)properties measurements:(nullable NSDictionary *)measurements{
+  [[self sharedManager] trackPageView:pageName duration:duration properties:properties measurements:measurements];
+}
+
+- (void)trackPageView:(NSString *)pageName duration:(long)duration properties:(nullable NSDictionary *)properties measurements:(nullable NSDictionary *)measurements{
   __weak typeof(self) weakSelf = self;
   dispatch_async(_telemetryEventQueue, ^{
     if(!_managerInitialised) return;
-
+    
     typeof(self) strongSelf = weakSelf;
     MSAIPageViewData *pageViewData = [MSAIPageViewData new];
     pageViewData.name = pageName;
     pageViewData.duration = [NSString stringWithFormat:@"%ld", duration];
     pageViewData.properties = properties;
+    pageViewData.measurements = measurements;
     [strongSelf trackDataItem:pageViewData];
   });
 }
