@@ -71,11 +71,11 @@ static NSInteger const schemaVersion = 2;
 }
 
 - (MSAIEnvelope *)envelopeForCrashReport:(MSAIPLCrashReport *)report {
-  return [self envelopeForCrashReport:report exception:nil];
+  return [self envelopeForCrashReport:report exception:nil properties:nil measurements:nil];
 }
 
-- (MSAIEnvelope *)envelopeForCrashReport:(MSAIPLCrashReport *)report exception:(NSException *)exception {
-  return [MSAICrashDataProvider crashDataForCrashReport:report handledException:exception];
+- (MSAIEnvelope *)envelopeForCrashReport:(MSAIPLCrashReport *)report exception:(NSException *)exception properties:(NSDictionary *)properties measurements:(NSDictionary *)measurements {
+  return [MSAICrashDataProvider crashDataForCrashReport:report handledException:exception properties:properties measurements:measurements];
 }
 
 @end

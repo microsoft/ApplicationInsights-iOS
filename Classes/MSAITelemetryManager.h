@@ -145,6 +145,23 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)trackException:(NSException *)exception;
 
 /**
+ *  Track handled exception.
+ *
+ *  @param exception the handled exception, which should be send to the server.
+ *  @param properties key value pairs with additional info about the metric.
+ */
++ (void)trackException:(NSException *)exception properties:(nullable NSDictionary *)properties;
+
+/**
+ *  Track handled exception.
+ *
+ *  @param exception the handled exception, which should be send to the server.
+ *  @param properties key value pairs with additional info about the metric.
+ *  @param measurements key value pairs, which contain custom metrics.
+ */
++ (void)trackException:(NSException *)exception properties:(nullable NSDictionary *)properties measurements:(nullable NSDictionary *)measurements;
+
+/**
  *  Track the event by event name.
  *
  *  @param eventName the name of the event, which should be tracked.
@@ -231,6 +248,23 @@ NS_ASSUME_NONNULL_BEGIN
  *  @param exception the handled exception, which should be send to the server.
  */
 - (void)trackException:(NSException *)exception;
+
+/**
+ *  Track handled exception.
+ *
+ *  @param exception the handled exception, which should be send to the server.
+ *  @param properties key value pairs with additional info about the metric.
+ */
+- (void)trackException:(NSException *)exception properties:(nullable NSDictionary *)properties;
+
+/**
+ *  Track handled exception.
+ *
+ *  @param exception the handled exception, which should be send to the server.
+ *  @param properties key value pairs with additional info about the metric.
+ *  @param measurements key value pairs, which contain custom metrics.
+ */
+- (void)trackException:(NSException *)exception properties:(nullable NSDictionary *)properties measurements:(nullable NSDictionary *)measurements;
 
 @end
 NS_ASSUME_NONNULL_END

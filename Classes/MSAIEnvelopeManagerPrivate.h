@@ -67,10 +67,15 @@ NS_ASSUME_NONNULL_BEGIN
  *
  *  @param report    the report, which contains context as well as exception information
  *  @param exception a handled exception object
+ *  @param properties key value pairs with additional info about the metric.
+ *  @param measurements key value pairs, which contain custom metrics.
  *
  *  @return an envelope object that contains a handled exception
  */
-- (MSAIEnvelope *)envelopeForCrashReport:(MSAIPLCrashReport *)report exception:(nullable NSException *)exception;
+- (MSAIEnvelope *)envelopeForCrashReport:(MSAIPLCrashReport *)report
+                               exception:(nullable NSException *)exception
+                              properties:(nullable NSDictionary *)properties
+                            measurements:(nullable NSDictionary *)measurements;
 
 @end
 NS_ASSUME_NONNULL_END

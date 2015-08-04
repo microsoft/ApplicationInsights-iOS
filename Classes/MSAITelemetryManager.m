@@ -233,12 +233,28 @@ static char *const MSAICommonPropertiesQueue = "com.microsoft.ApplicationInsight
 }
 
 + (void)trackException:(NSException *)exception {
-  [[self sharedManager] trackException:exception];
+  [[self sharedManager] trackException:exception properties:nil measurements:nil];
 }
 
 - (void)trackException:(NSException *)exception {
-  pthread_t thread = pthread_self();
+  [self trackException:exception properties:nil measurements:nil];
+}
 
++ (void)trackException:(NSException *)exception properties:(NSDictionary *)properties {
+  [[self sharedManager] trackException:exception properties:properties measurements:nil];
+}
+
+- (void)trackException:(NSException *)exception properties:(NSDictionary *)properties {
+  [self trackException:exception properties:properties measurements:nil];
+}
+
++ (void)trackException:(NSException *)exception properties:(NSDictionary *)properties measurements:(NSDictionary *)measurements {
+  [[self sharedManager] trackException:exception properties:properties measurements:measurements];
+}
+
+- (void)trackException:(NSException *)exception properties:(NSDictionary *)properties measurements:(NSDictionary *)measurements {
+  pthread_t thread = pthread_self();
+  
   dispatch_async(_telemetryEventQueue, ^{
     PLCrashReporterSignalHandlerType signalHandlerType = PLCrashReporterSignalHandlerTypeBSD;
     PLCrashReporterSymbolicationStrategy symbolicationStrategy = PLCrashReporterSymbolicationStrategyAll;
@@ -247,7 +263,7 @@ static char *const MSAICommonPropertiesQueue = "com.microsoft.ApplicationInsight
     MSAIPLCrashReporter *cm = [[MSAIPLCrashReporter alloc] initWithConfiguration:config];
     NSData *data = [cm generateLiveReportWithThread:pthread_mach_thread_np(thread)];
     MSAIPLCrashReport *report = [[MSAIPLCrashReport alloc] initWithData:data error:nil];
-    MSAIEnvelope *envelope = [[MSAIEnvelopeManager sharedManager] envelopeForCrashReport:report exception:exception];
+    MSAIEnvelope *envelope = [[MSAIEnvelopeManager sharedManager] envelopeForCrashReport:report exception:exception properties:properties measurements:measurements];
     MSAIOrderedDictionary *dict = [envelope serializeToDictionary];
     [[MSAIChannel sharedChannel] processDictionary:dict withCompletionBlock:nil];
   });

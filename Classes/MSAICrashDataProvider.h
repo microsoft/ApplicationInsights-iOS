@@ -27,7 +27,10 @@ typedef NS_ENUM (NSInteger, MSAIBinaryImageType) {
 @interface MSAICrashDataProvider : NSObject {
 }
 
-+ (MSAIEnvelope *)crashDataForCrashReport:(MSAIPLCrashReport *)report handledException:(nullable NSException *)exception;
++ (MSAIEnvelope *)crashDataForCrashReport:(MSAIPLCrashReport *)report
+                         handledException:(nullable NSException *)exception
+                               properties:(nullable NSDictionary *)properties
+                             measurements:(nullable NSDictionary *)measuremnts;
 + (MSAIEnvelope *)crashDataForCrashReport:(MSAIPLCrashReport *)report;
 
 + (MSAIBinaryImageType)imageTypeForImagePath:(NSString *)imagePath processPath:(NSString *)processPath;

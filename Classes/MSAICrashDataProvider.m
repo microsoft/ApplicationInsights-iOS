@@ -206,7 +206,7 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
  */
 @implementation MSAICrashDataProvider
 
-+ (MSAIEnvelope *)crashDataForCrashReport:(MSAIPLCrashReport *)report handledException:(NSException *)exception{
++ (MSAIEnvelope *)crashDataForCrashReport:(MSAIPLCrashReport *)report handledException:(NSException *)exception properties:(NSDictionary *)properties measurements:(NSDictionary *)measurements {
   
   MSAIEnvelope *envelope = [[MSAIEnvelopeManager sharedManager] envelope];
   
@@ -257,6 +257,9 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
   }
   
   MSAICrashData *crashData = [MSAICrashData new];
+  crashData.properties = properties;
+  // TODO: Add mesurements
+  
   MSAICrashDataHeaders *crashHeaders = [MSAICrashDataHeaders new];
   NSString *unknownString = @"???";
   
@@ -630,7 +633,7 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
  */
 + (MSAIEnvelope *)crashDataForCrashReport:(MSAIPLCrashReport *)report {
   
-  return [[self class]crashDataForCrashReport:report handledException:nil];
+  return [[self class]crashDataForCrashReport:report handledException:nil properties:nil measurements:nil];
 }
 
 /**
