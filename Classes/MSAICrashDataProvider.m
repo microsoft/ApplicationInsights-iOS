@@ -257,8 +257,7 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
   }
   
   MSAICrashData *crashData = [MSAICrashData new];
-  crashData.properties = properties;
-  // TODO: Add mesurements
+  // TODO: Add properties and measurements (not supported for CrashData in V2)
   
   MSAICrashDataHeaders *crashHeaders = [MSAICrashDataHeaders new];
   NSString *unknownString = @"???";
