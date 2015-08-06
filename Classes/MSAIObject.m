@@ -4,14 +4,6 @@
 
 @implementation MSAIObject
 
-/// Not needed, since this is the base implementation of NSObject
-- (instancetype)init {
-  if (self = [super init]) {
-    
-  }
-  return self;
-}
-
 // empty implementation for the base class
 - (MSAIOrderedDictionary *)serializeToDictionary{
 	MSAIOrderedDictionary *dict = [MSAIOrderedDictionary new];

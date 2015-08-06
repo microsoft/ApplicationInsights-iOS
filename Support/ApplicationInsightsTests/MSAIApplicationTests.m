@@ -23,8 +23,10 @@
 - (void)testSerialize {
     MSAIApplication *item = [MSAIApplication new];
     item.version = @"Test string";
+    item.build = @"Test build";
+    item.typeId = @"Test typeId";
     NSString *actual = [item serializeToString];
-    NSString *expected = @"{\"ai.application.ver\":\"Test string\"}";
+    NSString *expected = @"{\"ai.application.ver\":\"Test string\",\"ai.application.build\":\"Test build\",\"ai.application.typeId\":\"Test typeId\"}";
     XCTAssertTrue([actual isEqualToString:expected]);
 }
 

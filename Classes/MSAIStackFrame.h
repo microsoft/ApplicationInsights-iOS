@@ -2,10 +2,10 @@
 
 @interface MSAIStackFrame : MSAIObject <NSCoding>
 
-@property (nonatomic, strong) NSNumber *level;
-@property (nonatomic, strong) NSString *method;
-@property (nonatomic, strong) NSString *assembly;
-@property (nonatomic, strong) NSString *fileName;
-@property (nonatomic, strong) NSNumber *line;
+@property (nonatomic, copy) NSNumber *level;
+@property (nonatomic, copy) NSString *method;
+@property (nonatomic, copy) NSString *assembly;
+@property (nonatomic, copy) NSString *fileName;
+@property (nonatomic, copy) NSNumber *line;
 
 @end

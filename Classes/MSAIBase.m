@@ -4,13 +4,6 @@
 /// Data contract class for type Base.
 @implementation MSAIBase
 
-/// Initializes a new instance of the class.
-- (instancetype)init {
-    if (self = [super init]) {
-    }
-    return self;
-}
-
 ///
 /// Adds all members of this class to a dictionary
 /// @param dictionary to which the members of this class will be added.
@@ -28,7 +21,7 @@
 - (instancetype)initWithCoder:(NSCoder *)coder {
   self = [super initWithCoder:coder];
   if(self) {
-    self.baseType = [coder decodeObjectForKey:@"self.baseType"];
+    _baseType = [coder decodeObjectForKey:@"self.baseType"];
   }
 
   return self;

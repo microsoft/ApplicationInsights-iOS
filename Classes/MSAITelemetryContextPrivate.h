@@ -19,7 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  *  The instrumentation key of the app.
  */
-@property(nonatomic, strong, readonly) NSString *instrumentationKey;
+@property(nonatomic, copy, readonly) NSString *instrumentationKey;
 
 
 /**

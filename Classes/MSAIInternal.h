@@ -2,7 +2,7 @@
 
 @interface MSAIInternal : MSAIObject <NSCoding>
 
-@property (nonatomic, strong) NSString *sdkVersion;
-@property (nonatomic, strong) NSString *agentVersion;
+@property (nonatomic, copy) NSString *sdkVersion;
+@property (nonatomic, copy) NSString *agentVersion;
 
 @end
