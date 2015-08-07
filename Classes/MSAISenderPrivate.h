@@ -21,7 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  *  The endpoint url of the telemetry server.
  */
-@property (nonatomic, strong) NSString *endpointPath;
+@property (nonatomic, copy) NSString *endpointPath;
 
 /**
  *  The max number of request that can run at a time.

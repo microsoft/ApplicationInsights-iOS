@@ -2,8 +2,8 @@
 
 @interface MSAISession : MSAIObject <NSCoding>
 
-@property (nonatomic, strong) NSString *sessionId;
-@property (nonatomic, strong) NSString *isFirst;
-@property (nonatomic, strong) NSString *isNew;
+@property (nonatomic, copy) NSString *sessionId;
+@property (nonatomic, copy) NSString *isFirst;
+@property (nonatomic, copy) NSString *isNew;
 
 @end

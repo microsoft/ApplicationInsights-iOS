@@ -3,12 +3,12 @@
 NS_ASSUME_NONNULL_BEGIN
 @interface MSAIContext()
 
-@property (nonatomic, strong, readonly) NSString *instrumentationKey;
-@property (nonatomic, strong, readonly) NSString *osVersion;
-@property (nonatomic, strong, readonly) NSString *osName;
-@property (nonatomic, strong, readonly) NSString *deviceType;
-@property (nonatomic, strong, readonly) NSString *deviceModel;
-@property (nonatomic, strong, readonly) NSString *appVersion;
+@property (nonatomic, copy, readonly) NSString *instrumentationKey;
+@property (nonatomic, copy, readonly) NSString *osVersion;
+@property (nonatomic, copy, readonly) NSString *osName;
+@property (nonatomic, copy, readonly) NSString *deviceType;
+@property (nonatomic, copy, readonly) NSString *deviceModel;
+@property (nonatomic, copy, readonly) NSString *appVersion;
 
 - (instancetype)initWithInstrumentationKey:(NSString *)instrumentationKey;
 

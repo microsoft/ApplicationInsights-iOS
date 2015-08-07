@@ -6,15 +6,17 @@
 @implementation MSAIMetricData
 @synthesize envelopeTypeName = _envelopeTypeName;
 @synthesize dataTypeName = _dataTypeName;
+@synthesize version = _version;
+@synthesize properties = _properties;
 
 /// Initializes a new instance of the class.
 - (instancetype)init {
   if (self = [super init]) {
     _envelopeTypeName = @"Microsoft.ApplicationInsights.Metric";
     _dataTypeName = @"MetricData";
-    self.version = @2;
-    self.metrics = [NSMutableArray new];
-    self.properties = [MSAIOrderedDictionary new];
+    _version = @2;
+    _metrics = [NSMutableArray new];
+    _properties = [MSAIOrderedDictionary new];
   }
   return self;
 }
@@ -44,7 +46,7 @@
 - (instancetype)initWithCoder:(NSCoder *)coder {
   self = [super initWithCoder:coder];
   if(self) {
-    self.metrics = [coder decodeObjectForKey:@"self.metrics"];
+    _metrics = [coder decodeObjectForKey:@"self.metrics"];
   }
 
   return self;

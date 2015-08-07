@@ -71,6 +71,8 @@
     MSAIExceptionData *item = [MSAIExceptionData new];
     item.version = @42;
     item.handledAt = @"Test string";
+    item.problemId = @"Test Id";
+    item.crashThreadId = @23;
     NSArray *arrexceptions = @[[MSAIExceptionDetails new]];
     for (MSAIExceptionDetails *arrItem in arrexceptions) {
         [item.exceptions addObject:arrItem];
@@ -82,7 +84,7 @@
         [item.measurements setObject:[dictmeasurements objectForKey:key]  forKey:key];
     }
     NSString *actual = [item serializeToString];
-    NSString *expected = @"{\"ver\":42,\"handledAt\":\"Test string\",\"exceptions\":[{\"hasFullStack\":true,\"parsedStack\":[]}],\"severityLevel\":5,\"properties\":{\"key1\":\"test value 1\",\"key2\":\"test value 2\"},\"measurements\":{\"key1\":3.1415,\"key2\":42.2}}";
+    NSString *expected = @"{\"ver\":42,\"handledAt\":\"Test string\",\"problemId\":\"Test Id\",\"crashThreadId\":23,\"exceptions\":[{\"hasFullStack\":true,\"parsedStack\":[]}],\"severityLevel\":5,\"properties\":{\"key1\":\"test value 1\",\"key2\":\"test value 2\"},\"measurements\":{\"key1\":3.1415,\"key2\":42.2}}";
     XCTAssertTrue([actual isEqualToString:expected]);
 }
 

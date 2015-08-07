@@ -44,11 +44,11 @@
 - (instancetype)initWithCoder:(NSCoder *)coder {
   self = [super initWithCoder:coder];
   if(self) {
-    self.perfTotal = [coder decodeObjectForKey:@"self.perfTotal"];
-    self.networkConnect = [coder decodeObjectForKey:@"self.networkConnect"];
-    self.sentRequest = [coder decodeObjectForKey:@"self.sentRequest"];
-    self.receivedResponse = [coder decodeObjectForKey:@"self.receivedResponse"];
-    self.domProcessing = [coder decodeObjectForKey:@"self.domProcessing"];
+    _perfTotal = [coder decodeObjectForKey:@"self.perfTotal"];
+    _networkConnect = [coder decodeObjectForKey:@"self.networkConnect"];
+    _sentRequest = [coder decodeObjectForKey:@"self.sentRequest"];
+    _receivedResponse = [coder decodeObjectForKey:@"self.receivedResponse"];
+    _domProcessing = [coder decodeObjectForKey:@"self.domProcessing"];
   }
 
   return self;

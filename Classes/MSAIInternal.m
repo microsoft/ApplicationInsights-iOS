@@ -4,13 +4,6 @@
 /// Data contract class for type Internal.
 @implementation MSAIInternal
 
-/// Initializes a new instance of the class.
-- (instancetype)init {
-    if (self = [super init]) {
-    }
-    return self;
-}
-
 ///
 /// Adds all members of this class to a dictionary
 /// @param dictionary to which the members of this class will be added.
@@ -31,8 +24,8 @@
 - (instancetype)initWithCoder:(NSCoder *)coder {
   self = [super init];
   if(self) {
-    self.sdkVersion = [coder decodeObjectForKey:@"self.sdkVersion"];
-    self.agentVersion = [coder decodeObjectForKey:@"self.agentVersion"];
+    _sdkVersion = [coder decodeObjectForKey:@"self.sdkVersion"];
+    _agentVersion = [coder decodeObjectForKey:@"self.agentVersion"];
   }
 
   return self;

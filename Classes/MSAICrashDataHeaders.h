@@ -2,18 +2,18 @@
 
 @interface MSAICrashDataHeaders : MSAIObject <NSCoding>
 
-@property (nonatomic, strong) NSString *crashDataHeadersId;
-@property (nonatomic, strong) NSString *process;
-@property (nonatomic, strong) NSNumber *processId;
-@property (nonatomic, strong) NSString *parentProcess;
-@property (nonatomic, strong) NSNumber *parentProcessId;
-@property (nonatomic, strong) NSNumber *crashThread;
-@property (nonatomic, strong) NSString *applicationPath;
-@property (nonatomic, strong) NSString *applicationIdentifier;
-@property (nonatomic, strong) NSString *applicationBuild;
-@property (nonatomic, strong) NSString *exceptionType;
-@property (nonatomic, strong) NSString *exceptionCode;
-@property (nonatomic, strong) NSString *exceptionAddress;
-@property (nonatomic, strong) NSString *exceptionReason;
+@property (nonatomic, copy) NSString *crashDataHeadersId;
+@property (nonatomic, copy) NSString *process;
+@property (nonatomic, copy) NSNumber *processId;
+@property (nonatomic, copy) NSString *parentProcess;
+@property (nonatomic, copy) NSNumber *parentProcessId;
+@property (nonatomic, copy) NSNumber *crashThread;
+@property (nonatomic, copy) NSString *applicationPath;
+@property (nonatomic, copy) NSString *applicationIdentifier;
+@property (nonatomic, copy) NSString *applicationBuild;
+@property (nonatomic, copy) NSString *exceptionType;
+@property (nonatomic, copy) NSString *exceptionCode;
+@property (nonatomic, copy) NSString *exceptionAddress;
+@property (nonatomic, copy) NSString *exceptionReason;
 
 @end

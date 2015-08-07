@@ -65,8 +65,10 @@
     item.name = @"Test string";
     item.parentId = @"Test string";
     item.rootId = @"Test string";
+    item.syntheticSource = @"Test source";
+    item.isSynthetic = @"false";
     NSString *actual = [item serializeToString];
-    NSString *expected = @"{\"ai.operation.id\":\"Test string\",\"ai.operation.name\":\"Test string\",\"ai.operation.parentId\":\"Test string\",\"ai.operation.rootId\":\"Test string\"}";
+    NSString *expected = @"{\"ai.operation.id\":\"Test string\",\"ai.operation.name\":\"Test string\",\"ai.operation.parentId\":\"Test string\",\"ai.operation.rootId\":\"Test string\",\"ai.operation.syntheticSource\":\"Test source\",\"ai.operation.isSynthetic\":false}";
     XCTAssertTrue([actual isEqualToString:expected]);
 }
 

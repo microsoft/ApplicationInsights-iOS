@@ -10,27 +10,27 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  *  UUID for the crash report
  */
-@property (nonatomic, readonly, strong) NSString *incidentIdentifier;
+@property (nonatomic, readonly, copy) NSString *incidentIdentifier;
 
 /**
  *  UUID for the app installation on the device
  */
-@property (nonatomic, readonly, strong) NSString *reporterKey;
+@property (nonatomic, readonly, copy) NSString *reporterKey;
 
 /**
  *  Signal that caused the crash
  */
-@property (nonatomic, readonly, strong) NSString *signal;
+@property (nonatomic, readonly, copy) NSString *signal;
 
 /**
  *  Exception name that triggered the crash, nil if the crash was not caused by an exception
  */
-@property (nonatomic, readonly, strong) NSString *exceptionName;
+@property (nonatomic, readonly, copy) NSString *exceptionName;
 
 /**
  *  Exception reason, nil if the crash was not caused by an exception
  */
-@property (nonatomic, readonly, strong) NSString *exceptionReason;
+@property (nonatomic, readonly, copy) NSString *exceptionReason;
 
 /**
  *  Date and time the app started, nil if unknown
@@ -45,19 +45,19 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  *  Operation System version string the app was running on when it crashed.
  */
-@property (nonatomic, readonly, strong) NSString *osVersion;
+@property (nonatomic, readonly, copy) NSString *osVersion;
 
 /**
  *  Operation System build string the app was running on when it crashed
  *
  *  This may be unavailable.
  */
-@property (nonatomic, readonly, strong) NSString *osBuild;
+@property (nonatomic, readonly, copy) NSString *osBuild;
 
 /**
  *  CFBundleVersion value of the app that crashed
  */
-@property (nonatomic, readonly, strong) NSString *appBuild;
+@property (nonatomic, readonly, copy) NSString *appBuild;
 
 /**
  Indicates if the app was killed while being in foreground from the iOS

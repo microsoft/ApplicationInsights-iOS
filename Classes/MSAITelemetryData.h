@@ -6,8 +6,8 @@
 @property (nonatomic, readonly, copy) NSString *envelopeTypeName;
 @property (nonatomic, readonly, copy) NSString *dataTypeName;
 
-@property (nonatomic, strong) NSNumber *version;
-@property (nonatomic, strong) NSString *name;
+@property (nonatomic, copy) NSNumber *version;
+@property (nonatomic, copy) NSString *name;
 @property (nonatomic, strong) NSDictionary *properties;
 
 @end
