@@ -163,22 +163,6 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)setAutoSessionManagementDisabled:(BOOL)autoSessionManagementDisabled;
 
 /**
- *  Manually set the current user ID. This ID will automatically be persisted and attached to all appropriate telemetry and crash events.
- *  The user ID will stay the same until it is changed.
- *
- *  @param userId The string which will be used as the current user's ID.
- */
-+ (void)setUserId:(NSString *)userId __deprecated_msg("Use setUserWithConfigurationBlock: instead!");
-
-/**
- *  Manually set the current user ID. This ID will automatically be persisted and attached to all appropriate telemetry and crash events.
- *  The user ID will stay the same until it is changed.
- *
- *  @param userId The string which will be used as the current user's ID.
- */
-- (void)setUserId:(NSString *)userId __deprecated_msg("Use setUserWithConfigurationBlock: instead!");
-
-/**
  *  Use this method to configure the current user's context.
  *
  *  @param userConfigurationBlock This block gets the current user as an input.

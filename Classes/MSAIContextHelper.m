@@ -73,12 +73,6 @@ NSString *const kMSAISessionInfo = @"MSAISessionInfo";
 
 #pragma mark Manual User ID Management
 
-- (void)setCurrentUserId:(NSString *)userId {
-  [self setUserWithConfigurationBlock:^(MSAIUser *__nonnull user) {
-    user.userId = userId;
-  }];
-}
-
 - (void)setUserWithConfigurationBlock:(void (^)(MSAIUser *user))userConfigurationBlock {
   MSAIUser *__block currentUser = [self userForDate:[NSDate date]];
 
