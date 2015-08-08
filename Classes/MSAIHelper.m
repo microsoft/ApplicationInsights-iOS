@@ -27,20 +27,11 @@ msai_info_t applicationinsights_library_info __attribute__((section("__TEXT,__ms
 #pragma mark NSString helpers
 
 NSString *msai_URLEncodedString(NSString *inputString) {
-  return CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault,
-                                                                   (__bridge CFStringRef)inputString,
-                                                                   NULL,
-                                                                   CFSTR("!*'();:@&=+$,/?%#[]"),
-                                                                   kCFStringEncodingUTF8)
-                           );
+  return [inputString stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet characterSetWithCharactersInString:@"\"!*'();:@&=+$,/?%#[]"]];
 }
 
 NSString *msai_URLDecodedString(NSString *inputString) {
-  return CFBridgingRelease(CFURLCreateStringByReplacingPercentEscapesUsingEncoding(kCFAllocatorDefault,
-                                                                                   (__bridge CFStringRef)inputString,
-                                                                                   CFSTR(""),
-                                                                                   kCFStringEncodingUTF8)
-                           );
+  return [inputString stringByRemovingPercentEncoding];
 }
 
 // Return ISO 8601 string representation of the date
