@@ -106,14 +106,15 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * Track pageView by name of the page.
  *
+ *  @deprecated use `MSAITelemetryManager trackPageViewWithName:' instead
  *  @param pageName Name of the page/view which is being tracked.
  */
-+ (void)trackPageView:(NSString *)pageName;
++ (void)trackPageView:(NSString *)pageName DEPRECATED_ATTRIBUTE;
 
 /**
  *  Track pageView by name of the page.
- *  
- *  @deprecated use `MSAITelemetryManager trackPageView:' instead
+ *
+ *  @deprecated use `MSAITelemetryManager trackPageViewWithName:' instead
  *  @param pageName Name of the page/view which is being tracked.
  *  @param duration Time the page has been viewed in milliseconds. This method is ideally called when a page view ends where the time has to be calculated by the developer.
  */
@@ -122,7 +123,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * Track pageView by name of the page.
  *
- *  @deprecated use `MSAITelemetryManager trackPageView:properties:' instead
+ *  @deprecated use `MSAITelemetryManager trackPageViewWithName:properties:' instead
  *  @param pageName Name of the page/view which is being tracked.
  *  @param duration time the page has been viewed. This method is ideally called when a page view ends. The time has to be calculated by the developer.
  *  @param properties key-value pairs which can contain additional information about the page view.
@@ -133,9 +134,16 @@ NS_ASSUME_NONNULL_BEGIN
  * Track pageView by name of the page.
  *
  *  @param pageName Name of the page/view which is being tracked.
+ */
++ (void)trackPageViewWithName:(NSString *)pageName;
+
+/**
+ * Track pageView by name of the page.
+ *
+ *  @param pageName Name of the page/view which is being tracked.
  *  @param properties key-value pairs which can contain additional information about the page view.
  */
-+ (void)trackPageView:(NSString *)pageName properties:(nullable NSDictionary *)properties;
++ (void)trackPageViewWithName:(NSString *)pageName properties:(nullable NSDictionary *)properties;
 
 /**
  * Track pageView by name of the page.
@@ -144,7 +152,7 @@ NS_ASSUME_NONNULL_BEGIN
  *  @param properties key-value pairs which can contain additional information about the page view.
  *  @param measurements key value pairs, which contain custom metrics.
  */
-+ (void)trackPageView:(NSString *)pageName properties:(nullable NSDictionary *)properties measurements:(nullable NSDictionary *)measurements;
++ (void)trackPageViewWithName:(NSString *)pageName properties:(nullable NSDictionary *)properties measurements:(nullable NSDictionary *)measurements;
 
 /**
  *  Track handled exception.
@@ -229,14 +237,15 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * Track pageView by name of the page.
  *
+ *  @deprecated use `MSAITelemetryManager trackPageViewWithName:' instead
  *  @param pageName Name of the page/view which is being tracked.
  */
-- (void)trackPageView:(NSString *)pageName;
+- (void)trackPageView:(NSString *)pageName DEPRECATED_ATTRIBUTE;
 
 /**
  *  Track pageView by name of the page.
  *
- *  @deprecated use `MSAITelemetryManager trackPageView:' instead
+ *  @deprecated use `MSAITelemetryManager trackPageViewWithName:' instead
  *  @param pageName Name of the page/view which is being tracked.
  *  @param duration Time the page has been viewed in milliseconds. This method is ideally called when a page view ends where the time has to be calculated by the developer.
  */
@@ -245,7 +254,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  * Track pageView by name of the page.
  *
- *  @deprecated use `MSAITelemetryManager trackPageView:properties:' instead
+ *  @deprecated use `MSAITelemetryManager trackPageViewWithName:properties:' instead
  *  @param pageName Name of the page/view which is being tracked.
  *  @param duration time the page has been viewed. This method is ideally called when a page view ends. The time has to be calculated by the developer.
  *  @param properties key-value pairs which can contain additional information about the page view.
@@ -256,9 +265,16 @@ NS_ASSUME_NONNULL_BEGIN
  * Track pageView by name of the page.
  *
  *  @param pageName Name of the page/view which is being tracked.
+ */
+- (void)trackPageViewWithName:(NSString *)pageName;
+
+/**
+ * Track pageView by name of the page.
+ *
+ *  @param pageName Name of the page/view which is being tracked.
  *  @param properties key-value pairs which can contain additional information about the page view.
  */
-- (void)trackPageView:(NSString *)pageName properties:(nullable NSDictionary *)properties;
+- (void)trackPageViewWithName:(NSString *)pageName properties:(nullable NSDictionary *)properties;
 
 /**
  * Track pageView by name of the page.
@@ -267,7 +283,7 @@ NS_ASSUME_NONNULL_BEGIN
  *  @param properties key-value pairs which can contain additional information about the page view.
  *  @param measurements key value pairs, which contain custom metrics.
  */
-- (void)trackPageView:(NSString *)pageName properties:(nullable NSDictionary *)properties measurements:(nullable NSDictionary *)measurements;
+- (void)trackPageViewWithName:(NSString *)pageName properties:(nullable NSDictionary *)properties measurements:(nullable NSDictionary *)measurements;
 
 /**
  *  Track handled exception.
