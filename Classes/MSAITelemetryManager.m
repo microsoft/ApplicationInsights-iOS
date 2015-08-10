@@ -270,11 +270,37 @@ static char *const MSAICommonPropertiesQueue = "com.microsoft.ApplicationInsight
 }
 
 + (void)trackPageView:(NSString *)pageName {
-  [[self sharedManager] trackPageView:pageName duration:0 properties:nil measurements:nil];
+  [[self sharedManager] trackPageView:pageName properties:nil measurements:nil];
 }
 
 - (void)trackPageView:(NSString *)pageName {
-  [self trackPageView:pageName duration:0 properties:nil measurements:nil];
+  [self trackPageView:pageName properties:nil measurements:nil];
+}
+
++ (void)trackPageView:(NSString *)pageName properties:(NSDictionary *)properties{
+  [[self sharedManager] trackPageView:pageName properties:properties measurements:nil];
+}
+
+- (void)trackPageView:(NSString *)pageName properties:(NSDictionary *)properties{
+  [self trackPageView:pageName properties:properties measurements:nil];
+}
+
++ (void)trackPageView:(NSString *)pageName properties:(NSDictionary *)properties measurements:(NSDictionary *)measurements{
+  [[self sharedManager] trackPageView:pageName properties:properties measurements:measurements];
+}
+
+- (void)trackPageView:(NSString *)pageName properties:(NSDictionary *)properties measurements:(NSDictionary *)measurements{
+  __weak typeof(self) weakSelf = self;
+  dispatch_async(_telemetryEventQueue, ^{
+    if(!_managerInitialised) return;
+    
+    typeof(self) strongSelf = weakSelf;
+    MSAIPageViewData *pageViewData = [MSAIPageViewData new];
+    pageViewData.name = pageName;
+    pageViewData.properties = properties;
+    pageViewData.measurements = measurements;
+    [strongSelf trackDataItem:pageViewData];
+  });
 }
 
 + (void)trackPageView:(NSString *)pageName duration:(long)duration {
