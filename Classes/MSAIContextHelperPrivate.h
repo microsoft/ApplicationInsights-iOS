@@ -64,13 +64,6 @@ FOUNDATION_EXPORT NSString *const kMSAIMetaDataSessionCrashHandled;
 ///-----------------------------------------------------------------------------
 
 /**
- *  Set a new user ID. This method automatically adds this ID to the automatic store with the current time as a timestamp.
- *
- *  @param userId The string that represents the current user's ID
- */
-- (void)setCurrentUserId:(NSString *)userId;
-
-/**
  *  Use this method to configure the current user's context.
  *
  *  @param userConfigurationBlock This block gets the current user as an input.

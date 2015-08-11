@@ -2,12 +2,12 @@
 
 @interface MSAICrashDataBinary : MSAIObject <NSCoding>
 
-@property (nonatomic, strong) NSString *startAddress;
-@property (nonatomic, strong) NSString *endAddress;
-@property (nonatomic, strong) NSString *name;
-@property (nonatomic, strong) NSNumber *cpuType;
-@property (nonatomic, strong) NSNumber *cpuSubType;
-@property (nonatomic, strong) NSString *uuid;
-@property (nonatomic, strong) NSString *path;
+@property (nonatomic, copy) NSString *startAddress;
+@property (nonatomic, copy) NSString *endAddress;
+@property (nonatomic, copy) NSString *name;
+@property (nonatomic, copy) NSNumber *cpuType;
+@property (nonatomic, copy) NSNumber *cpuSubType;
+@property (nonatomic, copy) NSString *uuid;
+@property (nonatomic, copy) NSString *path;
 
 @end

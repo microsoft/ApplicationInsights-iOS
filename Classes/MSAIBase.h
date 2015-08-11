@@ -4,7 +4,7 @@
 
 @interface MSAIBase : MSAITelemetryData <NSCoding>
 
-@property (nonatomic, strong) NSString *baseType;
+@property (nonatomic, copy) NSString *baseType;
 
 - (instancetype)initWithCoder:(NSCoder *)coder;
 

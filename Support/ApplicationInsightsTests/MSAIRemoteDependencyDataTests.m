@@ -185,10 +185,12 @@
     item.success = YES;
     item.async = YES;
     item.dependencySource = 5;
+    item.commandName = @"Test commandName";
+    item.dependencyTypeName = @"Test dependencyTypeName";
     item.properties = [MSAIOrderedDictionary dictionaryWithObjectsAndKeys: @"test value 1", @"key1", @"test value 2", @"key2", nil];
   
     NSString *actual = [item serializeToString];
-    NSString *expected = @"{\"ver\":42,\"name\":\"Test string\",\"kind\":5,\"value\":1.5,\"count\":42,\"min\":1.5,\"max\":1.5,\"stdDev\":1.5,\"dependencyKind\":5,\"success\":true,\"async\":true,\"dependencySource\":5,\"properties\":{\"key1\":\"test value 1\",\"key2\":\"test value 2\"}}";
+    NSString *expected = @"{\"ver\":42,\"name\":\"Test string\",\"kind\":5,\"value\":1.5,\"count\":42,\"min\":1.5,\"max\":1.5,\"stdDev\":1.5,\"dependencyKind\":5,\"success\":true,\"async\":true,\"dependencySource\":5,\"commandName\":\"Test commandName\",\"dependencyTypeName\":\"Test dependencyTypeName\",\"properties\":{\"key1\":\"test value 1\",\"key2\":\"test value 2\"}}";
     XCTAssertTrue([actual isEqualToString:expected]);
 }
 

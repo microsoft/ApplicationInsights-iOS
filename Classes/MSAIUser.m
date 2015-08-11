@@ -4,13 +4,6 @@
 /// Data contract class for type User.
 @implementation MSAIUser
 
-/// Initializes a new instance of the class.
-- (instancetype)init {
-    if (self = [super init]) {
-    }
-    return self;
-}
-
 ///
 /// Adds all members of this class to a dictionary
 /// @param dictionary to which the members of this class will be added.
@@ -29,7 +22,19 @@
     if (self.userId != nil) {
         [dict setObject:self.userId forKey:@"ai.user.id"];
     }
-    return dict;
+    if(self.storeRegion != nil) {
+        [dict setObject:self.storeRegion forKey:@"ai.user.storeRegion"];
+    }
+    if(self.authUserId != nil) {
+        [dict setObject:self.authUserId forKey:@"ai.user.authUserId"];
+    }
+    if(self.anonUserAcquisitionDate != nil) {
+        [dict setObject:self.anonUserAcquisitionDate forKey:@"ai.user.anonUserAcquisitionDate"];
+    }
+    if(self.authUserAcquisitionDate != nil) {
+        [dict setObject:self.authUserAcquisitionDate forKey:@"ai.user.authUserAcquisitionDate"];
+    }
+  return dict;
 }
 
 #pragma mark - NSCoding
@@ -37,10 +42,14 @@
 - (instancetype)initWithCoder:(NSCoder *)coder {
   self = [super initWithCoder:coder];
   if(self) {
-    self.accountAcquisitionDate = [coder decodeObjectForKey:@"self.accountAcquisitionDate"];
-    self.accountId = [coder decodeObjectForKey:@"self.accountId"];
-    self.userAgent = [coder decodeObjectForKey:@"self.userAgent"];
-    self.userId = [coder decodeObjectForKey:@"self.userId"];
+    _accountAcquisitionDate = [coder decodeObjectForKey:@"self.accountAcquisitionDate"];
+    _accountId = [coder decodeObjectForKey:@"self.accountId"];
+    _userAgent = [coder decodeObjectForKey:@"self.userAgent"];
+    _userId = [coder decodeObjectForKey:@"self.userId"];
+    _storeRegion = [coder decodeObjectForKey:@"self.storeRegion"];
+    _authUserId = [coder decodeObjectForKey:@"self.authUserId"];
+    _anonUserAcquisitionDate = [coder decodeObjectForKey:@"self.anonUserAcquisitionDate"];
+    _authUserAcquisitionDate = [coder decodeObjectForKey:@"self.authUserAcquisitionDate"];
   }
 
   return self;
@@ -52,6 +61,10 @@
   [coder encodeObject:self.accountId forKey:@"self.accountId"];
   [coder encodeObject:self.userAgent forKey:@"self.userAgent"];
   [coder encodeObject:self.userId forKey:@"self.userId"];
+  [coder encodeObject:self.storeRegion forKey:@"self.storeRegion"];
+  [coder encodeObject:self.authUserId forKey:@"self.authUserId"];
+  [coder encodeObject:self.anonUserAcquisitionDate forKey:@"self.anonUserAcquisitionDate"];
+  [coder encodeObject:self.authUserAcquisitionDate forKey:@"self.authUserAcquisitionDate"];
 }
 
 

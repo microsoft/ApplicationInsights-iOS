@@ -8,9 +8,9 @@
 /// Initializes a new instance of the class.
 - (instancetype)init {
   if(self = [super init]) {
-    self.version = @1;
-    self.sampleRate = @100.0;
-    self.tags = [MSAIOrderedDictionary new];
+    _version = @1;
+    _sampleRate = @100.0;
+    _tags = [MSAIOrderedDictionary new];
   }
   return self;
 }
@@ -78,21 +78,21 @@
 - (instancetype)initWithCoder:(NSCoder *)coder {
   self = [super init];
   if(self) {
-    self.version = [coder decodeObjectForKey:@"self.version"];
-    self.name = [coder decodeObjectForKey:@"self.name"];
-    self.time = [coder decodeObjectForKey:@"self.time"];
-    self.sampleRate = [coder decodeObjectForKey:@"self.sampleRate"];
-    self.seq = [coder decodeObjectForKey:@"self.seq"];
-    self.iKey = [coder decodeObjectForKey:@"self.iKey"];
-    self.flags = [coder decodeObjectForKey:@"self.flags"];
-    self.deviceId = [coder decodeObjectForKey:@"self.deviceId"];
-    self.os = [coder decodeObjectForKey:@"self.os"];
-    self.osVer = [coder decodeObjectForKey:@"self.osVer"];
-    self.appId = [coder decodeObjectForKey:@"self.appId"];
-    self.appVer = [coder decodeObjectForKey:@"self.appVer"];
-    self.userId = [coder decodeObjectForKey:@"self.userId"];
-    self.tags = [coder decodeObjectForKey:@"self.tags"];
-    self.data = [coder decodeObjectForKey:@"self.data"];
+    _version = [coder decodeObjectForKey:@"self.version"];
+    _name = [coder decodeObjectForKey:@"self.name"];
+    _time = [coder decodeObjectForKey:@"self.time"];
+    _sampleRate = [coder decodeObjectForKey:@"self.sampleRate"];
+    _seq = [coder decodeObjectForKey:@"self.seq"];
+    _iKey = [coder decodeObjectForKey:@"self.iKey"];
+    _flags = [coder decodeObjectForKey:@"self.flags"];
+    _deviceId = [coder decodeObjectForKey:@"self.deviceId"];
+    _os = [coder decodeObjectForKey:@"self.os"];
+    _osVer = [coder decodeObjectForKey:@"self.osVer"];
+    _appId = [coder decodeObjectForKey:@"self.appId"];
+    _appVer = [coder decodeObjectForKey:@"self.appVer"];
+    _userId = [coder decodeObjectForKey:@"self.userId"];
+    _tags = [coder decodeObjectForKey:@"self.tags"];
+    _data = [coder decodeObjectForKey:@"self.data"];
   }
 
   return self;

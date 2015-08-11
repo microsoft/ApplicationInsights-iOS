@@ -2,4 +2,5 @@
 
 @interface MSAICrashDataProvider : NSObject {}
 
+
 @end

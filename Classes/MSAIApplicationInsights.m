@@ -280,14 +280,6 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 
 #pragma mark - Context meta data
 
-+ (void)setUserId:(NSString *)userId {
-  [[self sharedInstance] setUserId:userId];
-}
-
-- (void)setUserId:(NSString *)userId {
-  [[MSAIContextHelper sharedInstance] setCurrentUserId:userId];
-}
-
 + (void)setUserWithConfigurationBlock:(void (^)(MSAIUser *user))userConfigurationBlock {
   [[self sharedInstance] setUserWithConfigurationBlock:userConfigurationBlock];
 }

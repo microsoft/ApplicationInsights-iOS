@@ -4,13 +4,6 @@
 /// Data contract class for type Operation.
 @implementation MSAIOperation
 
-/// Initializes a new instance of the class.
-- (instancetype)init {
-    if (self = [super init]) {
-    }
-    return self;
-}
-
 ///
 /// Adds all members of this class to a dictionary
 /// @param dictionary to which the members of this class will be added.
@@ -29,7 +22,13 @@
     if (self.rootId != nil) {
         [dict setObject:self.rootId forKey:@"ai.operation.rootId"];
     }
-    return dict;
+    if (self.syntheticSource != nil) {
+      [dict setObject:self.syntheticSource forKey:@"ai.operation.syntheticSource"];
+    }
+    if(self.isSynthetic != nil) {
+      [dict setObject:self.isSynthetic forKey:@"ai.operation.isSynthetic"];
+    }
+  return dict;
 }
 
 #pragma mark - NSCoding
@@ -37,10 +36,12 @@
 - (instancetype)initWithCoder:(NSCoder *)coder {
   self = [super initWithCoder:coder];
   if(self) {
-    self.operationId = [coder decodeObjectForKey:@"self.operationId"];
-    self.name = [coder decodeObjectForKey:@"self.name"];
-    self.parentId = [coder decodeObjectForKey:@"self.parentId"];
-    self.rootId = [coder decodeObjectForKey:@"self.rootId"];
+    _operationId = [coder decodeObjectForKey:@"self.operationId"];
+    _name = [coder decodeObjectForKey:@"self.name"];
+    _parentId = [coder decodeObjectForKey:@"self.parentId"];
+    _rootId = [coder decodeObjectForKey:@"self.rootId"];
+    _syntheticSource = [coder decodeObjectForKey:@"self.syntheticSource"];
+    _isSynthetic = [coder decodeObjectForKey:@"self.isSynthetic"];
   }
 
   return self;
@@ -52,6 +53,8 @@
   [coder encodeObject:self.name forKey:@"self.name"];
   [coder encodeObject:self.parentId forKey:@"self.parentId"];
   [coder encodeObject:self.rootId forKey:@"self.rootId"];
+  [coder encodeObject:self.syntheticSource forKey:@"self.syntheticSource"];
+  [coder encodeObject:self.isSynthetic forKey:@"self.isSynthetic"];
 }
 
 @end

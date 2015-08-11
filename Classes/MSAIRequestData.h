@@ -4,13 +4,13 @@
 
 @property(nonatomic, copy, readonly)NSString *envelopeTypeName;
 @property(nonatomic, copy, readonly)NSString *dataTypeName;
-@property (nonatomic, strong) NSString *requestDataId;
-@property (nonatomic, strong) NSString *startTime;
-@property (nonatomic, strong) NSString *duration;
-@property (nonatomic, strong) NSString *responseCode;
+@property (nonatomic, copy) NSString *requestDataId;
+@property (nonatomic, copy) NSString *startTime;
+@property (nonatomic, copy) NSString *duration;
+@property (nonatomic, copy) NSString *responseCode;
 @property (nonatomic, assign) BOOL success;
-@property (nonatomic, strong) NSString *httpMethod;
-@property (nonatomic, strong) NSString *url;
+@property (nonatomic, copy) NSString *httpMethod;
+@property (nonatomic, copy) NSString *url;
 @property (nonatomic, strong) MSAIOrderedDictionary *measurements;
 
 @end

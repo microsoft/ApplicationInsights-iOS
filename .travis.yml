@@ -1,10 +1,10 @@
 language: objective-c
-osx_image: beta-xcode6.3
+osx_image: xcode6.4
 
 env:
   global:
     - PROJECT="Support/ApplicationInsights.xcodeproj"
-    - SDK="iphonesimulator8.3"
+    - SDK="iphonesimulator"
 
   matrix:
     - SCHEME="ApplicationInsights" DESTINATION="OS=7.1,name=iPad 2"        CONFIGURATION="Debug"   RUN_TESTS="YES" POD_LINT="NO" XCODEBUILD_GCC_PREPROCESSOR_DEFINITIONS="CI=1"
@@ -25,7 +25,8 @@ before_install:
 
 notifications:
   slack:
-    secure: dCzA1+dtjKkHk2PK6RWBSE0Obgf0CvIejhXXH4Aba29zfVQg5Bv0yWJ34YHnPMFPA7+eyFrW2TqGqI7gA7L7Ju0RWHwu9Z0XayCcMpOCZVKTOSf/7SrAvtODKNzAT/S55HZOaj8yxK6l5a0cMGXfGM7j+NLdkjyba7ypQKsn0ug=
+    rooms:
+    - secure: dCzA1+dtjKkHk2PK6RWBSE0Obgf0CvIejhXXH4Aba29zfVQg5Bv0yWJ34YHnPMFPA7+eyFrW2TqGqI7gA7L7Ju0RWHwu9Z0XayCcMpOCZVKTOSf/7SrAvtODKNzAT/S55HZOaj8yxK6l5a0cMGXfGM7j+NLdkjyba7ypQKsn0ug=
     on_success: change
     on_failure: always
 

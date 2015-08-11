@@ -4,13 +4,6 @@
 /// Data contract class for type CrashDataHeaders.
 @implementation MSAICrashDataHeaders
 
-/// Initializes a new instance of the class.
-- (instancetype)init {
-    if (self = [super init]) {
-    }
-    return self;
-}
-
 ///
 /// Adds all members of this class to a dictionary
 /// @param dictionary to which the members of this class will be added.
@@ -64,19 +57,19 @@
 - (instancetype)initWithCoder:(NSCoder *)coder {
   self = [super initWithCoder:coder];
   if(self) {
-    self.crashDataHeadersId = [coder decodeObjectForKey:@"self.crashDataHeadersId"];
-    self.process = [coder decodeObjectForKey:@"self.process"];
-    self.processId = [coder decodeObjectForKey:@"self.processId"];
-    self.parentProcess = [coder decodeObjectForKey:@"self.parentProcess"];
-    self.parentProcessId = [coder decodeObjectForKey:@"self.parentProcessId"];
-    self.crashThread = [coder decodeObjectForKey:@"self.crashThread"];
-    self.applicationPath = [coder decodeObjectForKey:@"self.applicationPath"];
-    self.applicationIdentifier = [coder decodeObjectForKey:@"self.applicationIdentifier"];
-    self.applicationBuild = [coder decodeObjectForKey:@"self.applicationBuild"];
-    self.exceptionType = [coder decodeObjectForKey:@"self.exceptionType"];
-    self.exceptionCode = [coder decodeObjectForKey:@"self.exceptionCode"];
-    self.exceptionAddress = [coder decodeObjectForKey:@"self.exceptionAddress"];
-    self.exceptionReason = [coder decodeObjectForKey:@"self.exceptionReason"];
+    _crashDataHeadersId = [coder decodeObjectForKey:@"self.crashDataHeadersId"];
+    _process = [coder decodeObjectForKey:@"self.process"];
+    _processId = [coder decodeObjectForKey:@"self.processId"];
+    _parentProcess = [coder decodeObjectForKey:@"self.parentProcess"];
+    _parentProcessId = [coder decodeObjectForKey:@"self.parentProcessId"];
+    _crashThread = [coder decodeObjectForKey:@"self.crashThread"];
+    _applicationPath = [coder decodeObjectForKey:@"self.applicationPath"];
+    _applicationIdentifier = [coder decodeObjectForKey:@"self.applicationIdentifier"];
+    _applicationBuild = [coder decodeObjectForKey:@"self.applicationBuild"];
+    _exceptionType = [coder decodeObjectForKey:@"self.exceptionType"];
+    _exceptionCode = [coder decodeObjectForKey:@"self.exceptionCode"];
+    _exceptionAddress = [coder decodeObjectForKey:@"self.exceptionAddress"];
+    _exceptionReason = [coder decodeObjectForKey:@"self.exceptionReason"];
   }
 
   return self;

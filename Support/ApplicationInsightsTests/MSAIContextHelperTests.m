@@ -56,26 +56,6 @@
   XCTAssertEqual(newUser.userId.length, 36U);
 }
 
-- (void)testSetCurrentUserId {
-  NSString *testId = @"testId2";
-  
-  OCMExpect([self.mockNotificationCenter postNotificationName:MSAIUserChangedNotification object:self.sut userInfo:[OCMArg checkWithBlock:^BOOL(NSDictionary *userInfo) {
-    MSAIUser *user = userInfo[kMSAIUserInfo];
-    if ([user.userId isEqualToString:testId]) {
-      return YES;
-    }
-    return NO;
-  }]]);
-  
-  [self.sut setCurrentUserId:testId];
-  NSString *userId = [self.sut userForDate:[NSDate date]].userId;
-  XCTAssertEqualObjects(userId, testId);
-  
-  [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:1]];
-  
-  OCMVerifyAll(self.mockNotificationCenter);
-}
-
 - (void)testSetUserWithConfigurationBlock {
   self.sut = OCMPartialMock(self.sut);
   

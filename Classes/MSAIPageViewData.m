@@ -35,8 +35,10 @@
 - (instancetype)initWithCoder:(NSCoder *)coder {
   self = [super initWithCoder:coder];
   if(self) {
-    self.url = [coder decodeObjectForKey:@"self.url"];
-    self.duration = [coder decodeObjectForKey:@"self.duration"];
+    _url = [coder decodeObjectForKey:@"self.url"];
+    _duration = [coder decodeObjectForKey:@"self.duration"];
+    _referrer = [coder decodeObjectForKey:@"self.referrer"];
+    _referrerData = [coder decodeObjectForKey:@"self.referrerData"];
   }
 
   return self;
@@ -46,6 +48,8 @@
   [super encodeWithCoder:coder];
   [coder encodeObject:self.url forKey:@"self.url"];
   [coder encodeObject:self.duration forKey:@"self.duration"];
+  [coder encodeObject:self.referrer forKey:@"self.referrer"];
+  [coder encodeObject:self.referrerData forKey:@"self.referrerData"];
 }
 
 

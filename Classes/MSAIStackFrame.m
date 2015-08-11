@@ -4,13 +4,6 @@
 /// Data contract class for type StackFrame.
 @implementation MSAIStackFrame
 
-/// Initializes a new instance of the class.
-- (instancetype)init {
-    if (self = [super init]) {
-    }
-    return self;
-}
-
 ///
 /// Adds all members of this class to a dictionary
 /// @param dictionary to which the members of this class will be added.
@@ -40,11 +33,11 @@
 - (instancetype)initWithCoder:(NSCoder *)coder {
   self = [super initWithCoder:coder];
   if(self) {
-    self.level = [coder decodeObjectForKey:@"self.level"];
-    self.method = [coder decodeObjectForKey:@"self.method"];
-    self.assembly = [coder decodeObjectForKey:@"self.assembly"];
-    self.fileName = [coder decodeObjectForKey:@"self.fileName"];
-    self.line = [coder decodeObjectForKey:@"self.line"];
+    _level = [coder decodeObjectForKey:@"self.level"];
+    _method = [coder decodeObjectForKey:@"self.method"];
+    _assembly = [coder decodeObjectForKey:@"self.assembly"];
+    _fileName = [coder decodeObjectForKey:@"self.fileName"];
+    _line = [coder decodeObjectForKey:@"self.line"];
   }
 
   return self;

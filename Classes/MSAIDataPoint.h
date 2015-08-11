@@ -3,13 +3,13 @@
 
 @interface MSAIDataPoint : MSAIObject <NSCoding>
 
-@property (nonatomic, strong) NSString *name;
+@property (nonatomic, copy) NSString *name;
 @property (nonatomic, assign) MSAIDataPointType kind;
-@property (nonatomic, strong) NSNumber *value;
-@property (nonatomic, strong) NSNumber *count;
-@property (nonatomic, strong) NSNumber *min;
-@property (nonatomic, strong) NSNumber *max;
-@property (nonatomic, strong) NSNumber *stdDev;
+@property (nonatomic, copy) NSNumber *value;
+@property (nonatomic, copy) NSNumber *count;
+@property (nonatomic, copy) NSNumber *min;
+@property (nonatomic, copy) NSNumber *max;
+@property (nonatomic, copy) NSNumber *stdDev;
 
 - (instancetype)initWithCoder:(NSCoder *)coder;
 
