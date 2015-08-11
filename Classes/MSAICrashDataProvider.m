@@ -706,21 +706,17 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
   if(stacktrace){
     frames = [NSMutableArray new];
     NSArray *lines = [stacktrace componentsSeparatedByString:@"\n"];
-    
+    int level = 0;
     
     for(NSString *frameInfo in lines){
       
       MSAIStackFrame *frame = [self stackframeForStackLine:frameInfo];
+      
       if(frame){
+        frame.level = @(level);
         [frames addObject:frame];
+        level++;
       }
-    }
-    
-    // level values have to be upside down. We have assign this value afterwards, since we do not know how many valid frame objects get created.
-    NSUInteger level = frames.count -1;
-    for(MSAIStackFrame *frame in frames){
-      frame.level = @(level);
-      level--;
     }
   }
   return frames;
