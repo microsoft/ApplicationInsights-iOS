@@ -694,7 +694,7 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
   }
   
   MSAIExceptionData *data = [MSAIExceptionData new];
-  data.handledAt = handled ? @"HANDLED" : @"UNHANDLED";
+  data.handledAt = handled ? @"UserCode" : @"Unhandled";
   data.exceptions = @[details].mutableCopy;
   
   return data;
