@@ -685,11 +685,10 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
   details.message = message;
   
   if(stacktrace){
-    details.stack = stacktrace;
     NSMutableArray *stackframes = [self stackframesForStacktrace:stacktrace];
     if(stackframes.count >= 1){
       details.parsedStack = stackframes;
-      details.hasFullStack = YES;
+      details.hasFullStack = NO;
     }
   }
   
