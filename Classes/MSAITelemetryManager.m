@@ -250,16 +250,27 @@ static char *const MSAICommonPropertiesQueue = "com.microsoft.ApplicationInsight
                               message:(NSString *)message
                            stacktrace:(NSString *)stacktrace
                               handled:(BOOL)handled{
-  MSAIEnvelope *envelope = [[MSAIEnvelopeManager sharedManager] envelopeForManagedExceptionWithType:type
-                                                                                            message:message
-                                                                                         stacktrace:stacktrace
-                                                                                            handled:handled];
-  MSAIOrderedDictionary *dict = [envelope serializeToDictionary];
-  [[MSAIChannel sharedChannel] processDictionary:dict withCompletionBlock:nil];
-  
+
   if(!handled){
+    MSAIEnvelope *envelope = [[MSAIEnvelopeManager sharedManager] envelopeForManagedExceptionWithType:type
+                                                                                              message:message
+                                                                                           stacktrace:stacktrace
+                                                                                              handled:handled];
+    MSAIOrderedDictionary *dict = [envelope serializeToDictionary];
+    [[MSAIChannel sharedChannel] processDictionary:dict withCompletionBlock:nil];
     [[MSAIContextHelper sharedInstance] ignoreCrashForSessionWithDate:[NSDate date]];
+  }else{
+    dispatch_async(_telemetryEventQueue, ^{
+      
+      MSAIEnvelope *envelope = [[MSAIEnvelopeManager sharedManager] envelopeForManagedExceptionWithType:type
+                                                                                                message:message
+                                                                                             stacktrace:stacktrace
+                                                                                                handled:handled];
+      MSAIOrderedDictionary *dict = [envelope serializeToDictionary];
+      [[MSAIChannel sharedChannel] enqueueDictionary:dict];
+    });
   }
+  
 }
 
 #endif /* MSAI_FEATURE_XAMARIN */
