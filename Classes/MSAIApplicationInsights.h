@@ -1,6 +1,7 @@
 #import <Foundation/Foundation.h>
 #import "MSAINullability.h"
 #import "MSAIUser.h"
+#import "MSAITelemetryContext.h"
 
 NS_ASSUME_NONNULL_BEGIN
 /**
@@ -177,6 +178,22 @@ NS_ASSUME_NONNULL_BEGIN
  *  Within the block you can update the user object's values to up-to-date.
  */
 - (void)setUserWithConfigurationBlock:(void (^)(MSAIUser *user))userConfigurationBlock;
+
+/**
+ *  Use this method to configure the current telemetry context.
+ *
+ *  @param telemetryContextConfigurationBlock This block gets the current telemetry context as an input.
+ *  Within the block you can update the context object's values to up-to-date.
+ */
++ (void)setTelemetryContextWithConfigurationBlock:(void (^)(MSAITelemetryContext *telemetryContext))telemetryContextConfigurationBlock;
+
+/**
+ *  Use this method to configure the current telemetry context.
+ *
+ *  @param telemetryContextConfigurationBlock This block gets the current telemetry context as an input.
+ *  Within the block you can update the context object's values to up-to-date.
+ */
+- (void)setTelemetryContextWithConfigurationBlock:(void (^)(MSAITelemetryContext *telemetryContext))telemetryContextConfigurationBlock;
 
 /**
  *  Manually trigger a new session start.

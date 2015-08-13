@@ -286,6 +286,18 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
   [[MSAIContextHelper sharedInstance] setUserWithConfigurationBlock:userConfigurationBlock];
 }
 
++ (void)setTelemetryContextWithConfigurationBlock:(void (^)(MSAITelemetryContext *telemetryContext))telemetryContextConfigurationBlock {
+  [[self sharedInstance] setTelemetryContextWithConfigurationBlock:telemetryContextConfigurationBlock];
+}
+
+- (void)setTelemetryContextWithConfigurationBlock:(void (^)(MSAITelemetryContext *telemetryContext))telemetryContextConfigurationBlock {
+  if(_telemetryContext){
+    telemetryContextConfigurationBlock(_telemetryContext);
+  }else{
+    NSLog(@"[ApplicationInsights] The telemetry context you try to modify has not been setup yet. Call ApplicationInsights.setup() first");
+  }
+}
+
 + (void)startNewSession {
   [[self sharedInstance] startNewSession];
 }
