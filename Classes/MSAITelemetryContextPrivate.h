@@ -6,8 +6,6 @@
 #import "MSAIUser.h"
 #import "MSAISession.h"
 #import "MSAILocation.h"
-#import "MSAIContext.h"
-#import "MSAIContextPrivate.h"
 
 NS_ASSUME_NONNULL_BEGIN
 @interface MSAITelemetryContext()
@@ -60,13 +58,11 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  *  Initializes a telemetry context.
  *
- *  @param appContext         the context of the app, which contains several meta infos
- *  @param endpointPath       the path to the telemetry endpoint
- *  @param sessionId          the id of the first session
+ *  @param instrumentationKey the instrumentation key of the app.
  *
  *  @return the telemetry context
  */
-- (instancetype)initWithAppContext:(MSAIContext *)appContext;
+- (instancetype)initWithInstrumentationKey:(NSString *)instrumentationKey;
 
 ///-----------------------------------------------------------------------------
 /// @name Session
