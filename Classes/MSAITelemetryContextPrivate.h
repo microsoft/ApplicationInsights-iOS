@@ -15,12 +15,6 @@ NS_ASSUME_NONNULL_BEGIN
 ///-----------------------------------------------------------------------------
 
 /**
- *  The instrumentation key of the app.
- */
-@property(nonatomic, copy, readonly) NSString *instrumentationKey;
-
-
-/**
  *  The application context.
  */
 @property(nonatomic, strong, readonly) MSAIApplication *application;
@@ -54,7 +48,7 @@ NS_ASSUME_NONNULL_BEGIN
  *  The operation context.
  */
 @property (nonatomic, strong, readonly)MSAIOperation *operation;
-
+ 
 /**
  *  Initializes a telemetry context.
  *
@@ -65,8 +59,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithInstrumentationKey:(NSString *)instrumentationKey;
 
 ///-----------------------------------------------------------------------------
-/// @name Session
-///-----------------------------------------------------------------------------s;///-----------------------------------------------------------------------------
 /// @name Network status
 ///-----------------------------------------------------------------------------
 
