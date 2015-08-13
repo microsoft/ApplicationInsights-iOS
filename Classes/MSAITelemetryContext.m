@@ -20,13 +20,12 @@ NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
   
   if ((self = [self init])) {
     
+    _instrumentationKey = instrumentationKey;
     MSAIDevice *deviceContext = [MSAIDevice new];
-    deviceContext.model = appContext.deviceModel;
-    deviceContext.type = appContext.deviceType;
-    deviceContext.osVersion = appContext.osVersion;
-    deviceContext.os = appContext.osName;
-    
-    //TODO: Get device id from appContext
+    deviceContext.model = msai_devicePlatform();
+    deviceContext.type = msai_deviceType();
+    deviceContext.osVersion = msai_osVersionBuild();
+    deviceContext.os = msai_osName();
     deviceContext.deviceId = msai_appAnonID();
     deviceContext.locale = msai_deviceLocale();
     deviceContext.language = msai_deviceLanguage();
@@ -37,7 +36,7 @@ NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
     internalContext.sdkVersion = msai_sdkVersion();
     
     MSAIApplication *applicationContext = [MSAIApplication new];
-    applicationContext.version = appContext.appVersion;
+    applicationContext.version = msai_appVersion();
     
     MSAISession *sessionContext = [[MSAIContextHelper sharedInstance] newSession];
     [[MSAIContextHelper sharedInstance] addSession:sessionContext withDate:[NSDate date]];
