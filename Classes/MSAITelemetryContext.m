@@ -24,7 +24,7 @@ static char *const MSAIContextOperationsQueue = "com.microsoft.ApplicationInsigh
   
   if ((self = [self init])) {
     
-    _operationsQueue = dispatch_queue_create(MSAIContextOperationsQueue, DISPATCH_QUEUE_SERIAL);
+    _operationsQueue = dispatch_queue_create(MSAIContextOperationsQueue, DISPATCH_QUEUE_CONCURRENT);
     _instrumentationKey = instrumentationKey;
     MSAIDevice *deviceContext = [MSAIDevice new];
     deviceContext.model = msai_devicePlatform();

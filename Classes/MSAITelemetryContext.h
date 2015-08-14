@@ -10,11 +10,6 @@ NS_ASSUME_NONNULL_BEGIN
 @interface MSAITelemetryContext : NSObject
 
 /**
- *  A queue which makes array operations thread safe.
- */
-@property (nonatomic, strong) dispatch_queue_t operationsQueue;
-
-/**
  *  The instrumentation key of the app.
  */
 @property(nonatomic, copy) NSString *instrumentationKey;

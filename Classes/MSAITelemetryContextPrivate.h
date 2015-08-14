@@ -15,6 +15,11 @@ NS_ASSUME_NONNULL_BEGIN
 ///-----------------------------------------------------------------------------
 
 /**
+*  A queue which makes array operations thread safe.
+*/
+@property (nonatomic, strong) dispatch_queue_t operationsQueue;
+
+/**
  *  The application context.
  */
 @property(nonatomic, strong, readonly) MSAIApplication *application;
