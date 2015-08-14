@@ -1,6 +1,7 @@
 #import <Foundation/Foundation.h>
 #import "MSAINullability.h"
 #import "MSAIUser.h"
+#import "MSAIConfiguration.h"
 
 NS_ASSUME_NONNULL_BEGIN
 /**

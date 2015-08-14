@@ -36,6 +36,7 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
   BOOL _managersInitialized;
   MSAIAppClient *_appClient;
   MSAIContext *_appContext;
+  MSAIConfiguration *_configuration;
 }
 
 #pragma mark - Shared instance
@@ -183,8 +184,12 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
     
     MSAITelemetryContext *telemetryContext = [[MSAITelemetryContext alloc] initWithAppContext:_appContext];
     [[MSAIEnvelopeManager sharedManager] configureWithTelemetryContext:telemetryContext];
-    
+
     [[MSAISender sharedSender] configureWithAppClient:[self appClient]];
+    
+    // Setup channel
+    _configuration = [MSAIConfiguration new];
+    [[MSAIChannel sharedChannel] configureWithConfiguration:_configuration];
     
 #if MSAI_FEATURE_TELEMETRY
     MSAILog(@"INFO: Setup TelemetryManager");
