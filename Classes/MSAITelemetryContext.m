@@ -376,7 +376,13 @@ static char *const MSAIContextOperationsQueue = "com.microsoft.ApplicationInsigh
   });
 }
 - (void)setTelemetryContextWithConfigurationBlock:(void (^)(MSAITelemetryContext *telemetryContext))telemetryContextConfigurationBlock{
+  NSString *oldSessionId = [self.sessionId copy];
+  
   telemetryContextConfigurationBlock(self);
+  
+  if([oldSessionId isEqualToString:self.sessionId]){
+    [[MSAIContextHelper sharedInstance] renewSessionWithId:[self.sessionId copy]];
+  }
   [[MSAIContextHelper sharedInstance] setCurrentUser:self.user];
 }
 
