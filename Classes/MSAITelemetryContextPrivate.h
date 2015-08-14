@@ -77,11 +77,6 @@ NS_ASSUME_NONNULL_BEGIN
 ///-----------------------------------------------------------------------------
 
 /**
- *  A dictionary which holds static tag fields for the purpose of caching
- */
-@property (nonatomic, strong)MSAIOrderedDictionary *tags;
-
-/**
  *  Returns context objects as dictionary.
  *
  *  @return a dictionary containing all context fields

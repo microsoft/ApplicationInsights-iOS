@@ -65,7 +65,6 @@ static char *const MSAIContextOperationsQueue = "com.microsoft.ApplicationInsigh
     _internal = internalContext;
     _operation = operationContext;
     _session = sessionContext;
-    _tags = [self tags];
 
     [self configureNetworkStatusTracking];
   }
@@ -390,15 +389,16 @@ static char *const MSAIContextOperationsQueue = "com.microsoft.ApplicationInsigh
 #pragma mark - Helper
 
 - (MSAIOrderedDictionary *)contextDictionary {
-  MSAIOrderedDictionary *contextDictionary = [MSAIOrderedDictionary new];
-  [contextDictionary addEntriesFromDictionary:[self.session serializeToDictionary]];
-  [contextDictionary addEntriesFromDictionary:[self.user serializeToDictionary]];
-  [contextDictionary addEntriesFromDictionary:[self.device serializeToDictionary]];
-  [contextDictionary addEntriesFromDictionary:[self.application serializeToDictionary]];
-  [contextDictionary addEntriesFromDictionary:[self.location serializeToDictionary]];
-  [contextDictionary addEntriesFromDictionary:[self.internal serializeToDictionary]];
-  [contextDictionary addEntriesFromDictionary:[self.operation serializeToDictionary]];
-  
+  __block MSAIOrderedDictionary *contextDictionary = [MSAIOrderedDictionary new];
+  dispatch_sync(_operationsQueue, ^{
+    [contextDictionary addEntriesFromDictionary:[self.session serializeToDictionary]];
+    [contextDictionary addEntriesFromDictionary:[self.user serializeToDictionary]];
+    [contextDictionary addEntriesFromDictionary:[self.device serializeToDictionary]];
+    [contextDictionary addEntriesFromDictionary:[self.application serializeToDictionary]];
+    [contextDictionary addEntriesFromDictionary:[self.location serializeToDictionary]];
+    [contextDictionary addEntriesFromDictionary:[self.internal serializeToDictionary]];
+    [contextDictionary addEntriesFromDictionary:[self.operation serializeToDictionary]];
+  });
   return contextDictionary;
 }
 
