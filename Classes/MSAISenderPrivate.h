@@ -19,11 +19,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) dispatch_queue_t senderQueue;
 
 /**
- *  The endpoint url of the telemetry server.
- */
-@property (nonatomic, copy) NSString *endpointPath;
-
-/**
  *  The max number of request that can run at a time.
  */
 @property NSUInteger maxRequestCount;
