@@ -12,7 +12,5 @@ FOUNDATION_EXPORT char *MSAISafeJsonEventsString;
  */
 @interface MSAIChannel : NSObject
 
-- (instancetype)initWithConfiguration:(MSAIConfiguration *)configuration;
-
 @end
 NS_ASSUME_NONNULL_END
