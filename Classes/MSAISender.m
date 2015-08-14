@@ -118,7 +118,7 @@ static NSUInteger const defaultRequestLimit = 10;
 
 - (NSURLRequest *)requestForData:(NSData * __nonnull)data withContentType:(NSString * __nonnull)contentType {
   NSMutableURLRequest *request = [self.appClient requestWithMethod:@"POST"
-                                                              path:self.endpointPath
+                                                              path:nil
                                                         parameters:nil];
   
   request.HTTPBody = data;
