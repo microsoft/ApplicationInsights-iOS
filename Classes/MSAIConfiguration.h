@@ -12,7 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  *  The server URL to which data will be sent.
  */
-@property (nonatomic, copy) NSString *serverURL;
+@property (nonatomic, copy) NSURL *serverURL;
 
 /**
  *  The background time of the app, after which a new session will be automatically started.

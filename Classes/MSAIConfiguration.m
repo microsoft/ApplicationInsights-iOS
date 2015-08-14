@@ -1,7 +1,7 @@
 #import "MSAIConfiguration.h"
 #import "MSAIHelper.h"
 
-NSString * const serverURL = @"https://dc.services.visualstudio.com/v2/track";
+NSString * const MSAIServerURL = @"https://dc.services.visualstudio.com/v2/track";
 
 // Debug
 NSUInteger const MSAIMaxBatchCountDebug             = 5;
@@ -27,6 +27,7 @@ static char *const MSAIContextOperationsQueue = "com.microsoft.ApplicationInsigh
   if(self = [super init]){
     _operationsQueue = dispatch_queue_create(MSAIContextOperationsQueue, DISPATCH_QUEUE_CONCURRENT);
     
+    _serverURL = [NSURL URLWithString:MSAIServerURL];
     if(msai_isDebuggerAttached()){
       _backgroundSessionInterval = MSAIBackgroundSessionIntervalDebug;
       _maxBatchInterval = MSAIMaxBatchIntervalDebug;
@@ -40,16 +41,16 @@ static char *const MSAIContextOperationsQueue = "com.microsoft.ApplicationInsigh
   return self;
 }
 
-- (NSString *)serverURL {
-  __block NSString *tmp;
+- (NSURL *)serverURL {
+  __block NSURL *tmp;
   dispatch_sync(_operationsQueue, ^{
     tmp = _serverURL;
   });
   return tmp;
 }
 
-- (void)setServerURL:(NSString *)serverURL {
-  NSString* tmp = [serverURL copy];
+- (void)setServerURL:(NSURL *)serverURL {
+  NSURL* tmp = [serverURL copy];
   dispatch_barrier_async(_operationsQueue, ^{
     _serverURL = tmp;
   });
