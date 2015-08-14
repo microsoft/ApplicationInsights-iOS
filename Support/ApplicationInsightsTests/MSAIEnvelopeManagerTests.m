@@ -30,8 +30,7 @@
 - (void)setUp {
   [super setUp];
   
-  MSAIContext *context = [[MSAIContext alloc]initWithInstrumentationKey:@"123"];
-  _telemetryContext = [[MSAITelemetryContext alloc] initWithAppContext:context];
+  _telemetryContext = [[MSAITelemetryContext alloc]initWithInstrumentationKey:@"123"];
   [[MSAIEnvelopeManager sharedManager] configureWithTelemetryContext:_telemetryContext];
   _sut = [MSAIEnvelopeManager sharedManager];
 }

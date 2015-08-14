@@ -20,11 +20,18 @@ static char *const MSAIContextOperationsQueue = "com.microsoft.ApplicationInsigh
 
 #pragma mark - Initialisation
 
+-(instancetype)init {
+  
+  if(self = [super init]) {
+    _operationsQueue = dispatch_queue_create(MSAIContextOperationsQueue, DISPATCH_QUEUE_CONCURRENT);
+  }
+  return self;
+}
+      
 - (instancetype)initWithInstrumentationKey:(NSString *)instrumentationKey {
   
   if ((self = [self init])) {
     
-    _operationsQueue = dispatch_queue_create(MSAIContextOperationsQueue, DISPATCH_QUEUE_CONCURRENT);
     _instrumentationKey = instrumentationKey;
     MSAIDevice *deviceContext = [MSAIDevice new];
     deviceContext.model = msai_devicePlatform();

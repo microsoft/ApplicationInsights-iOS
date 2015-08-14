@@ -9,7 +9,6 @@
 
 #import "MSAICrashManager.h"
 #import "MSAICrashManagerPrivate.h"
-#import "MSAIContextPrivate.h"
 #import "MSAIPersistencePrivate.h"
 #import "MSAIEnvelope.h"
 #import "MSAIBase.h"
@@ -37,9 +36,9 @@
   [super setUp];
   
   _startManagerInitialized = NO;
+
   
-  MSAIContext *context = [[MSAIContext alloc]initWithInstrumentationKey:@"123"];
-  MSAITelemetryContext *telemetryContext = [[MSAITelemetryContext alloc] initWithAppContext:context];
+  MSAITelemetryContext *telemetryContext = [[MSAITelemetryContext alloc] initWithInstrumentationKey:@"123"];
   [[MSAIEnvelopeManager sharedManager] configureWithTelemetryContext:telemetryContext];
 
 }

@@ -1,9 +1,9 @@
 #import <Foundation/Foundation.h>
 #import "MSAINullability.h"
 
-FOUNDATION_EXPORT NSString *const kMSAIApplicationWasLaunched;
-
 NS_ASSUME_NONNULL_BEGIN
+
+FOUNDATION_EXPORT NSString *const kMSAIApplicationWasLaunched;
 /**
  *  Context object which contains information about the device, user, session etc.
  */

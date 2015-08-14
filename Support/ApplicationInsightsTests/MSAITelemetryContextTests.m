@@ -64,8 +64,7 @@
 
 - (MSAITelemetryContext *)telemetryContext{
   
-  MSAIContext *context = [[MSAIContext alloc] initWithInstrumentationKey:@"123"];
-  MSAITelemetryContext *telemetryContext = [[MSAITelemetryContext alloc] initWithAppContext:context];
+  MSAITelemetryContext *telemetryContext = [[MSAITelemetryContext alloc]initWithInstrumentationKey:@"123"];
 
   return telemetryContext;
 }
