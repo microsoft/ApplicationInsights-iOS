@@ -225,6 +225,22 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (void)renewSessionWithId:(NSString *)sessionId;
 
+/**
+ *  Change the configuration values which are used to determine, how to send out data.
+ *
+ *  @param configurationBlock This block gets the current configuration as an input. Within the block you can update
+ *  the configurations object's values to up-to-date.
+ */
++ (void)setConfigurationWithConfigurationBlock:(void (^)(MSAIConfiguration *configuration))configurationBlock;
+
+/**
+ *  Change the configuration values which are used to determine, how to send out data.
+ *
+ *  @param configurationBlock This block gets the current configuration as an input. Within the block you can update 
+ *  the configurations object's values to up-to-date.
+ */
+- (void)setConfigurationWithConfigurationBlock:(void (^)(MSAIConfiguration *configuration))configurationBlock;
+
 ///-----------------------------------------------------------------------------
 /// @name Environment
 ///-----------------------------------------------------------------------------

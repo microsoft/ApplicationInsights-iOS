@@ -284,6 +284,20 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
   return [[self sharedInstance] build];
 }
 
+#pragma mark - Configuration
+
++ (void)setConfigurationWithConfigurationBlock:(void (^)(MSAIConfiguration *configuration))configurationBlock {
+  [[self sharedInstance] setConfigurationWithConfigurationBlock:configurationBlock];
+}
+
+- (void)setConfigurationWithConfigurationBlock:(void (^)(MSAIConfiguration *configuration))configurationBlock {
+  if(_configuration){
+    configurationBlock(_configuration);
+  }else{
+    NSLog(@"[ApplicationInsights] The configuration you try to modify has not been setup yet. Call ApplicationInsights.setup() first");
+  }
+}
+
 #pragma mark - Context meta data
 
 + (void)setUserWithConfigurationBlock:(void (^)(MSAIUser *user))userConfigurationBlock {
