@@ -377,6 +377,7 @@ static char *const MSAIContextOperationsQueue = "com.microsoft.ApplicationInsigh
 }
 - (void)setTelemetryContextWithConfigurationBlock:(void (^)(MSAITelemetryContext *telemetryContext))telemetryContextConfigurationBlock{
   telemetryContextConfigurationBlock(self);
+  [[MSAIContextHelper sharedInstance] setCurrentUser:self.user];
 }
 
 #pragma mark - Custom getter

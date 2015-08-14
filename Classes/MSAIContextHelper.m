@@ -90,7 +90,11 @@ NSString *const kMSAISessionInfo = @"MSAISessionInfo";
 }
 
 - (void)setCurrentUser:(nonnull MSAIUser *)user {
-  [self addUser:user forDate:[NSDate date]];
+  NSDate *currentDate = [NSDate date];
+  MSAIUser *oldUser = [self userForDate:currentDate];
+  if(![user isEqualToUser:oldUser]){
+    [self addUser:user forDate:[NSDate date]];
+  }
 }
 
 - (void)addUser:(MSAIUser *)user forDate:(NSDate *)date {
