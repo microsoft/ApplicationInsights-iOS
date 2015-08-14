@@ -4,6 +4,8 @@
 
 This is the repository of the iOS SDK for Application Insights. [Application Insights](http://azure.microsoft.com/en-us/services/application-insights/) is a service that allows developers to keep their applications available, performing, and succeeding. The SDK enables you to send telemetry of various kinds (events, traces, exceptions, etc.) to the Application Insights service where your data can be visualized in the Azure Portal.
 
+You can use [Application Insights for Mac](http://go.microsoft.com/fwlink/?linkid=533209&clcid=0x409) to integrate the ApplicationInsights SDK iOS into your exisiting apps. It also lets you **upload your app symbols**, which are needed to properly display crash reports in the Azure Portal.
+
 The SDK runs on devices with iOS 6.0 or higher.
 
 ## Content
