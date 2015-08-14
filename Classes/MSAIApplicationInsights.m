@@ -248,11 +248,6 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 
 - (void)setServerURL:(NSString *)serverURL {
   
-  // trailing slash is needed
-  if (![serverURL hasSuffix:@"/"]) {
-    serverURL = [NSString stringWithFormat:@"%@/", serverURL];
-  }
-  
   if (_configuration) {
     _configuration.serverURL =  [NSURL URLWithString:[serverURL copy]];
   }

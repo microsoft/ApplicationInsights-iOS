@@ -10,6 +10,7 @@
 #import "MSAISender.h"
 #import "MSAISenderPrivate.h"
 #import "MSAIEnvelope.h"
+#import "MSAIConfiguration.h"
 
 @interface MSAISenderTests : XCTestCase
 
@@ -24,7 +25,7 @@
 - (void)setUp {
   [super setUp];
   
-  _appClient = [[MSAIAppClient alloc]initWithBaseURL:[NSURL URLWithString:@"http://test.com/"]];
+  _appClient = [[MSAIAppClient alloc] initWithConfiguration: [MSAIConfiguration new]];
   _sut = [MSAISender sharedSender];
   [_sut configureWithAppClient:_appClient];
 }

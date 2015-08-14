@@ -20,7 +20,7 @@
   
   path = path ? : @"";
   
-  NSURL *endpoint = self.configuration.serverURL;
+  NSURL *endpoint = [self.configuration.serverURL URLByAppendingPathComponent:path];
   NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:endpoint];
   request.HTTPMethod = method;
   

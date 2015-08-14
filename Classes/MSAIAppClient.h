@@ -24,11 +24,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**
  *	creates an NRURLRequest for the given method and path by using
- *  the internally stored baseURL.
+ *  the internally stored serverURL of the configuration.
  *
  *	@param	method	the HTTPMethod to check, must not be nil
  *	@param	params	parameters for the request (only supported for GET and POST for now)
- *	@param	path	path to append to baseURL. can be nil in which case "/" is appended
+ *	@param	path	path to append to the serverURL of the configuration. can be nil in which case "/" is appended
  *
  *	@return	an NSMutableURLRequest for further configuration
  */
