@@ -185,11 +185,11 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
     MSAITelemetryContext *telemetryContext = [[MSAITelemetryContext alloc] initWithAppContext:_appContext];
     [[MSAIEnvelopeManager sharedManager] configureWithTelemetryContext:telemetryContext];
 
-    [[MSAISender sharedSender] configureWithAppClient:[self appClient]];
-    
     // Setup channel
     _configuration = [MSAIConfiguration new];
     [[MSAIChannel sharedChannel] configureWithConfiguration:_configuration];
+    
+    [[MSAISender sharedSender] configureWithAppClient:[self appClient]];
     
 #if MSAI_FEATURE_TELEMETRY
     MSAILog(@"INFO: Setup TelemetryManager");
