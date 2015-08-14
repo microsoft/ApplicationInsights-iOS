@@ -5,6 +5,11 @@ NS_ASSUME_NONNULL_BEGIN
 @interface MSAIConfiguration : NSObject
 
 /**
+ *  A queue which makes array operations thread safe.
+ */
+@property (nonatomic, strong) dispatch_queue_t operationsQueue;
+
+/**
  *  The server URL to which data will be sent.
  */
 @property (nonatomic, copy) NSString *serverURL;
