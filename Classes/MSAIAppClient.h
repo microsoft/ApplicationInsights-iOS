@@ -1,5 +1,6 @@
 #import <Foundation/Foundation.h>
 #import "MSAIHTTPOperation.h"
+@class MSAIConfiguration;
 
 NS_ASSUME_NONNULL_BEGIN
 /**
@@ -8,16 +9,18 @@ NS_ASSUME_NONNULL_BEGIN
 @interface MSAIAppClient : NSObject
 
 /**
- *	designated initializer
+ *  Initializes the app client instance with configurations which determine, how to send out data.
  *
- *	@param	baseURL	the baseURL of the ApplicationInsights instance
+ *  @param configuration the configuration used to send out data
+ *
+ *  @return a channel instance
  */
-- (instancetype)initWithBaseURL:(NSURL*)baseURL;
+- (instancetype)initWithConfiguration:(MSAIConfiguration *)configuration;
 
 /**
- *	baseURL to which relative paths are appended
+ *  The configuration used to send out data.
  */
-@property (nonatomic, strong) NSURL *baseURL;
+@property (nonatomic, strong) MSAIConfiguration *configuration;
 
 /**
  *	creates an NRURLRequest for the given method and path by using

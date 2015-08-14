@@ -339,7 +339,7 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 
 - (MSAIAppClient *)appClient {
   if (!_appClient) {
-    _appClient = [[MSAIAppClient alloc] initWithBaseURL:[NSURL URLWithString:_serverURL ? _serverURL : MSAI_SERVER_URL]];
+    _appClient = [[MSAIAppClient alloc] initWithConfiguration:_configuration];
   }
   
   return _appClient;
