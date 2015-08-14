@@ -66,11 +66,8 @@ static char *const MSAIContextOperationsQueue = "com.microsoft.ApplicationInsigh
     _operation = operationContext;
     _session = sessionContext;
     _tags = [self tags];
-    
-    
-    [self configureUserTracking];
+
     [self configureNetworkStatusTracking];
-    [self configureSessionTracking];
   }
   return self;
 }
@@ -89,41 +86,7 @@ static char *const MSAIContextOperationsQueue = "com.microsoft.ApplicationInsigh
 }
 
 - (void)updateNetworkType:(NSNotification *)notification {
-  
-  @synchronized(self){
-    _device.network = [notification userInfo][kMSAIReachabilityUserInfoName];
-  }
-}
-
-#pragma mark - Session
-
-- (void)configureSessionTracking {
-  NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-  [center addObserverForName:MSAISessionStartedNotification
-                      object:nil
-                       queue:nil
-                  usingBlock:^(NSNotification *notification) {
-                    NSDictionary *userInfo = notification.userInfo;
-                    MSAISession *session = userInfo[kMSAISessionInfo];
-                    _session = session;
-                  }];
-}
-
-#pragma mark - User
-
-- (void)configureUserTracking {
-  NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
-  [center addObserverForName:MSAIUserChangedNotification
-                      object:nil
-                       queue:nil
-                  usingBlock:^(NSNotification *note) {
-                    NSDictionary *userInfo = note.userInfo;
-                    MSAIUser *user = userInfo[kMSAIUserInfo];
-                    if (_user) {
-                      _user = user;
-                    }
-                  }];
-  
+    [self setNetworkType:[notification userInfo][kMSAIReachabilityUserInfoName]];
 }
 
 #pragma mark - Getter/Setter properties

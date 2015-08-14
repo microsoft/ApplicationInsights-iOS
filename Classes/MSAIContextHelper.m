@@ -91,7 +91,6 @@ NSString *const kMSAISessionInfo = @"MSAISessionInfo";
 
 - (void)setCurrentUser:(nonnull MSAIUser *)user {
   [self addUser:user forDate:[NSDate date]];
-  [self sendUserChangedNotificationWithUserInfo:@{kMSAIUserInfo : user}];
 }
 
 - (void)addUser:(MSAIUser *)user forDate:(NSDate *)date {
@@ -310,14 +309,6 @@ NSString *const kMSAISessionInfo = @"MSAISessionInfo";
 }
 
 #pragma mark - Notifications
-
-- (void)sendUserChangedNotificationWithUserInfo:(NSDictionary *)userInfo {
-  dispatch_async(dispatch_get_main_queue(), ^{
-    [[NSNotificationCenter defaultCenter] postNotificationName:MSAIUserChangedNotification
-                                                        object:self
-                                                      userInfo:userInfo];
-  });
-}
 
 - (void)sendSessionStartedNotificationWithUserInfo:(NSDictionary *)userInfo {
   dispatch_async(dispatch_get_main_queue(), ^{

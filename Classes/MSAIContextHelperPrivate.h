@@ -204,13 +204,6 @@ FOUNDATION_EXPORT NSString *const kMSAIApplicationWasLaunched;
 ///-----------------------------------------------------------------------------
 
 /**
- *  Send a notification when the current user has changed.
- *
- *  @param userInfo A dictionary containing the new current user ID as kMSAIUserInfo.
- */
-- (void)sendUserChangedNotificationWithUserInfo:(NSDictionary *)userInfo;
-
-/**
  *  Send a notificaion when a new session has started.
  *
  *  @param userInfo A dictionary containing the new MSAISession object as kMSAISessionInfo.
