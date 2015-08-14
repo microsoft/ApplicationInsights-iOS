@@ -253,12 +253,8 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
     serverURL = [NSString stringWithFormat:@"%@/", serverURL];
   }
   
-  if (_serverURL != serverURL) {
-    _serverURL = [serverURL copy];
-    
-    if (_appClient) {
-      self.appClient.baseURL = [NSURL URLWithString:_serverURL ? _serverURL : MSAI_SERVER_URL];
-    }
+  if (_configuration) {
+    _configuration.serverURL =  [NSURL URLWithString:[serverURL copy]];
   }
 }
 
