@@ -18,7 +18,6 @@ NSUInteger const defaultSessionExpirationTime = 20;
 NSString *const kMSAIApplicationDidEnterBackgroundTime = @"MSAIApplicationDidEnterBackgroundTime";
 NSString *const kMSAIApplicationWasLaunched = @"MSAIApplicationWasLaunched";
 
-NSString *const MSAIUserChangedNotification = @"MSAIUserChangedNotification";
 NSString *const kMSAIUserInfo = @"MSAIUserInfo";
 
 NSString *const MSAISessionStartedNotification = @"MSAISessionStartedNotification";
@@ -72,22 +71,6 @@ NSString *const kMSAISessionInfo = @"MSAISessionInfo";
 }
 
 #pragma mark Manual User ID Management
-
-- (void)setUserWithConfigurationBlock:(void (^)(MSAIUser *user))userConfigurationBlock {
-  MSAIUser *__block currentUser = [self userForDate:[NSDate date]];
-
-  if(!currentUser) {
-    currentUser = [self newUser];
-  }
-
-  userConfigurationBlock(currentUser);
-
-  if(!currentUser) {
-    return;
-  }
-
-  [self setCurrentUser:currentUser];
-}
 
 - (void)setCurrentUser:(nonnull MSAIUser *)user {
   NSDate *currentDate = [NSDate date];

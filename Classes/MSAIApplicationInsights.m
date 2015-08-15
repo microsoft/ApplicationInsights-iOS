@@ -283,7 +283,11 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 }
 
 - (void)setUserWithConfigurationBlock:(void (^)(MSAIUser *user))userConfigurationBlock {
-  [[MSAIContextHelper sharedInstance] setUserWithConfigurationBlock:userConfigurationBlock];
+  if(_telemetryContext) {
+    [_telemetryContext setUserWithConfigurationBlock:userConfigurationBlock];
+  }else{
+    NSLog(@"[ApplicationInsights] The user context you try to modify has not been setup yet. Call ApplicationInsights.setup() first");
+  }
 }
 
 + (void)setTelemetryContextWithConfigurationBlock:(void (^)(MSAITelemetryContext *telemetryContext))telemetryContextConfigurationBlock {
@@ -292,7 +296,7 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 
 - (void)setTelemetryContextWithConfigurationBlock:(void (^)(MSAITelemetryContext *telemetryContext))telemetryContextConfigurationBlock {
   if(_telemetryContext){
-    telemetryContextConfigurationBlock(_telemetryContext);
+    [_telemetryContext setTelemetryContextWithConfigurationBlock:telemetryContextConfigurationBlock];
   }else{
     NSLog(@"[ApplicationInsights] The telemetry context you try to modify has not been setup yet. Call ApplicationInsights.setup() first");
   }

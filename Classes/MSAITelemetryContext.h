@@ -86,7 +86,5 @@ FOUNDATION_EXPORT NSString *const kMSAIApplicationWasLaunched;
 
 - (void)setNetworkType:(NSString *)networkType;
 
-
-
 @end
 NS_ASSUME_NONNULL_END

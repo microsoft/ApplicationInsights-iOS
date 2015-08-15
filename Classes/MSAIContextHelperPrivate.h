@@ -10,7 +10,6 @@ FOUNDATION_EXPORT NSString *const MSAISessionStartedNotification;
 FOUNDATION_EXPORT NSString *const MSAISessionEndedNotification;
 FOUNDATION_EXPORT NSString *const kMSAISessionInfo;
 
-FOUNDATION_EXPORT NSString *const MSAIUserChangedNotification;
 FOUNDATION_EXPORT NSString *const kMSAIUserInfo;
 
 FOUNDATION_EXPORT NSString *const kMSAIApplicationWasLaunched;

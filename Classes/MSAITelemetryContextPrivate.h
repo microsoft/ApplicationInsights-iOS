@@ -64,6 +64,26 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithInstrumentationKey:(NSString *)instrumentationKey;
 
 ///-----------------------------------------------------------------------------
+/// @name Users
+///-----------------------------------------------------------------------------
+
+/**
+ *  Use this method to configure the current  context.
+ *
+ *  @param telemetryContextConfigurationBlock block gets the current context as an input.
+ *  Within the block you can update the context object's values to up-to-date.
+ */
+- (void)setTelemetryContextWithConfigurationBlock:(void (^)(MSAITelemetryContext *telemetryContext))telemetryContextConfigurationBlock;
+
+/**
+ *  Use this method to configure the current user's context.
+ *
+ *  @param userConfigurationBlock This block gets the current user as an input.
+ *  Within the block you can update the user object's values to up-to-date.
+ */
+- (void)setUserWithConfigurationBlock:(void (^)(MSAIUser *user))userConfigurationBlock;
+
+///-----------------------------------------------------------------------------
 /// @name Network status
 ///-----------------------------------------------------------------------------
 
