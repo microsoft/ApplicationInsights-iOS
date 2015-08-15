@@ -168,6 +168,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  *  @param userConfigurationBlock This block gets the current user as an input.
  *  Within the block you can update the user object's values to up-to-date.
+ *  @deprecated Please use `MSAIApplicationInsights setTelemetryContextWithConfigurationBlock:' instead.
  */
 + (void)setUserWithConfigurationBlock:(void (^)(MSAIUser *user))userConfigurationBlock;
 
@@ -176,6 +177,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  *  @param userConfigurationBlock This block gets the current user as an input.
  *  Within the block you can update the user object's values to up-to-date.
+ *  @deprecated Please use `MSAIApplicationInsights setTelemetryContextWithConfigurationBlock:' instead.
  */
 - (void)setUserWithConfigurationBlock:(void (^)(MSAIUser *user))userConfigurationBlock;
 
@@ -228,6 +230,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  *  @warning Using this method automatically disables automatic session management!
  *  @see autoSessionManagementDisabled
+ *  @deprecated Please use `MSAIApplicationInsights setTelemetryContextWithConfigurationBlock:' and set a new sessionId instead
  */
 + (void)renewSessionWithId:(NSString *)sessionId;
 
@@ -238,6 +241,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  *  @warning Using this method automatically disables automatic session management!
  *  @see autoSessionManagementDisabled
+ *  @deprecated Please use `MSAIApplicationInsights setTelemetryContextWithConfigurationBlock:' and set a new sessionId instead
  */
 - (void)renewSessionWithId:(NSString *)sessionId;
 
