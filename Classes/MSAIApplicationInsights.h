@@ -194,6 +194,7 @@ NS_ASSUME_NONNULL_BEGIN
  *  This time is only used when automatic session management is not disabled.
  *
  *  @param appBackgroundTimeBeforeSessionExpires The time in seconds the app has to be in the background before a new session is started.
+  *  @deprecated Pleas use `setConfigurationWithConfigurationBlock:`to change the expiration interval.
  */
 + (void)setAppBackgroundTimeBeforeSessionExpires:(NSUInteger)appBackgroundTimeBeforeSessionExpires;
 
@@ -202,6 +203,7 @@ NS_ASSUME_NONNULL_BEGIN
  *  This time is only used when automatic session management is not disabled.
  *
  *  @param appBackgroundTimeBeforeSessionExpires The time in seconds the app has to be in the background before a new session is started.
+ *  @deprecated Pleas use `setConfigurationWithConfigurationBlock:`to change the expiration interval.
  */
 - (void)setAppBackgroundTimeBeforeSessionExpires:(NSUInteger)appBackgroundTimeBeforeSessionExpires;
 
