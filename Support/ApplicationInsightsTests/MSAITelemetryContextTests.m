@@ -32,7 +32,7 @@
 - (void)setUp {
   [super setUp];
   
-  _sut = [self telemetryContext];
+  _sut = [[MSAITelemetryContext alloc] initWithInstrumentationKey:@"123"];
 }
 
 - (void)tearDown {
@@ -59,6 +59,31 @@
     }];
 }
 #endif
+
+- (void)testSetUserWithConfigurationBlock {
+  
+  NSString *testUserId = @"testUserId";
+  NSString *testAccountId = @"testAccountId";
+  
+  [_sut setUserWithConfigurationBlock:^(MSAIUser *user) {
+    user.userId = testUserId;
+    user.accountId = testAccountId;
+  }];
+  
+  XCTAssertTrue([_sut.user.userId isEqualToString:testUserId]);
+  XCTAssertTrue([_sut.user.accountId isEqualToString:testAccountId]);
+  
+  
+  // Test changing only one attribute
+  NSString *testAccountId2 = @"testAccountId2";
+  
+  [_sut setUserWithConfigurationBlock:^(MSAIUser *user) {
+    user.accountId = testAccountId2;
+  }];
+  
+  XCTAssertTrue([_sut.user.accountId isEqualToString:testAccountId2]);
+  
+}
 
 #pragma mark - Setup helpers
 
