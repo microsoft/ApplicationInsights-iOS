@@ -60,14 +60,6 @@ FOUNDATION_EXPORT NSString *const kMSAIApplicationWasLaunched;
 ///-----------------------------------------------------------------------------
 
 /**
- *  Use this method to configure the current user's context.
- *
- *  @param userConfigurationBlock This block gets the current user as an input.
- *  Within the block you can update the user object's values to up-to-date.
- */
-- (void)setUserWithConfigurationBlock:(void (^)(MSAIUser *user))userConfigurationBlock;
-
-/**
  *  Set a new user. This method automatically adds this user to the automatic store with the current time as a timestamp.
  *
  *  @param user The string that represents the current user
