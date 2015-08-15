@@ -44,12 +44,15 @@ NSString *const kMSAISessionInfo = @"MSAISessionInfo";
   return sharedInstance;
 }
 
+- (void)configureWithConfiguration:(MSAIConfiguration *)configuration{
+  _configuration = configuration;
+}
+
 - (instancetype)init {
   if(self = [super init]) {
     _operationsQueue = dispatch_queue_create(MSAISessionOperationsQueue, DISPATCH_QUEUE_SERIAL);
 
     _autoSessionManagementDisabled = NO;
-    _appBackgroundTimeBeforeSessionExpires = defaultSessionExpirationTime;
 
     NSMutableDictionary *restoredMetaData = [[[MSAIPersistence sharedInstance] metaData] mutableCopy];
     _metaData = restoredMetaData ?: @{}.mutableCopy;
@@ -228,14 +231,14 @@ NSString *const kMSAISessionInfo = @"MSAISessionInfo";
     return;
   }
 
-  if(self.appBackgroundTimeBeforeSessionExpires == 0) {
+  if(!self.configuration || self.configuration.backgroundSessionInterval == 0) {
     [self startNewSession];
     return;
   }
 
   double appDidEnterBackgroundTime = [[NSUserDefaults standardUserDefaults] doubleForKey:kMSAIApplicationDidEnterBackgroundTime];
   double timeSinceLastBackground = [[NSDate date] timeIntervalSince1970] - appDidEnterBackgroundTime;
-  if(timeSinceLastBackground > self.appBackgroundTimeBeforeSessionExpires) {
+  if(timeSinceLastBackground > self.configuration.backgroundSessionInterval) {
     [self startNewSession];
   }
 }

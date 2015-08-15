@@ -187,6 +187,7 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 
     // Setup channel
     _configuration = [MSAIConfiguration new];
+    [[MSAIContextHelper sharedInstance] configureWithConfiguration:_configuration];
     [[MSAIChannel sharedChannel] configureWithConfiguration:_configuration];
     
     [[MSAISender sharedSender] configureWithAppClient:[self appClient]];
@@ -227,6 +228,7 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 
 - (void)setAutoSessionManagementDisabled:(BOOL)autoSessionManagementDisabled {
   [MSAIContextHelper sharedInstance].autoSessionManagementDisabled = autoSessionManagementDisabled;
+  //TODO: What if autoSessionManagementDisabled == NO
   [[MSAIContextHelper sharedInstance] unregisterObservers];
   _autoSessionManagementDisabled = autoSessionManagementDisabled;
   
@@ -312,7 +314,11 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 }
 
 - (void)setAppBackgroundTimeBeforeSessionExpires:(NSUInteger)appBackgroundTimeBeforeSessionExpires {
-  [[MSAIContextHelper sharedInstance] setAppBackgroundTimeBeforeSessionExpires:appBackgroundTimeBeforeSessionExpires];
+  if(_configuration){
+    _configuration.backgroundSessionInterval = appBackgroundTimeBeforeSessionExpires;
+  }else{
+    NSLog(@"[ApplicationInsights] The configuration you try to modify has not been setup yet. Call ApplicationInsights.setup() first");
+  }
 }
 
 + (void)renewSessionWithId:(NSString *)sessionId {

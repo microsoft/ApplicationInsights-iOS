@@ -37,12 +37,23 @@ FOUNDATION_EXPORT NSString *const kMSAIApplicationWasLaunched;
 @property BOOL autoSessionManagementDisabled;
 
 /**
+ *  The configuration used to determine when to auto renew sessions.
+ */
+@property (nonatomic, strong) MSAIConfiguration *configuration;
+
+/**
  *  Returns the shared instance.
  *
  *  @return the shared instance
  */
 + (instancetype)sharedInstance;
 
+/**
+ *  Configure the shared instance with a configuration object.
+ *
+ *  @param configuration the configuration used to determine when to auto renew sessions.
+ */
+- (void)configureWithConfiguration:(MSAIConfiguration *)configuration;
 
 ///-----------------------------------------------------------------------------
 /// @name User Creation
