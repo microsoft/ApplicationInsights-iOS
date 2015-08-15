@@ -245,12 +245,10 @@ NSString *const kMSAISessionInfo = @"MSAISessionInfo";
 
 #pragma mark Manual Session Management
 
-- (void)renewSessionWithId:(NSString *)sessionId {
+- (MSAISession *)renewSessionWithId:(NSString *)sessionId {
   MSAISession *session = [self newSessionWithId:sessionId];
   [self addSession:session withDate:[NSDate date]];
-
-  NSDictionary *userInfo = @{kMSAISessionInfo : session};
-  [self sendSessionStartedNotificationWithUserInfo:userInfo];
+  return session;
 }
 
 - (void)addSession:(MSAISession *)session withDate:(NSDate *)date {
@@ -305,7 +303,9 @@ NSString *const kMSAISessionInfo = @"MSAISessionInfo";
 #pragma mark Session Lifecycle
 
 - (void)startNewSession {
-  [self renewSessionWithId:msai_appAnonID()];
+  MSAISession *newSession = [self newSessionWithId:msai_appAnonID()];
+  NSDictionary *userInfo = @{kMSAISessionInfo : newSession};
+  [self sendSessionStartedNotificationWithUserInfo:userInfo];
 }
 
 - (void)endSession {

@@ -154,7 +154,14 @@ FOUNDATION_EXPORT NSString *const kMSAIApplicationWasLaunched;
 /// @name Manual Session Management
 ///-----------------------------------------------------------------------------
 
-- (void)renewSessionWithId:(NSString *)sessionId;
+/**
+ *  Renews the session with an new session id.
+ *
+ *  @param sessionId the id for this session
+ *
+ *  @return a new session instance with the given id
+ */
+- (MSAISession *)renewSessionWithId:(NSString *)sessionId;
 
 /**
  *  Adds a new sessionId (value) for a given timestamp (key) to the session plist.

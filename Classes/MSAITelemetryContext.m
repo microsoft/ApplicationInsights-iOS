@@ -74,6 +74,7 @@ static char *const MSAIContextOperationsQueue = "com.microsoft.ApplicationInsigh
     _session = sessionContext;
 
     [self configureNetworkStatusTracking];
+    [self configureSessionTracking];
   }
   return self;
 }
@@ -93,6 +94,22 @@ static char *const MSAIContextOperationsQueue = "com.microsoft.ApplicationInsigh
 
 - (void)updateNetworkType:(NSNotification *)notification {
     [self setNetworkType:[notification userInfo][kMSAIReachabilityUserInfoName]];
+}
+
+#pragma mark - Session
+
+- (void)configureSessionTracking {
+  NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+  [center addObserverForName:MSAISessionStartedNotification
+                      object:nil
+                       queue:nil
+                  usingBlock:^(NSNotification *notification) {
+                    NSDictionary *userInfo = notification.userInfo;
+                    MSAISession *session = userInfo[kMSAISessionInfo];
+                    dispatch_barrier_async(_operationsQueue, ^{
+                      _session = session;
+                    });
+                  }];
 }
 
 #pragma mark - Getter/Setter properties
