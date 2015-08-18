@@ -120,17 +120,9 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 #endif /* MSAI_FEATURE_CRASH_REPORTER */
   
 #if MSAI_FEATURE_TELEMETRY
-  if (![self isTelemetryManagerDisabled]) {
-    
-    if([self isAutoPageViewTrackingDisabled]){
-      MSAILog(@"INFO: Auto page views disabled");
-      [MSAITelemetryManager sharedManager].autoPageViewTrackingDisabled = YES;
-    }
-    
-    
-    MSAILog(@"INFO: Starting MSAITelemetryManager");
+     MSAILog(@"INFO: Starting MSAITelemetryManager");
     [[MSAITelemetryManager sharedManager] startManager];
-  }
+    
 #endif /* MSAI_FEATURE_TELEMETRY */
   
   [MSAICategoryContainer activateCategory];
