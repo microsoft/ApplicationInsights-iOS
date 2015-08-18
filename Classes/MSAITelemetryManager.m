@@ -135,6 +135,67 @@ static char *const MSAITelemetryEventQueue = "com.microsoft.ApplicationInsights.
   return properties;
 }
 
+#pragma mark - Configuring modules
++ (void)setTelemetryManagerDisabled:(BOOL)telemetryManagerDisabled {
+  [[self sharedManager] setTelemetryManagerDisabled:telemetryManagerDisabled];
+}
+
+- (void)setTelemetryManagerDisabled:(BOOL)telemetryManagerDisabled {
+	dispatch_barrier_sync(_telemetryEventQueue, ^{
+		_telemetryManagerDisabled = telemetryManagerDisabled;
+    if(_telemetryManagerDisabled){
+      [self unregisterObservers];
+    }else{
+      [self registerObservers];
+    }
+	});
+}
+
+- (BOOL)telemetryManagerDisabled {
+  __block BOOL disabled = NO;
+  dispatch_sync(_telemetryEventQueue, ^{
+      disabled = _telemetryManagerDisabled;
+  });
+  return disabled;
+}
+
++ (void)setAutoPageViewTrackingDisabled:(BOOL)autoPageViewTrackingDisabled {
+  [[self sharedManager] setAutoPageViewTrackingDisabled:autoPageViewTrackingDisabled];
+}
+
+- (void)setAutoPageViewTrackingDisabled:(BOOL)autoPageViewTrackingDisabled {
+	dispatch_barrier_sync(_telemetryEventQueue, ^{
+		_autoPageViewTrackingDisabled = autoPageViewTrackingDisabled;
+	});
+}
+
+- (BOOL)autoPageViewTrackingDisabled {
+  __block BOOL disabled = NO;
+  dispatch_sync(_telemetryEventQueue, ^{
+    disabled = _autoPageViewTrackingDisabled;
+  });
+  return disabled;
+}
+
++ (void)setAutoSessionManagementDisabled:(BOOL)autoSessionManagementDisabled {
+  [[self sharedManager] setAutoSessionManagementDisabled:autoSessionManagementDisabled];
+}
+
+- (void)setAutoSessionManagementDisabled:(BOOL)autoSessionManagementDisabled {
+	dispatch_barrier_sync(_telemetryEventQueue, ^{
+		_autoSessionManagementDisabled = autoSessionManagementDisabled;
+  [MSAIContextHelper sharedInstance].autoSessionManagementDisabled = autoSessionManagementDisabled;
+	});
+}
+
+- (BOOL)autoSessionManagementDisabled {
+  __block BOOL disabled = NO;
+  dispatch_sync(_telemetryEventQueue, ^{
+    disabled = _autoSessionManagementDisabled;
+  });
+  return disabled;
+}
+
 #pragma mark - Track data
 
 + (void)trackEventWithName:(NSString *)eventName {

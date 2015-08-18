@@ -19,10 +19,24 @@ NS_ASSUME_NONNULL_BEGIN
 @property BOOL managerInitialised;
 
 /**
- *  Flag which determines whether the manager is enabled or not. This can only be set before the
- *  manager has been started.
+ * Flag that determines whether the Telemetry Manager should be disabled.
+ * If this flag is enabled, then telemetry collection is disabled and telemetry data will
+ * not be collected and send.
+ *
+ * @return YES, if manager is disabled
+ *
+ * @default NO
+ * @see MSAITelemetryManager
+ * @warning This property needs to be set before calling `start`
  */
-@property BOOL telemetryManagerDisabled;
+@property (nonatomic, getter = isTelemetryManagerDisabled) BOOL telemetryManagerDisabled;
+
+/**
+ *  Enable (NO) or disable (YES) the telemetry manager. This should be called before `start`.
+ *
+ *  @param telemetryManagerDisabled Flag which determines whether the Telemetry Manager should be disabled
+ */
++ (void)setTelemetryManagerDisabled:(BOOL)telemetryManagerDisabled;
 
 /**
  *  This method should be called after the manager has been configured in order to create and send data.
@@ -32,12 +46,6 @@ NS_ASSUME_NONNULL_BEGIN
 ///-----------------------------------------------------------------------------
 /// @name Forward data to channel
 ///-----------------------------------------------------------------------------
-
-/**
- *  A flag which determines rather collecting page views automatically is enabled or not.
- *  NO by default.
- */
-@property BOOL autoPageViewTrackingDisabled;
 
 /**
  *  A concurrent queue which creates telemetry objects and forwards them to the channel.

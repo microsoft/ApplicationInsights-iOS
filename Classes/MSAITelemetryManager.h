@@ -44,6 +44,47 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) NSDictionary *commonProperties;
 
 ///-----------------------------------------------------------------------------
+/// @name Auto collection
+///-----------------------------------------------------------------------------
+
+/**
+ * Flag that determines whether collecting page views automatically should be disabled.
+ * If YES, auto page view collection is disabled.
+ *
+ * @return YES, if manager is disabled
+ *
+ * @default NO
+ * @warning This property needs to be set before calling `start`
+ */
+@property (nonatomic, getter = isAutoPageViewTrackingDisabled) BOOL autoPageViewTrackingDisabled;
+
+/**
+ *  Enable (NO) or disable (YES) auto collection of page views. This should be called before `start`.
+ *
+ *  @param autoPageViewTrackingDisabled Flag which determines whether the page view collection should be disabled
+ */
++ (void)setAutoPageViewTrackingDisabled:(BOOL)autoPageViewTrackingDisabled;
+
+/**
+ *  Flag that determines whether sessions will automatically be renewed when the app starts and goes to the background for more than 20 seconds.
+ *  If YES, sessions are not automatically renewed and the developer has to manually trigger a session renewal or set a specific session ID.
+ *
+ *  @return YES, if automatic session management is disabled.
+ *
+ *  @default NO
+ * @warning This property needs to be set before calling `start`
+ */
+@property (nonatomic, getter=isAutoSessionManagementDisabled) BOOL autoSessionManagementDisabled;
+
+/**
+ *  Disable (YES) automatic session management and renewal.
+ *
+ *  @param autoSessionManagementDisabled Flag that determines whether automatic session management should be disabled.
+ */
++ (void)setAutoSessionManagementDisabled:(BOOL)autoSessionManagementDisabled;
+
+
+///-----------------------------------------------------------------------------
 /// @name Track data
 ///-----------------------------------------------------------------------------
 
