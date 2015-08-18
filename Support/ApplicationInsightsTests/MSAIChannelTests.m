@@ -16,11 +16,13 @@
 #import "MSAIPersistence.h"
 #import "MSAIEnvelope.h"
 #import "MSAIOrderedDictionary.h"
+#import "MSAIConfiguration.h"
 
 @interface MSAIChannelTests : XCTestCase
 
 @property(nonatomic, strong) MSAIChannel *sut;
 @property(nonatomic, strong) MSAIAppClient *appClient;
+@property(nonatomic, strong) MSAIConfiguration *configuration;
 
 @end
 
@@ -30,8 +32,10 @@
 - (void)setUp {
   [super setUp];
   
-  self.appClient = [[MSAIAppClient alloc]initWithBaseURL:[NSURL URLWithString:@"http://test.com/"]];
+  self.configuration = [MSAIConfiguration new];
+  self.appClient = [[MSAIAppClient alloc] initWithConfiguration: self.configuration];
   [MSAIChannel setSharedChannel:[MSAIChannel new]];
+  
   self.sut = [MSAIChannel sharedChannel];
   MSAISafeJsonEventsString = NULL;
 }
@@ -44,11 +48,6 @@
 
 - (void)testUniqueInstanceCreated {
   XCTAssertNotNil([MSAIChannel new]);
-}
-
-- (void)testInstanceInitialised {
-  XCTAssertEqual((const int)self.sut.senderBatchSize, debugMaxBatchCount);
-  XCTAssertEqual((const int)self.sut.senderInterval, debugBatchInterval);
 }
 
 - (void)testSingletonReturnsSameInstanceTwice {
@@ -76,6 +75,8 @@
 
 - (void)testEnqueueEnvelopeWithOneEnvelopeAndJSONStream {
   self.sut = OCMPartialMock(self.sut);
+  OCMStub([self.sut configuration]).andReturn(self.configuration);
+  
   MSAIOrderedDictionary *dictionary = [MSAIOrderedDictionary new];
   
   [self.sut enqueueDictionary:dictionary];
@@ -89,7 +90,9 @@
 
 - (void)testEnqueueEnvelopeWithMultipleEnvelopesAndJSONStream {
   self.sut = OCMPartialMock(self.sut);
-  self.sut.senderBatchSize = 3;
+  OCMStub([self.sut configuration]).andReturn(self.configuration);
+  
+  self.configuration.maxBatchCount = 3;
   
   MSAIOrderedDictionary *dictionary = [MSAIOrderedDictionary new];
   

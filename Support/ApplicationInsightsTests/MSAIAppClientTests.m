@@ -10,18 +10,20 @@
 #import "MSAIAppClient.h"
 #import "MSAIHTTPOperation.h"
 #import "MSAITestHelper.h"
+#import "MSAIConfiguration.h"
 
 @interface MSAIAppClientTests : XCTestCase
 @end
 
 @implementation MSAIAppClientTests {
   MSAIAppClient *_sut;
+  MSAIConfiguration *_config;
 }
 
 - (void)setUp {
   [super setUp];
-  
-  _sut = [[MSAIAppClient alloc] initWithBaseURL:[NSURL URLWithString:@"http://msaibaseurl.com"]];
+  _config = [MSAIConfiguration new];
+  _sut = [[MSAIAppClient alloc] initWithConfiguration: _config];
 }
 
 - (void)tearDown {
@@ -49,13 +51,13 @@
 
 #pragma mark - Networking base tests
 - (void) testThatURLRequestHasBaseURLSet {
-  _sut.baseURL = [NSURL URLWithString:@"http://myserver.com"];
+  _config.serverURL = [NSURL URLWithString:@"http://myserver.com"];
   NSMutableURLRequest *request = [_sut requestWithMethod:@"GET" path:nil parameters:nil];
   assertThat(request.URL, equalTo([NSURL URLWithString:@"http://myserver.com/"]));
 }
 
 - (void) testThatURLRequestHasPathAppended {
-  _sut.baseURL = [NSURL URLWithString:@"http://myserver.com"];
+  _config.serverURL = [NSURL URLWithString:@"http://myserver.com"];
   NSMutableURLRequest *request = [_sut requestWithMethod:@"GET" path:@"/projects" parameters:nil];
   assertThat(request.URL, equalTo([NSURL URLWithString:@"http://myserver.com/projects"]));
 }
@@ -67,7 +69,7 @@
 }
 
 - (void) testThatOperationHasURLRequestSet {
-  _sut.baseURL = [NSURL URLWithString:@"http://myserver.com"];
+  _config.serverURL = [NSURL URLWithString:@"http://myserver.com"];
   NSURLRequest *r = [_sut requestWithMethod:@"PUT" path:@"x" parameters:nil];
   MSAIHTTPOperation *op = [_sut operationWithURLRequest:r
                                                   queue:dispatch_get_main_queue()

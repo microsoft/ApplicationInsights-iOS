@@ -1,15 +1,14 @@
 #import "MSAIAppClient.h"
-
+#import "MSAIConfiguration.h"
 @implementation MSAIAppClient
 - (void)dealloc {
   [self cancelAllOperations];
 }
 
-- (instancetype)initWithBaseURL:(NSURL *)baseURL {
+- (instancetype)initWithConfiguration:(MSAIConfiguration *)configuration {
   self = [super init];
   if ( self ) {
-    NSParameterAssert(baseURL);
-    _baseURL = baseURL;
+    _configuration = configuration;
   }
   return self;
 }
@@ -21,7 +20,7 @@
   
   path = path ? : @"";
   
-  NSURL *endpoint = [self.baseURL URLByAppendingPathComponent:path];
+  NSURL *endpoint = [self.configuration.serverURL URLByAppendingPathComponent:path];
   NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:endpoint];
   request.HTTPMethod = method;
   

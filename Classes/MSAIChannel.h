@@ -1,6 +1,8 @@
 #import <Foundation/Foundation.h>
 #import "MSAINullability.h"
 
+@class MSAIConfiguration;
+
 NS_ASSUME_NONNULL_BEGIN
 
 FOUNDATION_EXPORT char *MSAISafeJsonEventsString;

@@ -61,6 +61,8 @@
 		1BE29B491A6FB8C20014A10F /* MSAISender.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BE29B471A6FB8C20014A10F /* MSAISender.m */; };
 		1BE53D761AB889420048ABBC /* MSAIContextHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = 1BE53D741AB889420048ABBC /* MSAIContextHelper.h */; };
 		1BE53D771AB889420048ABBC /* MSAIContextHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BE53D751AB889420048ABBC /* MSAIContextHelper.m */; };
+		1BF95F821B7E4F8700C359E3 /* MSAIConfiguration.h in Headers */ = {isa = PBXBuildFile; fileRef = 1BF95F801B7E4F8700C359E3 /* MSAIConfiguration.h */; };
+		1BF95F831B7E4F8700C359E3 /* MSAIConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BF95F811B7E4F8700C359E3 /* MSAIConfiguration.m */; };
 		1E0FEE28173BDB260061331F /* MSAIKeychainUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E0FEE26173BDB260061331F /* MSAIKeychainUtils.h */; };
 		1E0FEE29173BDB260061331F /* MSAIKeychainUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 1E0FEE27173BDB260061331F /* MSAIKeychainUtils.m */; };
 		1E3A26111B2B2C8B00D59683 /* MSAICrashCXXExceptionHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 1E3A260F1B2B2C8B00D59683 /* MSAICrashCXXExceptionHandler.h */; };
@@ -261,6 +263,8 @@
 		1BE29B4A1A6FBAB50014A10F /* MSAISenderPrivate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MSAISenderPrivate.h; sourceTree = "<group>"; };
 		1BE53D741AB889420048ABBC /* MSAIContextHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAIContextHelper.h; sourceTree = "<group>"; };
 		1BE53D751AB889420048ABBC /* MSAIContextHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAIContextHelper.m; sourceTree = "<group>"; };
+		1BF95F801B7E4F8700C359E3 /* MSAIConfiguration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAIConfiguration.h; sourceTree = "<group>"; };
+		1BF95F811B7E4F8700C359E3 /* MSAIConfiguration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAIConfiguration.m; sourceTree = "<group>"; };
 		1E0FEE26173BDB260061331F /* MSAIKeychainUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAIKeychainUtils.h; sourceTree = "<group>"; };
 		1E0FEE27173BDB260061331F /* MSAIKeychainUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAIKeychainUtils.m; sourceTree = "<group>"; };
 		1E3A260F1B2B2C8B00D59683 /* MSAICrashCXXExceptionHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAICrashCXXExceptionHandler.h; sourceTree = "<group>"; };
@@ -628,6 +632,8 @@
 		1E754E441621F95E0070AB92 /* Helper */ = {
 			isa = PBXGroup;
 			children = (
+				1BF95F801B7E4F8700C359E3 /* MSAIConfiguration.h */,
+				1BF95F811B7E4F8700C359E3 /* MSAIConfiguration.m */,
 				1E49A4D4161222D400463151 /* ApplicationInsightsPrivate.h */,
 				1E49A4D5161222D400463151 /* ApplicationInsightsPrivate.m */,
 				1BC859691A7ACA820018FB6B /* MSAICategoryContainer.h */,
@@ -865,6 +871,7 @@
 				1E49A4BE161222B900463151 /* MSAIHelper.h in Headers */,
 				807CFDCB1A712974004EA1B6 /* MSAIRequestData.h in Headers */,
 				807CFDA51A712974004EA1B6 /* MSAIBase.h in Headers */,
+				1BF95F821B7E4F8700C359E3 /* MSAIConfiguration.h in Headers */,
 				807CFD6E1A712969004EA1B6 /* MSAIObject.h in Headers */,
 				1B3C38781A82213000700081 /* MSAICrashDataBinary.h in Headers */,
 				807CFDD21A712974004EA1B6 /* MSAIUser.h in Headers */,
@@ -1033,6 +1040,7 @@
 				807CFDA61A712974004EA1B6 /* MSAIBase.m in Sources */,
 				1B3FB89F1A93756100D06311 /* MSAIReachability.m in Sources */,
 				809E9E5C1AC455D9008A1AB5 /* MSAISessionStateData.m in Sources */,
+				1BF95F831B7E4F8700C359E3 /* MSAIConfiguration.m in Sources */,
 				807CFDBA1A712974004EA1B6 /* MSAIExceptionDetails.m in Sources */,
 				1B3C387F1A82213000700081 /* MSAICrashDataThreadFrame.m in Sources */,
 				807CFDBC1A712974004EA1B6 /* MSAIInternal.m in Sources */,
