@@ -37,19 +37,18 @@ static NSInteger const schemaVersion = 2;
 - (MSAIEnvelope *)envelope {
   MSAIEnvelope *envelope = [MSAIEnvelope new];
   envelope.appId = msai_mainBundleIdentifier();
-  envelope.appVer = _telemetryContext.application.version;
+  envelope.appVer = _telemetryContext.appVersion;
   envelope.time = msai_utcDateString([NSDate date]);
   envelope.iKey = _telemetryContext.instrumentationKey;
   
-  MSAIDevice *deviceContext = _telemetryContext.device;
-  if (deviceContext.deviceId) {
-    envelope.deviceId = deviceContext.deviceId;
+  if (_telemetryContext.deviceId) {
+    envelope.deviceId = _telemetryContext.deviceId;
   }
-  if (deviceContext.os) {
-    envelope.os = deviceContext.os;
+  if (_telemetryContext.osName) {
+    envelope.os = _telemetryContext.osName;
   }
-  if (deviceContext.osVersion) {
-    envelope.osVer = deviceContext.osVersion;
+  if (_telemetryContext.osVersion) {
+    envelope.osVer = _telemetryContext.osVersion;
   }
   
   envelope.tags = _telemetryContext.contextDictionary;

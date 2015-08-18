@@ -67,5 +67,41 @@
   [coder encodeObject:self.authUserAcquisitionDate forKey:@"self.authUserAcquisitionDate"];
 }
 
+#pragma mark - Compare
+
+- (BOOL)isEqualToUser:(MSAIUser *)aUser {
+  if (aUser == self) {
+    return YES;
+  }
+  if (!aUser || ![aUser isKindOfClass:[self class]]) {
+    return NO;
+  }
+  if (![self.userId isEqualToString: aUser.userId]) {
+    return NO;
+  }
+  if(![self.authUserId isEqualToString: aUser.authUserId]) {
+    return NO;
+  }
+  if (![self.accountId isEqualToString: aUser.accountId]) {
+    return NO;
+  }
+  if(![self.anonUserAcquisitionDate isEqualToString: aUser.anonUserAcquisitionDate]) {
+    return NO;
+  }
+  if(![self.authUserAcquisitionDate isEqualToString: aUser.authUserAcquisitionDate]) {
+    return NO;
+  }
+  if (![self.accountAcquisitionDate isEqualToString: aUser.accountAcquisitionDate]) {
+    return NO;
+  }
+  if (![self.userAgent isEqualToString: aUser.userAgent]) {
+    return NO;
+  }
+  if(![self.storeRegion isEqualToString: aUser.storeRegion]) {
+    return NO;
+  }
+
+  return YES;
+}
 
 @end

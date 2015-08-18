@@ -18,7 +18,6 @@ NSUInteger const defaultSessionExpirationTime = 20;
 NSString *const kMSAIApplicationDidEnterBackgroundTime = @"MSAIApplicationDidEnterBackgroundTime";
 NSString *const kMSAIApplicationWasLaunched = @"MSAIApplicationWasLaunched";
 
-NSString *const MSAIUserChangedNotification = @"MSAIUserChangedNotification";
 NSString *const kMSAIUserInfo = @"MSAIUserInfo";
 
 NSString *const MSAISessionStartedNotification = @"MSAISessionStartedNotification";
@@ -73,25 +72,12 @@ NSString *const kMSAISessionInfo = @"MSAISessionInfo";
 
 #pragma mark Manual User ID Management
 
-- (void)setUserWithConfigurationBlock:(void (^)(MSAIUser *user))userConfigurationBlock {
-  MSAIUser *__block currentUser = [self userForDate:[NSDate date]];
-
-  if(!currentUser) {
-    currentUser = [self newUser];
-  }
-
-  userConfigurationBlock(currentUser);
-
-  if(!currentUser) {
-    return;
-  }
-
-  [self setCurrentUser:currentUser];
-}
-
 - (void)setCurrentUser:(nonnull MSAIUser *)user {
-  [self addUser:user forDate:[NSDate date]];
-  [self sendUserChangedNotificationWithUserInfo:@{kMSAIUserInfo : user}];
+  NSDate *currentDate = [NSDate date];
+  MSAIUser *oldUser = [self userForDate:currentDate];
+  if(![user isEqualToUser:oldUser]){
+    [self addUser:user forDate:[NSDate date]];
+  }
 }
 
 - (void)addUser:(MSAIUser *)user forDate:(NSDate *)date {
@@ -242,12 +228,10 @@ NSString *const kMSAISessionInfo = @"MSAISessionInfo";
 
 #pragma mark Manual Session Management
 
-- (void)renewSessionWithId:(NSString *)sessionId {
+- (MSAISession *)renewSessionWithId:(NSString *)sessionId {
   MSAISession *session = [self newSessionWithId:sessionId];
   [self addSession:session withDate:[NSDate date]];
-
-  NSDictionary *userInfo = @{kMSAISessionInfo : session};
-  [self sendSessionStartedNotificationWithUserInfo:userInfo];
+  return session;
 }
 
 - (void)addSession:(MSAISession *)session withDate:(NSDate *)date {
@@ -302,7 +286,9 @@ NSString *const kMSAISessionInfo = @"MSAISessionInfo";
 #pragma mark Session Lifecycle
 
 - (void)startNewSession {
-  [self renewSessionWithId:msai_appAnonID()];
+  MSAISession *newSession = [self newSessionWithId:msai_appAnonID()];
+  NSDictionary *userInfo = @{kMSAISessionInfo : newSession};
+  [self sendSessionStartedNotificationWithUserInfo:userInfo];
 }
 
 - (void)endSession {
@@ -310,14 +296,6 @@ NSString *const kMSAISessionInfo = @"MSAISessionInfo";
 }
 
 #pragma mark - Notifications
-
-- (void)sendUserChangedNotificationWithUserInfo:(NSDictionary *)userInfo {
-  dispatch_async(dispatch_get_main_queue(), ^{
-    [[NSNotificationCenter defaultCenter] postNotificationName:MSAIUserChangedNotification
-                                                        object:self
-                                                      userInfo:userInfo];
-  });
-}
 
 - (void)sendSessionStartedNotificationWithUserInfo:(NSDictionary *)userInfo {
   dispatch_async(dispatch_get_main_queue(), ^{
