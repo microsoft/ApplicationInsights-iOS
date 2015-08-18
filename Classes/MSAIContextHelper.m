@@ -302,7 +302,8 @@ NSString *const kMSAISessionInfo = @"MSAISessionInfo";
 #pragma mark Session Lifecycle
 
 - (void)startNewSession {
-  [self renewSessionWithId:msai_appAnonID()];
+  NSString *newSessionId = msai_UUID();
+  [self renewSessionWithId:newSessionId];
 }
 
 - (void)endSession {
