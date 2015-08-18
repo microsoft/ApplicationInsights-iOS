@@ -51,6 +51,7 @@ NSString *const kMSAISessionInfo = @"MSAISessionInfo";
   if(self = [super init]) {
     _operationsQueue = dispatch_queue_create(MSAISessionOperationsQueue, DISPATCH_QUEUE_SERIAL);
 
+    // TODO: Chanfing this flag is not thread safe: use queue for getter/setter
     _autoSessionManagementDisabled = NO;
 
     NSMutableDictionary *restoredMetaData = [[[MSAIPersistence sharedInstance] metaData] mutableCopy];
