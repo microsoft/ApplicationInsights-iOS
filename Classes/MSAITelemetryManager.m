@@ -29,7 +29,6 @@
 #import "MSAIOrderedDictionary.h"
 
 static char *const MSAITelemetryEventQueue = "com.microsoft.ApplicationInsights.telemetryEventQueue";
-static char *const MSAICommonPropertiesQueue = "com.microsoft.ApplicationInsights.commonPropertiesQueue";
 
 @implementation MSAITelemetryManager {
   id _appDidEnterBackgroundObserver;
@@ -54,7 +53,6 @@ static char *const MSAICommonPropertiesQueue = "com.microsoft.ApplicationInsight
 - (instancetype)init {
   if((self = [super init])) {
     _telemetryEventQueue = dispatch_queue_create(MSAITelemetryEventQueue, DISPATCH_QUEUE_CONCURRENT);
-    _commonPropertiesQueue = dispatch_queue_create(MSAICommonPropertiesQueue, DISPATCH_QUEUE_CONCURRENT);
     _commonProperties = [NSDictionary new];
   }
   return self;
@@ -124,14 +122,14 @@ static char *const MSAICommonPropertiesQueue = "com.microsoft.ApplicationInsight
 }
 
 - (void)setCommonProperties:(NSDictionary *)commonProperties {
-  dispatch_barrier_async(_commonPropertiesQueue, ^{
+  dispatch_barrier_async(_telemetryEventQueue, ^{
     _commonProperties = commonProperties;
   });
 }
 
 - (NSDictionary *)commonProperties {
   __block NSDictionary *properties = nil;
-  dispatch_sync(_commonPropertiesQueue, ^{
+  dispatch_sync(_telemetryEventQueue, ^{
     properties = _commonProperties.copy;
   });
   return properties;
