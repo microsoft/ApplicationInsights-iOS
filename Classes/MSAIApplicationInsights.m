@@ -180,9 +180,8 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
   if (_validInstrumentationKey) {
     // Configure Http-client and send persisted data
     
-
-    MSAITelemetryContext *telemetryContext = [[MSAITelemetryContext alloc] initWithAppContext:_appContext];
     [[MSAIEnvelopeManager sharedManager] configureWithTelemetryContext:_telemetryContext];
+    
     // Setup channel
     _configuration = [MSAIConfiguration new];
     [[MSAIContextHelper sharedInstance] configureWithConfiguration:_configuration];
