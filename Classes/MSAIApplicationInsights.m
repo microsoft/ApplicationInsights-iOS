@@ -327,8 +327,13 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 }
 
 - (void)renewSessionWithId:(NSString *)sessionId {
-  [self setAutoSessionManagementDisabled:YES];
-  [[MSAIContextHelper sharedInstance] renewSessionWithId:sessionId];
+  if(_telemetryContext) {
+    [_telemetryContext setTelemetryContextWithConfigurationBlock:^void(MSAITelemetryContext *context){
+      context.sessionId = [sessionId copy];
+    }];
+  }else{
+    NSLog(@"[ApplicationInsights] The user context you try to modify has not been setup yet. Call ApplicationInsights.setup() first");
+  }
 }
 
 #pragma mark - Helper

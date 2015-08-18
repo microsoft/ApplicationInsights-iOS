@@ -239,7 +239,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  *  @param sessionId The session ID which should be attached to all future telemetry and crash events.
  *
- *  @warning Using this method automatically disables automatic session management!
+ *  @warning make sure to disable auto session management in advance
  *  @see autoSessionManagementDisabled
  *  @deprecated Please use `MSAIApplicationInsights setTelemetryContextWithConfigurationBlock:' and set a new sessionId instead
  */
@@ -250,7 +250,7 @@ NS_ASSUME_NONNULL_BEGIN
  *
  *  @param sessionId The session ID which should be attached to all future telemetry and crash events.
  *
- *  @warning Using this method automatically disables automatic session management!
+ *  @warning make sure to disable auto session management in advance
  *  @see autoSessionManagementDisabled
  *  @deprecated Please use `MSAIApplicationInsights setTelemetryContextWithConfigurationBlock:' and set a new sessionId instead
  */
