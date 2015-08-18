@@ -235,6 +235,8 @@ NSString *const kMSAISessionInfo = @"MSAISessionInfo";
 - (MSAISession *)renewSessionWithId:(NSString *)sessionId {
   MSAISession *session = [self newSessionWithId:sessionId];
   [self addSession:session withDate:[NSDate date]];
+  NSDictionary *userInfo = @{kMSAISessionInfo : session};
+  [self sendSessionStartedNotificationWithUserInfo:userInfo];
   return session;
 }
 

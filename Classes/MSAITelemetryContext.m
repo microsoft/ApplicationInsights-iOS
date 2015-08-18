@@ -106,8 +106,11 @@ static char *const MSAIContextOperationsQueue = "com.microsoft.ApplicationInsigh
                   usingBlock:^(NSNotification *notification) {
                     NSDictionary *userInfo = notification.userInfo;
                     MSAISession *session = userInfo[kMSAISessionInfo];
+                    // Only update session if it wasn't triggered by MSAITelemetryContext
                     dispatch_barrier_async(_operationsQueue, ^{
-                      _session = session;
+                      if(![_session.sessionId isEqualToString:session.sessionId]){
+                         _session = session;
+                      }
                     });
                   }];
 }
@@ -402,7 +405,7 @@ static char *const MSAIContextOperationsQueue = "com.microsoft.ApplicationInsigh
   NSString *oldSessionId = [self.sessionId copy];
   telemetryContextConfigurationBlock(self);
   
-  if([oldSessionId isEqualToString:self.sessionId]){
+  if(![oldSessionId isEqualToString:self.sessionId]){
     [[MSAIContextHelper sharedInstance] renewSessionWithId:[self.sessionId copy]];
   }
   [[MSAIContextHelper sharedInstance] setCurrentUser:self.user];
