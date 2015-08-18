@@ -203,36 +203,32 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 
 #pragma mark - Configuring modules
 #if MSAI_FEATURE_TELEMETRY
-- (void)setTelemetryManagerDisabled:(BOOL)telemetryManagerDisabled {
-  [MSAITelemetryManager sharedManager].telemetryManagerDisabled = telemetryManagerDisabled;
-  _telemetryManagerDisabled = telemetryManagerDisabled;
-}
-
 + (void)setTelemetryManagerDisabled:(BOOL)telemetryManagerDisabled {
   [[self sharedInstance] setTelemetryManagerDisabled:telemetryManagerDisabled];
 }
 
-- (void)setAutoPageViewTrackingDisabled:(BOOL)autoPageViewTrackingDisabled {
-  [MSAITelemetryManager sharedManager].autoPageViewTrackingDisabled = autoPageViewTrackingDisabled;
-  _autoPageViewTrackingDisabled = autoPageViewTrackingDisabled;
+- (void)setTelemetryManagerDisabled:(BOOL)telemetryManagerDisabled {
+  _telemetryManagerDisabled = telemetryManagerDisabled;
+  [MSAITelemetryManager sharedManager].telemetryManagerDisabled = telemetryManagerDisabled;
 }
 
 + (void)setAutoPageViewTrackingDisabled:(BOOL)autoPageViewTrackingDisabled {
   [[self sharedInstance] setAutoPageViewTrackingDisabled:autoPageViewTrackingDisabled];
 }
 
-#endif /* MSAI_FEATURE_TELEMETRY */
-
-- (void)setAutoSessionManagementDisabled:(BOOL)autoSessionManagementDisabled {
-  [MSAIContextHelper sharedInstance].autoSessionManagementDisabled = autoSessionManagementDisabled;
-  //TODO: What if autoSessionManagementDisabled == NO
-  [[MSAIContextHelper sharedInstance] unregisterObservers];
-  _autoSessionManagementDisabled = autoSessionManagementDisabled;
-  
+- (void)setAutoPageViewTrackingDisabled:(BOOL)autoPageViewTrackingDisabled {
+  [MSAITelemetryManager sharedManager].autoPageViewTrackingDisabled = autoPageViewTrackingDisabled;
 }
+
 + (void)setAutoSessionManagementDisabled:(BOOL)autoSessionManagementDisabled {
   [[self sharedInstance] setAutoSessionManagementDisabled:autoSessionManagementDisabled];
 }
+
+- (void)setAutoSessionManagementDisabled:(BOOL)autoSessionManagementDisabled {
+  [MSAITelemetryManager sharedManager].autoSessionManagementDisabled = autoSessionManagementDisabled;
+}
+
+#endif /* MSAI_FEATURE_TELEMETRY */
 
 #if MSAI_FEATURE_CRASH_REPORTER
 - (void)setCrashManagerDisabled:(BOOL)crashManagerDisabled {

@@ -107,19 +107,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 #if MSAI_FEATURE_TELEMETRY
 /**
- * Flag that determines whether the Telemetry Manager should be disabled.
- * If this flag is enabled, then telemetry collection is disabled and telemetry data will
- * not be collected and send.
- *
- * @return YES, if manager is disabled
- *
- * @default NO
- * @see MSAITelemetryManager
- * @warning This property needs to be set before calling `start`
- */
-@property (nonatomic, getter = isTelemetryManagerDisabled) BOOL telemetryManagerDisabled;
-
-/**
  *  Enable (NO) or disable (YES) the telemetry manager. This should be called before `start`.
  *
  *  @param telemetryManagerDisabled Flag which determines whether the Telemetry Manager should be disabled
@@ -127,15 +114,19 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)setTelemetryManagerDisabled:(BOOL)telemetryManagerDisabled;
 
 /**
- * Flag that determines whether collecting page views automatically should be disabled.
- * If YES, auto page view collection is disabled.
+ * Flag that determines whether the Telemetry Manager should be disabled.
+ * If this flag is enabled, then telemetry collection is disabled and telemetry data will
+ * not be collected and send.
  *
  * @return YES, if manager is disabled
+ *  Enable (NO) or disable (YES) the telemetry manager. This should be called before `start`.
  *
  * @default NO
+ * @see MSAITelemetryManager
  * @warning This property needs to be set before calling `start`
+ *  @param telemetryManagerDisabled Flag which determines whether the Telemetry Manager should be disabled
  */
-@property (nonatomic, getter = isAutoPageViewTrackingDisabled) BOOL autoPageViewTrackingDisabled;
+@property (nonatomic, getter = isTelemetryManagerDisabled) BOOL telemetryManagerDisabled;
 
 /**
  *  Enable (NO) or disable (YES) auto collection of page views. This should be called before `start`.
@@ -144,18 +135,21 @@ NS_ASSUME_NONNULL_BEGIN
  */
 + (void)setAutoPageViewTrackingDisabled:(BOOL)autoPageViewTrackingDisabled;
 
-#endif /* MSAI_FEATURE_TELEMETRY */
+/**
+ *  Enable (NO) or disable (YES) auto collection of page views. This should be called before `start`.
+ *
+ *  @param autoPageViewTrackingDisabled Flag which determines whether the page view collection should be disabled
+ */
+- (void)setAutoPageViewTrackingDisabled:(BOOL)autoPageViewTrackingDisabled;
 
 /**
- *  Flag that determines whether sessions will automatically be renewed when the app starts and goes to the background for more than 20 seconds.
- *  If YES, sessions are not automatically renewed and the developer has to manually trigger a session renewal or set a specific session ID.
+ *  Use this method to figure out, if automatic page view tracking is enabled or not.
  *
- *  @return YES, if automatic session management is disabled.
- *
- *  @default NO
- * @warning This property needs to be set before calling `start` 
+ *  @return YES if disable, NO if it is enabled
  */
-@property (nonatomic, getter=isAutoSessionManagementDisabled) BOOL autoSessionManagementDisabled;
+- (void)isAutoPageViewTrackingDisabled;
+
+#endif /* MSAI_FEATURE_TELEMETRY */
 
 /**
  *  Disable (YES) automatic session management and renewal.
@@ -163,6 +157,20 @@ NS_ASSUME_NONNULL_BEGIN
  *  @param autoSessionManagementDisabled Flag that determines whether automatic session management should be disabled.
  */
 + (void)setAutoSessionManagementDisabled:(BOOL)autoSessionManagementDisabled;
+
+/**
+ *  Disable (YES) automatic session management and renewal.
+ *
+ *  @param autoSessionManagementDisabled Flag that determines whether automatic session management should be disabled.
+ */
+- (void)setAutoSessionManagementDisabled:(BOOL)autoSessionManagementDisabled;
+
+/**
+ *  Use this method to figure out, if automatic session tracking is enabled or not.
+ *
+ *  @return YES if disable, NO if it is enabled
+ */
+- (void)isAutoSessionManagementDisabled;
 
 /**
  *  Use this method to configure the current user's context.
