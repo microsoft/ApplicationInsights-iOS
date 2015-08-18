@@ -323,7 +323,6 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 }
 
 + (void)renewSessionWithId:(NSString *)sessionId {
-  [[self sharedInstance] setAutoSessionManagementDisabled:YES];
   [[self sharedInstance] renewSessionWithId:sessionId];
 }
 
