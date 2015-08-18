@@ -60,8 +60,6 @@ static char *const MSAITelemetryEventQueue = "com.microsoft.ApplicationInsights.
 
 - (void)startManager {
   dispatch_barrier_sync(_telemetryEventQueue, ^{
-    if(_telemetryManagerDisabled)return;
-    [self registerObservers];
     _managerInitialised = YES;
   });
 }
@@ -382,7 +380,6 @@ static char *const MSAITelemetryEventQueue = "com.microsoft.ApplicationInsights.
     [[MSAIChannel sharedChannel] enqueueDictionary:dict];
   }
 }
-
 
 - (void)trackSessionEnd {
   MSAISessionStateData *sessionState = [MSAISessionStateData new];
