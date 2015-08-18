@@ -56,39 +56,6 @@
   XCTAssertEqual(newUser.userId.length, 36U);
 }
 
-- (void)testSetUserWithConfigurationBlock {
-  self.sut = OCMPartialMock(self.sut);
-  
-  NSString *testUserId = @"testUserId";
-  NSString *testAccountId = @"testAccountId";
-  
-  [self.sut setUserWithConfigurationBlock:^(MSAIUser *user) {
-    user.userId = testUserId;
-    user.accountId = testAccountId;
-  }];
-
-  OCMVerify([self.sut setCurrentUser:[OCMArg checkWithBlock:^BOOL(MSAIUser *user) {
-    if (([user.userId isEqualToString:testUserId]) && ([user.accountId isEqualToString:testAccountId])) {
-      return YES;
-    }
-    return NO;
-  }]]);
- 
-  // Test changing only one attribute
-  NSString *testAccountId2 = @"testAccountId2";
-  
-  [self.sut setUserWithConfigurationBlock:^(MSAIUser *user) {
-    user.accountId = testAccountId2;
-  }];
-  
-  OCMVerify([self.sut setCurrentUser:[OCMArg checkWithBlock:^BOOL(MSAIUser *user) {
-    if (([user.userId isEqualToString:testUserId]) && ([user.accountId isEqualToString:testAccountId2])) {
-      return YES;
-    }
-    return NO;
-  }]]);
-}
-
 - (void)testAddUser {
   XCTAssert([(NSDictionary *)self.sut.metaData[@"users"] count] == 0);
   MSAIUser *testUser = [MSAIUser new];
@@ -159,22 +126,6 @@
 }
 
 #pragma mark Test Manual Session Management
-
-- (void)testRenewSessionWithId {
-  self.sut = OCMPartialMock(self.sut);
-  XCTAssertEqual([(NSDictionary *)self.sut.metaData[@"sessions"] count], 0U);
-  
-  NSString *testId = @"1337";
-  [self.sut renewSessionWithId:testId];
-  
-  OCMVerify([self.sut sendSessionStartedNotificationWithUserInfo:[OCMArg checkWithBlock:^BOOL(NSDictionary *userInfo) {
-    MSAISession *session = userInfo[kMSAISessionInfo];
-    if ([session.sessionId isEqualToString:testId])  {
-      return YES;
-    }
-    return NO;
-  }]]);
-}
 
 - (void)testAddSession {
   NSDate *date = [NSDate date];

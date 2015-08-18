@@ -10,8 +10,6 @@
 #import "MSAIChannelPrivate.h"
 #import "MSAITelemetryContext.h"
 #import "MSAITelemetryContextPrivate.h"
-#import "MSAIContext.h"
-#import "MSAIContextPrivate.h"
 #import "MSAIEventData.h"
 #import "MSAIMessageData.h"
 #import "MSAIMetricData.h"

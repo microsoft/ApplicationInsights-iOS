@@ -3,8 +3,6 @@
 #import "MSAIHelper.h"
 #import "MSAIAppClient.h"
 #import "MSAIKeychainUtils.h"
-#import "MSAIContext.h"
-#import "MSAIContextPrivate.h"
 #import "MSAIChannel.h"
 #import "MSAISender.h"
 #import "MSAISenderPrivate.h"
@@ -35,7 +33,7 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
   BOOL _startManagerIsInvoked;
   BOOL _managersInitialized;
   MSAIAppClient *_appClient;
-  MSAIContext *_appContext;
+  MSAITelemetryContext *_telemetryContext;
 }
 
 #pragma mark - Shared instance
@@ -81,7 +79,7 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 }
 
 - (void)setupWithInstrumentationKey:(NSString *)instrumentationKey{
-  _appContext = [[MSAIContext alloc] initWithInstrumentationKey:instrumentationKey];
+  _telemetryContext = [[MSAITelemetryContext alloc] initWithInstrumentationKey:instrumentationKey];
   [self initializeModules];
 }
 
@@ -172,7 +170,7 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
     return;
   }
   
-  _validInstrumentationKey = [self checkValidityOfInstrumentationKey:[_appContext instrumentationKey]];
+  _validInstrumentationKey = [self checkValidityOfInstrumentationKey:_telemetryContext.instrumentationKey];
   
   if (![self isSetUpOnMainThread]) return;
   
@@ -181,8 +179,7 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
   if (_validInstrumentationKey) {
     // Configure Http-client and send persisted data
     
-    MSAITelemetryContext *telemetryContext = [[MSAITelemetryContext alloc] initWithAppContext:_appContext];
-    [[MSAIEnvelopeManager sharedManager] configureWithTelemetryContext:telemetryContext];
+    [[MSAIEnvelopeManager sharedManager] configureWithTelemetryContext:_telemetryContext];
     
     [[MSAISender sharedSender] configureWithAppClient:[self appClient]];
     
@@ -286,7 +283,23 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 }
 
 - (void)setUserWithConfigurationBlock:(void (^)(MSAIUser *user))userConfigurationBlock {
-  [[MSAIContextHelper sharedInstance] setUserWithConfigurationBlock:userConfigurationBlock];
+  if(_telemetryContext) {
+    [_telemetryContext setUserWithConfigurationBlock:userConfigurationBlock];
+  }else{
+    NSLog(@"[ApplicationInsights] The user context you try to modify has not been setup yet. Call ApplicationInsights.setup() first");
+  }
+}
+
++ (void)setTelemetryContextWithConfigurationBlock:(void (^)(MSAITelemetryContext *telemetryContext))telemetryContextConfigurationBlock {
+  [[self sharedInstance] setTelemetryContextWithConfigurationBlock:telemetryContextConfigurationBlock];
+}
+
+- (void)setTelemetryContextWithConfigurationBlock:(void (^)(MSAITelemetryContext *telemetryContext))telemetryContextConfigurationBlock {
+  if(_telemetryContext){
+    [_telemetryContext setTelemetryContextWithConfigurationBlock:telemetryContextConfigurationBlock];
+  }else{
+    NSLog(@"[ApplicationInsights] The telemetry context you try to modify has not been setup yet. Call ApplicationInsights.setup() first");
+  }
 }
 
 + (void)startNewSession {

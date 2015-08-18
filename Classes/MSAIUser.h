@@ -11,4 +11,6 @@
 @property (nonatomic, copy) NSString *anonUserAcquisitionDate;
 @property (nonatomic, copy) NSString *authUserAcquisitionDate;
 
+- (BOOL)isEqualToUser:(MSAIUser *)aUser;
+
 @end

@@ -6,8 +6,6 @@
 #import "MSAIUser.h"
 #import "MSAISession.h"
 #import "MSAILocation.h"
-#import "MSAIContext.h"
-#import "MSAIContextPrivate.h"
 
 NS_ASSUME_NONNULL_BEGIN
 @interface MSAITelemetryContext()
@@ -17,10 +15,9 @@ NS_ASSUME_NONNULL_BEGIN
 ///-----------------------------------------------------------------------------
 
 /**
- *  The instrumentation key of the app.
- */
-@property(nonatomic, copy, readonly) NSString *instrumentationKey;
-
+*  A queue which makes array operations thread safe.
+*/
+@property (nonatomic, strong) dispatch_queue_t operationsQueue;
 
 /**
  *  The application context.
@@ -56,21 +53,37 @@ NS_ASSUME_NONNULL_BEGIN
  *  The operation context.
  */
 @property (nonatomic, strong, readonly)MSAIOperation *operation;
-
+ 
 /**
  *  Initializes a telemetry context.
  *
- *  @param appContext         the context of the app, which contains several meta infos
- *  @param endpointPath       the path to the telemetry endpoint
- *  @param sessionId          the id of the first session
+ *  @param instrumentationKey the instrumentation key of the app.
  *
  *  @return the telemetry context
  */
-- (instancetype)initWithAppContext:(MSAIContext *)appContext;
+- (instancetype)initWithInstrumentationKey:(NSString *)instrumentationKey;
 
 ///-----------------------------------------------------------------------------
-/// @name Session
-///-----------------------------------------------------------------------------s;///-----------------------------------------------------------------------------
+/// @name Users
+///-----------------------------------------------------------------------------
+
+/**
+ *  Use this method to configure the current  context.
+ *
+ *  @param telemetryContextConfigurationBlock block gets the current context as an input.
+ *  Within the block you can update the context object's values to up-to-date.
+ */
+- (void)setTelemetryContextWithConfigurationBlock:(void (^)(MSAITelemetryContext *telemetryContext))telemetryContextConfigurationBlock;
+
+/**
+ *  Use this method to configure the current user's context.
+ *
+ *  @param userConfigurationBlock This block gets the current user as an input.
+ *  Within the block you can update the user object's values to up-to-date.
+ */
+- (void)setUserWithConfigurationBlock:(void (^)(MSAIUser *user))userConfigurationBlock;
+
+///-----------------------------------------------------------------------------
 /// @name Network status
 ///-----------------------------------------------------------------------------
 
@@ -82,11 +95,6 @@ NS_ASSUME_NONNULL_BEGIN
 ///-----------------------------------------------------------------------------
 /// @name Helper
 ///-----------------------------------------------------------------------------
-
-/**
- *  A dictionary which holds static tag fields for the purpose of caching
- */
-@property (nonatomic, strong)MSAIOrderedDictionary *tags;
 
 /**
  *  Returns context objects as dictionary.

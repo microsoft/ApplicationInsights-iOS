@@ -10,7 +10,6 @@ FOUNDATION_EXPORT NSString *const MSAISessionStartedNotification;
 FOUNDATION_EXPORT NSString *const MSAISessionEndedNotification;
 FOUNDATION_EXPORT NSString *const kMSAISessionInfo;
 
-FOUNDATION_EXPORT NSString *const MSAIUserChangedNotification;
 FOUNDATION_EXPORT NSString *const kMSAIUserInfo;
 
 FOUNDATION_EXPORT NSString *const kMSAIApplicationWasLaunched;
@@ -59,14 +58,6 @@ FOUNDATION_EXPORT NSString *const kMSAIApplicationWasLaunched;
 ///-----------------------------------------------------------------------------
 /// @name Manual User ID Management
 ///-----------------------------------------------------------------------------
-
-/**
- *  Use this method to configure the current user's context.
- *
- *  @param userConfigurationBlock This block gets the current user as an input.
- *  Within the block you can update the user object's values to up-to-date.
- */
-- (void)setUserWithConfigurationBlock:(void (^)(MSAIUser *user))userConfigurationBlock;
 
 /**
  *  Set a new user. This method automatically adds this user to the automatic store with the current time as a timestamp.
@@ -154,7 +145,14 @@ FOUNDATION_EXPORT NSString *const kMSAIApplicationWasLaunched;
 /// @name Manual Session Management
 ///-----------------------------------------------------------------------------
 
-- (void)renewSessionWithId:(NSString *)sessionId;
+/**
+ *  Renews the session with an new session id.
+ *
+ *  @param sessionId the id for this session
+ *
+ *  @return a new session instance with the given id
+ */
+- (MSAISession *)renewSessionWithId:(NSString *)sessionId;
 
 /**
  *  Adds a new sessionId (value) for a given timestamp (key) to the session plist.
@@ -202,13 +200,6 @@ FOUNDATION_EXPORT NSString *const kMSAIApplicationWasLaunched;
 ///-----------------------------------------------------------------------------
 /// @name Sending Notifications
 ///-----------------------------------------------------------------------------
-
-/**
- *  Send a notification when the current user has changed.
- *
- *  @param userInfo A dictionary containing the new current user ID as kMSAIUserInfo.
- */
-- (void)sendUserChangedNotificationWithUserInfo:(NSDictionary *)userInfo;
 
 /**
  *  Send a notificaion when a new session has started.
