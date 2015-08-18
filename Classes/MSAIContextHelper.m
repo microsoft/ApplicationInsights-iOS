@@ -290,7 +290,7 @@ NSString *const kMSAISessionInfo = @"MSAISessionInfo";
 #pragma mark Session Lifecycle
 
 - (void)startNewSession {
-  MSAISession *newSession = [self newSessionWithId:msai_appAnonID()];
+  MSAISession *newSession = [self newSessionWithId:msai_UUID()];
   NSDictionary *userInfo = @{kMSAISessionInfo : newSession};
   [self sendSessionStartedNotificationWithUserInfo:userInfo];
 }
