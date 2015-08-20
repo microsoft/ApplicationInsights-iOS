@@ -6,6 +6,8 @@ This is the repository of the iOS SDK for Application Insights. [Application Ins
 
 The SDK runs on devices with iOS 6.0 or higher. You'll need a subscription to [Microsoft Azure](https://azure.com). (It's free until you want to send quite a lot of telemetry.)
 
+[Application Insights overview](https://azure.microsoft.com/documentation/articles/app-insights-overview/)
+
 ## Content
 
 1. [Release Notes](#releasenotes)
