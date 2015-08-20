@@ -53,6 +53,7 @@
 		1B62F4D81A692A3200EB5AD0 /* MSAIContext.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B62F4D61A692A3200EB5AD0 /* MSAIContext.h */; };
 		1B62F4D91A692A3200EB5AD0 /* MSAIContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B62F4D71A692A3200EB5AD0 /* MSAIContext.m */; };
 		1B85606F1A7A6A9D00A54FB7 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B85606E1A7A6A9D00A54FB7 /* UIKit.framework */; };
+		1B9874A81B853D8B003348A5 /* MSAINamespace.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B9874A71B853D65003348A5 /* MSAINamespace.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1BBBCF341A6594AE00253031 /* MSAIChannel.h in Headers */ = {isa = PBXBuildFile; fileRef = 1BBBCF2E1A6594AE00253031 /* MSAIChannel.h */; };
 		1BBBCF351A6594AE00253031 /* MSAIChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BBBCF2F1A6594AE00253031 /* MSAIChannel.m */; };
 		1BBBCF361A6594AE00253031 /* MSAITelemetryContext.h in Headers */ = {isa = PBXBuildFile; fileRef = 1BBBCF301A6594AE00253031 /* MSAITelemetryContext.h */; };
@@ -254,6 +255,7 @@
 		1B62F4D71A692A3200EB5AD0 /* MSAIContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAIContext.m; sourceTree = "<group>"; };
 		1B62F4DA1A692A6F00EB5AD0 /* MSAIContextPrivate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MSAIContextPrivate.h; sourceTree = "<group>"; };
 		1B85606E1A7A6A9D00A54FB7 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		1B9874A71B853D65003348A5 /* MSAINamespace.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MSAINamespace.h; sourceTree = "<group>"; };
 		1BBBCF2E1A6594AE00253031 /* MSAIChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAIChannel.h; sourceTree = "<group>"; };
 		1BBBCF2F1A6594AE00253031 /* MSAIChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAIChannel.m; sourceTree = "<group>"; };
 		1BBBCF301A6594AE00253031 /* MSAITelemetryContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAITelemetryContext.h; sourceTree = "<group>"; };
@@ -774,6 +776,7 @@
 				E41EB465148D7BF50015DEDC /* MSAIApplicationInsights.h */,
 				80F334B11A9C93290098026F /* MSAIApplicationInsightsPrivate.h */,
 				E41EB466148D7BF50015DEDC /* MSAIApplicationInsights.m */,
+				1B9874A71B853D65003348A5 /* MSAINamespace.h */,
 			);
 			name = Classes;
 			path = ../Classes;
@@ -819,6 +822,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1B9874A81B853D8B003348A5 /* MSAINamespace.h in Headers */,
 				1E59559B15B6FDA500A03429 /* ApplicationInsights.h in Headers */,
 				1E84DB3417E099BA00AC83FD /* ApplicationInsightsFeatureConfig.h in Headers */,
 				80677CDB1B2EF23000B324E5 /* MSAINullability.h in Headers */,
