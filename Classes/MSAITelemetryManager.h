@@ -50,85 +50,85 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  *  Track the event by event name.
  *
- *  @param eventName the name of the event, which should be tracked.
+ *  @param eventName The name of the event, which should be tracked.
  */
 + (void)trackEventWithName:(NSString *)eventName;
 
 /**
  *  Track the event by event name and customized properties.
  *
- *  @param eventName the name of the event, which should be tracked.
- *  @param properties key value pairs with additional info about the event.
+ *  @param eventName The name of the event, which should be tracked.
+ *  @param properties Key-value pairs with additional info about the event.
  */
 + (void)trackEventWithName:(NSString *)eventName properties:(nullable NSDictionary *)properties;
 
 /**
  *  Track the event by event name and customized properties and metrics.
  *
- *  @param eventName the name of the event, which should be tracked.
- *  @param properties key value pairs with additional info about the event.
- *  @param measurements key value pairs, which contain custom metrics.
+ *  @param eventName The name of the event, which should be tracked.
+ *  @param properties Key-value pairs with additional info about the event.
+ *  @param measurements Key-value pairs, which contain custom metrics.
  */
 + (void)trackEventWithName:(NSString *)eventName properties:(nullable NSDictionary *)properties measurements:(nullable NSDictionary *)measurements;
 
 /**
  *  Track by message.
  *
- *  @param message a message, which should be tracked.
+ *  @param message A message, which should be tracked.
  */
 + (void)trackTraceWithMessage:(NSString *)message;
 
 /**
  *  Track with the message and custom properties.
  *
- *  @param message a message, which should be tracked.
- *  @param properties key value pairs with additional info about the trace.
+ *  @param message A message, which should be tracked.
+ *  @param properties Key-value pairs with additional info about the trace.
  */
 + (void)trackTraceWithMessage:(NSString *)message properties:(nullable NSDictionary *)properties;
 
 /**
  *  Track metric by name and value.
  *
- *  @param metricName the name of the metric.
- *  @param value a numeric value, which should be tracked.
+ *  @param metricName The name of the metric.
+ *  @param value A numeric value, which should be tracked.
  */
 + (void)trackMetricWithName:(NSString *)metricName value:(double)value;
 
 /**
  *  Track metric by name and value and custom properties.
  *
- *  @param metricName the name of the metric.
- *  @param value a numeric value, which should be tracked.
- *  @param properties key value pairs with additional info about the metric.
+ *  @param metricName The name of the metric.
+ *  @param value A numeric value, which should be tracked.
+ *  @param properties Key-value pairs with additional info about the metric.
  */
 + (void)trackMetricWithName:(NSString *)metricName value:(double)value properties:(nullable NSDictionary *)properties;
 
 /**
  * Track pageView by name of the page.
  *
- *  @deprecated use `MSAITelemetryManager trackPageViewWithName:' instead
+ *  @deprecated Use `MSAITelemetryManager trackPageViewWithName:' instead
  *  @param pageName Name of the page/view which is being tracked.
  */
-+ (void)trackPageView:(NSString *)pageName DEPRECATED_ATTRIBUTE;
++ (void)trackPageView:(NSString *)pageName DEPRECATED_MSG_ATTRIBUTE("Use `MSAITelemetryManager trackPageViewWithName:' instead");
 
 /**
  *  Track pageView by name of the page.
  *
- *  @deprecated use `MSAITelemetryManager trackPageViewWithName:' instead
+ *  @deprecated Use `MSAITelemetryManager trackPageViewWithName:' instead
  *  @param pageName Name of the page/view which is being tracked.
  *  @param duration Time the page has been viewed in milliseconds. This method is ideally called when a page view ends where the time has to be calculated by the developer.
  */
-+ (void)trackPageView:(NSString *)pageName duration:(long)duration DEPRECATED_ATTRIBUTE;
++ (void)trackPageView:(NSString *)pageName duration:(long)duration DEPRECATED_MSG_ATTRIBUTE("Use `MSAITelemetryManager trackPageViewWithName:' instead");
 
 /**
  * Track pageView by name of the page.
  *
- *  @deprecated use `MSAITelemetryManager trackPageViewWithName:properties:' instead
+ *  @deprecated Use `MSAITelemetryManager trackPageViewWithName:properties:' instead
  *  @param pageName Name of the page/view which is being tracked.
- *  @param duration time the page has been viewed. This method is ideally called when a page view ends. The time has to be calculated by the developer.
- *  @param properties key-value pairs which can contain additional information about the page view.
+ *  @param duration Time the page has been viewed. This method is ideally called when a page view ends. The time has to be calculated by the developer.
+ *  @param properties Key-Value pairs which can contain additional information about the page view.
  */
-+ (void)trackPageView:(NSString *)pageName duration:(long)duration properties:(nullable NSDictionary *)properties DEPRECATED_ATTRIBUTE;
++ (void)trackPageView:(NSString *)pageName duration:(long)duration properties:(nullable NSDictionary *)properties DEPRECATED_MSG_ATTRIBUTE("Use `MSAITelemetryManager trackPageViewWithName:properties:' instead");
 
 /**
  * Track pageView by name of the page.
@@ -141,7 +141,7 @@ NS_ASSUME_NONNULL_BEGIN
  * Track pageView by name of the page.
  *
  *  @param pageName Name of the page/view which is being tracked.
- *  @param properties key-value pairs which can contain additional information about the page view.
+ *  @param properties Key-value pairs which can contain additional information about the page view.
  */
 + (void)trackPageViewWithName:(NSString *)pageName properties:(nullable NSDictionary *)properties;
 
@@ -149,117 +149,117 @@ NS_ASSUME_NONNULL_BEGIN
  * Track pageView by name of the page.
  *
  *  @param pageName Name of the page/view which is being tracked.
- *  @param properties key-value pairs which can contain additional information about the page view.
- *  @param measurements key value pairs, which contain custom metrics.
+ *  @param properties Key-value pairs which can contain additional information about the page view.
+ *  @param measurements Key-value pairs, which contain custom metrics.
  */
 + (void)trackPageViewWithName:(NSString *)pageName properties:(nullable NSDictionary *)properties measurements:(nullable NSDictionary *)measurements;
 
 /**
  *  Track handled exception.
  *
- *  @param exception the handled exception, which should be send to the server.
+ *  @param exception The handled exception, which should be send to the server.
  */
 + (void)trackException:(NSException *)exception;
 
 /**
  *  Track handled exception.
  *
- *  @param exception the handled exception, which should be send to the server.
- *  @param properties key value pairs with additional info about the metric.
+ *  @param exception The handled exception, which should be send to the server.
+ *  @param properties Key-value pairs with additional info about the metric.
  */
 + (void)trackException:(NSException *)exception properties:(nullable NSDictionary *)properties;
 
 /**
  *  Track handled exception.
  *
- *  @param exception the handled exception, which should be send to the server.
- *  @param properties key value pairs with additional info about the metric.
- *  @param measurements key value pairs, which contain custom metrics.
+ *  @param exception The handled exception, which should be send to the server.
+ *  @param properties Key-value pairs with additional info about the metric.
+ *  @param measurements Key-value pairs, which contain custom metrics.
  */
 + (void)trackException:(NSException *)exception properties:(nullable NSDictionary *)properties measurements:(nullable NSDictionary *)measurements;
 
 /**
  *  Track the event by event name.
  *
- *  @param eventName the name of the event, which should be tracked.
+ *  @param eventName The name of the event, which should be tracked.
  */
 - (void)trackEventWithName:(NSString *)eventName;
 
 /**
  *  Track the event by event name and customized properties.
  *
- *  @param eventName the name of the event, which should be tracked.
- *  @param properties key value pairs with additional info about the event.
+ *  @param eventName The name of the event, which should be tracked.
+ *  @param properties Key-value pairs with additional info about the event.
  */
 - (void)trackEventWithName:(NSString *)eventName properties:(nullable NSDictionary *)properties;
 
 /**
  *  Track the event by event name and customized properties and metrics.
  *
- *  @param eventName the name of the event, which should be tracked.
- *  @param properties key value pairs with additional info about the event.
- *  @param measurements key value pairs, which contain custom metrics.
+ *  @param eventName The name of the event, which should be tracked.
+ *  @param properties Key-value pairs with additional info about the event.
+ *  @param measurements key-value pairs, which contain custom metrics.
  */
 - (void)trackEventWithName:(NSString *)eventName properties:(nullable NSDictionary *)properties measurements:(nullable NSDictionary *)measurements;
 
 /**
  *  Track by message.
  *
- *  @param message a message, which should be tracked.
+ *  @param message A message, which should be tracked.
  */
 - (void)trackTraceWithMessage:(NSString *)message;
 
 /**
  *  Track with the message and custom properties.
  *
- *  @param message a message, which should be tracked.
- *  @param properties key value pairs with additional info about the trace.
+ *  @param message A message, which should be tracked.
+ *  @param properties Key-value pairs with additional info about the trace.
  */
 - (void)trackTraceWithMessage:(NSString *)message properties:(nullable NSDictionary *)properties;
 
 /**
  *  Track metric by name and value.
  *
- *  @param metricName the name of the metric.
- *  @param value a numeric value, which should be tracked.
+ *  @param metricName The name of the metric.
+ *  @param value A numeric value, which should be tracked.
  */
 - (void)trackMetricWithName:(NSString *)metricName value:(double)value;
 
 /**
  *  Track metric by name and value and custom properties.
  *
- *  @param metricName the name of the metric.
- *  @param value a numeric value, which should be tracked.
- *  @param properties key value pairs with additional info about the metric.
+ *  @param metricName The name of the metric.
+ *  @param value A numeric value, which should be tracked.
+ *  @param properties Key-value pairs with additional info about the metric.
  */
 - (void)trackMetricWithName:(NSString *)metricName value:(double)value properties:(nullable NSDictionary *)properties;
 
 /**
  * Track pageView by name of the page.
  *
- *  @deprecated use `MSAITelemetryManager trackPageViewWithName:' instead
+ *  @deprecated Use `MSAITelemetryManager trackPageViewWithName:' instead
  *  @param pageName Name of the page/view which is being tracked.
  */
-- (void)trackPageView:(NSString *)pageName DEPRECATED_ATTRIBUTE;
+- (void)trackPageView:(NSString *)pageName DEPRECATED_MSG_ATTRIBUTE("Use `MSAITelemetryManager trackPageViewWithName:' instead");
 
 /**
  *  Track pageView by name of the page.
  *
- *  @deprecated use `MSAITelemetryManager trackPageViewWithName:' instead
+ *  @deprecated Use `MSAITelemetryManager trackPageViewWithName:' instead
  *  @param pageName Name of the page/view which is being tracked.
  *  @param duration Time the page has been viewed in milliseconds. This method is ideally called when a page view ends where the time has to be calculated by the developer.
  */
-- (void)trackPageView:(NSString *)pageName duration:(long)duration DEPRECATED_ATTRIBUTE;
+- (void)trackPageView:(NSString *)pageName duration:(long)duration DEPRECATED_MSG_ATTRIBUTE("Use `MSAITelemetryManager trackPageViewWithName:' instead");
 
 /**
  * Track pageView by name of the page.
  *
- *  @deprecated use `MSAITelemetryManager trackPageViewWithName:properties:' instead
+ *  @deprecated Use `MSAITelemetryManager trackPageViewWithName:properties:' instead
  *  @param pageName Name of the page/view which is being tracked.
- *  @param duration time the page has been viewed. This method is ideally called when a page view ends. The time has to be calculated by the developer.
- *  @param properties key-value pairs which can contain additional information about the page view.
+ *  @param duration Time the page has been viewed. This method is ideally called when a page view ends. The time has to be calculated by the developer.
+ *  @param properties Key-value pairs which can contain additional information about the page view.
  */
-- (void)trackPageView:(NSString *)pageName duration:(long)duration properties:(nullable NSDictionary *)properties DEPRECATED_ATTRIBUTE;
+- (void)trackPageView:(NSString *)pageName duration:(long)duration properties:(nullable NSDictionary *)properties DEPRECATED_MSG_ATTRIBUTE("Use `MSAITelemetryManager trackPageViewWithName:properties:' instead");
 
 /**
  * Track pageView by name of the page.
@@ -272,7 +272,7 @@ NS_ASSUME_NONNULL_BEGIN
  * Track pageView by name of the page.
  *
  *  @param pageName Name of the page/view which is being tracked.
- *  @param properties key-value pairs which can contain additional information about the page view.
+ *  @param properties Key-value pairs which can contain additional information about the page view.
  */
 - (void)trackPageViewWithName:(NSString *)pageName properties:(nullable NSDictionary *)properties;
 
@@ -280,32 +280,32 @@ NS_ASSUME_NONNULL_BEGIN
  * Track pageView by name of the page.
  *
  *  @param pageName Name of the page/view which is being tracked.
- *  @param properties key-value pairs which can contain additional information about the page view.
- *  @param measurements key value pairs, which contain custom metrics.
+ *  @param properties Key-value pairs which can contain additional information about the page view.
+ *  @param measurements key-value pairs, which contain custom metrics.
  */
 - (void)trackPageViewWithName:(NSString *)pageName properties:(nullable NSDictionary *)properties measurements:(nullable NSDictionary *)measurements;
 
 /**
  *  Track handled exception.
  *
- *  @param exception the handled exception, which should be send to the server.
+ *  @param exception The handled exception, which should be send to the server.
  */
 - (void)trackException:(NSException *)exception;
 
 /**
  *  Track handled exception.
  *
- *  @param exception the handled exception, which should be send to the server.
- *  @param properties key value pairs with additional info about the metric.
+ *  @param exception The handled exception, which should be send to the server.
+ *  @param properties Key-value pairs with additional info about the metric.
  */
 - (void)trackException:(NSException *)exception properties:(nullable NSDictionary *)properties;
 
 /**
  *  Track handled exception.
  *
- *  @param exception the handled exception, which should be send to the server.
- *  @param properties key value pairs with additional info about the metric.
- *  @param measurements key value pairs, which contain custom metrics.
+ *  @param exception The handled exception, which should be send to the server.
+ *  @param properties Key-value pairs with additional info about the metric.
+ *  @param measurements key-value pairs, which contain custom metrics.
  */
 - (void)trackException:(NSException *)exception properties:(nullable NSDictionary *)properties measurements:(nullable NSDictionary *)measurements;
 
