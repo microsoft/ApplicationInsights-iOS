@@ -1,4 +1,4 @@
-//#define MSAI_SDK_PREFIX FIX
+//#define MSAI_SDK_PREFIX FIXX
 
 // We need two extra layers of indirection to make CPP substitute
 // the MSAI_SDK_PREFIX define.
@@ -119,4 +119,18 @@
 #  ifndef MSAI_SDK_PREFIX
 #    define MSAI_SDK_PREFIX MSAI
 #  endif
+#endif
+
+#if defined(__cplusplus)
+#  if defined(MSAI_SDK_PREFIX)
+/** @internal Define the msai namespace, automatically inserting an inline namespace containing the configured MSAI_SDK_PREFIX, if any. */
+#    define PLCR_CPP_BEGIN_NS namespace msai { inline namespace MSAI_SDK_PREFIX {
+
+/** @internal Close the definition of the `msai` namespace (and the MSAI_SDK_PREFIX inline namespace, if any). */
+#    define PLCR_CPP_END_NS }}
+#  else
+#   define PLCR_CPP_BEGIN_NS namespace msai {
+#   define PLCR_CPP_END_NS }
+#  endif
+#
 #endif
