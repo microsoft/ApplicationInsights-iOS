@@ -4,6 +4,7 @@
 
 This is the repository of the iOS SDK for Application Insights. [Application Insights](http://azure.microsoft.com/services/application-insights/) is an extensible analytics service for developers. Use it to discover usage patterns, detect crashes and diagnose issues in your iOS apps. The SDK enables you to send telemetry of various kinds (events, traces, exceptions, etc.) from your live app to the Application Insights service, where you visualize your data in the [Azure Portal](https://portal.azure.com).
 
+You can use the [Application Insights for Mac](http://go.microsoft.com/fwlink/?linkid=533209&clcid=0x409) tool to integrate the Application Insights iOS SDK into your exisiting apps. It also supports with **uploading app symbols**, which are required to symbolicate the crash reports to display them properly in the Azure Portal.
 The SDK runs on devices with iOS 6.0 or higher. You'll need a subscription to [Microsoft Azure](https://azure.com). (It's free until you want to send quite a lot of telemetry.)
 
 [Application Insights overview](https://azure.microsoft.com/documentation/articles/app-insights-overview/)
@@ -50,6 +51,8 @@ The SDK runs on devices with iOS 6.0 or higher.
 ## 4. Setup
 
 We recommend integration of our binary into your Xcode project to setup Application Insights for your iOS app. For other ways to setup the SDK, see [Advanced Setup](#advancedsetup).
+
+You can use the [Application Insights for Mac](http://go.microsoft.com/fwlink/?linkid=533209&clcid=0x409) tool to integrate the SDK, which provides you with a step-by-step wizard for this process. If you want to integrate the SDK manually, you can do that by following this steps: 
 
 ### 4.1 Obtain an Instrumentation Key
 
@@ -159,12 +162,13 @@ If you are working with an older project which doesn't support clang modules yet
 3. Select the tab `Build Phases`.
 4. Expand `Link Binary With Libraries`.
 5. Add the following system frameworks, if they are missing:
-    - `UIKit`
-    - `Foundation`
-    - `SystemConfiguration`
-    - `Security`
-    - `libz`
     - `CoreTelephony`
+    - `Foundation`
+    - `Security`
+    - `SystemConfiguration`
+    - `UIKit`
+    - `libc++`
+    - `libz`
 
 Note that this also means that you can't use the `@import` syntax mentioned in the [Modify Code](#modify) section but have to stick to the old `#import <ApplicationInsights/ApplicationInsights.h>`.
 

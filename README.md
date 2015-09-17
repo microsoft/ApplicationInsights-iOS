@@ -161,12 +161,13 @@ If you are working with an older project which doesn't support clang modules yet
 3. Select the tab `Build Phases`.
 4. Expand `Link Binary With Libraries`.
 5. Add the following system frameworks, if they are missing:
-    - `UIKit`
-    - `Foundation`
-    - `SystemConfiguration`
-    - `Security`
-    - `libz`
     - `CoreTelephony`
+    - `Foundation`
+    - `Security`
+    - `SystemConfiguration`
+    - `UIKit`
+    - `libc++`
+    - `libz`
 
 Note that this also means that you can't use the `@import` syntax mentioned in the [Modify Code](#modify) section but have to stick to the old `#import <ApplicationInsights/ApplicationInsights.h>`.
 
