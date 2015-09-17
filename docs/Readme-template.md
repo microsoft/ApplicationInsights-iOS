@@ -2,9 +2,12 @@
 
 # Application Insights for iOS (1.0-beta.6)
 
-This is the repository of the iOS SDK for Application Insights. [Application Insights](http://azure.microsoft.com/en-us/services/application-insights/) is a service that allows developers to keep their applications available, performing, and succeeding. The SDK enables you to send telemetry of various kinds (events, traces, exceptions, etc.) to the Application Insights service where your data can be visualized in the Azure Portal.
+This is the repository of the iOS SDK for Application Insights. [Application Insights](http://azure.microsoft.com/services/application-insights/) is an extensible analytics service for developers. Use it to discover usage patterns, detect crashes and diagnose issues in your iOS apps. The SDK enables you to send telemetry of various kinds (events, traces, exceptions, etc.) from your live app to the Application Insights service, where you visualize your data in the [Azure Portal](https://portal.azure.com).
 
-The SDK runs on devices with iOS 6.0 or higher.
+You can use the [Application Insights for Mac](http://go.microsoft.com/fwlink/?linkid=533209&clcid=0x409) tool to integrate the Application Insights iOS SDK into your exisiting apps. It also supports with **uploading app symbols**, which are required to symbolicate the crash reports to display them properly in the Azure Portal.
+The SDK runs on devices with iOS 6.0 or higher. You'll need a subscription to [Microsoft Azure](https://azure.com). (It's free until you want to send quite a lot of telemetry.)
+
+[Application Insights overview](https://azure.microsoft.com/documentation/articles/app-insights-overview/)
 
 ## Content
 
@@ -49,14 +52,16 @@ The SDK runs on devices with iOS 6.0 or higher.
 
 We recommend integration of our binary into your Xcode project to setup Application Insights for your iOS app. For other ways to setup the SDK, see [Advanced Setup](#advancedsetup).
 
-### 4.1 Obtain an Instrumation Key
+You can use the [Application Insights for Mac](http://go.microsoft.com/fwlink/?linkid=533209&clcid=0x409) tool to integrate the SDK, which provides you with a step-by-step wizard for this process. If you want to integrate the SDK manually, you can do that by following this steps: 
+
+### 4.1 Obtain an Instrumentation Key
 
 Please see the "[Getting an Application Insights Instrumentation Key](https://github.com/Microsoft/ApplicationInsights-Home/wiki#getting-an-application-insights-instrumentation-key)" section of the wiki for more information on acquiring a key.
 
 <a id="downloadsdk"></a>
 ### 4.2 Download the SDK
 
-1. Download the latest [Application Insights for iOS](https://github.com/Microsoft/AppInsights-iOS/releases) framework which is provided as a zip-File.
+1. Download the latest [Application Insights for iOS](https://github.com/Microsoft/AppInsights-iOS/releases) framework which is provided as a zip file.
 2. Unzip the file and you will see a folder called `ApplicationInsights` .
 
 ### 4.3 Copy the SDK  into your projects directory in Finder
@@ -157,12 +162,13 @@ If you are working with an older project which doesn't support clang modules yet
 3. Select the tab `Build Phases`.
 4. Expand `Link Binary With Libraries`.
 5. Add the following system frameworks, if they are missing:
-    - `UIKit`
-    - `Foundation`
-    - `SystemConfiguration`
-    - `Security`
-    - `libz`
     - `CoreTelephony`
+    - `Foundation`
+    - `Security`
+    - `SystemConfiguration`
+    - `UIKit`
+    - `libc++`
+    - `libz`
 
 Note that this also means that you can't use the `@import` syntax mentioned in the [Modify Code](#modify) section but have to stick to the old `#import <ApplicationInsights/ApplicationInsights.h>`.
 
@@ -347,6 +353,13 @@ MSAITelemetryManager.trackPageView("MyViewController",
 MSAITelemetryManager.trackMetricWithName("Test metric", value:42.2)
 ```
 
+### View your data in the portal
+
+In the [Azure portal](https://portal.azure.com), open the application resource that you created to get your instrumentation key. You'll see charts showing counts of page views and any crashes. To see more:
+
+* Click any chart to see more detail. You can [create your own metric pages, set alerts, and filter and segment your data](https://azure.microsoft.com/documentation/articles/app-insights-metrics-explorer/).
+* Click [Search](https://azure.microsoft.com/documentation/articles/app-insights-diagnostic-search/) to see individual trackEvent, trackTrace, trackException and trackPageView messages.
+
 <a name="advancedusage"></a>
 ## 8. Advanced Usage
 
@@ -367,6 +380,10 @@ It is also possible to set so-called "common properties" that will then be autom
 ```swift
 MSAITelemetryManager.setCommonProperties(["custom info":"some value"])
 ```
+
+#### Filter your views by properties
+
+Use the properties to [segment and filter metric charts](https://azure.microsoft.com/documentation/articles/app-insights-metrics-explorer/#segment-your-data) and [filter searches](https://azure.microsoft.com/documentation/articles/app-insights-diagnostic-search/#filter-on-property-values).
 
 <a name="autolifecycle"></a>
 ## 9. Automatic collection of lifecycle events
