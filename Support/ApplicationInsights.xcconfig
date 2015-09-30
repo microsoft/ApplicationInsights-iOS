@@ -1,2 +1,5 @@
 OTHER_LDFLAGS=$(inherited) -framework Foundation -framework Security -framework SystemConfiguration -framework UIKit -framework CoreTelephony -lz -lc++
 MSAI_DOCSET_NAME=ApplicationInsights
+
+OTHER_CFLAGS[sdk=iphoneos9.*] = -Wshorten-64-to-32 -Wall -fembed-bitcode
+OTHER_CFLAGS[sdk=iphonesimulator9.*] = -Wshorten-64-to-32
