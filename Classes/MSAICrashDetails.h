@@ -1,5 +1,7 @@
 #import <Foundation/Foundation.h>
-#import "MSAINullability.h"
+#import "ApplicationInsights.h"
+
+#if MSAI_FEATURE_CRASH_REPORTER
 
 NS_ASSUME_NONNULL_BEGIN
 /**
@@ -83,3 +85,5 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 NS_ASSUME_NONNULL_END
+
+#endif /* MSAI_FEATURE_CRASH_REPORTER */

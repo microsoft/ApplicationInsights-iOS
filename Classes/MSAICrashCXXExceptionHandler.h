@@ -1,5 +1,7 @@
 #import <Foundation/Foundation.h>
-#import "MSAINullability.h"
+#import "ApplicationInsights.h"
+
+#if MSAI_FEATURE_CRASH_REPORTER
 
 typedef struct {
     const void * __nullable exception;
@@ -19,3 +21,4 @@ typedef void (*MSAICrashUncaughtCXXExceptionHandler)(
 + (void)removeCXXExceptionHandler:(nonnull MSAICrashUncaughtCXXExceptionHandler)handler;
 
 @end
+#endif /* MSAI_FEATURE_CRASH_REPORTER */

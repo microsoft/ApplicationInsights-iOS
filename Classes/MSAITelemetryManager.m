@@ -18,10 +18,6 @@
 #import "MSAIPageViewData.h"
 #import "MSAIDataPoint.h"
 #import "MSAIEnums.h"
-#import "MSAICrashDataProvider.h"
-#import "MSAICrashData.h"
-#import <pthread.h>
-#import <CrashReporter/CrashReporter.h>
 #import "MSAIEnvelope.h"
 #import "MSAIEnvelopeManager.h"
 #import "MSAIEnvelopeManagerPrivate.h"
@@ -29,6 +25,13 @@
 #import "MSAIContextHelperPrivate.h"
 #import "MSAISessionStateData.h"
 #import "MSAIOrderedDictionary.h"
+
+#if MSAI_FEATURE_CRASH_REPORTER
+#import "MSAICrashDataProvider.h"
+#import "MSAICrashData.h"
+#import <pthread.h>
+#import <CrashReporter/CrashReporter.h>
+#endif /* MSAI_FEATURE_CRASH_REPORTER */
 
 static char *const MSAITelemetryEventQueue = "com.microsoft.ApplicationInsights.telemetryEventQueue";
 static char *const MSAICommonPropertiesQueue = "com.microsoft.ApplicationInsights.commonPropertiesQueue";
@@ -232,6 +235,8 @@ static char *const MSAICommonPropertiesQueue = "com.microsoft.ApplicationInsight
   });
 }
 
+#if MSAI_FEATURE_CRASH_REPORTER
+
 + (void)trackException:(NSException *)exception {
   [[self sharedManager] trackException:exception];
 }
@@ -252,6 +257,8 @@ static char *const MSAICommonPropertiesQueue = "com.microsoft.ApplicationInsight
     [[MSAIChannel sharedChannel] processDictionary:dict withCompletionBlock:nil];
   });
 }
+
+#endif /* MSAI_FEATURE_CRASH_REPORTER */
 
 + (void)trackPageView:(NSString *)pageName {
   [self trackPageView:pageName duration:0];

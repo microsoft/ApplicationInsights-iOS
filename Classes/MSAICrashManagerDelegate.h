@@ -1,5 +1,7 @@
 #import <Foundation/Foundation.h>
-#import "MSAINullability.h"
+#import "ApplicationInsights.h"
+
+#if MSAI_FEATURE_CRASH_REPORTER
 
 @class MSAICrashManager;
 
@@ -57,3 +59,5 @@ received by the app to reduce to possibility of having false positives.
 
 @end
 NS_ASSUME_NONNULL_END
+
+#endif /* MSAI_FEATURE_CRASH_REPORTER */

@@ -1,4 +1,7 @@
 #import "ApplicationInsights.h"
+
+#if MSAI_FEATURE_CRASH_REPORTER
+
 #import "MSAICrashDetails.h"
 
 NS_ASSUME_NONNULL_BEGIN
@@ -21,3 +24,5 @@ extern NSString *const __unused kMSAICrashKillSignal;
 
 @end
 NS_ASSUME_NONNULL_END
+
+#endif /* MSAI_FEATURE_CRASH_REPORTER */
