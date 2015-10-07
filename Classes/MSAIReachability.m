@@ -1,13 +1,9 @@
 #import "MSAIReachability.h"
 #import "MSAIReachabilityPrivate.h"
-#import <CoreFoundation/CoreFoundation.h>
 #import <SystemConfiguration/SystemConfiguration.h>
 
 #import <netinet/in.h>
 #import <arpa/inet.h>
-#import <ifaddrs.h>
-#import <netdb.h>
-#import <sys/socket.h>
 
 NSString * const kMSAIReachabilityTypeChangedNotification = @"MSAIReachabilityTypeChangedNotification";
 NSString* const kMSAIReachabilityUserInfoName = @"kName";

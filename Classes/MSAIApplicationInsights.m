@@ -2,29 +2,23 @@
 #import "ApplicationInsightsPrivate.h"
 #import "MSAIHelper.h"
 #import "MSAIAppClient.h"
-#import "MSAIKeychainUtils.h"
 #import "MSAIContext.h"
 #import "MSAIContextPrivate.h"
-#import "MSAIChannel.h"
 #import "MSAISender.h"
 #import "MSAISenderPrivate.h"
-#import "MSAIChannelPrivate.h"
 #import "MSAITelemetryContext.h"
 #import "MSAITelemetryContextPrivate.h"
 #import "MSAIEnvelopeManager.h"
 #import "MSAIEnvelopeManagerPrivate.h"
 #import "MSAIContextHelper.h"
 #import "MSAIContextHelperPrivate.h"
-#include <stdint.h>
 #import "MSAICategoryContainer.h"
 
 #if MSAI_FEATURE_CRASH_REPORTER
-#import "MSAICrashManager.h"
 #import "MSAICrashManagerPrivate.h"
 #endif /* MSAI_FEATURE_CRASH_REPORTER */
 
 #if MSAI_FEATURE_TELEMETRY
-#import "MSAITelemetryManager.h"
 #import "MSAITelemetryManagerPrivate.h"
 #endif /* MSAI_FEATURE_TELEMETRY */
 

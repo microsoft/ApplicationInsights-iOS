@@ -19,10 +19,7 @@
 #import "MSAIEnvelopeManager.h"
 #import "MSAIEnvelopeManagerPrivate.h"
 #import "MSAIData.h"
-#import <mach-o/loader.h>
-#import <mach-o/dyld.h>
 
-#include <sys/sysctl.h>
 // stores the set of crashreports that have been approved but aren't sent yet
 #define kMSAICrashApprovedReports @"MSAICrashApprovedReports" //TODO remove this in next Sprint
 
