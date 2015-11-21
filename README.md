@@ -2,7 +2,7 @@
 
 # Application Insights for iOS (1.0-beta.6)
 
-This is the repository of the iOS SDK for Application Insights. [Application Insights](http://azure.microsoft.com/en-us/services/application-insights/) is a service that allows developers to keep their applications available, performing, and succeeding. The SDK enables you to send telemetry of various kinds (events, traces, exceptions, etc.) to the Application Insights service where your data can be visualized in the Azure Portal.
+This is the repository of the iOS SDK for Application Insights. [Application Insights](http://azure.microsoft.com/services/application-insights/) is a service that monitors the performance and usage of your published app. The SDK enables you to send telemetry of various kinds (events, traces, exceptions, etc.) to the Application Insights service where your data can be visualized in the Azure Portal.
 
 You can use the [Application Insights for Mac](http://go.microsoft.com/fwlink/?linkid=533209&clcid=0x409) tool to integrate the Application Insights iOS SDK into your exisiting apps. It also supports with **uploading app symbols**, which are required to symbolicate the crash reports to display them properly in the Azure Portal.
 
@@ -53,9 +53,14 @@ We recommend integration of our binary into your Xcode project to setup Applicat
 
 You can use the [Application Insights for Mac](http://go.microsoft.com/fwlink/?linkid=533209&clcid=0x409) tool to integrate the SDK, which provides you with a step-by-step wizard for this process. If you want to integrate the SDK manually, you can do that by following this steps: 
 
-### 4.1 Obtain an Instrumation Key
+### 4.1 Get the Instrumation Key of an Application Insights resource
 
-Please see the "[Getting an Application Insights Instrumentation Key](https://github.com/Microsoft/ApplicationInsights-Home/wiki#getting-an-application-insights-instrumentation-key)" section of the wiki for more information on acquiring a key.
+To view your telemetry, you'll need an [Application Insights](https://azure.microsoft.com/documentation/articles/app-insights-overview/) resource in the [Microsoft Azure Portal](https://portal.azure.com). You can either:
+
+* [Create a new resource](https://azure.microsoft.com/documentation/articles/app-insights-create-new-resource/); or
+* If your app uses a web service, use the same resource you set up to monitor that. See setup [for ASP.NET](https://azure.microsoft.com/documentation/articles/app-insights-asp-net/) or [for J2EE](https://azure.microsoft.com/documentation/articles/app-insights-java-get-started/).
+
+Open your resource and open the Essentials drop-down. Shortly, you'll need to copy the Instrumentation Key.
 
 <a id="downloadsdk"></a>
 ### 4.2 Download the SDK
@@ -297,6 +302,8 @@ This setting is ignored if the app is running in an app store environment, so th
 **[NOTE]** The SDK is optimized to defer everything possible to a later time while making sure e.g. crashes on startup can also be caught and each module executes other code with a delay of some seconds. This ensures that `applicationDidFinishLaunching:` will process as fast as possible and the SDK will not block the startup sequence resulting in a possible kill by the watchdog process.
 
 After you have set up the SDK as [described above](#setup), the ```MSAITelemetryManager```-instance is the central interface to track events, traces, metrics, page views or handled exceptions.
+
+For an overview of how to use the API and view the results in the Application Insights resource, see [API Overview](https://azure.microsoft.com/documentation/articles/app-insights-api-custom-events-metrics/). The examples are in Java, but the principles are the same.
 
 ### 7.1 Objective-C
 
