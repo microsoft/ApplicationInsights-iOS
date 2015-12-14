@@ -65,7 +65,7 @@ Open your resource and open the Essentials drop-down. Shortly, you'll need to co
 <a id="downloadsdk"></a>
 ### 4.2 Download the SDK
 
-1. Download the latest [Application Insights for iOS](https://github.com/Microsoft/AppInsights-iOS/releases) framework which is provided as a zip-File.
+1. Download the latest [Application Insights for iOS](https://github.com/Microsoft/ApplicationInsights-iOS/releases) framework which is provided as a zip-File.
 2. Unzip the file and you will see a folder called `ApplicationInsights` .
 
 ### 4.3 Copy the SDK  into your projects directory in Finder
@@ -178,7 +178,7 @@ Note that this also means that you can't use the `@import` syntax mentioned in t
 
 ### 5.3 Setup with CocoaPods
 
-[CocoaPods](http://cocoapods.org) is a dependency manager for Objective-C, which automates and simplifies the process of using 3rd-party libraries like ApplicationInsights in your projects. To learn how to setup CocoaPods for your project, visit the [official CocoaPods website](http://cocoapods.org/).
+[CocoaPods](https://cocoapods.org/) is a dependency manager for Objective-C, which automates and simplifies the process of using 3rd-party libraries like ApplicationInsights in your projects. To learn how to setup CocoaPods for your project, visit the [official CocoaPods website](https://cocoapods.org/).
 
 **[NOTE]**
 When adding Application Insights to your podfile **without** specifying the version, `pod install` will throw an error because using a pre-release version of a pod has to be specified **explicitly**.
