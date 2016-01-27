@@ -245,16 +245,21 @@ static char *const MSAICommonPropertiesQueue = "com.microsoft.ApplicationInsight
   pthread_t thread = pthread_self();
 
   dispatch_async(_telemetryEventQueue, ^{
-    PLCrashReporterSignalHandlerType signalHandlerType = PLCrashReporterSignalHandlerTypeBSD;
+    PLCrashReporterSignalHandlerType signalHandlerType = PLCrashReporterSignalHandlerTypeMach;
     PLCrashReporterSymbolicationStrategy symbolicationStrategy = PLCrashReporterSymbolicationStrategyAll;
     MSAIPLCrashReporterConfig *config = [[MSAIPLCrashReporterConfig alloc] initWithSignalHandlerType:signalHandlerType
                                                                                symbolicationStrategy:symbolicationStrategy];
     MSAIPLCrashReporter *cm = [[MSAIPLCrashReporter alloc] initWithConfiguration:config];
     NSData *data = [cm generateLiveReportWithThread:pthread_mach_thread_np(thread)];
-    MSAIPLCrashReport *report = [[MSAIPLCrashReport alloc] initWithData:data error:nil];
-    MSAIEnvelope *envelope = [[MSAIEnvelopeManager sharedManager] envelopeForCrashReport:report exception:exception];
-    MSAIOrderedDictionary *dict = [envelope serializeToDictionary];
-    [[MSAIChannel sharedChannel] processDictionary:dict withCompletionBlock:nil];
+    NSError *error = nil;
+    MSAIPLCrashReport *report = [[MSAIPLCrashReport alloc] initWithData:data error:&error];
+    if(!error) {
+      MSAIEnvelope *envelope = [[MSAIEnvelopeManager sharedManager] envelopeForCrashReport:report exception:exception];
+      MSAIOrderedDictionary *dict = [envelope serializeToDictionary];
+      [[MSAIChannel sharedChannel] processDictionary:dict withCompletionBlock:nil];
+    } else {
+      MSAILog(@"ERROR: Crash reporter failed to create exception report: %@", error.localizedDescription);
+    }    
   });
 }
 

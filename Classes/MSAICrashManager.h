@@ -3,7 +3,7 @@
 
 #if MSAI_FEATURE_CRASH_REPORTER
 
-#import "MSAICrashDetails.h"
+@class MSAICrashDetails;
 
 NS_ASSUME_NONNULL_BEGIN
 /**
