@@ -941,7 +941,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastTestingUpgradeCheck = 0600;
-				LastUpgradeCheck = 0600;
+				LastUpgradeCheck = 0710;
 			};
 			buildConfigurationList = E4005614148D79B500EB22B9 /* Build configuration list for PBXProject "ApplicationInsights" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -1144,6 +1144,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				INFOPLIST_FILE = "$(PROJECT_DIR)/../Resources/ApplicationInsights-Info.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.microsoft.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = ApplicationInsights.framework;
 			};
 			name = Debug;
@@ -1152,6 +1153,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				INFOPLIST_FILE = "$(PROJECT_DIR)/../Resources/ApplicationInsights-Info.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.microsoft.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = ApplicationInsights.framework;
 			};
 			name = Release;
@@ -1252,6 +1254,7 @@
 					"$(inherited)",
 					"-ObjC",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.microsoft.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = ApplicationInsightsTests;
 				WARNING_CFLAGS = (
 					"-Wall",
@@ -1299,6 +1302,7 @@
 					"$(inherited)",
 					"-ObjC",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.microsoft.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = ApplicationInsightsTests;
 				VALIDATE_PRODUCT = YES;
 				WARNING_CFLAGS = (
@@ -1383,6 +1387,7 @@
 			buildSettings = {
 				GCC_THUMB_SUPPORT = NO;
 				INFOPLIST_FILE = "$(PROJECT_DIR)/../Resources/ApplicationInsights-Info.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.microsoft.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "ApplicationInsights Documentation";
 			};
 			name = CodeCoverage;
@@ -1391,6 +1396,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				INFOPLIST_FILE = "$(PROJECT_DIR)/../Resources/ApplicationInsights-Info.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.microsoft.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = ApplicationInsights.framework;
 			};
 			name = CodeCoverage;
@@ -1437,6 +1443,7 @@
 					"$(inherited)",
 					"-ObjC",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.microsoft.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = ApplicationInsightsTests;
 				WARNING_CFLAGS = (
 					"-Wall",
@@ -1450,6 +1457,7 @@
 			buildSettings = {
 				GCC_THUMB_SUPPORT = NO;
 				INFOPLIST_FILE = "$(PROJECT_DIR)/../Resources/ApplicationInsights-Info.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.microsoft.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "ApplicationInsights Documentation";
 			};
 			name = Debug;
@@ -1459,6 +1467,7 @@
 			buildSettings = {
 				GCC_THUMB_SUPPORT = NO;
 				INFOPLIST_FILE = "$(PROJECT_DIR)/../Resources/ApplicationInsights-Info.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.microsoft.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "ApplicationInsights Documentation";
 			};
 			name = Release;
@@ -1472,6 +1481,7 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = NO;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
