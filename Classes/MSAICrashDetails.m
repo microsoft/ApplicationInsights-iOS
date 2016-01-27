@@ -1,4 +1,7 @@
 #import "MSAICrashDetails.h"
+
+#if MSAI_FEATURE_CRASH_REPORTER
+
 #import "MSAICrashDetailsPrivate.h"
 
 NSString *const kMSAICrashKillSignal = @"SIGKILL";
@@ -41,3 +44,5 @@ NSString *const kMSAICrashKillSignal = @"SIGKILL";
 }
 
 @end
+
+#endif /* MSAI_FEATURE_CRASH_REPORTER */

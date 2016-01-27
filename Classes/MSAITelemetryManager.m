@@ -18,10 +18,6 @@
 #import "MSAIPageViewData.h"
 #import "MSAIDataPoint.h"
 #import "MSAIEnums.h"
-#import "MSAICrashDataProvider.h"
-#import "MSAICrashData.h"
-#import <pthread.h>
-#import <CrashReporter/CrashReporter.h>
 #import "MSAIEnvelope.h"
 #import "MSAIEnvelopeManager.h"
 #import "MSAIEnvelopeManagerPrivate.h"
@@ -29,6 +25,13 @@
 #import "MSAIContextHelperPrivate.h"
 #import "MSAISessionStateData.h"
 #import "MSAIOrderedDictionary.h"
+
+#if MSAI_FEATURE_CRASH_REPORTER
+#import "MSAICrashDataProvider.h"
+#import "MSAICrashData.h"
+#import <pthread.h>
+#import <CrashReporter/CrashReporter.h>
+#endif /* MSAI_FEATURE_CRASH_REPORTER */
 
 static char *const MSAITelemetryEventQueue = "com.microsoft.ApplicationInsights.telemetryEventQueue";
 static char *const MSAICommonPropertiesQueue = "com.microsoft.ApplicationInsights.commonPropertiesQueue";
@@ -232,6 +235,8 @@ static char *const MSAICommonPropertiesQueue = "com.microsoft.ApplicationInsight
   });
 }
 
+#if MSAI_FEATURE_CRASH_REPORTER
+
 + (void)trackException:(NSException *)exception {
   [[self sharedManager] trackException:exception];
 }
@@ -240,18 +245,25 @@ static char *const MSAICommonPropertiesQueue = "com.microsoft.ApplicationInsight
   pthread_t thread = pthread_self();
 
   dispatch_async(_telemetryEventQueue, ^{
-    PLCrashReporterSignalHandlerType signalHandlerType = PLCrashReporterSignalHandlerTypeBSD;
+    PLCrashReporterSignalHandlerType signalHandlerType = PLCrashReporterSignalHandlerTypeMach;
     PLCrashReporterSymbolicationStrategy symbolicationStrategy = PLCrashReporterSymbolicationStrategyAll;
     MSAIPLCrashReporterConfig *config = [[MSAIPLCrashReporterConfig alloc] initWithSignalHandlerType:signalHandlerType
                                                                                symbolicationStrategy:symbolicationStrategy];
     MSAIPLCrashReporter *cm = [[MSAIPLCrashReporter alloc] initWithConfiguration:config];
     NSData *data = [cm generateLiveReportWithThread:pthread_mach_thread_np(thread)];
-    MSAIPLCrashReport *report = [[MSAIPLCrashReport alloc] initWithData:data error:nil];
-    MSAIEnvelope *envelope = [[MSAIEnvelopeManager sharedManager] envelopeForCrashReport:report exception:exception];
-    MSAIOrderedDictionary *dict = [envelope serializeToDictionary];
-    [[MSAIChannel sharedChannel] processDictionary:dict withCompletionBlock:nil];
+    NSError *error = nil;
+    MSAIPLCrashReport *report = [[MSAIPLCrashReport alloc] initWithData:data error:&error];
+    if(!error) {
+      MSAIEnvelope *envelope = [[MSAIEnvelopeManager sharedManager] envelopeForCrashReport:report exception:exception];
+      MSAIOrderedDictionary *dict = [envelope serializeToDictionary];
+      [[MSAIChannel sharedChannel] processDictionary:dict withCompletionBlock:nil];
+    } else {
+      MSAILog(@"ERROR: Crash reporter failed to create exception report: %@", error.localizedDescription);
+    }    
   });
 }
+
+#endif /* MSAI_FEATURE_CRASH_REPORTER */
 
 + (void)trackPageView:(NSString *)pageName {
   [self trackPageView:pageName duration:0];

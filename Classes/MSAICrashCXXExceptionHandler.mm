@@ -1,4 +1,7 @@
 #import "MSAICrashCXXExceptionHandler.h"
+
+#if MSAI_FEATURE_CRASH_REPORTER
+
 #import <vector>
 #import <cxxabi.h>
 #import <exception>
@@ -203,3 +206,4 @@ static void MSAICrashUncaughtCXXTerminateHandler(void)
 }
 
 @end
+#endif /* MSAI_FEATURE_CRASH_REPORTER */

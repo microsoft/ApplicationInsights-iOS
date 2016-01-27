@@ -1,10 +1,10 @@
+#import <Foundation/Foundation.h>
+#import "MSAIEnvelopeManager.h"
+
 @class MSAIEnvelope;
 @class MSAITelemetryData;
 @class MSAITelemetryContext;
 @class MSAIPLCrashReport;
-#import <Foundation/Foundation.h>
-#import "MSAIEnvelopeManager.h"
-#import "ApplicationInsights.h"
 
 NS_ASSUME_NONNULL_BEGIN
 @interface MSAIEnvelopeManager()
@@ -52,6 +52,7 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (MSAIEnvelope *)envelopeForTelemetryData:(MSAITelemetryData *)telemetryData;
 
+#if MSAI_FEATURE_CRASH_REPORTER
 /**
  *  Creates an envelope object based on the information of a given crash report.
  *
@@ -71,6 +72,7 @@ NS_ASSUME_NONNULL_BEGIN
  *  @return an envelope object that contains a handled exception
  */
 - (MSAIEnvelope *)envelopeForCrashReport:(MSAIPLCrashReport *)report exception:(nullable NSException *)exception;
+#endif /* MSAI_FEATURE_CRASH_REPORTER */
 
 @end
 NS_ASSUME_NONNULL_END
