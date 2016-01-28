@@ -2,9 +2,9 @@
 
 # Application Insights for iOS (1.0-beta.6)
 
-This is the repository of the iOS SDK for Application Insights. [Application Insights](http://azure.microsoft.com/en-us/services/application-insights/) is a service that allows developers to keep their applications available, performing, and succeeding. The SDK enables you to send telemetry of various kinds (events, traces, exceptions, etc.) to the Application Insights service where your data can be visualized in the Azure Portal.
+This is the repository of the iOS SDK for Application Insights. [Application Insights](http://azure.microsoft.com/services/application-insights/) is a service that monitors the performance and usage of your published app. The SDK enables you to send telemetry of various kinds (events, traces, exceptions, etc.) to the Application Insights service where your data can be visualized in the Azure Portal.
 
-You can use the [Application Insights for Mac](http://go.microsoft.com/fwlink/?linkid=533209&clcid=0x409) tool to integrate the Application Insights iOS SDK into your exisiting apps. It also supports with **uploading app symbols**, which are required to symbolicate the crash reports to display them properly in the Azure Portal.
+You can use the [Application Insights for Mac](http://go.microsoft.com/fwlink/?linkid=533209&clcid=0x409) tool to integrate the Application Insights iOS SDK into your existing apps. It also supports with **uploading app symbols**, which are required to symbolicate the crash reports to display them properly in the Azure Portal.
 
 The SDK runs on devices with iOS 6.0 or higher.
 
@@ -53,14 +53,19 @@ We recommend integration of our binary into your Xcode project to setup Applicat
 
 You can use the [Application Insights for Mac](http://go.microsoft.com/fwlink/?linkid=533209&clcid=0x409) tool to integrate the SDK, which provides you with a step-by-step wizard for this process. If you want to integrate the SDK manually, you can do that by following this steps: 
 
-### 4.1 Obtain an Instrumation Key
+### 4.1 Get the Instrumation Key of an Application Insights resource
 
-Please see the "[Getting an Application Insights Instrumentation Key](https://github.com/Microsoft/ApplicationInsights-Home/wiki#getting-an-application-insights-instrumentation-key)" section of the wiki for more information on acquiring a key.
+To view your telemetry, you'll need an [Application Insights](https://azure.microsoft.com/documentation/articles/app-insights-overview/) resource in the [Microsoft Azure Portal](https://portal.azure.com). You can either:
+
+* [Create a new resource](https://azure.microsoft.com/documentation/articles/app-insights-create-new-resource/); or
+* If your app uses a web service, use the same resource you set up to monitor that. See setup [for ASP.NET](https://azure.microsoft.com/documentation/articles/app-insights-asp-net/) or [for J2EE](https://azure.microsoft.com/documentation/articles/app-insights-java-get-started/).
+
+Open your resource and open the Essentials drop-down. Shortly, you'll need to copy the Instrumentation Key.
 
 <a id="downloadsdk"></a>
 ### 4.2 Download the SDK
 
-1. Download the latest [Application Insights for iOS](https://github.com/Microsoft/AppInsights-iOS/releases) framework which is provided as a zip-File.
+1. Download the latest [Application Insights for iOS](https://github.com/Microsoft/ApplicationInsights-iOS/releases) framework which is provided as a zip-File.
 2. Unzip the file and you will see a folder called `ApplicationInsights` .
 
 ### 4.3 Copy the SDK  into your projects directory in Finder
@@ -173,7 +178,7 @@ Note that this also means that you can't use the `@import` syntax mentioned in t
 
 ### 5.3 Setup with CocoaPods
 
-[CocoaPods](http://cocoapods.org) is a dependency manager for Objective-C, which automates and simplifies the process of using 3rd-party libraries like ApplicationInsights in your projects. To learn how to setup CocoaPods for your project, visit the [official CocoaPods website](http://cocoapods.org/).
+[CocoaPods](https://cocoapods.org/) is a dependency manager for Objective-C, which automates and simplifies the process of using 3rd-party libraries like ApplicationInsights in your projects. To learn how to setup CocoaPods for your project, visit the [official CocoaPods website](https://cocoapods.org/).
 
 **[NOTE]**
 When adding Application Insights to your podfile **without** specifying the version, `pod install` will throw an error because using a pre-release version of a pod has to be specified **explicitly**.
@@ -298,6 +303,8 @@ This setting is ignored if the app is running in an app store environment, so th
 
 After you have set up the SDK as [described above](#setup), the ```MSAITelemetryManager```-instance is the central interface to track events, traces, metrics, page views or handled exceptions.
 
+For an overview of how to use the API and view the results in the Application Insights resource, see [API Overview](https://azure.microsoft.com/documentation/articles/app-insights-api-custom-events-metrics/). The examples are in Java, but the principles are the same.
+
 ### 7.1 Objective-C
 
 ```objectivec
@@ -392,7 +399,7 @@ The automatic tracking of viewcontroller appearance can be disabled between setu
 
 ### 9.2. Sessions
 
-By default, the Application Insights for iOS SDK starts a new session when the containing app is restarted (this means a 'cold start', i.e. when the app has not already been in memory prior to being launched) or when it has been in the background for more then 20 seconds. 
+By default, the Application Insights for iOS SDK starts a new session when the containing app is restarted (this means a 'cold start', i.e. when the app has not already been in memory prior to being launched) or when it has been in the background for more than 20 seconds. 
 
 You can either change this timeframe:
 ``` objectivec
@@ -469,4 +476,4 @@ We're looking forward to your contributions via pull requests.
 <a id="contact"></a>
 ## 14. Contact
 
-If you have further questions or are running into trouble that cannot be resolved by any of the steps here, feel free to open a Github issue here or contact us at [AppInsights-iOS@microsoft.com](mailto:AppInsights-ios@microsoft.com)
+If you have further questions or are running into trouble that cannot be resolved by any of the steps here, feel free to open a GitHub issue here or contact us at [AppInsights-iOS@microsoft.com](mailto:AppInsights-ios@microsoft.com)
