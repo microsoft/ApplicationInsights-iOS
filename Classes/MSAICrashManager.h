@@ -1,6 +1,5 @@
 #import <Foundation/Foundation.h>
-#import "ApplicationInsights.h"
-
+#import "ApplicationInsightsFeatureConfig.h"
 #if MSAI_FEATURE_CRASH_REPORTER
 
 #import "MSAICrashDetails.h"

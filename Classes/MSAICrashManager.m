@@ -492,7 +492,7 @@ void msai_save_events_callback(siginfo_t *info, ucontext_t *uap, void *context) 
     // Try loading the crash report
     crashData = [[NSData alloc] initWithData:[self.plCrashReporter loadPendingCrashReportDataAndReturnError:&error]];
 
-    if(crashData == nil) {
+    if (crashData == nil) {
       MSAILog(@"ERROR: Could not load crash report: %@", error);
     } else {
       // get the startup timestamp from the crash report, and the file timestamp to calculate the timeinterval when the crash happened after startup
