@@ -39,6 +39,6 @@ script:
   - COMMAND+=" | xcpretty -c"
   - eval $COMMAND
   - if [ $POD_LINT == "YES" ]; then
-      cp -R Products/ApplicationInsights ApplicationInsights;
+      cp -R Products/ApplicationInsights/ApplicationInsightsFullFeatures ApplicationInsights;
       pod lib lint;
     fi
