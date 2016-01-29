@@ -343,8 +343,6 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
     }
   }
   
-  crashHeaders.crashDataHeadersId = msai_UUID();
-  
   /* Application and process info */
   {
     NSString *processName = unknownString;
@@ -383,6 +381,8 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
       parentProcessId = @(report.processInfo.parentProcessID);
     }
     
+    crashHeaders.crashDataHeadersId = msai_UUID();
+    
     crashHeaders.process = processName;
     crashHeaders.processId = processId;
     crashHeaders.parentProcess = parentProcessName;
@@ -390,12 +390,6 @@ static const char *findSEL (const char *imageName, NSString *imageUUID, uint64_t
     crashHeaders.applicationIdentifier = report.applicationInfo.applicationIdentifier;
     crashHeaders.applicationBuild = report.applicationInfo.applicationVersion;
     crashHeaders.applicationPath = processPath;
-    
-    NSString *incidentIdentifier = @"???";
-    if (report.uuidRef != NULL) {
-      incidentIdentifier = (NSString *) CFBridgingRelease(CFUUIDCreateString(NULL, report.uuidRef));
-    }
-    crashHeaders.crashDataHeadersId = incidentIdentifier;
   }
   
   /* Exception code */
