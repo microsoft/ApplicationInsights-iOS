@@ -5,28 +5,28 @@
  * Attention: Do not include this into your projects yourself!
  */
  
-#ifndef AppInsights_AppInsightsFeatureConfig_h
-#define APPINSIGHTS_APPINSIGHTSFeatureConfig_h
+#ifndef MSAI_FeatureConfig_h
+#define MSAI_FeatureConfig_h
 
 
 /**
  * If true, include support for handling crash reports
  *
- * _Default_: Enabled
+ * _Default_: Disabled
  */
-#ifndef APPINSIGHTS_FEATURE_CRASH_REPORTER
-#    define APPINSIGHTS_FEATURE_CRASH_REPORTER 0
-#endif /* APPINSIGHTS_FEATURE_CRASH_REPORTER */
+#ifndef MSAI_FEATURE_CRASH_REPORTER
+#    define MSAI_FEATURE_CRASH_REPORTER 0
+#endif /* MSAI_FEATURE_CRASH_REPORTER */
 
 
 /**
- * If true, include support for sending metrics data
+ * If true, include support for gathering telemetry
  *
  * _Default_: Enabled
  */
-#ifndef MSAI_FEATURE_METRICS
-#    define MSAI_FEATURE_METRICS 1
-#endif /* MSAI_FEATURE_METRICS */
+#ifndef MSAI_FEATURE_TELEMETRY
+#    define MSAI_FEATURE_TELEMETRY 1
+#endif /* MSAI_FEATURE_TELEMETRY */
 
 
-#endif /* AppInsights_AppInsightsFeatureConfig_h */
+#endif /* MSAI_FeatureConfig_h */
