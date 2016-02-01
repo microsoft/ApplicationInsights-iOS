@@ -50,6 +50,11 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) dispatch_queue_t commonPropertiesQueue;
 
 /**
+ *  Helper method that converts am NSTimeInterval value to a string of the format "d:hh:mm:ss.fffffff"
+ */
+- (NSString *)durationStringFromDuration:(NSTimeInterval)duration;
+
+/**
  * Converts the tracked to an envelope object and forwards it to the channel.
  *
  * @param telemetry the data which should be forwarded by the channel

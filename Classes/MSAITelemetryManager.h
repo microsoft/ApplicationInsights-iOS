@@ -116,7 +116,7 @@ NS_ASSUME_NONNULL_BEGIN
  *  @param pageName Name of the page/view which is being tracked.
  *  @param duration Time the page has been viewed in milliseconds. This method is ideally called when a page view ends where the time has to be calculated by the developer.
  */
-+ (void)trackPageView:(NSString *)pageName duration:(long)duration;
++ (void)trackPageView:(NSString *)pageName duration:(NSTimeInterval)duration;
 
 /**
  * Track pageView by name of the page.
@@ -125,7 +125,7 @@ NS_ASSUME_NONNULL_BEGIN
  *  @param duration time the page has been viewed. This method is ideally called when a page view ends. The time has to be calculated by the developer.
  *  @param properties key-value pairs which can contain additional information about the page view
  */
-+ (void)trackPageView:(NSString *)pageName duration:(long)duration properties:(nullable NSDictionary *)properties;
++ (void)trackPageView:(NSString *)pageName duration:(NSTimeInterval)duration properties:(nullable NSDictionary *)properties;
 
 #if MSAI_FEATURE_CRASH_REPORTER
 /**
@@ -206,18 +206,18 @@ NS_ASSUME_NONNULL_BEGIN
  *  Track pageView by name of the page.
  *
  *  @param pageName Name of the page/view which is being tracked.
- *  @param duration Time the page has been viewed in milliseconds. This method is ideally called when a page view ends where the time has to be calculated by the developer.
+ *  @param duration Time the page has been viewed in seconds. This method is ideally called when a page view ends where the time has to be calculated by the developer.
  */
-- (void)trackPageView:(NSString *)pageName duration:(long)duration;
+- (void)trackPageView:(NSString *)pageName duration:(NSTimeInterval)duration;
 
 /**
  * Track pageView by name of the page.
  *
  *  @param pageName Name of the page/view which is being tracked.
- *  @param duration time the page has been viewed. This method is ideally called when a page view ends. The time has to be calculated by the developer.
+ *  @param duration time the page has been viewed in seconds. This method is ideally called when a page view ends. The time has to be calculated by the developer.
  *  @param properties key-value pairs which can contain additional information about the page view
  */
-- (void)trackPageView:(NSString *)pageName duration:(long)duration properties:(nullable NSDictionary *)properties;
+- (void)trackPageView:(NSString *)pageName duration:(NSTimeInterval)duration properties:(nullable NSDictionary *)properties;
 
 #if MSAI_FEATURE_CRASH_REPORTER
 /**
