@@ -1,10 +1,10 @@
 [![Build Status](https://travis-ci.org/Microsoft/ApplicationInsights-iOS.svg?branch=master)](https://travis-ci.org/Microsoft/ApplicationInsights-iOS)
 
-# Application Insights for iOS (1.0-beta.6)
+# Application Insights for iOS (1.0-beta.7)
 
-This is the repository of the iOS SDK for Application Insights. [Application Insights](http://azure.microsoft.com/services/application-insights/) is an extensible analytics service for developers. Use it to discover usage patterns, detect crashes and diagnose issues in your iOS apps. The SDK enables you to send telemetry of various kinds (events, traces, exceptions, etc.) from your live app to the Application Insights service, where you visualize your data in the [Azure Portal](https://portal.azure.com).
+This is the repository of the iOS SDK for Application Insights. [Application Insights](http://azure.microsoft.com/services/application-insights/) is a service that monitors the performance and usage of your published app. The SDK enables you to send telemetry of various kinds (events, traces, exceptions, etc.) to the Application Insights service where your data can be visualized in the Azure Portal.
 
-You can use the [Application Insights for Mac](http://go.microsoft.com/fwlink/?linkid=533209&clcid=0x409) tool to integrate the Application Insights iOS SDK into your exisiting apps. It also supports with **uploading app symbols**, which are required to symbolicate the crash reports to display them properly in the Azure Portal.
+You can use the [Application Insights for Mac](http://go.microsoft.com/fwlink/?linkid=533209&clcid=0x409) tool to integrate the Application Insights iOS SDK into your existing apps. It also supports with **uploading app symbols**, which are required to symbolicate the crash reports to display them properly in the Azure Portal.
 The SDK runs on devices with iOS 6.0 or higher. You'll need a subscription to [Microsoft Azure](https://azure.com). (It's free until you want to send quite a lot of telemetry.)
 
 [Application Insights overview](https://azure.microsoft.com/documentation/articles/app-insights-overview/)
@@ -56,12 +56,17 @@ You can use the [Application Insights for Mac](http://go.microsoft.com/fwlink/?l
 
 ### 4.1 Obtain an Instrumentation Key
 
-Please see the "[Getting an Application Insights Instrumentation Key](https://github.com/Microsoft/ApplicationInsights-Home/wiki#getting-an-application-insights-instrumentation-key)" section of the wiki for more information on acquiring a key.
+To view your telemetry, you'll need an [Application Insights](https://azure.microsoft.com/documentation/articles/app-insights-overview/) resource in the [Microsoft Azure Portal](https://portal.azure.com). You can either:
+
+* [Create a new resource](https://azure.microsoft.com/documentation/articles/app-insights-create-new-resource/); or
+* If your app uses a web service, use the same resource you set up to monitor that. See setup [for ASP.NET](https://azure.microsoft.com/documentation/articles/app-insights-asp-net/) or [for J2EE](https://azure.microsoft.com/documentation/articles/app-insights-java-get-started/).
+
+Open your resource and open the Essentials drop-down. Shortly, you'll need to copy the Instrumentation Key.
 
 <a id="downloadsdk"></a>
 ### 4.2 Download the SDK
 
-1. Download the latest [Application Insights for iOS](https://github.com/Microsoft/AppInsights-iOS/releases) framework which is provided as a zip file.
+1. Download the latest [Application Insights for iOS](https://github.com/Microsoft/ApplicationInsights-iOS/releases) framework which is provided as a zip-File.
 2. Unzip the file and you will see a folder called `ApplicationInsights` .
 
 ### 4.3 Copy the SDK  into your projects directory in Finder
@@ -85,55 +90,55 @@ From our experience, 3rd-party libraries usually reside inside a subdirectory (l
 1. Open your `AppDelegate.m` file.
 2. Add the following line at the top of the file below your own `import` statements:
 
-	```objectivec
-	@import ApplicationInsights;
-	```
+    ```objectivec
+    @import ApplicationInsights;
+    ```
 
 3. Search for the method `application:didFinishLaunchingWithOptions:`
 4. Add the following lines to setup and start the Application Insights SDK:
 
-	```objectivec
-	[[MSAIApplicationInsights sharedInstance] setup];
-	// Do some additional configuration if needed here
-	//... more of your other setup code here ...
-	[[MSAIApplicationInsights sharedInstance] start];
-	```
+    ```objectivec
+    [[MSAIApplicationInsights sharedInstance] setup];
+    // Do some additional configuration if needed here
+    //... more of your other setup code here ...
+    [[MSAIApplicationInsights sharedInstance] start];
+    ```
 
-	You can also use the following shortcuts:
+    You can also use the following shortcuts:
 
-	```objectivec
-	[MSAIApplicationInsights setup];
-	[MSAIApplicationInsights start];
-	```
+    ```objectivec
+    [MSAIApplicationInsights setup];
+    [MSAIApplicationInsights start];
+    ```
 
 **Swift**
 
 1. Open your `AppDelegate.swift` file.
 2. Add the following line at the top of the file below your own import statements:
     
-	```swift
-	import ApplicationInsights
-	```
+    ```swift
+    import ApplicationInsights
+    ```
 
 3. Search for the method 
     
-	```swift
-	application(application: UIApplication, didFinishLaunchingWithOptions launchOptions:[NSObject: AnyObject]?) -> Bool`
-	```
+    ```swift
+    application(application: UIApplication, didFinishLaunchingWithOptions launchOptions:[NSObject: AnyObject]?) -> Bool`
+    ```
 
 4. Add the following lines to setup and start the Application Insights SDK:
     
-	```swift
-	MSAIApplicationInsights.sharedInstance().setup();
-	MSAIApplicationInsights.sharedInstance().start();
-	```
+    ```swift
+    MSAIApplicationInsights.sharedInstance().setup();
+    MSAIApplicationInsights.sharedInstance().start();
+    ```
     
-	You can also use the following shortcuts:
+    You can also use the following shortcuts:
 
-	```swift
-	MSAIApplicationInsights.setup()
-	MSAIApplicationInsights.start()
-	```
+    ```swift
+    MSAIApplicationInsights.setup()
+    MSAIApplicationInsights.start()
+    ```
 
 **Congratulation, now you're all set to use Application Insights! See [Basic Usage](#basicusage) on how to use Application Insights.**
 
@@ -174,7 +179,7 @@ Note that this also means that you can't use the `@import` syntax mentioned in t
 
 ### 5.3 Setup with CocoaPods
 
-[CocoaPods](http://cocoapods.org) is a dependency manager for Objective-C, which automates and simplifies the process of using 3rd-party libraries like ApplicationInsights in your projects. To learn how to setup CocoaPods for your project, visit the [official CocoaPods website](http://cocoapods.org/).
+[CocoaPods](https://cocoapods.org/) is a dependency manager for Objective-C, which automates and simplifies the process of using 3rd-party libraries like ApplicationInsights in your projects. To learn how to setup CocoaPods for your project, visit the [official CocoaPods website](https://cocoapods.org/).
 
 **[NOTE]**
 When adding Application Insights to your podfile **without** specifying the version, `pod install` will throw an error because using a pre-release version of a pod has to be specified **explicitly**.
@@ -299,6 +304,8 @@ This setting is ignored if the app is running in an app store environment, so th
 
 After you have set up the SDK as [described above](#setup), the ```MSAITelemetryManager```-instance is the central interface to track events, traces, metrics, page views or handled exceptions.
 
+For an overview of how to use the API and view the results in the Application Insights resource, see [API Overview](https://azure.microsoft.com/documentation/articles/app-insights-api-custom-events-metrics/). The examples are in Java, but the principles are the same.
+
 ### 7.1 Objective-C
 
 ```objectivec
@@ -324,9 +331,9 @@ After you have set up the SDK as [described above](#setup), the ```MSAITelemetry
 // Track handled exceptions
 NSArray *zeroItemArray = [NSArray new];
 @try {
-	NSString *fooString = zeroItemArray[3];
+    NSString *fooString = zeroItemArray[3];
 } @catch(NSException *exception) {
-	[MSAITelemetryManager trackException:exception];
+    [MSAITelemetryManager trackException:exception];
 }
 ```
 
@@ -335,19 +342,19 @@ NSArray *zeroItemArray = [NSArray new];
 ```swift
 // Send an event with custom properties and measuremnts data
 MSAITelemetryManager.trackEventWithName("Hello World event!", 
-								  properties:["Test property 1":"Some value",
-											  "Test property 2":"Some other value"],
-							    measurements:["Test measurement 1":4.8,
-											  "Test measurement 2":15.16,
-										      "Test measurement 3":23.42])
+                                  properties:["Test property 1":"Some value",
+                                              "Test property 2":"Some other value"],
+                                measurements:["Test measurement 1":4.8,
+                                              "Test measurement 2":15.16,
+                                              "Test measurement 3":23.42])
 
 // Send a message
 MSAITelemetryManager.trackTraceWithMessage("Test message")
 
 // Manually send pageviews
 MSAITelemetryManager.trackPageView("MyViewController",
-								   duration:300,
-							     properties:["Test measurement 1":4.8])
+                                   duration:300,
+                                 properties:["Test measurement 1":4.8])
 
 // Send a message
 MSAITelemetryManager.trackMetricWithName("Test metric", value:42.2)
@@ -365,7 +372,7 @@ In the [Azure portal](https://portal.azure.com), open the application resource t
 
 The SDK also allows for some more advanced usages.
 
-### 8.1 Common Properties	
+### 8.1 Common Properties   
 
 It is also possible to set so-called "common properties" that will then be automatically attached to all telemetry data items.
 
@@ -404,7 +411,7 @@ The automatic tracking of viewcontroller appearance can be disabled between setu
 
 ### 9.2. Sessions
 
-By default, the Application Insights for iOS SDK starts a new session when the containing app is restarted (this means a 'cold start', i.e. when the app has not already been in memory prior to being launched) or when it has been in the background for more then 20 seconds. 
+By default, the Application Insights for iOS SDK starts a new session when the containing app is restarted (this means a 'cold start', i.e. when the app has not already been in memory prior to being launched) or when it has been in the background for more than 20 seconds. 
 
 You can either change this timeframe:
 ``` objectivec
@@ -481,4 +488,4 @@ We're looking forward to your contributions via pull requests.
 <a id="contact"></a>
 ## 14. Contact
 
-If you have further questions or are running into trouble that cannot be resolved by any of the steps here, feel free to open a Github issue here or contact us at [AppInsights-iOS@microsoft.com](mailto:AppInsights-ios@microsoft.com)
+If you have further questions or are running into trouble that cannot be resolved by any of the steps here, feel free to open a GitHub issue here or contact us at [AppInsights-iOS@microsoft.com](mailto:AppInsights-ios@microsoft.com)
