@@ -15,7 +15,7 @@
  * _Default_: Disabled
  */
 #ifndef MSAI_FEATURE_CRASH_REPORTER
-#    define MSAI_FEATURE_CRASH_REPORTER 1
+#    define MSAI_FEATURE_CRASH_REPORTER 0
 #endif /* MSAI_FEATURE_CRASH_REPORTER */
 
 
@@ -25,7 +25,7 @@
  * _Default_: Enabled
  */
 #ifndef MSAI_FEATURE_TELEMETRY
-#    define MSAI_FEATURE_TELEMETRY 0
+#    define MSAI_FEATURE_TELEMETRY 1
 #endif /* MSAI_FEATURE_TELEMETRY */
 
 

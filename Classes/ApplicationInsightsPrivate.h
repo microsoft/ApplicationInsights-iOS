@@ -16,7 +16,7 @@ FOUNDATION_EXPORT NSString *const __unused kMSAITelemetryCachesSessions;
 FOUNDATION_EXPORT NSString *const __unused kMSAITelemetryTempSessionData;
 FOUNDATION_EXPORT NSString *const __unused kMSAITelemetryLastAppVersion;
 
-#endif /* MSAI_FEATURE_METRICS */
+#endif /* MSAI_FEATURE_TELEMETRY */
 
 FOUNDATION_EXPORT NSString *const kMSAIIntegrationflowTimestamp;
 

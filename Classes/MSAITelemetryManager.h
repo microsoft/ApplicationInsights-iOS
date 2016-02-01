@@ -132,6 +132,9 @@ NS_ASSUME_NONNULL_BEGIN
  *  Track handled exception.
  *
  *  @param exception the handled exception, which should be send to the server.
+ *
+ *  @warning This method is not guaranteed to succeed.
+ *  The underlying mechanism relies on `mach_thread_suspend()` which might lockup and not return a viable result.
  */
 + (void)trackException:(NSException *)exception;
 #endif /* MSAI_FEATURE_CRASH_REPORTER */
@@ -221,6 +224,9 @@ NS_ASSUME_NONNULL_BEGIN
  *  Track handled exception.
  *
  *  @param exception the handled exception, which should be send to the server.
+ *
+ *  @warning This method is not guaranteed to succeed. 
+ *  The underlying mechanism relies on `mach_thread_suspend()` which might lockup and not return a viable result.
  */
 - (void)trackException:(NSException *)exception;
 #endif /* MSAI_FEATURE_CRASH_REPORTER */

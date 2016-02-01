@@ -15,9 +15,19 @@ Pod::Spec.new do |s|
   s.platform        = :ios, '6.0'
   s.requires_arc    = true
 
-  s.frameworks      = 'UIKit', 'Foundation', 'SystemConfiguration', 'Security', 'CoreTelephony'
-  s.libraries       = 'z', 'c++'
+  s.frameworks      = 'UIKit', 'Foundation', 'SystemConfiguration', 'Security'
+  s.libraries       = 'z'
 
-  s.ios.vendored_frameworks = 'ApplicationInsights/ApplicationInsights.framework'
   s.preserve_path   = 'ApplicationInsights/README.md'
+
+  s.default_subspec = 'AllFeatures'
+  
+  s.subspec 'AllFeatures' do |ss|
+    ss.vendored_frameworks = 'ApplicationInsights/ApplicationInsightsAllFeatures/ApplicationInsights.framework'
+  end
+
+  s.subspec 'TelemetryOnly' do |ss|
+    ss.frameworks   = 'CoreTelephony'
+    ss.vendored_frameworks = 'ApplicationInsights/ApplicationInsightsTelemetryOnly/ApplicationInsights.framework'
+  end
 end
