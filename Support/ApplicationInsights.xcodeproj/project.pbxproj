@@ -1178,10 +1178,6 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				"IPHONEOS_DEPLOYMENT_TARGET[arch=arm64]" = 7.0;
 				MACOSX_DEPLOYMENT_TARGET = 10.5;
-				OTHER_CFLAGS = (
-					"-Wshorten-64-to-32",
-					"-Wall",
-				);
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = NO;
@@ -1201,10 +1197,6 @@
 					"$(PROJECT_DIR)",
 				);
 				GCC_THUMB_SUPPORT = NO;
-				OTHER_CFLAGS = (
-					"$(inherited)",
-					"-DNS_BLOCK_ASSERTIONS=1",
-				);
 				PRODUCT_NAME = ApplicationInsights;
 				PUBLIC_HEADERS_FOLDER_PATH = "include/$(PRODUCT_NAME)";
 				SKIP_INSTALL = YES;
@@ -1310,11 +1302,6 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				"IPHONEOS_DEPLOYMENT_TARGET[arch=arm64]" = 7.0;
 				MACOSX_DEPLOYMENT_TARGET = 10.5;
-				OTHER_CFLAGS = (
-					"-Wshorten-64-to-32",
-					"-Wall",
-				);
-				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = NO;
 			};
@@ -1333,10 +1320,6 @@
 					"$(PROJECT_DIR)",
 				);
 				GCC_THUMB_SUPPORT = NO;
-				OTHER_CFLAGS = (
-					"$(inherited)",
-					"-DNS_BLOCK_ASSERTIONS=1",
-				);
 				PRODUCT_NAME = ApplicationInsights;
 				PUBLIC_HEADERS_FOLDER_PATH = "include/$(PRODUCT_NAME)";
 				SKIP_INSTALL = YES;
@@ -1470,10 +1453,6 @@
 					"$(PROJECT_DIR)",
 				);
 				GCC_THUMB_SUPPORT = NO;
-				OTHER_CFLAGS = (
-					"$(inherited)",
-					"-DNS_BLOCK_ASSERTIONS=1",
-				);
 				PRODUCT_NAME = ApplicationInsights;
 				PUBLIC_HEADERS_FOLDER_PATH = "include/$(PRODUCT_NAME)";
 				SKIP_INSTALL = YES;
@@ -1586,146 +1565,6 @@
 			};
 			name = Release;
 		};
-		1E68F4A716F7843F00053706 /* CodeCoverage */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1E66CA9115D4100500F35BED /* buildnumber.xcconfig */;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				COPY_PHASE_STRIP = NO;
-				DEAD_CODE_STRIPPING = NO;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_GENERATE_TEST_COVERAGE_FILES = YES;
-				GCC_INSTRUMENT_PROGRAM_FLOW_ARCS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SRCROOT)/../Classes/ApplicationInsights-Prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"MSAI_STATIC_LIBRARY=1",
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_THUMB_SUPPORT = NO;
-				GCC_VERSION = "";
-				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
-				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_STRICT_SELECTOR_MATCH = YES;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = "../Resources/AIS-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
-				"IPHONEOS_DEPLOYMENT_TARGET[arch=arm64]" = 7.0;
-				MACOSX_DEPLOYMENT_TARGET = 10.5;
-				ONLY_ACTIVE_ARCH = YES;
-				OTHER_CFLAGS = (
-					"-Wshorten-64-to-32",
-					"-Wall",
-				);
-				RUN_CLANG_STATIC_ANALYZER = YES;
-				SDKROOT = iphoneos;
-			};
-			name = CodeCoverage;
-		};
-		1E68F4A816F7843F00053706 /* CodeCoverage */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				"ARCHS[sdk=iphonesimulator*]" = "$(MSAI_SIM_ARCHS)";
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				DSTROOT = /tmp/AIS.dst;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/../Vendor\"",
-					"$(PROJECT_DIR)",
-				);
-				GCC_THUMB_SUPPORT = NO;
-				GENERATE_PROFILING_CODE = YES;
-				PRODUCT_NAME = ApplicationInsights;
-				PUBLIC_HEADERS_FOLDER_PATH = "include/$(PRODUCT_NAME)";
-				SKIP_INSTALL = YES;
-				"VALID_ARCHS[sdk=iphonesimulator*]" = "$(MSAI_SIM_ARCHS)";
-				WARNING_CFLAGS = (
-					"-Wall",
-					"-Wextra",
-					"-Wno-unused-parameter",
-				);
-			};
-			name = CodeCoverage;
-		};
-		1E68F4AA16F7843F00053706 /* CodeCoverage */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				GCC_THUMB_SUPPORT = NO;
-				INFOPLIST_FILE = "$(PROJECT_DIR)/../Resources/ApplicationInsights-Info.plist";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.microsoft.${PRODUCT_NAME:rfc1034identifier}";
-				PRODUCT_NAME = "ApplicationInsights Documentation";
-			};
-			name = CodeCoverage;
-		};
-		1E68F4AB16F7843F00053706 /* CodeCoverage */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				INFOPLIST_FILE = "$(PROJECT_DIR)/../Resources/ApplicationInsights-Info.plist";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.microsoft.${PRODUCT_NAME:rfc1034identifier}";
-				PRODUCT_NAME = ApplicationInsights.framework;
-			};
-			name = CodeCoverage;
-		};
-		1E68F4AC16F7843F00053706 /* CodeCoverage */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				"ARCHS[sdk=iphonesimulator*]" = "$(MSAI_SIM_ARCHS)";
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
-					"$(SRCROOT)/../Vendor",
-					"$(SRCROOT)/ApplicationInsightsTests",
-				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "ApplicationInsightsTests/ApplicationInsightsTests-Prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"$(inherited)",
-					"DEBUG=1",
-				);
-				GCC_WARN_UNINITIALIZED_AUTOS = YES;
-				GENERATE_PROFILING_CODE = YES;
-				HEADER_SEARCH_PATHS = (
-					"$(inherited)",
-					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
-					"$(SRCROOT)/../Classes",
-					"$(SRCROOT)/ApplicationInsightsTests",
-				);
-				INFOPLIST_FILE = "ApplicationInsightsTests/ApplicationInsightsTests-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(SRCROOT)/ApplicationInsightsTests",
-				);
-				ONLY_ACTIVE_ARCH = YES;
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					"-ObjC",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.microsoft.${PRODUCT_NAME:rfc1034identifier}";
-				PRODUCT_NAME = ApplicationInsightsTests;
-				WARNING_CFLAGS = (
-					"-Wall",
-					"-Wextra",
-				);
-			};
-			name = CodeCoverage;
-		};
 		1E8E66AE15BC3D7700632A2E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1780,10 +1619,6 @@
 				"IPHONEOS_DEPLOYMENT_TARGET[arch=arm64]" = 7.0;
 				MACOSX_DEPLOYMENT_TARGET = 10.5;
 				ONLY_ACTIVE_ARCH = YES;
-				OTHER_CFLAGS = (
-					"-Wshorten-64-to-32",
-					"-Wall",
-				);
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = iphoneos;
 			};
@@ -1817,10 +1652,6 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				"IPHONEOS_DEPLOYMENT_TARGET[arch=arm64]" = 7.0;
 				MACOSX_DEPLOYMENT_TARGET = 10.5;
-				OTHER_CFLAGS = (
-					"-Wshorten-64-to-32",
-					"-Wall",
-				);
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = NO;
@@ -1834,7 +1665,6 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1E4F61EB1621AD970033EFC5 /* Debug */,
-				1E68F4AB16F7843F00053706 /* CodeCoverage */,
 				1E4F61EC1621AD970033EFC5 /* Release */,
 				1B2B6E921C5B040300D89D13 /* ReleaseCrashOnly */,
 				1B2B6E971C5B041E00D89D13 /* ReleaseTelemetryOnly */,
@@ -1846,7 +1676,6 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1E5954F015B6F24A00A03429 /* Debug */,
-				1E68F4A816F7843F00053706 /* CodeCoverage */,
 				1E5954F115B6F24A00A03429 /* Release */,
 				1B2B6E901C5B040300D89D13 /* ReleaseCrashOnly */,
 				1B2B6E951C5B041E00D89D13 /* ReleaseTelemetryOnly */,
@@ -1858,7 +1687,6 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1E5A45A016F0DFC200B55C04 /* Debug */,
-				1E68F4AC16F7843F00053706 /* CodeCoverage */,
 				1E5A45A116F0DFC200B55C04 /* Release */,
 				1B2B6E931C5B040300D89D13 /* ReleaseCrashOnly */,
 				1B2B6E981C5B041E00D89D13 /* ReleaseTelemetryOnly */,
@@ -1870,7 +1698,6 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1E8E66AE15BC3D7700632A2E /* Debug */,
-				1E68F4AA16F7843F00053706 /* CodeCoverage */,
 				1E8E66AF15BC3D7700632A2E /* Release */,
 				1B2B6E911C5B040300D89D13 /* ReleaseCrashOnly */,
 				1B2B6E961C5B041E00D89D13 /* ReleaseTelemetryOnly */,
@@ -1882,7 +1709,6 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				E400563C148D79B500EB22B9 /* Debug */,
-				1E68F4A716F7843F00053706 /* CodeCoverage */,
 				E400563D148D79B500EB22B9 /* Release */,
 				1B2B6E8F1C5B040300D89D13 /* ReleaseCrashOnly */,
 				1B2B6E941C5B041E00D89D13 /* ReleaseTelemetryOnly */,
