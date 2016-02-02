@@ -56,6 +56,42 @@
   XCTAssertEqual(newUser.userId.length, 36U);
 }
 
+- (void)testUserGetsPersitedCorrectly {
+  NSString *anonymousID = @"anonymousID";
+  NSString *anonymousDate = @"anonymousDate";
+  NSString *authenticatedID = @"authenticatedID";
+  NSString *authenticatedDate = @"authenticatedDate";
+  NSString *accountID = @"accountID";
+  NSString *accountDate = @"accountDate";
+  NSString *storeRegion = @"storeRegion";
+  NSString *userAgent = @"userAgent";
+  
+  MSAIUser *user = [MSAIUser new];
+  user.userId = anonymousID;
+  user.anonUserAcquisitionDate = anonymousDate;
+  user.authUserId = authenticatedID;
+  user.authUserAcquisitionDate = authenticatedDate;
+  user.accountId = accountID;
+  user.accountAcquisitionDate = accountDate;
+  user.storeRegion = storeRegion;
+  user.userAgent = userAgent;
+  
+  // When
+  [self.sut saveUser:user];
+  MSAIUser *persistedUser = [self.sut loadUser];
+  
+  // Verify
+  XCTAssertNotNil(persistedUser);
+  XCTAssertTrue([persistedUser.userId isEqualToString:anonymousID]);
+  XCTAssertTrue([persistedUser.anonUserAcquisitionDate isEqualToString:anonymousDate]);
+  XCTAssertTrue([persistedUser.authUserId isEqualToString:authenticatedID]);
+  XCTAssertTrue([persistedUser.authUserAcquisitionDate isEqualToString:authenticatedDate]);
+  XCTAssertTrue([persistedUser.accountId isEqualToString:accountID]);
+  XCTAssertTrue([persistedUser.accountAcquisitionDate isEqualToString:accountDate]);
+  XCTAssertTrue([persistedUser.storeRegion isEqualToString:storeRegion]);
+  XCTAssertTrue([persistedUser.userAgent isEqualToString:userAgent]);
+}
+
 - (void)testSetUserWithConfigurationBlock {
   self.sut = OCMPartialMock(self.sut);
   

@@ -70,6 +70,20 @@ FOUNDATION_EXPORT NSString *const kMSAIApplicationWasLaunched;
  */
 - (void)setCurrentUser:(nonnull MSAIUser *)user;
 
+/**
+ *  Method that return a persited user or nil if not available.
+ *
+ *  @return The persitet user instance
+ */
+- (MSAIUser *)loadUser;
+
+/**
+ *  Method that stores a user to NSUserDefaults.
+ *
+ *  @param user the user that should be stored
+ */
+- (void)saveUser:(MSAIUser *)user;
+
 ///-----------------------------------------------------------------------------
 /// @name Creating A New Session
 ///-----------------------------------------------------------------------------

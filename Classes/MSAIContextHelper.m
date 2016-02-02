@@ -20,6 +20,7 @@ NSString *const kMSAIApplicationWasLaunched = @"MSAIApplicationWasLaunched";
 
 NSString *const MSAIUserChangedNotification = @"MSAIUserChangedNotification";
 NSString *const kMSAIUserInfo = @"MSAIUserInfo";
+NSString *const kMSAIPersistedUser = @"MSAIPersistedUser";
 
 NSString *const MSAISessionStartedNotification = @"MSAISessionStartedNotification";
 NSString *const MSAISessionEndedNotification = @"MSAISessionEndedNotification";
@@ -70,8 +71,12 @@ NSString *const kMSAISessionInfo = @"MSAISessionInfo";
 #pragma mark Manual User ID Management
 
 - (void)setUserWithConfigurationBlock:(void (^)(MSAIUser *user))userConfigurationBlock {
-  MSAIUser *currentUser = [self newUser];
-
+  MSAIUser *currentUser = [self loadUser];
+  
+  if(!currentUser) {
+    currentUser = [self newUser];
+  }
+  
   userConfigurationBlock(currentUser);
 
   if(!currentUser) {
@@ -82,7 +87,23 @@ NSString *const kMSAISessionInfo = @"MSAISessionInfo";
 }
 
 - (void)setCurrentUser:(nonnull MSAIUser *)user {
+  [self saveUser:user];
   [self sendUserChangedNotificationWithUserInfo:@{kMSAIUserInfo : user}];
+}
+
+#pragma mark User persistence
+
+- (void)saveUser:(MSAIUser *)user {
+  NSData *encodedObject = [NSKeyedArchiver archivedDataWithRootObject:user];
+  NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+  [defaults setObject:encodedObject forKey:kMSAIPersistedUser];
+}
+
+- (MSAIUser *)loadUser {
+  NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+  NSData *encodedObject = [defaults objectForKey:kMSAIPersistedUser];
+  MSAIUser *user = [NSKeyedUnarchiver unarchiveObjectWithData:encodedObject];
+  return user;
 }
 
 
