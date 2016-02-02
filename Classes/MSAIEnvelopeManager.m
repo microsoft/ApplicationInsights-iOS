@@ -70,16 +70,4 @@ static NSInteger const schemaVersion = 2;
   return envelope;
 }
 
-#if MSAI_FEATURE_CRASH_REPORTER
-
-- (MSAIEnvelope *)envelopeForCrashReport:(MSAIPLCrashReport *)report {
-  return [self envelopeForCrashReport:report exception:nil];
-}
-
-- (MSAIEnvelope *)envelopeForCrashReport:(MSAIPLCrashReport *)report exception:(NSException *)exception {
-  return [MSAICrashDataProvider crashDataForCrashReport:report handledException:exception];
-}
-
-#endif /* MSAI_FEATURE_CRASH_REPORTER */
-
 @end
