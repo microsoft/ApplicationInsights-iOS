@@ -4,7 +4,7 @@
 
 This is the repository of the iOS SDK for Application Insights. [Application Insights](http://azure.microsoft.com/services/application-insights/) is a service that monitors the performance and usage of your published app. The SDK enables you to send telemetry of various kinds (events, traces, exceptions, etc.) to the Application Insights service where your data can be visualized in the Azure Portal.
 
-You can use the [Application Insights for Mac](http://go.microsoft.com/fwlink/?linkid=533209&clcid=0x409) tool to integrate the Application Insights iOS SDK into your existing apps. It also supports with **uploading app symbols**, which are required to symbolicate the crash reports to display them properly in the Azure Portal.
+You can use the [Application Insights for Mac](http://go.microsoft.com/fwlink/?linkid=533209&clcid=0x409) tool to integrate the Application Insights iOS SDK into your existing apps.
 The SDK runs on devices with iOS 6.0 or higher. You'll need a subscription to [Microsoft Azure](https://azure.com). (It's free until you want to send quite a lot of telemetry.)
 
 [Application Insights overview](https://azure.microsoft.com/documentation/articles/app-insights-overview/)
@@ -20,11 +20,10 @@ The SDK runs on devices with iOS 6.0 or higher. You'll need a subscription to [M
 7. [Basic Usage](#basicusage)
 8. [Advanced Usage](#advancedusage)
 9. [Automatic collection of life-cycle events](#autolifecycle)
-10. [Crash Reporting](#crashreporting)
-11. [Set Custom Server Endpoint](#additionalconfig)
-12. [Documentation](#documentation)
-13. [Contributing](#contributing)
-14. [Contact](#contact)
+10. [Set Custom Server Endpoint](#additionalconfig)
+11. [Documentation](#documentation)
+12. [Contributing](#contributing)
+13. [Contact](#contact)
 
 <a name="releasenotes"></a>
 ## 1. Release Notes
@@ -172,7 +171,6 @@ If you are working with an older project which doesn't support clang modules yet
     - `Security`
     - `SystemConfiguration`
     - `UIKit`
-    - `libc++`
     - `libz`
 
 Note that this also means that you can't use the `@import` syntax mentioned in the [Modify Code](#modify) section but have to stick to the old `#import <ApplicationInsights/ApplicationInsights.h>`.
@@ -300,7 +298,7 @@ This setting is ignored if the app is running in an app store environment, so th
 <a id="basicusage"></a>
 ## 7. Basic Usage
 
-**[NOTE]** The SDK is optimized to defer everything possible to a later time while making sure e.g. crashes on startup can also be caught and each module executes other code with a delay of some seconds. This ensures that `applicationDidFinishLaunching:` will process as fast as possible and the SDK will not block the startup sequence resulting in a possible kill by the watchdog process.
+**[NOTE]** The SDK is optimized to defer everything possible to a later time while making sure each module executes other code with a delay of some seconds. This ensures that `applicationDidFinishLaunching:` will process as fast as possible and the SDK will not block the startup sequence resulting in a possible kill by the watchdog process.
 
 After you have set up the SDK as [described above](#setup), the ```MSAITelemetryManager```-instance is the central interface to track events, traces, metrics, page views or handled exceptions.
 
@@ -362,7 +360,7 @@ MSAITelemetryManager.trackMetricWithName("Test metric", value:42.2)
 
 ### View your data in the portal
 
-In the [Azure portal](https://portal.azure.com), open the application resource that you created to get your instrumentation key. You'll see charts showing counts of page views and any crashes. To see more:
+In the [Azure portal](https://portal.azure.com), open the application resource that you created to get your instrumentation key. You'll see charts showing counts of page views. To see more:
 
 * Click any chart to see more detail. You can [create your own metric pages, set alerts, and filter and segment your data](https://azure.microsoft.com/documentation/articles/app-insights-metrics-explorer/).
 * Click [Search](https://azure.microsoft.com/documentation/articles/app-insights-diagnostic-search/) to see individual trackEvent, trackTrace, trackException and trackPageView messages.
@@ -430,7 +428,7 @@ This then requires you to manage sessions manually:
 
 ### 9.3. Users
 
-Normally, a random anonymous ID is automatically generated for every user of your app by the SDK. Alternatively you can set your own user ID or other user attributes, which will then be attached to all telemetry events and crashes:
+Normally, a random anonymous ID is automatically generated for every user of your app by the SDK. Alternatively you can set your own user ID or other user attributes, which will then be attached to all telemetry events:
 ```objectivec
   [[MSAIApplicationInsights sharedInstance] setUserWithConfigurationBlock:^(MSAIUser *user) {
     user.userId = @"your_user_id";
@@ -438,24 +436,8 @@ Normally, a random anonymous ID is automatically generated for every user of you
   }];
 ```
 
-<a name="crashreporting"></a>
-## 10. Crash Reporting
-
-The Application Insights SDK enables crash reporting **per default**. Crashes will be immediately sent to the server the next time the app is launched.
-To provide you with the best crash reporting, we are using [PLCrashReporter]("https://github.com/plausiblelabs/plcrashreporter") in [Version 1.2 / Commit 273a7e7cd4b77485a584ac82e77b7c857558e2f9]("https://github.com/plausiblelabs/plcrashreporter/commit/273a7e7cd4b77485a584ac82e77b7c857558e2f9").
-
-This feature can be disabled as follows:
-
-```objectivec
-[MSAIApplicationInsights setup]; //setup the SDK
- 
-[[MSAIApplicationInsights sharedInstance] setCrashManagerDisabled:YES]; //disable crash reporting
-
-[MSAIApplicationInsights start]; //start using the SDK
-```
-
 <a name="additionalconfig"></a>
-## 11.  Set Custom Server Endpoint
+## 10.  Set Custom Server Endpoint
 
 You can also configure a different server endpoint for the SDK if needed using a full URL
 
@@ -468,13 +450,13 @@ You can also configure a different server endpoint for the SDK if needed using a
 ```
 
 <a id="documentation"></a>
-## 12. Documentation
+## 11. Documentation
 
 Our documentation can be found on [CocoaDocs](http://cocoadocs.org/docsets/ApplicationInsights/1.0-beta.4/).
 
 
 <a id="contributing"></a>
-## 13. Contributing
+## 12. Contributing
 
 We're looking forward to your contributions via pull requests.
 
@@ -486,6 +468,6 @@ We're looking forward to your contributions via pull requests.
 * [Cocoapods](https://cocoapods.org/)
 
 <a id="contact"></a>
-## 14. Contact
+## 13. Contact
 
 If you have further questions or are running into trouble that cannot be resolved by any of the steps here, feel free to open a GitHub issue here or contact us at [AppInsights-iOS@microsoft.com](mailto:AppInsights-ios@microsoft.com)
