@@ -119,13 +119,6 @@ FOUNDATION_EXPORT NSString *const MSAIPersistenceSuccessNotification;
  */
 - (NSData *)dataAtPath:(NSString *)path;
 
-/**
- *  Returns the content of the session Ids file.
- *
- *  @return return a dictionary containing all session Ids
- */
-- (NSDictionary *)metaData;
-
 ///-----------------------------------------------------------------------------
 /// @name Getting a path
 ///-----------------------------------------------------------------------------
