@@ -70,16 +70,6 @@ FOUNDATION_EXPORT NSString *const kMSAIApplicationWasLaunched;
  */
 - (void)setCurrentUser:(nonnull MSAIUser *)user;
 
-/**
- *  Remove a specific user ID from the persistent storage.
- *
- *  @param userId The user ID to be removed.
- *
- *  @return Returns YES if the ID was found and successfully removed.
- */
-- (BOOL)removeUserId:(NSString *)userId;
-
-
 ///-----------------------------------------------------------------------------
 /// @name Creating A New Session
 ///-----------------------------------------------------------------------------
