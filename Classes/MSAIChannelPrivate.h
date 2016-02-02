@@ -9,6 +9,7 @@
 @class MSAISender;
 @class MSAICrashData;
 @class MSAIOrderedDictionary;
+@class MSAIConfiguration;
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -33,9 +34,21 @@ FOUNDATION_EXPORT NSInteger const defaultMaxBatchCount;
 
 + (void)setSharedChannel:(MSAIChannel *)channel;
 
+/**
+ *  Configures the channel shared instance.
+ *
+ *  @param configuration the configuration used for the queue.
+ */
+- (void)configureWithConfiguration:(MSAIConfiguration *)configuration;
+
 ///-----------------------------------------------------------------------------
 /// @name Queue management
 ///-----------------------------------------------------------------------------
+
+/**
+ *  The channel configuration.
+ */
+@property (nonatomic, strong) MSAIConfiguration *configuration;
 
 /**
  *  A queue which makes array operations thread safe.
@@ -96,23 +109,6 @@ void msai_resetSafeJsonStream(char *__nonnull*__nonnull jsonStream);
 ///-----------------------------------------------------------------------------
 /// @name Batching
 ///-----------------------------------------------------------------------------
-
-/*
- * Interval for sending data to the server in seconds.
- *
- * Default: 15
- */
-@property (nonatomic, assign) NSUInteger senderInterval;
-
-/*
- * Threshold for sending data to the server. Default batch size for debugging is 150, for release
- * configuration, the batch size is 5.
- *
- * @warning: we advice to not set the batch size below 5 events.
- *
- * Default: 5
- */
-@property (nonatomic, assign) NSUInteger senderBatchSize;
 
 /**
  *  A timer source which is used to flush the queue after a cretain time.

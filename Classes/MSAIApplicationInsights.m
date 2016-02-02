@@ -36,6 +36,7 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
   BOOL _managersInitialized;
   MSAIAppClient *_appClient;
   MSAIContext *_appContext;
+  MSAIConfiguration *_configuration;
 }
 
 #pragma mark - Shared instance
@@ -183,6 +184,11 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
     
     MSAITelemetryContext *telemetryContext = [[MSAITelemetryContext alloc] initWithAppContext:_appContext];
     [[MSAIEnvelopeManager sharedManager] configureWithTelemetryContext:telemetryContext];
+
+    // Setup channel
+    _configuration = [MSAIConfiguration new];
+    [[MSAIContextHelper sharedInstance] configureWithConfiguration:_configuration];
+    [[MSAIChannel sharedChannel] configureWithConfiguration:_configuration];
     
     [[MSAISender sharedSender] configureWithAppClient:[self appClient]];
     
@@ -222,6 +228,7 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 
 - (void)setAutoSessionManagementDisabled:(BOOL)autoSessionManagementDisabled {
   [MSAIContextHelper sharedInstance].autoSessionManagementDisabled = autoSessionManagementDisabled;
+  //TODO: What if autoSessionManagementDisabled == NO
   [[MSAIContextHelper sharedInstance] unregisterObservers];
   _autoSessionManagementDisabled = autoSessionManagementDisabled;
   
@@ -243,17 +250,8 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 
 - (void)setServerURL:(NSString *)serverURL {
   
-  // trailing slash is needed
-  if (![serverURL hasSuffix:@"/"]) {
-    serverURL = [NSString stringWithFormat:@"%@/", serverURL];
-  }
-  
-  if (_serverURL != serverURL) {
-    _serverURL = [serverURL copy];
-    
-    if (_appClient) {
-      self.appClient.baseURL = [NSURL URLWithString:_serverURL ? _serverURL : MSAI_SERVER_URL];
-    }
+  if (_configuration) {
+    _configuration.serverURL =  [NSURL URLWithString:[serverURL copy]];
   }
 }
 
@@ -279,6 +277,20 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
   return [[self sharedInstance] build];
 }
 
+#pragma mark - Configuration
+
++ (void)setConfigurationWithConfigurationBlock:(void (^)(MSAIConfiguration *configuration))configurationBlock {
+  [[self sharedInstance] setConfigurationWithConfigurationBlock:configurationBlock];
+}
+
+- (void)setConfigurationWithConfigurationBlock:(void (^)(MSAIConfiguration *configuration))configurationBlock {
+  if(_configuration){
+    configurationBlock(_configuration);
+  }else{
+    NSLog(@"[ApplicationInsights] The configuration you try to modify has not been setup yet. Call ApplicationInsights.setup() first");
+  }
+}
+
 #pragma mark - Context meta data
 
 + (void)setUserWithConfigurationBlock:(void (^)(MSAIUser *user))userConfigurationBlock {
@@ -302,7 +314,11 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 }
 
 - (void)setAppBackgroundTimeBeforeSessionExpires:(NSUInteger)appBackgroundTimeBeforeSessionExpires {
-  [[MSAIContextHelper sharedInstance] setAppBackgroundTimeBeforeSessionExpires:appBackgroundTimeBeforeSessionExpires];
+  if(_configuration){
+    _configuration.backgroundSessionInterval = appBackgroundTimeBeforeSessionExpires;
+  }else{
+    NSLog(@"[ApplicationInsights] The configuration you try to modify has not been setup yet. Call ApplicationInsights.setup() first");
+  }
 }
 
 + (void)renewSessionWithId:(NSString *)sessionId {
@@ -334,7 +350,7 @@ NSString *const kMSAIInstrumentationKey = @"MSAIInstrumentationKey";
 
 - (MSAIAppClient *)appClient {
   if (!_appClient) {
-    _appClient = [[MSAIAppClient alloc] initWithBaseURL:[NSURL URLWithString:_serverURL ? _serverURL : MSAI_SERVER_URL]];
+    _appClient = [[MSAIAppClient alloc] initWithConfiguration:_configuration];
   }
   
   return _appClient;

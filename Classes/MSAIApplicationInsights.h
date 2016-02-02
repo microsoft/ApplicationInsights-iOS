@@ -1,6 +1,7 @@
 #import <Foundation/Foundation.h>
 #import "MSAINullability.h"
 #import "MSAIUser.h"
+#import "MSAIConfiguration.h"
 
 NS_ASSUME_NONNULL_BEGIN
 /**
@@ -193,6 +194,7 @@ NS_ASSUME_NONNULL_BEGIN
  *  This time is only used when automatic session management is not disabled.
  *
  *  @param appBackgroundTimeBeforeSessionExpires The time in seconds the app has to be in the background before a new session is started.
+  *  @deprecated Pleas use `setConfigurationWithConfigurationBlock:`to change the expiration interval.
  */
 + (void)setAppBackgroundTimeBeforeSessionExpires:(NSUInteger)appBackgroundTimeBeforeSessionExpires;
 
@@ -201,6 +203,7 @@ NS_ASSUME_NONNULL_BEGIN
  *  This time is only used when automatic session management is not disabled.
  *
  *  @param appBackgroundTimeBeforeSessionExpires The time in seconds the app has to be in the background before a new session is started.
+ *  @deprecated Pleas use `setConfigurationWithConfigurationBlock:`to change the expiration interval.
  */
 - (void)setAppBackgroundTimeBeforeSessionExpires:(NSUInteger)appBackgroundTimeBeforeSessionExpires;
 
@@ -223,6 +226,22 @@ NS_ASSUME_NONNULL_BEGIN
  *  @see autoSessionManagementDisabled
  */
 - (void)renewSessionWithId:(NSString *)sessionId;
+
+/**
+ *  Change the configuration values which are used to determine, how to send out data.
+ *
+ *  @param configurationBlock This block gets the current configuration as an input. Within the block you can update
+ *  the configurations object's values to up-to-date.
+ */
++ (void)setConfigurationWithConfigurationBlock:(void (^)(MSAIConfiguration *configuration))configurationBlock;
+
+/**
+ *  Change the configuration values which are used to determine, how to send out data.
+ *
+ *  @param configurationBlock This block gets the current configuration as an input. Within the block you can update 
+ *  the configurations object's values to up-to-date.
+ */
+- (void)setConfigurationWithConfigurationBlock:(void (^)(MSAIConfiguration *configuration))configurationBlock;
 
 ///-----------------------------------------------------------------------------
 /// @name Environment

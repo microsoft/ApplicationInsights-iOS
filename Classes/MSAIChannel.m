@@ -4,12 +4,7 @@
 #import "ApplicationInsightsPrivate.h"
 #import "MSAIHelper.h"
 #import "MSAIPersistencePrivate.h"
-
-NSInteger const defaultMaxBatchCount = 50;
-NSInteger const defaultBatchInterval = 15;
-
-NSInteger const debugMaxBatchCount = 5;
-NSInteger const debugBatchInterval = 3;
+#import "MSAIConfiguration.h"
 
 static char *const MSAIDataItemsOperationsQueue = "com.microsoft.ApplicationInsights.senderQueue";
 char *MSAISafeJsonEventsString;
@@ -31,6 +26,10 @@ static dispatch_once_t once_token;
   return _sharedChannel;
 }
 
+- (void)configureWithConfiguration:(MSAIConfiguration *)configuration {
+  _configuration = configuration;
+}
+
 + (void)setSharedChannel:(MSAIChannel *)channel {
   once_token = 0;
   _sharedChannel = channel;
@@ -40,13 +39,6 @@ static dispatch_once_t once_token;
   if(self = [super init]) {
     msai_resetSafeJsonStream(&MSAISafeJsonEventsString);
     _dataItemCount = 0;
-    if (msai_isDebuggerAttached()) {
-      _senderBatchSize = debugMaxBatchCount;
-      _senderInterval = debugBatchInterval;
-    } else {
-      _senderBatchSize = defaultMaxBatchCount;
-      _senderInterval = defaultBatchInterval;
-    }
     dispatch_queue_t serialQueue = dispatch_queue_create(MSAIDataItemsOperationsQueue, DISPATCH_QUEUE_SERIAL);
     _dataItemsOperations = serialQueue;
   }
@@ -89,7 +81,7 @@ static dispatch_once_t once_token;
       // Enqueue item
       [strongSelf appendDictionaryToJsonStream:dictionary];
       
-      if(strongSelf->_dataItemCount >= strongSelf.senderBatchSize) {
+      if(strongSelf->_dataItemCount >= strongSelf.configuration.maxBatchCount) {
         // Max batch count has been reached, so write queue to disk and delete all items.
         [strongSelf persistDataItemQueue];
         
@@ -181,7 +173,7 @@ void msai_resetSafeJsonStream(char **string) {
   }
   
   self.timerSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, self.dataItemsOperations);
-  dispatch_source_set_timer(self.timerSource, dispatch_walltime(NULL, NSEC_PER_SEC * self.senderInterval), 1ull * NSEC_PER_SEC, 1ull * NSEC_PER_SEC);
+  dispatch_source_set_timer(self.timerSource, dispatch_walltime(NULL, NSEC_PER_SEC * self.configuration.maxBatchInterval), 1ull * NSEC_PER_SEC, 1ull * NSEC_PER_SEC);
   dispatch_source_set_event_handler(self.timerSource, ^{
     
     // On completion: Reset timer and persist items
