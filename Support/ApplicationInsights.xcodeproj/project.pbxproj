@@ -128,8 +128,6 @@
 		807CFDCD1A712974004EA1B6 /* MSAISession.h in Headers */ = {isa = PBXBuildFile; fileRef = 807CFD9C1A712974004EA1B6 /* MSAISession.h */; };
 		807CFDCE1A712974004EA1B6 /* MSAISession.m in Sources */ = {isa = PBXBuildFile; fileRef = 807CFD9D1A712974004EA1B6 /* MSAISession.m */; };
 		807CFDCF1A712974004EA1B6 /* MSAISeverityLevel.h in Headers */ = {isa = PBXBuildFile; fileRef = 807CFD9E1A712974004EA1B6 /* MSAISeverityLevel.h */; };
-		807CFDD01A712974004EA1B6 /* MSAIStackFrame.h in Headers */ = {isa = PBXBuildFile; fileRef = 807CFD9F1A712974004EA1B6 /* MSAIStackFrame.h */; };
-		807CFDD11A712974004EA1B6 /* MSAIStackFrame.m in Sources */ = {isa = PBXBuildFile; fileRef = 807CFDA01A712974004EA1B6 /* MSAIStackFrame.m */; };
 		807CFDD21A712974004EA1B6 /* MSAIUser.h in Headers */ = {isa = PBXBuildFile; fileRef = 807CFDA11A712974004EA1B6 /* MSAIUser.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		807CFDD31A712974004EA1B6 /* MSAIUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 807CFDA21A712974004EA1B6 /* MSAIUser.m */; };
 		809E9E5A1AC455D9008A1AB5 /* MSAISessionState.h in Headers */ = {isa = PBXBuildFile; fileRef = 809E9E571AC455D9008A1AB5 /* MSAISessionState.h */; };
@@ -304,8 +302,6 @@
 		807CFD9C1A712974004EA1B6 /* MSAISession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAISession.h; sourceTree = "<group>"; };
 		807CFD9D1A712974004EA1B6 /* MSAISession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAISession.m; sourceTree = "<group>"; };
 		807CFD9E1A712974004EA1B6 /* MSAISeverityLevel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAISeverityLevel.h; sourceTree = "<group>"; };
-		807CFD9F1A712974004EA1B6 /* MSAIStackFrame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAIStackFrame.h; sourceTree = "<group>"; };
-		807CFDA01A712974004EA1B6 /* MSAIStackFrame.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAIStackFrame.m; sourceTree = "<group>"; };
 		807CFDA11A712974004EA1B6 /* MSAIUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAIUser.h; sourceTree = "<group>"; };
 		807CFDA21A712974004EA1B6 /* MSAIUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAIUser.m; sourceTree = "<group>"; };
 		809E9E571AC455D9008A1AB5 /* MSAISessionState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAISessionState.h; sourceTree = "<group>"; };
@@ -484,8 +480,6 @@
 				809E9E581AC455D9008A1AB5 /* MSAISessionStateData.h */,
 				809E9E591AC455D9008A1AB5 /* MSAISessionStateData.m */,
 				807CFD9E1A712974004EA1B6 /* MSAISeverityLevel.h */,
-				807CFD9F1A712974004EA1B6 /* MSAIStackFrame.h */,
-				807CFDA01A712974004EA1B6 /* MSAIStackFrame.m */,
 				807CFD6C1A712969004EA1B6 /* MSAITelemetryData.h */,
 				807CFD6D1A712969004EA1B6 /* MSAITelemetryData.m */,
 				807CFDA11A712974004EA1B6 /* MSAIUser.h */,
@@ -777,7 +771,6 @@
 				1BE29B481A6FB8C20014A10F /* MSAISender.h in Headers */,
 				807CFDB01A712974004EA1B6 /* MSAIDomain.h in Headers */,
 				807CFDA91A712974004EA1B6 /* MSAIDataPoint.h in Headers */,
-				807CFDD01A712974004EA1B6 /* MSAIStackFrame.h in Headers */,
 				E4933E8017B66CDA00B11ACC /* MSAIHTTPOperation.h in Headers */,
 				807CFDAE1A712974004EA1B6 /* MSAIDevice.h in Headers */,
 				807CFDB51A712974004EA1B6 /* MSAIEventData.h in Headers */,
@@ -953,7 +946,6 @@
 				807CFDB41A712974004EA1B6 /* MSAIEnvelope.m in Sources */,
 				1E49A4C1161222B900463151 /* MSAIHelper.m in Sources */,
 				807CFDCE1A712974004EA1B6 /* MSAISession.m in Sources */,
-				807CFDD11A712974004EA1B6 /* MSAIStackFrame.m in Sources */,
 				807CFD691A71294E004EA1B6 /* MSAIOrderedDictionary.m in Sources */,
 				807CFDC61A712974004EA1B6 /* MSAIPageViewData.m in Sources */,
 				1EB2E4C718FD4CEA008BB1CF /* MSAITelemetryManager.m in Sources */,
