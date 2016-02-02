@@ -83,14 +83,6 @@ void msai_appendStringToSafeJsonStream(NSString *string, char *__nonnull*__nonnu
  */
 void msai_resetSafeJsonStream(char *__nonnull*__nonnull jsonStream);
 
-/**
- *  Directly process telemetry data (crashs) without enqueuing it first.
- *
- *  @param dictionary      the dictionary object to process.
- *  @param completionBlock the block, which should be executed after the envelope has been persisted.
- */
-- (void)processDictionary:(MSAIOrderedDictionary *)dictionary withCompletionBlock:(nullable void (^)(BOOL success))completionBlock;
-
 ///-----------------------------------------------------------------------------
 /// @name Batching
 ///-----------------------------------------------------------------------------
