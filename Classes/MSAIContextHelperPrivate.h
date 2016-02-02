@@ -27,11 +27,6 @@ FOUNDATION_EXPORT NSString *const kMSAIApplicationWasLaunched;
 @property (nonatomic, strong) dispatch_queue_t operationsQueue;
 
 /**
- *  A Dictionary which holds content of property list in memory.
- */
-@property (nonatomic, strong) NSMutableDictionary *metaData;
-
-/**
  *  This flag determines if the helper automatically renews sessions.
  */
 @property BOOL autoSessionManagementDisabled;
@@ -74,23 +69,6 @@ FOUNDATION_EXPORT NSString *const kMSAIApplicationWasLaunched;
  *  @param user The string that represents the current user
  */
 - (void)setCurrentUser:(nonnull MSAIUser *)user;
-
-/**
- *  Add a MSAIUser object to the automatic meta data store.
- *
- *  @param user Any MSAIUser object which should be stored for later reference.
- *  @param date The time and date when the user object started to be the current user.
- */
-- (void)addUser:(MSAIUser *)user forDate:(NSDate *)date;
-
-/**
- *  Retrieve the latest user object for a given date.
- *
- *  @param date The date for which the user should be retrieved.
- *
- *  @return The most current user for the given date parameter.
- */
-- (MSAIUser *)userForDate:(NSDate *)date;
 
 /**
  *  Remove a specific user ID from the persistent storage.
@@ -156,34 +134,6 @@ FOUNDATION_EXPORT NSString *const kMSAIApplicationWasLaunched;
 
 - (void)renewSessionWithId:(NSString *)sessionId;
 
-/**
- *  Adds a new sessionId (value) for a given timestamp (key) to the session plist.
- *
- *  @param sessionId the sessionId (value)
- *  @param timestamp the timestamp, which represents the creation of the session
- */
-- (void)addSession:(MSAISession *)session withDate:(NSDate *)date;
-
-/**
- *  Returns the best effort based on a given timestamp.
- *
- *
- *  @param date the creation date of a crash report
- *
- *  @return the sessionId of the session, in which the crash occured
- */
-- (MSAISession *)sessionForDate:(NSDate *)date;
-
-/**
- *  Removes the entry for a given sessionId.
- *
- *  @param sessionId The session ID of the plist entry which should be removed
- *
- *  @return Returns YES if the ID was found and successfully removed.
- */
-- (BOOL)removeSession:(MSAISession *)session;
-
-
 ///-----------------------------------------------------------------------------
 /// @name Session Lifecycle
 ///-----------------------------------------------------------------------------
@@ -221,17 +171,6 @@ FOUNDATION_EXPORT NSString *const kMSAIApplicationWasLaunched;
  *  Send a notification when a session has ended.
  */
 - (void)sendSessionEndedNotification;
-
-
-///-----------------------------------------------------------------------------
-/// @name Clean Up
-///-----------------------------------------------------------------------------
-
-/**
- *  Remove everything except the most recent entries of each meta data type from the persistent store.
- */
-- (void)cleanUpMetaData;
-
 
 ///-----------------------------------------------------------------------------
 /// @name Helper

@@ -55,13 +55,6 @@ FOUNDATION_EXPORT NSString *const MSAIPersistenceSuccessNotification;
 - (void)persistBundle:(NSData *)bundle ofType:(MSAIPersistenceType)type enableNotifications:(BOOL)sendNotifications withCompletionBlock:(void (^)(BOOL success))completionBlock;
 
 /**
- *  Saves the given dictionary to the session Ids file.
- *
- *  @param metaData a dictionary consisting of unix timestamps and session ids
- */
-- (void)persistMetaData:(NSDictionary *)metaData;
-
-/**
  *  Deletes the file for the given path.
  *
  *  @param path the path of the file, which should be deleted

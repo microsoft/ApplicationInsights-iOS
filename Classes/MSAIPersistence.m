@@ -6,7 +6,6 @@
 
 NSString *const kHighPrioString = @"highPrio";
 NSString *const kRegularPrioString = @"regularPrio";
-NSString *const kSessionIdsString = @"metaData";
 NSString *const kFileBaseString = @"app-insights-bundle-";
 
 NSString *const MSAIPersistenceSuccessNotification = @"MSAIPersistenceSuccessNotification";
@@ -63,6 +62,7 @@ NSUInteger const defaultFileCount = 50;
         BOOL success = [bundle writeToFile:fileURL atomically:YES];
         if(success) {
           MSAILog(@"Wrote %@", fileURL);
+          if(sendNotifications) {
             [strongSelf sendBundleSavedNotification];
           }
         }
@@ -80,14 +80,6 @@ NSUInteger const defaultFileCount = 50;
       MSAILog(@"Unable to write %@", fileURL);
       //TODO send out a fail notification?
     }
-}
-
-- (void)persistMetaData:(NSDictionary *)metaData {
-  NSString *fileURL = [self newFileURLForPersitenceType:MSAIPersistenceTypeMetaData];
-  
-  dispatch_async(self.persistenceQueue, ^{
-    [NSKeyedArchiver archiveRootObject:metaData toFile:fileURL];
-  });
 }
 
 - (BOOL)isFreeSpaceAvailable{
@@ -113,22 +105,6 @@ NSUInteger const defaultFileCount = 50;
 }
 
 /**
-
-/*
- * @Returns a bundle that includes a crash template.
- */
-- (NSArray *)crashTemplateBundle {
-  NSString *path = [self nextURLWithPriority:MSAIPersistenceTypeCrashTemplate];
-  if(path && path.length > 0) {
-    NSArray *bundle = [self bundleAtPath:path];
-    if(bundle) {
-      return bundle;
-    }
-  }
-  return nil;
-}
-
-/**
  * Deserializes a bundle from disk using NSKeyedUnarchiver and deletes it from disk
  * @return a bundle of data or nil
  */
@@ -138,15 +114,6 @@ NSUInteger const defaultFileCount = 50;
     bundle = [NSKeyedUnarchiver unarchiveObjectWithFile:path];
   }
   return bundle;
-}
-
-- (NSDictionary *)metaData {
-  NSDictionary *metaData = nil;
-  NSString *path = [self newFileURLForPersitenceType:MSAIPersistenceTypeMetaData];
-  if(path) {
-    metaData = [NSKeyedUnarchiver unarchiveObjectWithFile:path];
-  }
-  return metaData;
 }
 
 - (NSData *)dataAtPath:(NSString *)path {
@@ -210,11 +177,6 @@ NSUInteger const defaultFileCount = 50;
     case MSAIPersistenceTypeHighPriority: {
       [self createFolderAtPathIfNeeded:[fileDir stringByAppendingPathComponent:kHighPrioString]];
       filePath = [[fileDir stringByAppendingPathComponent:kHighPrioString] stringByAppendingPathComponent:fileName];
-      break;
-    };
-    case MSAIPersistenceTypeMetaData: {
-      [self createFolderAtPathIfNeeded:[fileDir stringByAppendingPathComponent:kSessionIdsString]];
-      filePath = [[fileDir stringByAppendingPathComponent:kSessionIdsString] stringByAppendingPathComponent:kSessionIdsString];
       break;
     };
     default: {
@@ -310,10 +272,6 @@ NSUInteger const defaultFileCount = 50;
     };
     case MSAIPersistenceTypeRegular: {
       subfolderPath = kRegularPrioString;
-      break;
-    }
-    case MSAIPersistenceTypeMetaData: {
-      subfolderPath = kSessionIdsString;
       break;
     }
   }
