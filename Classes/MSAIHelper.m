@@ -96,29 +96,6 @@ NSString *msai_base64String(NSData *data) {
 #endif
 }
 
-NSString *msai_settingsDir(void) {
-  static NSString *settingsDir = nil;
-  static dispatch_once_t predSettingsDir;
-  
-  dispatch_once(&predSettingsDir, ^{
-    NSFileManager *fileManager = [[NSFileManager alloc] init];
-    
-    // temporary directory for crashes grabbed from PLCrashReporter
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
-    settingsDir = [paths[0] stringByAppendingPathComponent:kMSAIIdentifier];
-    
-    if (![fileManager fileExistsAtPath:settingsDir]) {
-      NSDictionary *attributes = @{NSFilePosixPermissions : @0755};
-      NSError *theError = NULL;
-      
-      [fileManager createDirectoryAtPath:settingsDir withIntermediateDirectories: YES attributes: attributes error: &theError];
-    }
-  });
-  
-  return settingsDir;
-}
-
-
 NSString *msai_keychainMSAIServiceName(void) {
   static NSString *serviceName = nil;
   static dispatch_once_t predServiceName;
