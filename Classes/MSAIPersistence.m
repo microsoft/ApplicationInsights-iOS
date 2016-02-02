@@ -6,7 +6,6 @@
 
 NSString *const kHighPrioString = @"highPrio";
 NSString *const kRegularPrioString = @"regularPrio";
-NSString *const kCrashTemplateString = @"crashTemplate";
 NSString *const kSessionIdsString = @"metaData";
 NSString *const kFileBaseString = @"app-insights-bundle-";
 
@@ -64,7 +63,6 @@ NSUInteger const defaultFileCount = 50;
         BOOL success = [bundle writeToFile:fileURL atomically:YES];
         if(success) {
           MSAILog(@"Wrote %@", fileURL);
-          if(sendNotifications && type != MSAIPersistenceTypeCrashTemplate) {
             [strongSelf sendBundleSavedNotification];
           }
         }
@@ -115,13 +113,6 @@ NSUInteger const defaultFileCount = 50;
 }
 
 /**
- * Method used to persist the "fake" crash reports. Crash templates are handled but are similar to the other bundle
- * types under the hood.
- */
-- (void)persistCrashTemplate:(MSAIEnvelope *)crashTemplate {
-  NSData *bundle = [NSKeyedArchiver archivedDataWithRootObject:@[crashTemplate]];
-  [self persistBundle:bundle ofType:MSAIPersistenceTypeCrashTemplate withCompletionBlock:nil];
-}
 
 /*
  * @Returns a bundle that includes a crash template.
@@ -221,11 +212,6 @@ NSUInteger const defaultFileCount = 50;
       filePath = [[fileDir stringByAppendingPathComponent:kHighPrioString] stringByAppendingPathComponent:fileName];
       break;
     };
-    case MSAIPersistenceTypeCrashTemplate: {
-      [self createFolderAtPathIfNeeded:[fileDir stringByAppendingPathComponent:kCrashTemplateString]];
-      filePath = [[fileDir stringByAppendingPathComponent:kCrashTemplateString] stringByAppendingPathComponent:kCrashTemplateString];
-      break;
-    };
     case MSAIPersistenceTypeMetaData: {
       [self createFolderAtPathIfNeeded:[fileDir stringByAppendingPathComponent:kSessionIdsString]];
       filePath = [[fileDir stringByAppendingPathComponent:kSessionIdsString] stringByAppendingPathComponent:kSessionIdsString];
@@ -322,10 +308,6 @@ NSUInteger const defaultFileCount = 50;
       subfolderPath = kHighPrioString;
       break;
     };
-    case MSAIPersistenceTypeCrashTemplate: {
-      subfolderPath = kCrashTemplateString;
-      break;
-    };
     case MSAIPersistenceTypeRegular: {
       subfolderPath = kRegularPrioString;
       break;
@@ -350,26 +332,6 @@ NSUInteger const defaultFileCount = 50;
                                                         object:nil
                                                       userInfo:nil];
   });
-}
-
-- (BOOL)crashReportLockFilePresent {
-  NSString *analyzerInProgressFile = [msai_settingsDir() stringByAppendingPathComponent:kMSAICrashAnalyzer];
-
-  return [[NSFileManager defaultManager] fileExistsAtPath:analyzerInProgressFile];
-}
-
-- (void)createCrashReporterLockFile {
-  NSString *analyzerInProgressFile = [msai_settingsDir() stringByAppendingPathComponent:kMSAICrashAnalyzer];
-
-  [[NSFileManager defaultManager] createFileAtPath:analyzerInProgressFile contents:nil attributes:nil];
-}
-
-- (void)deleteCrashReporterLockFile {
-  NSString *analyzerInProgressFile = [msai_settingsDir() stringByAppendingPathComponent:kMSAICrashAnalyzer];
-  NSError *error = NULL;
-  if([[NSFileManager defaultManager] fileExistsAtPath:analyzerInProgressFile]) {
-    [[NSFileManager defaultManager] removeItemAtPath:analyzerInProgressFile error:&error];
-  }
 }
 
 @end

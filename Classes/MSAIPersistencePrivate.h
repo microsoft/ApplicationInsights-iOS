@@ -146,27 +146,5 @@ FOUNDATION_EXPORT NSString *const MSAIPersistenceSuccessNotification;
  */
 - (NSString *)folderPathForPersistenceType:(MSAIPersistenceType)type;
 
-///-----------------------------------------------------------------------------
-/// @name Handling of a "fake" CrashReport
-///-----------------------------------------------------------------------------
-
-/**
- * Persist a crash template.
- *
- * @param bundle The bundle of application insights data
- */
-- (void)persistCrashTemplate:(MSAIEnvelope *)crashTemplate;
-
-/**
- * Get the persisted crash template.
- *
- * @return a crash template, wrapped as a bundle
- */
-- (NSArray *)crashTemplateBundle;
-
-- (BOOL)crashReportLockFilePresent;
-- (void)createCrashReporterLockFile;
-- (void)deleteCrashReporterLockFile;
-
 @end
 NS_ASSUME_NONNULL_END
