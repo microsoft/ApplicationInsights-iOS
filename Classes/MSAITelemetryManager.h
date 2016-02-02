@@ -127,18 +127,6 @@ NS_ASSUME_NONNULL_BEGIN
  */
 + (void)trackPageView:(NSString *)pageName duration:(NSTimeInterval)duration properties:(nullable NSDictionary *)properties;
 
-#if MSAI_FEATURE_CRASH_REPORTER
-/**
- *  Track handled exception.
- *
- *  @param exception the handled exception, which should be send to the server.
- *
- *  @warning This method is not guaranteed to succeed.
- *  The underlying mechanism relies on `mach_thread_suspend()` which might lockup and not return a viable result.
- */
-+ (void)trackException:(NSException *)exception;
-#endif /* MSAI_FEATURE_CRASH_REPORTER */
-
 /**
  *  Track the event by event name.
  *
@@ -218,18 +206,6 @@ NS_ASSUME_NONNULL_BEGIN
  *  @param properties key-value pairs which can contain additional information about the page view
  */
 - (void)trackPageView:(NSString *)pageName duration:(NSTimeInterval)duration properties:(nullable NSDictionary *)properties;
-
-#if MSAI_FEATURE_CRASH_REPORTER
-/**
- *  Track handled exception.
- *
- *  @param exception the handled exception, which should be send to the server.
- *
- *  @warning This method is not guaranteed to succeed. 
- *  The underlying mechanism relies on `mach_thread_suspend()` which might lockup and not return a viable result.
- */
-- (void)trackException:(NSException *)exception;
-#endif /* MSAI_FEATURE_CRASH_REPORTER */
 
 @end
 NS_ASSUME_NONNULL_END
