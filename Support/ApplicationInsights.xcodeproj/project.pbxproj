@@ -211,12 +211,8 @@
 /* Begin PBXFileReference section */
 		1B2439BF1AB8AB8100B07374 /* MSAIContextHelperPrivate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MSAIContextHelperPrivate.h; sourceTree = "<group>"; };
 		1B2B6E851C5AFF3600D89D13 /* module.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
-		1B2B6E861C5AFF4C00D89D13 /* module_crashonly.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = module_crashonly.modulemap; sourceTree = "<group>"; };
-		1B2B6E871C5B02B200D89D13 /* crashonly.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = crashonly.xcconfig; sourceTree = "<group>"; };
-		1B2B6E881C5B02B200D89D13 /* telemetryonly.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = telemetryonly.xcconfig; sourceTree = "<group>"; };
 		1B2B6E891C5B039800D89D13 /* release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = release.xcconfig; sourceTree = "<group>"; };
 		1B3B73071A94BC8E008DCADA /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
-		1B3FA13E1C5B15680085A0ED /* module_telemetryonly.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = module_telemetryonly.modulemap; sourceTree = "<group>"; };
 		1B3FB89C1A93756100D06311 /* MSAIReachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAIReachability.h; sourceTree = "<group>"; };
 		1B3FB89D1A93756100D06311 /* MSAIReachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAIReachability.m; sourceTree = "<group>"; };
 		1B3FB8A51A9383C300D06311 /* MSAIReachabilityPrivate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MSAIReachabilityPrivate.h; sourceTree = "<group>"; };
@@ -577,11 +573,7 @@
 		1E66CA8F15D40FF600F35BED /* Support */ = {
 			isa = PBXGroup;
 			children = (
-				1B3FA13E1C5B15680085A0ED /* module_telemetryonly.modulemap */,
 				1B2B6E891C5B039800D89D13 /* release.xcconfig */,
-				1B2B6E871C5B02B200D89D13 /* crashonly.xcconfig */,
-				1B2B6E881C5B02B200D89D13 /* telemetryonly.xcconfig */,
-				1B2B6E861C5AFF4C00D89D13 /* module_crashonly.modulemap */,
 				1B2B6E851C5AFF3600D89D13 /* module.modulemap */,
 				1E754DC61621BC170070AB92 /* ApplicationInsights.xcconfig */,
 				1E66CA9115D4100500F35BED /* buildnumber.xcconfig */,
@@ -1060,7 +1052,6 @@
 /* Begin XCBuildConfiguration section */
 		1B2B6E8F1C5B040300D89D13 /* ReleaseCrashOnly */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1B2B6E871C5B02B200D89D13 /* crashonly.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -1184,7 +1175,6 @@
 		};
 		1B2B6E941C5B041E00D89D13 /* ReleaseTelemetryOnly */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1B2B6E881C5B02B200D89D13 /* telemetryonly.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_ARC = YES;
