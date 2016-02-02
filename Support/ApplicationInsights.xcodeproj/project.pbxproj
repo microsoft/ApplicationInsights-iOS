@@ -38,8 +38,6 @@
 		1B3FB89F1A93756100D06311 /* MSAIReachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B3FB89D1A93756100D06311 /* MSAIReachability.m */; };
 		1B47E02E1A84D3DF000B4C3D /* MSAIEnvelopeManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B47E02C1A84D3DF000B4C3D /* MSAIEnvelopeManager.h */; };
 		1B47E02F1A84D3DF000B4C3D /* MSAIEnvelopeManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B47E02D1A84D3DF000B4C3D /* MSAIEnvelopeManager.m */; };
-		1B53FEBF1A6425240082F2E9 /* CrashReporter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B53FEBE1A6425240082F2E9 /* CrashReporter.framework */; };
-		1B53FEC01A6425240082F2E9 /* CrashReporter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B53FEBE1A6425240082F2E9 /* CrashReporter.framework */; };
 		1B62F4D81A692A3200EB5AD0 /* MSAIContext.h in Headers */ = {isa = PBXBuildFile; fileRef = 1B62F4D61A692A3200EB5AD0 /* MSAIContext.h */; };
 		1B62F4D91A692A3200EB5AD0 /* MSAIContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 1B62F4D71A692A3200EB5AD0 /* MSAIContext.m */; };
 		1B85606F1A7A6A9D00A54FB7 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B85606E1A7A6A9D00A54FB7 /* UIKit.framework */; };
@@ -209,7 +207,6 @@
 		1B47E02D1A84D3DF000B4C3D /* MSAIEnvelopeManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAIEnvelopeManager.m; sourceTree = "<group>"; };
 		1B47E0301A84D413000B4C3D /* MSAIEnvelopeManagerPrivate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MSAIEnvelopeManagerPrivate.h; sourceTree = "<group>"; };
 		1B4D17E41A666EE30079D948 /* MSAIChannelPrivate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MSAIChannelPrivate.h; sourceTree = "<group>"; };
-		1B53FEBE1A6425240082F2E9 /* CrashReporter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CrashReporter.framework; path = ../Vendor/CrashReporter.framework; sourceTree = "<group>"; };
 		1B62F4D61A692A3200EB5AD0 /* MSAIContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAIContext.h; sourceTree = "<group>"; };
 		1B62F4D71A692A3200EB5AD0 /* MSAIContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAIContext.m; sourceTree = "<group>"; };
 		1B62F4DA1A692A6F00EB5AD0 /* MSAIContextPrivate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MSAIContextPrivate.h; sourceTree = "<group>"; };
@@ -373,7 +370,6 @@
 			files = (
 				1B85606F1A7A6A9D00A54FB7 /* UIKit.framework in Frameworks */,
 				1E5954DC15B6F24A00A03429 /* Foundation.framework in Frameworks */,
-				1B53FEBF1A6425240082F2E9 /* CrashReporter.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -384,7 +380,6 @@
 				80E1A45A1AE54D6200603B0A /* libOCMock.a in Frameworks */,
 				80ECBD1F1ADE9E39005CACF4 /* libz.dylib in Frameworks */,
 				1B3B73081A94BC8E008DCADA /* CoreTelephony.framework in Frameworks */,
-				1B53FEC01A6425240082F2E9 /* CrashReporter.framework in Frameworks */,
 				1EA1170016F4D32C001C015C /* libApplicationInsights.a in Frameworks */,
 				80E1A44C1AE54C7800603B0A /* OCHamcrestIOS.framework in Frameworks */,
 				1E5A459516F0DFC200B55C04 /* Foundation.framework in Frameworks */,
@@ -642,7 +637,6 @@
 				80B69EEF1ADDC49100C47B0A /* libz.dylib */,
 				1B3B73071A94BC8E008DCADA /* CoreTelephony.framework */,
 				1B85606E1A7A6A9D00A54FB7 /* UIKit.framework */,
-				1B53FEBE1A6425240082F2E9 /* CrashReporter.framework */,
 				E400561D148D79B500EB22B9 /* Foundation.framework */,
 			);
 			name = Frameworks;
