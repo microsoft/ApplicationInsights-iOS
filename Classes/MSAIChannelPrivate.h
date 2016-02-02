@@ -4,10 +4,8 @@
 @class MSAIEnvelope;
 @class MSAITelemetryContext;
 @class MSAIAppClient;
-@class MSAITelemetryContext;
 @class MSAITelemetryData;
 @class MSAISender;
-@class MSAICrashData;
 @class MSAIOrderedDictionary;
 
 NS_ASSUME_NONNULL_BEGIN
@@ -48,7 +46,7 @@ FOUNDATION_EXPORT NSInteger const defaultMaxBatchCount;
 @property (nonatomic, assign) NSUInteger dataItemCount;
 
 /**
- *  Enqueue telemetry data (events, metrics, exceptions, traces) before processing it.
+ *  Enqueue telemetry data (events, metrics, traces) before processing it.
  *
  *  @param dictionary The dictionary object, which should be processed.
  */

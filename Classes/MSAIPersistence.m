@@ -1,7 +1,6 @@
 #import "MSAIPersistence.h"
 #import "MSAIPersistencePrivate.h"
 #import "MSAIEnvelope.h"
-#import "MSAICrashData.h"
 #import "ApplicationInsightsPrivate.h"
 #import "MSAIHelper.h"
 
@@ -46,14 +45,12 @@ NSUInteger const defaultFileCount = 50;
   return self;
 }
 
-//TODO remove the completion block and implement notification-handling in MSAICrashManager
 - (void)persistBundle:(NSData *)bundle ofType:(MSAIPersistenceType)type withCompletionBlock:(nullable void (^)(BOOL success))completionBlock {
   [self persistBundle:bundle ofType:type enableNotifications:YES withCompletionBlock:completionBlock];
 }
 
 /**
  * Creates a serial background queue that saves the Bundle using NSKeyedArchiver and NSData's writeToFile:atomically
- * In case if type MSAIPersistenceTypeCrashTemplate, we don't send out a kMSAIPersistenceSuccessNotification.
  *
  */
 - (void)persistBundle:(NSData *)bundle ofType:(MSAIPersistenceType)type enableNotifications:(BOOL)sendNotifications withCompletionBlock:(void (^)(BOOL success))completionBlock {

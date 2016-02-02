@@ -4,7 +4,6 @@
 @class MSAIEnvelope;
 @class MSAITelemetryData;
 @class MSAITelemetryContext;
-@class MSAIPLCrashReport;
 
 NS_ASSUME_NONNULL_BEGIN
 @interface MSAIEnvelopeManager()

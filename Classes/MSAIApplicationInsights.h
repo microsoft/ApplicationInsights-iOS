@@ -187,7 +187,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  *  This starts a new session with the given session ID. 
  *
- *  @param sessionId The session ID which should be attached to all future telemetry and crash events.
+ *  @param sessionId The session ID which should be attached to all future telemetry events.
  *
  *  @warning Using this method automatically disables automatic session management!
  *  @see autoSessionManagementDisabled
@@ -197,7 +197,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  *  This starts a new session with the given session ID.
  *
- *  @param sessionId The session ID which should be attached to all future telemetry and crash events.
+ *  @param sessionId The session ID which should be attached to all future telemetry events.
  *
  *  @warning Using this method automatically disables automatic session management!
  *  @see autoSessionManagementDisabled

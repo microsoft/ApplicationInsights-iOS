@@ -6,7 +6,6 @@
 #import "MSAITelemetryContext.h"
 #import "MSAITelemetryContextPrivate.h"
 #import "MSAIHelper.h"
-#import "MSAICrashDataProvider.h"
 #import "MSAIHelper.h"
 
 static NSInteger const schemaVersion = 2;
