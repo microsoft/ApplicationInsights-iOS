@@ -355,6 +355,9 @@ BOOL msai_isAppStoreEnvironment(void){
  * @return `YES` if the debugger is attached to the current process, `NO` otherwise
  */
 BOOL msai_isDebuggerAttached(void) {
+#if CI
+  return YES;
+#endif
   static BOOL debuggerIsAttached = NO;
   
   static dispatch_once_t debuggerPredicate;
@@ -370,11 +373,11 @@ BOOL msai_isDebuggerAttached(void) {
     
     if(sysctl(name, 4, &info, &info_size, NULL, 0) == -1) {
       NSLog(@"[ApplicationInsights] ERROR: Checking for a running debugger via sysctl() failed: %s", strerror(errno));
-      debuggerIsAttached = false;
+      debuggerIsAttached = NO;
     }
     
     if(!debuggerIsAttached && (info.kp_proc.p_flag & P_TRACED) != 0)
-      debuggerIsAttached = true;
+      debuggerIsAttached = YES;
   });
   
   return debuggerIsAttached;
