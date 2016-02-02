@@ -132,9 +132,6 @@
 		809E9E5B1AC455D9008A1AB5 /* MSAISessionStateData.h in Headers */ = {isa = PBXBuildFile; fileRef = 809E9E581AC455D9008A1AB5 /* MSAISessionStateData.h */; };
 		809E9E5C1AC455D9008A1AB5 /* MSAISessionStateData.m in Sources */ = {isa = PBXBuildFile; fileRef = 809E9E591AC455D9008A1AB5 /* MSAISessionStateData.m */; };
 		80B69EED1ADDC09900C47B0A /* MSAIGZIP.h in Headers */ = {isa = PBXBuildFile; fileRef = 80B69EEB1ADDC09900C47B0A /* MSAIGZIP.h */; };
-		80E1A3E71AE54B4200603B0A /* live_report_empty.plcrash in Resources */ = {isa = PBXBuildFile; fileRef = 80E1A3E41AE54B4200603B0A /* live_report_empty.plcrash */; };
-		80E1A3E81AE54B4200603B0A /* live_report_exception.plcrash in Resources */ = {isa = PBXBuildFile; fileRef = 80E1A3E51AE54B4200603B0A /* live_report_exception.plcrash */; };
-		80E1A3E91AE54B4200603B0A /* live_report_signal.plcrash in Resources */ = {isa = PBXBuildFile; fileRef = 80E1A3E61AE54B4200603B0A /* live_report_signal.plcrash */; };
 		80E1A4121AE54B5300603B0A /* MSAIAppClientTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 80E1A3EA1AE54B5300603B0A /* MSAIAppClientTests.m */; };
 		80E1A4131AE54B5300603B0A /* MSAIApplicationInsightsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 80E1A3EB1AE54B5300603B0A /* MSAIApplicationInsightsTests.m */; };
 		80E1A4141AE54B5300603B0A /* MSAIApplicationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 80E1A3EC1AE54B5300603B0A /* MSAIApplicationTests.m */; };
@@ -301,9 +298,6 @@
 		809E9E591AC455D9008A1AB5 /* MSAISessionStateData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAISessionStateData.m; sourceTree = "<group>"; };
 		80B69EEB1ADDC09900C47B0A /* MSAIGZIP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAIGZIP.h; sourceTree = "<group>"; };
 		80B69EEF1ADDC49100C47B0A /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
-		80E1A3E41AE54B4200603B0A /* live_report_empty.plcrash */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = live_report_empty.plcrash; path = ApplicationInsightsTests/Fixtures/live_report_empty.plcrash; sourceTree = SOURCE_ROOT; };
-		80E1A3E51AE54B4200603B0A /* live_report_exception.plcrash */ = {isa = PBXFileReference; lastKnownFileType = file; name = live_report_exception.plcrash; path = ApplicationInsightsTests/Fixtures/live_report_exception.plcrash; sourceTree = SOURCE_ROOT; };
-		80E1A3E61AE54B4200603B0A /* live_report_signal.plcrash */ = {isa = PBXFileReference; lastKnownFileType = file; name = live_report_signal.plcrash; path = ApplicationInsightsTests/Fixtures/live_report_signal.plcrash; sourceTree = SOURCE_ROOT; };
 		80E1A3EA1AE54B5300603B0A /* MSAIAppClientTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIAppClientTests.m; path = ApplicationInsightsTests/MSAIAppClientTests.m; sourceTree = SOURCE_ROOT; };
 		80E1A3EB1AE54B5300603B0A /* MSAIApplicationInsightsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIApplicationInsightsTests.m; path = ApplicationInsightsTests/MSAIApplicationInsightsTests.m; sourceTree = SOURCE_ROOT; };
 		80E1A3EC1AE54B5300603B0A /* MSAIApplicationTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MSAIApplicationTests.m; path = ApplicationInsightsTests/MSAIApplicationTests.m; sourceTree = SOURCE_ROOT; };
@@ -476,7 +470,6 @@
 		1E5A459616F0DFC200B55C04 /* ApplicationInsights Tests */ = {
 			isa = PBXGroup;
 			children = (
-				1EA1170216F53B49001C015C /* Fixtures */,
 				80E1A3EA1AE54B5300603B0A /* MSAIAppClientTests.m */,
 				80E1A3EB1AE54B5300603B0A /* MSAIApplicationInsightsTests.m */,
 				80E1A3EC1AE54B5300603B0A /* MSAIApplicationTests.m */,
@@ -567,16 +560,6 @@
 				1BC8596D1A7ACC040018FB6B /* MSAIPageViewLogging_UIViewController.h */,
 			);
 			name = Helper;
-			sourceTree = "<group>";
-		};
-		1EA1170216F53B49001C015C /* Fixtures */ = {
-			isa = PBXGroup;
-			children = (
-				80E1A3E41AE54B4200603B0A /* live_report_empty.plcrash */,
-				80E1A3E51AE54B4200603B0A /* live_report_exception.plcrash */,
-				80E1A3E61AE54B4200603B0A /* live_report_signal.plcrash */,
-			);
-			path = Fixtures;
 			sourceTree = "<group>";
 		};
 		1EB2E4C318FD4CBC008BB1CF /* Telemetry */ = {
@@ -845,9 +828,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				80E1A3E81AE54B4200603B0A /* live_report_exception.plcrash in Resources */,
-				80E1A3E91AE54B4200603B0A /* live_report_signal.plcrash in Resources */,
-				80E1A3E71AE54B4200603B0A /* live_report_empty.plcrash in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
