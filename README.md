@@ -11,8 +11,6 @@ The SDK runs on devices with iOS 6.0 or higher. You'll need a subscription to [M
 
 ##Breaking Changes!
 
-Breaking Changes!
-
 Version 1.0-beta.7 of the Application Insights for iOS SDK comes with two major changes:
 
 Crash Reporting and the API to send handled exceptions have been removed from the SDK. In addition, the Application Insights for iOS SDK is now deprecated.
