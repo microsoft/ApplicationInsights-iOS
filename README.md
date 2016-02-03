@@ -1,12 +1,23 @@
 [![Build Status](https://travis-ci.org/Microsoft/ApplicationInsights-iOS.svg?branch=master)](https://travis-ci.org/Microsoft/ApplicationInsights-iOS)
 
-# Application Insights for iOS (1.0-beta.6)
+# Application Insights for iOS (1.0-beta.7)
 
 This is the repository of the iOS SDK for Application Insights. [Application Insights](http://azure.microsoft.com/services/application-insights/) is a service that monitors the performance and usage of your published app. The SDK enables you to send telemetry of various kinds (events, traces, sessions etc.) to the Application Insights service where your data can be visualized in the Azure Portal.
 
-You can use the [Application Insights for Mac](http://go.microsoft.com/fwlink/?linkid=533209&clcid=0x409) tool to integrate the Application Insights iOS SDK into your existing apps. The SDK runs on devices with iOS 6.0 or higher. You'll need a subscription to [Microsoft Azure](https://azure.com). (It's free until you want to send quite a lot of telemetry.)
+You can use the [Application Insights for Mac](http://go.microsoft.com/fwlink/?linkid=533209&clcid=0x409) tool to integrate the Application Insights iOS SDK into your existing apps.
+The SDK runs on devices with iOS 6.0 or higher. You'll need a subscription to [Microsoft Azure](https://azure.com). (It's free until you want to send quite a lot of telemetry.)
 
 [Application Insights overview](https://azure.microsoft.com/documentation/articles/app-insights-overview/)
+
+##Breaking Changes!
+
+Version 1.0-beta.7 of the Application Insights for iOS SDK comes with two major changes:
+
+Crash Reporting and the API to send handled exceptions have been removed from the SDK. In addition, the Application Insights for iOS SDK is now deprecated.
+
+The reason for this is that [HockeyApp](http://hockeyapp.net/) is now our major offering for mobile and cross-plattform crash reporting, beta distribution and user feedback. We are focusing all our efforts on enhancing the HockeySDK and adding telemetry features to make HockeyApp the best platform to build awesome apps. We've launched [HockeyApp Preseason](http://hockeyapp.net/blog/2016/02/02/introducing-preseason.html) so you can try all the new bits yourself, including User Metrics.
+
+We apologize for any inconvenience and please feel free to [contact us](http://support.hockeyapp.net/) at any time.
 
 ## Content
 
@@ -23,12 +34,14 @@ You can use the [Application Insights for Mac](http://go.microsoft.com/fwlink/?l
 11. [Contributing](#contributing)
 12. [Contact](#contact)
 
-<a name="breakingchanges"></a>
-## 2. Breaking Changes
-There haven't been any breaking changes since 1.0-beta.2. In case the API of the SDK changes, we will deprecate methods, etc. before removing them.
+<a name="releasenotes"></a>
+## 1. Release Notes
 
-* **[1.0-beta.2]** ```MSAIAppInsights``` was the the central entry-point to use the Application Insights SDK. It has been renamed to  ```MSAIApplicationInsights```. 
-* **[1.0-beta.2]** Setting the custom server URL now requires the complete URL to the server
+* Remove crash reporting. To add this feature to your app, we recommend to use [HockeyApp](http://hockeyapp.net/features/) which provides you with superior crash reporting, feedback, beta distribution and much more.
+* Enable Bitcode. This was previously not possible as Bitcode-enabled apps are recompiled at unknown times on Apple's servers and make it very hard to get fully symbolicated and useful crash reports.
+* Fixes an issue where pageview durations where incorrectly sent as days instead of as a string in the 'd:hh:mm:ss.fffffff' format. The relevant methods now take an `NSTimeInterval` parameter with the duration in seconds.
+
+See [here](https://github.com/Microsoft/ApplicationInsights-iOS/releases) for the release notes of previous versions.
 
 <a id="requirements"></a>
 ## 2.  Requirements
@@ -78,55 +91,55 @@ From our experience, 3rd-party libraries usually reside inside a subdirectory (l
 1. Open your `AppDelegate.m` file.
 2. Add the following line at the top of the file below your own `import` statements:
 
-	```objectivec
-	@import ApplicationInsights;
-	```
+    ```objectivec
+    @import ApplicationInsights;
+    ```
 
 3. Search for the method `application:didFinishLaunchingWithOptions:`
 4. Add the following lines to setup and start the Application Insights SDK:
 
-	```objectivec
-	[[MSAIApplicationInsights sharedInstance] setup];
-	// Do some additional configuration if needed here
-	//... more of your other setup code here ...
-	[[MSAIApplicationInsights sharedInstance] start];
-	```
+    ```objectivec
+    [[MSAIApplicationInsights sharedInstance] setup];
+    // Do some additional configuration if needed here
+    //... more of your other setup code here ...
+    [[MSAIApplicationInsights sharedInstance] start];
+    ```
 
-	You can also use the following shortcuts:
+    You can also use the following shortcuts:
 
-	```objectivec
-	[MSAIApplicationInsights setup];
-	[MSAIApplicationInsights start];
-	```
+    ```objectivec
+    [MSAIApplicationInsights setup];
+    [MSAIApplicationInsights start];
+    ```
 
 **Swift**
 
 1. Open your `AppDelegate.swift` file.
 2. Add the following line at the top of the file below your own import statements:
     
-	```swift
-	import ApplicationInsights
-	```
+    ```swift
+    import ApplicationInsights
+    ```
 
 3. Search for the method 
     
-	```swift
-	application(application: UIApplication, didFinishLaunchingWithOptions launchOptions:[NSObject: AnyObject]?) -> Bool`
-	```
+    ```swift
+    application(application: UIApplication, didFinishLaunchingWithOptions launchOptions:[NSObject: AnyObject]?) -> Bool`
+    ```
 
 4. Add the following lines to setup and start the Application Insights SDK:
     
-	```swift
-	MSAIApplicationInsights.sharedInstance().setup();
-	MSAIApplicationInsights.sharedInstance().start();
-	```
+    ```swift
+    MSAIApplicationInsights.sharedInstance().setup();
+    MSAIApplicationInsights.sharedInstance().start();
+    ```
     
-	You can also use the following shortcuts:
+    You can also use the following shortcuts:
 
-	```swift
-	MSAIApplicationInsights.setup()
-	MSAIApplicationInsights.start()
-	```
+    ```swift
+    MSAIApplicationInsights.setup()
+    MSAIApplicationInsights.start()
+    ```
 
 **Congratulation, now you're all set to use Application Insights! See [Basic Usage](#basicusage) on how to use Application Insights.**
 
@@ -160,7 +173,6 @@ If you are working with an older project which doesn't support clang modules yet
     - `Security`
     - `SystemConfiguration`
     - `UIKit`
-    - `libc++`
     - `libz`
 
 Note that this also means that you can't use the `@import` syntax mentioned in the [Modify Code](#modify) section but have to stick to the old `#import <ApplicationInsights/ApplicationInsights.h>`.
@@ -288,6 +300,8 @@ This setting is ignored if the app is running in an app store environment, so th
 <a id="basicusage"></a>
 ## 6. Basic Usage
 
+**[NOTE]** The SDK is optimized to defer everything possible to a later time while making sure each module executes other code with a delay of some seconds. This ensures that `applicationDidFinishLaunching:` will process as fast as possible and the SDK will not block the startup sequence resulting in a possible kill by the watchdog process.
+
 After you have set up the SDK as [described above](#setup), the ```MSAITelemetryManager```-instance is the central interface to track events, traces, metrics, page views or handled exceptions.
 
 For an overview of how to use the API and view the results in the Application Insights resource, see [API Overview](https://azure.microsoft.com/documentation/articles/app-insights-api-custom-events-metrics/). The examples are in Java, but the principles are the same.
@@ -314,13 +328,6 @@ For an overview of how to use the API and view the results in the Application In
 // Send custom metrics
 [MSAITelemetryManager trackMetricWithName:@"Test metric" value:42.2];
 
-// Track handled exceptions
-NSArray *zeroItemArray = [NSArray new];
-@try {
-	NSString *fooString = zeroItemArray[3];
-} @catch(NSException *exception) {
-	[MSAITelemetryManager trackException:exception];
-}
 ```
 
 ### 6.2 Swift
@@ -328,19 +335,19 @@ NSArray *zeroItemArray = [NSArray new];
 ```swift
 // Send an event with custom properties and measuremnts data
 MSAITelemetryManager.trackEventWithName("Hello World event!", 
-								  properties:["Test property 1":"Some value",
-											  "Test property 2":"Some other value"],
-							    measurements:["Test measurement 1":4.8,
-											  "Test measurement 2":15.16,
-										      "Test measurement 3":23.42])
+                                  properties:["Test property 1":"Some value",
+                                              "Test property 2":"Some other value"],
+                                measurements:["Test measurement 1":4.8,
+                                              "Test measurement 2":15.16,
+                                              "Test measurement 3":23.42])
 
 // Send a message
 MSAITelemetryManager.trackTraceWithMessage("Test message")
 
 // Manually send pageviews
 MSAITelemetryManager.trackPageView("MyViewController",
-								   duration:300,
-							     properties:["Test measurement 1":4.8])
+                                   duration:300,
+                                 properties:["Test measurement 1":4.8])
 
 // Send a message
 MSAITelemetryManager.trackMetricWithName("Test metric", value:42.2)
@@ -385,7 +392,6 @@ Automatic collection of lifecycle events is **enabled by default**. This means t
 
 ### 8.1. Page views
 The automatic tracking of viewcontroller appearance can be disabled between setup and start of the SDK.
-
 
 ```objectivec
 [MSAIApplicationInsights setup]; //setup the SDK
@@ -458,4 +464,4 @@ We're looking forward to your contributions via pull requests.
 <a id="contact"></a>
 ## 12. Contact
 
-If you have further questions or are running into trouble that cannot be resolved by any of the steps here, feel free to open a GitHub issue here or contact us at [AppInsights-iOS@microsoft.com](mailto:AppInsights-ios@microsoft.com)
+If you have further questions or are running into trouble that cannot be resolved by any of the steps here, feel free to open a GitHub issue here or contact us at [support@hockeyapp.net](mailto:support@hockeyapp.net)

@@ -1,3 +1,13 @@
+## 1.0-beta.7 (3/2/2016)
+
+**Crash Reporting and the API to send handled exceptions have been removed from the SDK. In addition, the Application Insights for iOS SDK is now deprecated.**
+
+The reason for this is that [HockeyApp](http://hockeyapp.net/) is now our major offering for mobile and cross-plattform crash reporting, beta distribution and user feedback. We are focusing all our efforts on enhancing the HockeySDK and adding telemetry features to make HockeyApp the best platform to build awesome apps. We've launched [HockeyApp Preseason](http://hockeyapp.net/blog/2016/02/02/introducing-preseason.html) so you can try all the new bits yourself, including User Metrics.
+
+* Remove crash reporting. To add this feature to your app, we recommend to use [HockeyApp](http://hockeyapp.net/features/) which provides you with superior crash reporting, feedback, beta distribution and much more.
+* Enable Bitcode. This was previously not possible as Bitcode-enabled apps are recompiled at unknown times on Apple's servers and make it very hard to get fully symbolicated and useful crash reports.
+* Fixes an issue where pageview durations where incorrectly sent as days instead of as a string in the 'd:hh:mm:ss.fffffff' format. The relevant methods now take an `NSTimeInterval` parameter with the duration in seconds.
+
 ## 1.0-beta.6 (7/8/2015)
 
 * Add CHANGELOG.md
