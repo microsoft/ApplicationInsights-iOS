@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/Microsoft/ApplicationInsights-iOS.svg?branch=master)](https://travis-ci.org/Microsoft/ApplicationInsights-iOS)
 
-# Application Insights for iOS (1.0-beta.6)
+# Application Insights for iOS (1.0-beta.7)
 
 This is the repository of the iOS SDK for Application Insights. [Application Insights](http://azure.microsoft.com/services/application-insights/) is a service that monitors the performance and usage of your published app. The SDK enables you to send telemetry of various kinds (events, traces, exceptions, etc.) to the Application Insights service where your data can be visualized in the Azure Portal.
 
@@ -8,6 +8,18 @@ You can use the [Application Insights for Mac](http://go.microsoft.com/fwlink/?l
 The SDK runs on devices with iOS 6.0 or higher. You'll need a subscription to [Microsoft Azure](https://azure.com). (It's free until you want to send quite a lot of telemetry.)
 
 [Application Insights overview](https://azure.microsoft.com/documentation/articles/app-insights-overview/)
+
+##Breaking Changes!
+
+Version 1.0-beta.7 of the Application Insights for iOS SDK comes with two major changes:
+
+Crash Reporting and the API to send handled exceptions have been removed from the SDK. In addition, the Application Insights for iOS SDK is now *deprecated*.
+
+The reason for this is that [HockeyApp](http://hockeyapp.net/features/) is now our major offering for mobile and cross-plattform crash reporting, update distribution and user feedback. We are concentrating all our efforts on enhancing the HockeySDK and add telemetry features to make HockeyApp the best plattform to build awesome apps. We've launched [HockeyApp Preseason](http://hockeyapp.net/blog/2016/02/02/introducing-preseason.html) so you can try all the new bits yourself, including User Metrics which is HockeyApp's telemetry offering.
+
+While the Application Insights for Android SDK will still be available, we don't plan on investing time in it but focus on HockeyApp instead.
+
+We apologize for any inconvenience and please feel free to contact us at any time.
 
 ## Content
 
@@ -35,12 +47,15 @@ The SDK runs on devices with iOS 6.0 or higher. You'll need a subscription to [M
 
 See [here](https://github.com/Microsoft/ApplicationInsights-iOS/releases) for the release notes of previous versions.
 
-<a name="breakingchanges"></a>
-## 2. Breaking Changes
-There haven't been any breaking changes since 1.0-beta.2. In case the API of the SDK changes, we will deprecate methods, etc. before removing them.
+<a name="releasenotes"></a>
+## 1. Release Notes
 
-* **[1.0-beta.2]** ```MSAIAppInsights``` was the the central entry-point to use the Application Insights SDK. It has been renamed to  ```MSAIApplicationInsights```. 
-* **[1.0-beta.2]** Setting the custom server URL now requires the complete URL to the server
+* Fix API: Duration support for page views
+* Fix issues when using SDK with other crash reporting SDK
+* Remove crash/exception reporting. To add this feature to your app, we recommend to use the [HockeySDK for iOS](http://http://hockeyapp.net/releases/) which comes with crash reporting, feedback, beta distribution and much more.
+* Smaller refactorings and improvements
+
+See [here](https://github.com/Microsoft/ApplicationInsights-iOS/releases) for the release notes of previous versions.
 
 <a id="requirements"></a>
 ## 3.  Requirements
