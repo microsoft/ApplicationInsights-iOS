@@ -765,7 +765,6 @@
 				1E5954CC15B6F24A00A03429 /* Sources */,
 				1E5954DB15B6F24A00A03429 /* Frameworks */,
 				1E59558B15B6FD8800A03429 /* Headers */,
-				1EE9071A16F6871F003DDE1D /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -860,19 +859,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "/usr/local/bin/appledoc \\\n  --output \"${SOURCE_ROOT}/../documentation\" \\\n  --ignore Vendor \\\n  --ignore Products \\\n  --ignore Support \\\n  --ignore .m \\\n  --ignore *Private.h \\\n  --create-html \\\n  --create-docset \\\n  --install-docset \\\n  --keep-intermediate-files \\\n  --project-name \"${MSAI_DOCSET_NAME} ${VERSION_STRING}\" \\\n  --project-version \"${VERSION_STRING}\" \\\n  --project-company \"Microsoft\" \\\n  --company-id \"com.microsoft\" \\\n  --docset-bundle-name \"${MSAI_DOCSET_NAME} ${VERSION_STRING}\" \\\n  --docset-feed-name \"${MSAI_DOCSET_NAME}\" \\\n  --docset-desc \"\" \\\n  --docset-platform-family \"iphoneos\" \\\n  --index-desc \"${SOURCE_ROOT}/../docs/index.md\" \\\n  --include \"${SOURCE_ROOT}/../docs/index.html\" \\\n  --include \"${SOURCE_ROOT}/../docs/\" \\\n  --merge-categories \\\n  --no-repeat-first-par \\\n  --warn-undocumented-object \\\n  --warn-undocumented-member \\\n  --warn-empty-description \\\n  --warn-unknown-directive \\\n  --warn-invalid-crossref \\\n  --warn-missing-arg \\\n  --logformat xcode \\\n  --exit-threshold 2 \\\n  \"${SOURCE_ROOT}/../\"\n";
-		};
-		1EE9071A16F6871F003DDE1D /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "if [ \"${CONFIGURATION}\" = \"CodeCoverage\" ]; then\n    \"${SRCROOT}/../Vendor/XcodeCoverage/exportenv.sh\"\nfi";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -980,251 +966,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		1B2B6E8F1C5B040300D89D13 /* ReleaseCrashOnly */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				COPY_PHASE_STRIP = NO;
-				DEAD_CODE_STRIPPING = NO;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SRCROOT)/../Classes/ApplicationInsights-Prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"MSAI_STATIC_LIBRARY=1",
-					"$(inherited)",
-				);
-				GCC_THUMB_SUPPORT = NO;
-				GCC_VERSION = "";
-				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
-				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_STRICT_SELECTOR_MATCH = YES;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = "../Resources/AIS-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
-				"IPHONEOS_DEPLOYMENT_TARGET[arch=arm64]" = 7.0;
-				MACOSX_DEPLOYMENT_TARGET = 10.5;
-				RUN_CLANG_STATIC_ANALYZER = YES;
-				SDKROOT = iphoneos;
-				VALIDATE_PRODUCT = NO;
-			};
-			name = ReleaseCrashOnly;
-		};
-		1B2B6E901C5B040300D89D13 /* ReleaseCrashOnly */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				"ARCHS[sdk=iphonesimulator*]" = "$(MSAI_SIM_ARCHS)";
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				DSTROOT = /tmp/AIS.dst;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/../Vendor\"",
-					"$(PROJECT_DIR)",
-				);
-				GCC_THUMB_SUPPORT = NO;
-				PRODUCT_NAME = ApplicationInsights;
-				PUBLIC_HEADERS_FOLDER_PATH = "include/$(PRODUCT_NAME)";
-				SKIP_INSTALL = YES;
-				"VALID_ARCHS[sdk=iphonesimulator*]" = "$(MSAI_SIM_ARCHS)";
-				WARNING_CFLAGS = (
-					"-Wall",
-					"-Wextra",
-					"-Wno-unused-parameter",
-				);
-			};
-			name = ReleaseCrashOnly;
-		};
-		1B2B6E911C5B040300D89D13 /* ReleaseCrashOnly */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				GCC_THUMB_SUPPORT = NO;
-				INFOPLIST_FILE = "$(PROJECT_DIR)/../Resources/ApplicationInsights-Info.plist";
-				PRODUCT_NAME = "ApplicationInsights Documentation";
-			};
-			name = ReleaseCrashOnly;
-		};
-		1B2B6E921C5B040300D89D13 /* ReleaseCrashOnly */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				INFOPLIST_FILE = "$(PROJECT_DIR)/../Resources/ApplicationInsights-Info.plist";
-				PRODUCT_NAME = ApplicationInsights.framework;
-			};
-			name = ReleaseCrashOnly;
-		};
-		1B2B6E931C5B040300D89D13 /* ReleaseCrashOnly */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				COPY_PHASE_STRIP = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
-					"$(SRCROOT)/../Vendor",
-					"$(SRCROOT)/ApplicationInsightsTests",
-				);
-				GCC_INSTRUMENT_PROGRAM_FLOW_ARCS = YES;
-				GCC_LINK_WITH_DYNAMIC_LIBRARIES = YES;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "ApplicationInsightsTests/ApplicationInsightsTests-Prefix.pch";
-				GCC_WARN_UNINITIALIZED_AUTOS = YES;
-				HEADER_SEARCH_PATHS = (
-					"$(inherited)",
-					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
-					"$(SRCROOT)/../Classes",
-					"$(SRCROOT)/ApplicationInsightsTests",
-				);
-				INFOPLIST_FILE = "ApplicationInsightsTests/ApplicationInsightsTests-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(SRCROOT)/ApplicationInsightsTests",
-				);
-				ONLY_ACTIVE_ARCH = YES;
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					"-ObjC",
-				);
-				PRODUCT_NAME = ApplicationInsightsTests;
-				VALIDATE_PRODUCT = YES;
-				WARNING_CFLAGS = (
-					"-Wall",
-					"-Wextra",
-				);
-			};
-			name = ReleaseCrashOnly;
-		};
-		1B2B6E941C5B041E00D89D13 /* ReleaseTelemetryOnly */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				COPY_PHASE_STRIP = NO;
-				DEAD_CODE_STRIPPING = NO;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SRCROOT)/../Classes/ApplicationInsights-Prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"MSAI_STATIC_LIBRARY=1",
-					"$(inherited)",
-				);
-				GCC_THUMB_SUPPORT = NO;
-				GCC_VERSION = "";
-				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
-				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_STRICT_SELECTOR_MATCH = YES;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = "../Resources/AIS-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
-				"IPHONEOS_DEPLOYMENT_TARGET[arch=arm64]" = 7.0;
-				MACOSX_DEPLOYMENT_TARGET = 10.5;
-				SDKROOT = iphoneos;
-				VALIDATE_PRODUCT = NO;
-			};
-			name = ReleaseTelemetryOnly;
-		};
-		1B2B6E951C5B041E00D89D13 /* ReleaseTelemetryOnly */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				"ARCHS[sdk=iphonesimulator*]" = "$(MSAI_SIM_ARCHS)";
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				DSTROOT = /tmp/AIS.dst;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/../Vendor\"",
-					"$(PROJECT_DIR)",
-				);
-				GCC_THUMB_SUPPORT = NO;
-				PRODUCT_NAME = ApplicationInsights;
-				PUBLIC_HEADERS_FOLDER_PATH = "include/$(PRODUCT_NAME)";
-				SKIP_INSTALL = YES;
-				"VALID_ARCHS[sdk=iphonesimulator*]" = "$(MSAI_SIM_ARCHS)";
-				WARNING_CFLAGS = (
-					"-Wall",
-					"-Wextra",
-					"-Wno-unused-parameter",
-				);
-			};
-			name = ReleaseTelemetryOnly;
-		};
-		1B2B6E961C5B041E00D89D13 /* ReleaseTelemetryOnly */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				GCC_THUMB_SUPPORT = NO;
-				INFOPLIST_FILE = "$(PROJECT_DIR)/../Resources/ApplicationInsights-Info.plist";
-				PRODUCT_NAME = "ApplicationInsights Documentation";
-			};
-			name = ReleaseTelemetryOnly;
-		};
-		1B2B6E971C5B041E00D89D13 /* ReleaseTelemetryOnly */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				INFOPLIST_FILE = "$(PROJECT_DIR)/../Resources/ApplicationInsights-Info.plist";
-				PRODUCT_NAME = ApplicationInsights.framework;
-			};
-			name = ReleaseTelemetryOnly;
-		};
-		1B2B6E981C5B041E00D89D13 /* ReleaseTelemetryOnly */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				COPY_PHASE_STRIP = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
-					"$(SRCROOT)/../Vendor",
-					"$(SRCROOT)/ApplicationInsightsTests",
-				);
-				GCC_INSTRUMENT_PROGRAM_FLOW_ARCS = YES;
-				GCC_LINK_WITH_DYNAMIC_LIBRARIES = YES;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "ApplicationInsightsTests/ApplicationInsightsTests-Prefix.pch";
-				GCC_WARN_UNINITIALIZED_AUTOS = YES;
-				HEADER_SEARCH_PATHS = (
-					"$(inherited)",
-					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
-					"$(SRCROOT)/../Classes",
-					"$(SRCROOT)/ApplicationInsightsTests",
-				);
-				INFOPLIST_FILE = "ApplicationInsightsTests/ApplicationInsightsTests-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(SRCROOT)/ApplicationInsightsTests",
-				);
-				ONLY_ACTIVE_ARCH = YES;
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					"-ObjC",
-				);
-				PRODUCT_NAME = ApplicationInsightsTests;
-				VALIDATE_PRODUCT = YES;
-				WARNING_CFLAGS = (
-					"-Wall",
-					"-Wextra",
-				);
-			};
-			name = ReleaseTelemetryOnly;
-		};
 		1E4F61EB1621AD970033EFC5 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1494,8 +1235,6 @@
 			buildConfigurations = (
 				1E4F61EB1621AD970033EFC5 /* Debug */,
 				1E4F61EC1621AD970033EFC5 /* Release */,
-				1B2B6E921C5B040300D89D13 /* ReleaseCrashOnly */,
-				1B2B6E971C5B041E00D89D13 /* ReleaseTelemetryOnly */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -1505,8 +1244,6 @@
 			buildConfigurations = (
 				1E5954F015B6F24A00A03429 /* Debug */,
 				1E5954F115B6F24A00A03429 /* Release */,
-				1B2B6E901C5B040300D89D13 /* ReleaseCrashOnly */,
-				1B2B6E951C5B041E00D89D13 /* ReleaseTelemetryOnly */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -1516,8 +1253,6 @@
 			buildConfigurations = (
 				1E5A45A016F0DFC200B55C04 /* Debug */,
 				1E5A45A116F0DFC200B55C04 /* Release */,
-				1B2B6E931C5B040300D89D13 /* ReleaseCrashOnly */,
-				1B2B6E981C5B041E00D89D13 /* ReleaseTelemetryOnly */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -1527,8 +1262,6 @@
 			buildConfigurations = (
 				1E8E66AE15BC3D7700632A2E /* Debug */,
 				1E8E66AF15BC3D7700632A2E /* Release */,
-				1B2B6E911C5B040300D89D13 /* ReleaseCrashOnly */,
-				1B2B6E961C5B041E00D89D13 /* ReleaseTelemetryOnly */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -1538,8 +1271,6 @@
 			buildConfigurations = (
 				E400563C148D79B500EB22B9 /* Debug */,
 				E400563D148D79B500EB22B9 /* Release */,
-				1B2B6E8F1C5B040300D89D13 /* ReleaseCrashOnly */,
-				1B2B6E941C5B041E00D89D13 /* ReleaseTelemetryOnly */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
