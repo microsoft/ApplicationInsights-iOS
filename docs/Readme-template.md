@@ -2,7 +2,7 @@
 
 # Application Insights for iOS (1.0-beta.7)
 
-This is the repository of the iOS SDK for Application Insights. [Application Insights](http://azure.microsoft.com/services/application-insights/) is a service that monitors the performance and usage of your published app. The SDK enables you to send telemetry of various kinds (events, traces, exceptions, etc.) to the Application Insights service where your data can be visualized in the Azure Portal.
+This is the repository of the iOS SDK for Application Insights. [Application Insights](http://azure.microsoft.com/services/application-insights/) is a service that monitors the performance and usage of your published app. The SDK enables you to send telemetry of various kinds (events, traces, sessions etc.) to the Application Insights service where your data can be visualized in the Azure Portal.
 
 You can use the [Application Insights for Mac](http://go.microsoft.com/fwlink/?linkid=533209&clcid=0x409) tool to integrate the Application Insights iOS SDK into your existing apps.
 The SDK runs on devices with iOS 6.0 or higher. You'll need a subscription to [Microsoft Azure](https://azure.com). (It's free until you want to send quite a lot of telemetry.)
@@ -77,7 +77,7 @@ From our experience, 3rd-party libraries usually reside inside a subdirectory (l
 <a id="setupxcode"></a>
 ### 3.4 Set up the SDK in Xcode
 
-1. We recommend to use Xcode's group-feature to create a group for 3rd-party-libraries similar to the structure of our files on disk. For example,  similar to the file structure in 4.3 above, our projects have a group called `Vendor`.
+1. We recommend to use Xcode's group-feature to create a group for 3rd-party-libraries sixmilar to the structure of our files on disk. For example,  similar to the file structure in 4.3 above, our projects have a group called `Vendor`.
 2. Make sure the `Project Navigator` is visible (⌘+1)
 3. Drag & drop `ApplicationInsights.framework` from your window in the `Finder` into your project in Xcode and move it to the desired location in the `Project Navigator` (e.g. into the group called `Vendor`)
 4. A popup will appear. Select `Create groups for any added folders` and set the checkmark for your target. Then click `Finish`.
@@ -328,13 +328,6 @@ For an overview of how to use the API and view the results in the Application In
 // Send custom metrics
 [MSAITelemetryManager trackMetricWithName:@"Test metric" value:42.2];
 
-// Track handled exceptions
-NSArray *zeroItemArray = [NSArray new];
-@try {
-    NSString *fooString = zeroItemArray[3];
-} @catch(NSException *exception) {
-    [MSAITelemetryManager trackException:exception];
-}
 ```
 
 ### 6.2 Swift
@@ -362,7 +355,7 @@ MSAITelemetryManager.trackMetricWithName("Test metric", value:42.2)
 
 ### View your data in the portal
 
-In the [Azure portal](https://portal.azure.com), open the application resource that you created to get your instrumentation key. You'll see charts showing counts of page views. To see more:
+In the [Azure portal](https://portal.azure.com), open the application resource that you created to get your instrumentation key. You'll see charts showing counts of page views and sessions. To see more:
 
 * Click any chart to see more detail. You can [create your own metric pages, set alerts, and filter and segment your data](https://azure.microsoft.com/documentation/articles/app-insights-metrics-explorer/).
 * Click [Search](https://azure.microsoft.com/documentation/articles/app-insights-diagnostic-search/) to see individual trackEvent, trackTrace, trackException and trackPageView messages.
@@ -372,7 +365,7 @@ In the [Azure portal](https://portal.azure.com), open the application resource t
 
 The SDK also allows for some more advanced usages.
 
-### 7.1 Common Properties   
+### 7.1 Common Properties 
 
 It is also possible to set so-called "common properties" that will then be automatically attached to all telemetry data items.
 
