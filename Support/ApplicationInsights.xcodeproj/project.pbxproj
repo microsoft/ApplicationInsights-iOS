@@ -1050,10 +1050,7 @@
 					"$(SRCROOT)/../Vendor",
 					"$(SRCROOT)/ApplicationInsightsTests",
 				);
-				GCC_INSTRUMENT_PROGRAM_FLOW_ARCS = YES;
 				GCC_LINK_WITH_DYNAMIC_LIBRARIES = YES;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "ApplicationInsightsTests/ApplicationInsightsTests-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					"DEBUG=1",
@@ -1102,10 +1099,8 @@
 					"$(SRCROOT)/../Vendor",
 					"$(SRCROOT)/ApplicationInsightsTests",
 				);
-				GCC_INSTRUMENT_PROGRAM_FLOW_ARCS = YES;
 				GCC_LINK_WITH_DYNAMIC_LIBRARIES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "ApplicationInsightsTests/ApplicationInsightsTests-Prefix.pch";
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
