@@ -35,8 +35,8 @@ FOUNDATION_EXPORT NSString *const MSAIPersistenceSuccessNotification;
 
 /**
  * Saves the bundle and sends out a MSAIPersistenceSuccessNotification in case of success
- * for all types except MSAIPersistenceTypeCrashTemplate
- * @param bundle a bundle of tracked events (telemetry, crashes, ...) that will be serialized and saved.
+ * for all types
+ * @param bundle a bundle of tracked events that will be serialized and saved.
  * @param type The type of the bundle we want to save.
  * @param completionBlock An optional block that will be executed after we have tried to save the bundle.
  *
@@ -48,18 +48,11 @@ FOUNDATION_EXPORT NSString *const MSAIPersistenceSuccessNotification;
  *  Saves the bundle to disk.
  *
  *  @param bundle            the bundle, which should be saved to disk
- *  @param type              the persistence type of the bundle (high prio/regular prio/crash template)
+ *  @param type              the persistence type of the bundle (high prio/regular prio)
  *  @param sendNotifications a flag which determines if a notification should be sent if saving was successful
  *  @param completionBlock   a block which is executed after the bundle has been stored
  */
 - (void)persistBundle:(NSData *)bundle ofType:(MSAIPersistenceType)type enableNotifications:(BOOL)sendNotifications withCompletionBlock:(void (^)(BOOL success))completionBlock;
-
-/**
- *  Saves the given dictionary to the session Ids file.
- *
- *  @param metaData a dictionary consisting of unix timestamps and session ids
- */
-- (void)persistMetaData:(NSDictionary *)metaData;
 
 /**
  *  Deletes the file for the given path.
@@ -126,13 +119,6 @@ FOUNDATION_EXPORT NSString *const MSAIPersistenceSuccessNotification;
  */
 - (NSData *)dataAtPath:(NSString *)path;
 
-/**
- *  Returns the content of the session Ids file.
- *
- *  @return return a dictionary containing all session Ids
- */
-- (NSDictionary *)metaData;
-
 ///-----------------------------------------------------------------------------
 /// @name Getting a path
 ///-----------------------------------------------------------------------------
@@ -145,28 +131,6 @@ FOUNDATION_EXPORT NSString *const MSAIPersistenceSuccessNotification;
  *  @return a folder path for items of a given type
  */
 - (NSString *)folderPathForPersistenceType:(MSAIPersistenceType)type;
-
-///-----------------------------------------------------------------------------
-/// @name Handling of a "fake" CrashReport
-///-----------------------------------------------------------------------------
-
-/**
- * Persist a crash template.
- *
- * @param bundle The bundle of application insights data
- */
-- (void)persistCrashTemplate:(MSAIEnvelope *)crashTemplate;
-
-/**
- * Get the persisted crash template.
- *
- * @return a crash template, wrapped as a bundle
- */
-- (NSArray *)crashTemplateBundle;
-
-- (BOOL)crashReportLockFilePresent;
-- (void)createCrashReporterLockFile;
-- (void)deleteCrashReporterLockFile;
 
 @end
 NS_ASSUME_NONNULL_END

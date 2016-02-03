@@ -4,6 +4,7 @@
 
 /// Data contract class for type MessageData.
 @implementation MSAIMessageData
+
 @synthesize envelopeTypeName = _envelopeTypeName;
 @synthesize dataTypeName = _dataTypeName;
 @synthesize version = _version;

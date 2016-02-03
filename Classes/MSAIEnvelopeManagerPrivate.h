@@ -1,10 +1,9 @@
+#import <Foundation/Foundation.h>
+#import "MSAIEnvelopeManager.h"
+
 @class MSAIEnvelope;
 @class MSAITelemetryData;
 @class MSAITelemetryContext;
-@class MSAIPLCrashReport;
-#import <Foundation/Foundation.h>
-#import "MSAIEnvelopeManager.h"
-#import "ApplicationInsights.h"
 
 NS_ASSUME_NONNULL_BEGIN
 @interface MSAIEnvelopeManager()
@@ -51,26 +50,6 @@ NS_ASSUME_NONNULL_BEGIN
  *  @return the created envelope object
  */
 - (MSAIEnvelope *)envelopeForTelemetryData:(MSAITelemetryData *)telemetryData;
-
-/**
- *  Creates an envelope object based on the information of a given crash report.
- *
- *  @param report the crash report which contains context and exception information.
- *
- *  @return an envelope object that contains a crash report
- */
-- (MSAIEnvelope *)envelopeForCrashReport:(MSAIPLCrashReport *)report;
-
-/**
- *  Creates an envelope object based on the information of a given crash report. This method is
- *  used to send handled exception rather than crashs.
- *
- *  @param report    the report, which contains context as well as exception information
- *  @param exception a handled exception object
- *
- *  @return an envelope object that contains a handled exception
- */
-- (MSAIEnvelope *)envelopeForCrashReport:(MSAIPLCrashReport *)report exception:(nullable NSException *)exception;
 
 @end
 NS_ASSUME_NONNULL_END

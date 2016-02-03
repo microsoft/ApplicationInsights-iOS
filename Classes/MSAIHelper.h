@@ -8,8 +8,6 @@ NSString *msai_URLEncodedString(NSString *inputString);
 NSString *msai_URLDecodedString(NSString *inputString);
 NSString *msai_base64String(NSData *data);
 
-NSString *msai_settingsDir(void);
-
 NSString *msai_keychainMSAIServiceName(void);
 
 NSString *msai_utcDateString(NSDate *date);

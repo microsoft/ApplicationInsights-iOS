@@ -65,6 +65,21 @@
   XCTAssertFalse(self.sut.managerInitialised);
 }
 
+- (void)testDurationStringFromDuration {
+  NSTimeInterval testInterval = 1234567.0987654;
+
+  NSString *durationString = [self.sut durationStringFromDuration:testInterval];
+
+  XCTAssertEqualObjects(durationString, @"14:06:56:07.0987654");
+  
+  NSTimeInterval testInterval2 = 5.65;
+  
+  NSString *durationString2 = [self.sut durationStringFromDuration:testInterval2];
+  
+  XCTAssertEqualObjects(durationString2, @"0:00:00:05.6500000");
+}
+
+
 - (void)testRegisterObservers {
   // Instance already gets registered in init(). We have to unregister again, since we can't register twice.
   [self.sut unregisterObservers];

@@ -18,10 +18,6 @@
 #import "MSAIPageViewData.h"
 #import "MSAIDataPoint.h"
 #import "MSAIEnums.h"
-#import "MSAICrashDataProvider.h"
-#import "MSAICrashData.h"
-#import <pthread.h>
-#import <CrashReporter/CrashReporter.h>
 #import "MSAIEnvelope.h"
 #import "MSAIEnvelopeManager.h"
 #import "MSAIEnvelopeManagerPrivate.h"
@@ -232,27 +228,6 @@ static char *const MSAICommonPropertiesQueue = "com.microsoft.ApplicationInsight
   });
 }
 
-+ (void)trackException:(NSException *)exception {
-  [[self sharedManager] trackException:exception];
-}
-
-- (void)trackException:(NSException *)exception {
-  pthread_t thread = pthread_self();
-
-  dispatch_async(_telemetryEventQueue, ^{
-    PLCrashReporterSignalHandlerType signalHandlerType = PLCrashReporterSignalHandlerTypeBSD;
-    PLCrashReporterSymbolicationStrategy symbolicationStrategy = PLCrashReporterSymbolicationStrategyAll;
-    MSAIPLCrashReporterConfig *config = [[MSAIPLCrashReporterConfig alloc] initWithSignalHandlerType:signalHandlerType
-                                                                               symbolicationStrategy:symbolicationStrategy];
-    MSAIPLCrashReporter *cm = [[MSAIPLCrashReporter alloc] initWithConfiguration:config];
-    NSData *data = [cm generateLiveReportWithThread:pthread_mach_thread_np(thread)];
-    MSAIPLCrashReport *report = [[MSAIPLCrashReport alloc] initWithData:data error:nil];
-    MSAIEnvelope *envelope = [[MSAIEnvelopeManager sharedManager] envelopeForCrashReport:report exception:exception];
-    MSAIOrderedDictionary *dict = [envelope serializeToDictionary];
-    [[MSAIChannel sharedChannel] processDictionary:dict withCompletionBlock:nil];
-  });
-}
-
 + (void)trackPageView:(NSString *)pageName {
   [self trackPageView:pageName duration:0];
 }
@@ -261,19 +236,21 @@ static char *const MSAICommonPropertiesQueue = "com.microsoft.ApplicationInsight
   [self trackPageView:pageName duration:0];
 }
 
-+ (void)trackPageView:(NSString *)pageName duration:(long)duration {
++ (void)trackPageView:(NSString *)pageName duration:(NSTimeInterval)duration {
   [self trackPageView:pageName duration:duration properties:nil];
 }
 
-- (void)trackPageView:(NSString *)pageName duration:(long)duration {
+- (void)trackPageView:(NSString *)pageName duration:(NSTimeInterval)duration {
   [self trackPageView:pageName duration:duration properties:nil];
 }
 
-+ (void)trackPageView:(NSString *)pageName duration:(long)duration properties:(NSDictionary *)properties {
++ (void)trackPageView:(NSString *)pageName duration:(NSTimeInterval)duration properties:(NSDictionary *)properties {
   [[self sharedManager] trackPageView:pageName duration:duration properties:properties];
 }
 
-- (void)trackPageView:(NSString *)pageName duration:(long)duration properties:(NSDictionary *)properties {
+- (void)trackPageView:(NSString *)pageName duration:(NSTimeInterval)duration properties:(NSDictionary *)properties {
+  NSString *durationString = [self durationStringFromDuration:duration];
+
   __weak typeof(self) weakSelf = self;
   dispatch_async(_telemetryEventQueue, ^{
     if(!_managerInitialised) return;
@@ -281,10 +258,25 @@ static char *const MSAICommonPropertiesQueue = "com.microsoft.ApplicationInsight
     typeof(self) strongSelf = weakSelf;
     MSAIPageViewData *pageViewData = [MSAIPageViewData new];
     pageViewData.name = pageName;
-    pageViewData.duration = [NSString stringWithFormat:@"%ld", duration];
+    pageViewData.duration = durationString;
     pageViewData.properties = properties;
     [strongSelf trackDataItem:pageViewData];
   });
+}
+
+#pragma mark PageView Helper
+
+- (NSString *)durationStringFromDuration:(NSTimeInterval)duration {
+  int milliseconds = (int)(fmod(duration, 1) * pow(10, 7));
+
+  int durationInt = (int)duration;
+  int seconds = durationInt % 60;
+  int minutes = (durationInt / 60) % 60;
+  int hours = (durationInt / 3600) % 24;
+  int days = (durationInt / 3600) / 24;
+
+  NSString *durationString = [NSString stringWithFormat:@"%01d:%02d:%02d:%02d.%07d", days, hours, minutes, seconds, milliseconds];
+  return durationString;
 }
 
 #pragma mark Track DataItem

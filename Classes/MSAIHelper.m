@@ -96,29 +96,6 @@ NSString *msai_base64String(NSData *data) {
 #endif
 }
 
-NSString *msai_settingsDir(void) {
-  static NSString *settingsDir = nil;
-  static dispatch_once_t predSettingsDir;
-  
-  dispatch_once(&predSettingsDir, ^{
-    NSFileManager *fileManager = [[NSFileManager alloc] init];
-    
-    // temporary directory for crashes grabbed from PLCrashReporter
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
-    settingsDir = [paths[0] stringByAppendingPathComponent:kMSAIIdentifier];
-    
-    if (![fileManager fileExistsAtPath:settingsDir]) {
-      NSDictionary *attributes = @{NSFilePosixPermissions : @0755};
-      NSError *theError = NULL;
-      
-      [fileManager createDirectoryAtPath:settingsDir withIntermediateDirectories: YES attributes: attributes error: &theError];
-    }
-  });
-  
-  return settingsDir;
-}
-
-
 NSString *msai_keychainMSAIServiceName(void) {
   static NSString *serviceName = nil;
   static dispatch_once_t predServiceName;
@@ -355,6 +332,9 @@ BOOL msai_isAppStoreEnvironment(void){
  * @return `YES` if the debugger is attached to the current process, `NO` otherwise
  */
 BOOL msai_isDebuggerAttached(void) {
+#if CI
+  return YES;
+#endif
   static BOOL debuggerIsAttached = NO;
   
   static dispatch_once_t debuggerPredicate;
@@ -370,11 +350,11 @@ BOOL msai_isDebuggerAttached(void) {
     
     if(sysctl(name, 4, &info, &info_size, NULL, 0) == -1) {
       NSLog(@"[ApplicationInsights] ERROR: Checking for a running debugger via sysctl() failed: %s", strerror(errno));
-      debuggerIsAttached = false;
+      debuggerIsAttached = NO;
     }
     
     if(!debuggerIsAttached && (info.kp_proc.p_flag & P_TRACED) != 0)
-      debuggerIsAttached = true;
+      debuggerIsAttached = YES;
   });
   
   return debuggerIsAttached;

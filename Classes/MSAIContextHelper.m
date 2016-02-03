@@ -20,6 +20,7 @@ NSString *const kMSAIApplicationWasLaunched = @"MSAIApplicationWasLaunched";
 
 NSString *const MSAIUserChangedNotification = @"MSAIUserChangedNotification";
 NSString *const kMSAIUserInfo = @"MSAIUserInfo";
+NSString *const kMSAIPersistedUser = @"MSAIPersistedUser";
 
 NSString *const MSAISessionStartedNotification = @"MSAISessionStartedNotification";
 NSString *const MSAISessionEndedNotification = @"MSAISessionEndedNotification";
@@ -51,10 +52,6 @@ NSString *const kMSAISessionInfo = @"MSAISessionInfo";
     _autoSessionManagementDisabled = NO;
     _appBackgroundTimeBeforeSessionExpires = defaultSessionExpirationTime;
 
-    NSMutableDictionary *restoredMetaData = [[[MSAIPersistence sharedInstance] metaData] mutableCopy];
-    _metaData = restoredMetaData ?: @{}.mutableCopy;
-    _metaData[@"sessions"] = restoredMetaData[@"sessions"] ?: @{}.mutableCopy;
-    _metaData[@"users"] = restoredMetaData[@"users"] ?: @{}.mutableCopy;
     [self registerObservers];
   }
   return self;
@@ -74,12 +71,12 @@ NSString *const kMSAISessionInfo = @"MSAISessionInfo";
 #pragma mark Manual User ID Management
 
 - (void)setUserWithConfigurationBlock:(void (^)(MSAIUser *user))userConfigurationBlock {
-  MSAIUser *__block currentUser = [self userForDate:[NSDate date]];
-
+  MSAIUser *currentUser = [self loadUser];
+  
   if(!currentUser) {
     currentUser = [self newUser];
   }
-
+  
   userConfigurationBlock(currentUser);
 
   if(!currentUser) {
@@ -90,58 +87,25 @@ NSString *const kMSAISessionInfo = @"MSAISessionInfo";
 }
 
 - (void)setCurrentUser:(nonnull MSAIUser *)user {
-  [self addUser:user forDate:[NSDate date]];
+  [self saveUser:user];
   [self sendUserChangedNotificationWithUserInfo:@{kMSAIUserInfo : user}];
 }
 
-- (void)addUser:(MSAIUser *)user forDate:(NSDate *)date {
-  NSString *timestamp = [self unixTimestampFromDate:date ?: [NSDate date]];
+#pragma mark User persistence
 
-  __weak typeof(self) weakSelf = self;
-  dispatch_sync(self.operationsQueue, ^{
-    typeof(self) strongSelf = weakSelf;
-    NSMutableDictionary *users = strongSelf.metaData[@"users"];
-    users[timestamp] = user;
-    [[MSAIPersistence sharedInstance] persistMetaData:strongSelf.metaData];
-  });
+- (void)saveUser:(MSAIUser *)user {
+  NSData *encodedObject = [NSKeyedArchiver archivedDataWithRootObject:user];
+  NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+  [defaults setObject:encodedObject forKey:kMSAIPersistedUser];
 }
 
-- (MSAIUser *)userForDate:(NSDate *)date {
-  NSString *timestamp = [self unixTimestampFromDate:date];
-  NSMutableDictionary *users = self.metaData[@"users"];
-
-  __block MSAIUser *user = nil;
-
-  __weak typeof(self) weakSelf = self;
-  dispatch_sync(self.operationsQueue, ^{
-    typeof(self) strongSelf = weakSelf;
-
-    NSString *userKey = [strongSelf keyForTimestamp:timestamp inDictionary:users];
-    user = users[userKey];
-  });
-
+- (MSAIUser *)loadUser {
+  NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+  NSData *encodedObject = [defaults objectForKey:kMSAIPersistedUser];
+  MSAIUser *user = [NSKeyedUnarchiver unarchiveObjectWithData:encodedObject];
   return user;
 }
 
-- (BOOL)removeUserId:(NSString *)userId {
-  BOOL __block success = NO;
-
-  __weak typeof(self) weakSelf = self;
-  dispatch_sync(self.operationsQueue, ^{
-    typeof(self) strongSelf = weakSelf;
-
-    NSMutableDictionary *users = self.metaData[@"users"];
-    [users enumerateKeysAndObjectsUsingBlock:^(NSString *blockTimestamp, MSAIUser *blockUser, BOOL *stop) {
-      if([blockUser.userId isEqualToString:userId]) {
-        [users removeObjectForKey:blockTimestamp];
-        success = YES;
-        *stop = YES;
-      }
-    }];
-    [[MSAIPersistence sharedInstance] persistMetaData:strongSelf.metaData];
-  });
-  return success;
-}
 
 #pragma mark - Sessions
 #pragma mark Session Creation
@@ -244,65 +208,15 @@ NSString *const kMSAISessionInfo = @"MSAISessionInfo";
 
 - (void)renewSessionWithId:(NSString *)sessionId {
   MSAISession *session = [self newSessionWithId:sessionId];
-  [self addSession:session withDate:[NSDate date]];
-
   NSDictionary *userInfo = @{kMSAISessionInfo : session};
   [self sendSessionStartedNotificationWithUserInfo:userInfo];
-}
-
-- (void)addSession:(MSAISession *)session withDate:(NSDate *)date {
-  NSString *timestamp = [self unixTimestampFromDate:date];
-
-  __weak typeof(self) weakSelf = self;
-  dispatch_sync(self.operationsQueue, ^{
-    typeof(self) strongSelf = weakSelf;
-    NSMutableDictionary *sessions = strongSelf.metaData[@"sessions"];
-    sessions[timestamp] = session;
-    [[MSAIPersistence sharedInstance] persistMetaData:strongSelf.metaData];
-  });
-}
-
-- (MSAISession *)sessionForDate:(NSDate *)date {
-  NSString *timestamp = [self unixTimestampFromDate:date];
-  NSMutableDictionary *sessions = self.metaData[@"sessions"];
-
-  __block MSAISession *session = nil;
-
-  __weak typeof(self) weakSelf = self;
-  dispatch_sync(self.operationsQueue, ^{
-    typeof(self) strongSelf = weakSelf;
-
-    NSString *sessionKey = [strongSelf keyForTimestamp:timestamp inDictionary:sessions];
-    session = [sessions valueForKey:sessionKey];
-  });
-
-  return session;
-}
-
-- (BOOL)removeSession:(MSAISession *)session {
-  BOOL __block success = NO;
-
-  __weak typeof(self) weakSelf = self;
-  dispatch_sync(self.operationsQueue, ^{
-    typeof(self) strongSelf = weakSelf;
-
-    NSMutableDictionary *sessions = self.metaData[@"sessions"];
-    [sessions enumerateKeysAndObjectsUsingBlock:^(NSString *blockTimestamp, MSAISession *blockSession, BOOL *stop) {
-      if([blockSession.sessionId isEqualToString:session.sessionId]) {
-        [sessions removeObjectForKey:blockTimestamp];
-        *stop = YES;
-        success = YES;
-      }
-    }];
-    [[MSAIPersistence sharedInstance] persistMetaData:strongSelf.metaData];
-  });
-  return success;
 }
 
 #pragma mark Session Lifecycle
 
 - (void)startNewSession {
-  [self renewSessionWithId:msai_appAnonID()];
+  NSString *newSessionId = msai_UUID();
+  [self renewSessionWithId:newSessionId];
 }
 
 - (void)endSession {
@@ -332,41 +246,6 @@ NSString *const kMSAISessionInfo = @"MSAISessionInfo";
     [[NSNotificationCenter defaultCenter] postNotificationName:MSAISessionEndedNotification
                                                         object:self
                                                       userInfo:nil];
-  });
-}
-
-#pragma mark - Cleanup Meta Data
-
-- (void)cleanUpMetaData {
-  __weak typeof(self) weakSelf = self;
-
-  dispatch_sync(self.operationsQueue, ^{
-    typeof(self) strongSelf = weakSelf;
-
-    NSMutableDictionary *sessions = strongSelf.metaData[@"sessions"];
-    NSMutableDictionary *users = strongSelf.metaData[@"users"];
-
-    if(sessions.count > 1) {
-      // Get most recent session
-      NSArray *sortedKeys = [strongSelf sortedKeysOfDictionay:sessions];
-      NSString *recentSessionKey = sortedKeys.firstObject;
-
-      // Clear list and add most recent session
-      MSAISession *lastSession = sessions[recentSessionKey];
-      [sessions removeAllObjects];
-      sessions[recentSessionKey] = lastSession;
-    }
-    if(users.count > 1) {
-      // Get most recent session
-      NSArray *sortedKeys = [strongSelf sortedKeysOfDictionay:users];
-      NSString *recentUserKey = sortedKeys.firstObject;
-
-      // Clear list and add most recent session
-      MSAIUser *lastuser = users[recentUserKey];
-      [users removeAllObjects];
-      users[recentUserKey] = lastuser;
-    }
-    [[MSAIPersistence sharedInstance] persistMetaData:strongSelf.metaData];
   });
 }
 

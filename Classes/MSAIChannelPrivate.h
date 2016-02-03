@@ -4,10 +4,8 @@
 @class MSAIEnvelope;
 @class MSAITelemetryContext;
 @class MSAIAppClient;
-@class MSAITelemetryContext;
 @class MSAITelemetryData;
 @class MSAISender;
-@class MSAICrashData;
 @class MSAIOrderedDictionary;
 
 NS_ASSUME_NONNULL_BEGIN
@@ -48,7 +46,7 @@ FOUNDATION_EXPORT NSInteger const defaultMaxBatchCount;
 @property (nonatomic, assign) NSUInteger dataItemCount;
 
 /**
- *  Enqueue telemetry data (events, metrics, exceptions, traces) before processing it.
+ *  Enqueue telemetry data (events, metrics, traces) before processing it.
  *
  *  @param dictionary The dictionary object, which should be processed.
  */
@@ -84,14 +82,6 @@ void msai_appendStringToSafeJsonStream(NSString *string, char *__nonnull*__nonnu
  *  @param string The string that will be reset.
  */
 void msai_resetSafeJsonStream(char *__nonnull*__nonnull jsonStream);
-
-/**
- *  Directly process telemetry data (crashs) without enqueuing it first.
- *
- *  @param dictionary      the dictionary object to process.
- *  @param completionBlock the block, which should be executed after the envelope has been persisted.
- */
-- (void)processDictionary:(MSAIOrderedDictionary *)dictionary withCompletionBlock:(nullable void (^)(BOOL success))completionBlock;
 
 ///-----------------------------------------------------------------------------
 /// @name Batching
