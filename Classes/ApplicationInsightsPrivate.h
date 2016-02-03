@@ -7,16 +7,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 FOUNDATION_EXPORT NSString *const kMSAIName;
 FOUNDATION_EXPORT NSString *const kMSAIIdentifier;
-FOUNDATION_EXPORT NSString *const kMSAICrashSettings;
-FOUNDATION_EXPORT NSString *const kMSAICrashAnalyzer;
-
-#if MSAI_FEATURE_TELEMETRY
-
-FOUNDATION_EXPORT NSString *const __unused kMSAITelemetryCachesSessions;
-FOUNDATION_EXPORT NSString *const __unused kMSAITelemetryTempSessionData;
-FOUNDATION_EXPORT NSString *const __unused kMSAITelemetryLastAppVersion;
-
-#endif /* MSAI_FEATURE_TELEMETRY */
 
 FOUNDATION_EXPORT NSString *const kMSAIIntegrationflowTimestamp;
 
