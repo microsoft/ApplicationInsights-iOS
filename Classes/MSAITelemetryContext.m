@@ -40,16 +40,13 @@ NSString *const kMSAISessionAcquisitionTime = @"MSAISessionAcquisitionTime";
     applicationContext.version = appContext.appVersion;
     
     MSAISession *sessionContext = [[MSAIContextHelper sharedInstance] newSession];
-    [[MSAIContextHelper sharedInstance] addSession:sessionContext withDate:[NSDate date]];
     NSDictionary *userInfo = @{kMSAISessionInfo : sessionContext};
     [[MSAIContextHelper sharedInstance] sendSessionStartedNotificationWithUserInfo:userInfo];
     
     MSAIOperation *operationContext = [MSAIOperation new];
-    
-    MSAIUser *userContext = [[MSAIContextHelper sharedInstance] userForDate:[NSDate date]];
+    MSAIUser *userContext = [[MSAIContextHelper sharedInstance] loadUser];
     if (!userContext) {
       userContext = [[MSAIContextHelper sharedInstance] newUser];
-      [[MSAIContextHelper sharedInstance] addUser:userContext forDate:[NSDate date]];
     }
     
     MSAILocation *locationContext = [MSAILocation new];

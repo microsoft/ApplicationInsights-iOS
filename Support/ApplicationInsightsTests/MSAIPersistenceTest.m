@@ -155,23 +155,9 @@ typedef void (^MSAIPersistenceTestBlock)(BOOL);
     for (int i = 0; i < 1000; ++i) {
       [_sut folderPathForPersistenceType:MSAIPersistenceTypeRegular];
     }
-    for (int i = 0; i < 1000; ++i) {
-      [_sut folderPathForPersistenceType:MSAIPersistenceTypeCrashTemplate];
-    }
   }];
 }
 #endif
-
-- (void)testOverwriteCrashTemplateWorks {
-  
-  // Create first crash template
-  [self createFileForDict:@{} withType:MSAIPersistenceTypeCrashTemplate];
-  XCTAssertEqual([self fileCountForType:MSAIPersistenceTypeCrashTemplate], 1U);
-  
-  // Create a new crash template, which should overwrite the first one
-  [self createFileForDict:@{} withType:MSAIPersistenceTypeCrashTemplate];
-  XCTAssertEqual([self fileCountForType:MSAIPersistenceTypeCrashTemplate], 1U);
-}
 
 #pragma mark - Helper
 

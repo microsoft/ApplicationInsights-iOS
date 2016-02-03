@@ -83,26 +83,6 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nonatomic, copy) NSString *serverURL;
 
-#if MSAI_FEATURE_CRASH_REPORTER
-
-/**
- * Flag which determines whether the Crash Manager should be disabled. If this flag is
- * enabled, then crash reporting is disabled and no crashes will be send. Please note 
- * that the Crash Manager instance will be initialized anyway, but crash report
- * handling (signal and uncaught exception handlers) will **not** be registered.
- *
- * @warning This property needs to be set before calling `start`
- */
-@property (nonatomic, getter = isCrashManagerDisabled) BOOL crashManagerDisabled;
-
-/**
- *  Enable (NO) or disable (YES) the crash manager. This should be called before `start`.
- *
- *  @param crashManagerDisabled Flag which determines whether the Crash Manager should be disabled
- */
-+ (void)setCrashManagerDisabled:(BOOL)crashManagerDisabled;
-#endif /* MSAI_FEATURE_CRASH_REPORTER */
-
 #if MSAI_FEATURE_TELEMETRY
 /**
  * Flag that determines whether the Telemetry Manager should be disabled.
@@ -207,7 +187,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  *  This starts a new session with the given session ID. 
  *
- *  @param sessionId The session ID which should be attached to all future telemetry and crash events.
+ *  @param sessionId The session ID which should be attached to all future telemetry events.
  *
  *  @warning Using this method automatically disables automatic session management!
  *  @see autoSessionManagementDisabled
@@ -217,7 +197,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  *  This starts a new session with the given session ID.
  *
- *  @param sessionId The session ID which should be attached to all future telemetry and crash events.
+ *  @param sessionId The session ID which should be attached to all future telemetry events.
  *
  *  @warning Using this method automatically disables automatic session management!
  *  @see autoSessionManagementDisabled

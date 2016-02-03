@@ -101,11 +101,6 @@ static dispatch_once_t once_token;
   }
 }
 
-- (void)processDictionary:(MSAIOrderedDictionary *)dictionary withCompletionBlock: (nullable void (^)(BOOL success)) completionBlock{
-  [[MSAIPersistence sharedInstance] persistBundle:[self serializeObjectToJSONData:dictionary]
-                                           ofType:MSAIPersistenceTypeHighPriority withCompletionBlock:completionBlock];
-}
-
 #pragma mark - Serialization Helper
 
 - (NSString *)serializeDictionaryToJSONString:(MSAIOrderedDictionary *)dictionary {

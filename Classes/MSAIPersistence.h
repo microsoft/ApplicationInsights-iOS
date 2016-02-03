@@ -10,8 +10,6 @@ NS_ASSUME_NONNULL_BEGIN
 typedef NS_ENUM(NSInteger, MSAIPersistenceType) {
   MSAIPersistenceTypeHighPriority = 0,
   MSAIPersistenceTypeRegular = 1,
-  MSAIPersistenceTypeCrashTemplate = 2,
-  MSAIPersistenceTypeMetaData = 3
 };
 
 /**

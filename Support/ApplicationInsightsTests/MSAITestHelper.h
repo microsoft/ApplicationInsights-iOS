@@ -1,3 +1,5 @@
+#import <UIKit/UIkit.h>
+
 NS_ASSUME_NONNULL_BEGIN
 
 extern NSString *const kMSAIDummyInstrumentationKey;
@@ -6,7 +8,6 @@ extern NSString *const kMSAIDummyInstrumentationKey;
 
 + (NSString *)jsonFixture:(NSString *)fixture;
 + (BOOL)createTempDirectory:(NSString *)directory;
-+ (BOOL)copyFixtureCrashReportWithFileName:(NSString *)filename;
 
 @end
 NS_ASSUME_NONNULL_END
