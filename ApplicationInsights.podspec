@@ -1,5 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = "ApplicationInsights"
+  s.deprecated       = true
   s.version          = "1.0-beta.7"
   s.summary          = "Microsoft Application Insights SDK for iOS"
   s.description      = <<-DESC
