@@ -189,7 +189,7 @@ As soon as Application Insights 1.0 is available, the version doesn't have to be
 
 ```ruby
 platform :ios, '8.0'
-pod "ApplicationInsights", '1.0-beta.4'
+pod "ApplicationInsights", '1.0-beta.7'
 ```
 
 ### 4.4 iOS 8 Extensions
@@ -320,7 +320,7 @@ For an overview of how to use the API and view the results in the Application In
 // Send a message
 [MSAITelemetryManager trackTraceWithMessage:@"Test message"];
 
-// Manually send pageviews (note: this will also be done automatically)
+// Manually send pageviews with a duration of 200 ms (note: this will also be done automatically)  (duration 200 ms)
 [MSAITelemetryManager trackPageView:@"MyViewController"
                            duration:300
                          properties:@{@"Test measurement 1":@(4.8)}];
@@ -344,9 +344,9 @@ MSAITelemetryManager.trackEventWithName("Hello World event!",
 // Send a message
 MSAITelemetryManager.trackTraceWithMessage("Test message")
 
-// Manually send pageviews
+// Manually send pageviews (duration 200 ms)
 MSAITelemetryManager.trackPageView("MyViewController",
-                                   duration:300,
+                                   duration:0.2,
                                  properties:["Test measurement 1":4.8])
 
 // Send a message
@@ -446,7 +446,7 @@ You can also configure a different server endpoint for the SDK if needed using a
 <a id="documentation"></a>
 ## 10. Documentation
 
-Our documentation can be found on [CocoaDocs](http://cocoadocs.org/docsets/ApplicationInsights/1.0-beta.4/).
+Our documentation can be found on [CocoaDocs](http://cocoadocs.org/docsets/ApplicationInsights/1.0-beta.7/).
 
 
 <a id="contributing"></a>
