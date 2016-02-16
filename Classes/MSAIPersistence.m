@@ -3,6 +3,7 @@
 #import "MSAIEnvelope.h"
 #import "ApplicationInsightsPrivate.h"
 #import "MSAIHelper.h"
+#import "MSAITelemetryManager.h"
 
 NSString *const kHighPrioString = @"highPrio";
 NSString *const kRegularPrioString = @"regularPrio";
@@ -136,6 +137,8 @@ NSUInteger const defaultFileCount = 50;
       NSError *error = nil;
       if(![[NSFileManager defaultManager] removeItemAtPath:path error:&error]) {
         MSAILog(@"Error deleting file at path %@", path);
+        NSString * eventName = [NSString stringWithFormat:@"Error deleting file at path %@", path];
+        [MSAITelemetryManager trackEventWithName:eventName];
       }
       else {
         MSAILog(@"Successfully deleted file at path %@", path);

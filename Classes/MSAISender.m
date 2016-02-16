@@ -92,6 +92,7 @@ static NSUInteger const defaultRequestLimit = 10;
   if(!path || !request) return;
   
   __weak typeof(self) weakSelf = self;
+  [[MSAIPersistence sharedInstance] deleteFileAtPath:path];
   MSAIHTTPOperation *operation = [self.appClient operationWithURLRequest:request queue:self.senderQueue completion:^(MSAIHTTPOperation *operation, NSData *responseData, NSError *error) {
     typeof(self) strongSelf = weakSelf;
 
@@ -102,12 +103,10 @@ static NSUInteger const defaultRequestLimit = 10;
       //we delete data that was either sent successfully or if we have a non-recoverable error
       MSAILog(@"Sent data with status code: %ld", (long) statusCode);
       MSAILog(@"Response data:\n%@", [NSJSONSerialization JSONObjectWithData:responseData options:0 error:nil]);
-      [[MSAIPersistence sharedInstance] deleteFileAtPath:path];
       [strongSelf sendSavedData];
     } else {
       MSAILog(@"Sending MSAIApplicationInsights data failed");
       MSAILog(@"Error description: %@", error.localizedDescription);
-      [[MSAIPersistence sharedInstance] giveBackRequestedPath:path];
     }
   }];
 

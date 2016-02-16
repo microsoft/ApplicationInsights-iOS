@@ -297,6 +297,7 @@ static char *const MSAICommonPropertiesQueue = "com.microsoft.ApplicationInsight
 - (void)addCommonPropertiesToDataItem:(MSAITelemetryData *)dataItem {
   NSMutableDictionary *mergedProperties = self.commonProperties.mutableCopy;
   [mergedProperties addEntriesFromDictionary:dataItem.properties];
+  mergedProperties[@"SDK_INTERNAL_UNIQUE_EVENT_ID"] = [[NSUUID UUID] UUIDString];
   dataItem.properties = mergedProperties;
 }
 
