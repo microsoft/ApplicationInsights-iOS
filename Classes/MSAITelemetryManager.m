@@ -275,7 +275,7 @@ static char *const MSAICommonPropertiesQueue = "com.microsoft.ApplicationInsight
   int hours = (durationInt / 3600) % 24;
   int days = (durationInt / 3600) / 24;
 
-  NSString *durationString = [NSString stringWithFormat:@"%01d:%02d:%02d:%02d.%07d", days, hours, minutes, seconds, milliseconds];
+  NSString *durationString = [NSString stringWithFormat:@"%01d.%02d:%02d:%02d.%07d", days, hours, minutes, seconds, milliseconds];
   return durationString;
 }
 
