@@ -991,6 +991,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				DSTROOT = /tmp/AIS.dst;
+				ENABLE_BITCODE = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../Vendor\"",
@@ -1016,6 +1017,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				DSTROOT = /tmp/AIS.dst;
+				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../Vendor\"",
@@ -1188,7 +1190,7 @@
 		};
 		E400563D148D79B500EB22B9 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1E66CA9115D4100500F35BED /* buildnumber.xcconfig */;
+			baseConfigurationReference = 1B2B6E891C5B039800D89D13 /* release.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_ARC = YES;
