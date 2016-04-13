@@ -43,7 +43,7 @@
 		1B85606F1A7A6A9D00A54FB7 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B85606E1A7A6A9D00A54FB7 /* UIKit.framework */; };
 		1BBBCF341A6594AE00253031 /* MSAIChannel.h in Headers */ = {isa = PBXBuildFile; fileRef = 1BBBCF2E1A6594AE00253031 /* MSAIChannel.h */; };
 		1BBBCF351A6594AE00253031 /* MSAIChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BBBCF2F1A6594AE00253031 /* MSAIChannel.m */; };
-		1BBBCF361A6594AE00253031 /* MSAITelemetryContext.h in Headers */ = {isa = PBXBuildFile; fileRef = 1BBBCF301A6594AE00253031 /* MSAITelemetryContext.h */; };
+		1BBBCF361A6594AE00253031 /* MSAITelemetryContext.h in Headers */ = {isa = PBXBuildFile; fileRef = 1BBBCF301A6594AE00253031 /* MSAITelemetryContext.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1BBBCF371A6594AE00253031 /* MSAITelemetryContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BBBCF311A6594AE00253031 /* MSAITelemetryContext.m */; };
 		1BC8596B1A7ACA820018FB6B /* MSAICategoryContainer.h in Headers */ = {isa = PBXBuildFile; fileRef = 1BC859691A7ACA820018FB6B /* MSAICategoryContainer.h */; };
 		1BC8596C1A7ACA820018FB6B /* MSAICategoryContainer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1BC8596A1A7ACA820018FB6B /* MSAICategoryContainer.m */; };
@@ -96,7 +96,7 @@
 		807CFDAB1A712974004EA1B6 /* MSAIDataPointType.h in Headers */ = {isa = PBXBuildFile; fileRef = 807CFD7A1A712974004EA1B6 /* MSAIDataPointType.h */; };
 		807CFDAC1A712974004EA1B6 /* MSAIDependencyKind.h in Headers */ = {isa = PBXBuildFile; fileRef = 807CFD7B1A712974004EA1B6 /* MSAIDependencyKind.h */; };
 		807CFDAD1A712974004EA1B6 /* MSAIDependencySourceType.h in Headers */ = {isa = PBXBuildFile; fileRef = 807CFD7C1A712974004EA1B6 /* MSAIDependencySourceType.h */; };
-		807CFDAE1A712974004EA1B6 /* MSAIDevice.h in Headers */ = {isa = PBXBuildFile; fileRef = 807CFD7D1A712974004EA1B6 /* MSAIDevice.h */; };
+		807CFDAE1A712974004EA1B6 /* MSAIDevice.h in Headers */ = {isa = PBXBuildFile; fileRef = 807CFD7D1A712974004EA1B6 /* MSAIDevice.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		807CFDAF1A712974004EA1B6 /* MSAIDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = 807CFD7E1A712974004EA1B6 /* MSAIDevice.m */; };
 		807CFDB01A712974004EA1B6 /* MSAIDomain.h in Headers */ = {isa = PBXBuildFile; fileRef = 807CFD7F1A712974004EA1B6 /* MSAIDomain.h */; };
 		807CFDB11A712974004EA1B6 /* MSAIDomain.m in Sources */ = {isa = PBXBuildFile; fileRef = 807CFD801A712974004EA1B6 /* MSAIDomain.m */; };

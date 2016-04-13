@@ -1,6 +1,7 @@
 #import <Foundation/Foundation.h>
 #import "MSAINullability.h"
 #import "MSAIUser.h"
+#import "MSAITelemetryContext.h"
 
 NS_ASSUME_NONNULL_BEGIN
 /**
@@ -215,6 +216,11 @@ NS_ASSUME_NONNULL_BEGIN
  * distribution
  */
 @property (nonatomic, readonly, getter=isAppStoreEnvironment) BOOL appStoreEnvironment;
+
+/**
+ * The telemetry context
+ */
+@property (nonatomic, strong, readonly)MSAITelemetryContext *telemetryContext;
 
 ///-----------------------------------------------------------------------------
 /// @name Debug Logging
