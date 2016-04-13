@@ -1,6 +1,5 @@
 #import "MSAITelemetryContext.h"
 #import "MSAIApplication.h"
-#import "MSAIDevice.h"
 #import "MSAIOperation.h"
 #import "MSAIInternal.h"
 #import "MSAIUser.h"
@@ -26,11 +25,6 @@ NS_ASSUME_NONNULL_BEGIN
  *  The application context.
  */
 @property(nonatomic, strong, readonly) MSAIApplication *application;
-
-/**
- *  The device context.
- */
-@property (nonatomic, strong, readonly)MSAIDevice *device;
 
 /**
  *  The location context.
