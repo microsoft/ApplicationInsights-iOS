@@ -224,7 +224,6 @@
 		1E0FEE26173BDB260061331F /* MSAIKeychainUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAIKeychainUtils.h; sourceTree = "<group>"; };
 		1E0FEE27173BDB260061331F /* MSAIKeychainUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAIKeychainUtils.m; sourceTree = "<group>"; };
 		1E3A26131B2B2CFE00D59683 /* libc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.dylib"; path = "usr/lib/libc++.dylib"; sourceTree = SDKROOT; };
-		1E3A2B4C19645DC800D5BD66 /* ApplicationInsights-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ApplicationInsights-Prefix.pch"; sourceTree = "<group>"; };
 		1E49A4A5161222B900463151 /* MSAIHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MSAIHelper.h; sourceTree = "<group>"; };
 		1E49A4A6161222B900463151 /* MSAIHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MSAIHelper.m; sourceTree = "<group>"; };
 		1E49A4D4161222D400463151 /* ApplicationInsightsPrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ApplicationInsightsPrivate.h; sourceTree = "<group>"; };
@@ -643,7 +642,6 @@
 				1BA913001A9357A500251386 /* Persistence */,
 				1BBBCEC21A65927400253031 /* Channel */,
 				E48A3DE917B3ECF900924C3D /* Network */,
-				1E3A2B4C19645DC800D5BD66 /* ApplicationInsights-Prefix.pch */,
 				1E71509A15B5C76F004E88FF /* ApplicationInsights.h */,
 				1E84DB3317E0977C00AC83FD /* ApplicationInsightsFeatureConfig.h */,
 				E41EB465148D7BF50015DEDC /* MSAIApplicationInsights.h */,
