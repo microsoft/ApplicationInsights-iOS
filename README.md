@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/Microsoft/ApplicationInsights-iOS.svg?branch=master)](https://travis-ci.org/Microsoft/ApplicationInsights-iOS)
 
-# Application Insights for iOS (1.0-beta.7)
+# Application Insights for iOS (1.0-beta.8)
 
 This is the repository of the iOS SDK for Application Insights. [Application Insights](http://azure.microsoft.com/services/application-insights/) is a service that monitors the performance and usage of your published app. The SDK enables you to send telemetry of various kinds (events, traces, sessions etc.) to the Application Insights service where your data can be visualized in the Azure Portal.
 
@@ -11,7 +11,7 @@ The SDK runs on devices with iOS 6.0 or higher. You'll need a subscription to [M
 
 ##Breaking Changes!
 
-Version 1.0-beta.7 of the Application Insights for iOS SDK comes with two major changes:
+Version 1.0-beta.8 of the Application Insights for iOS SDK comes with two major changes:
 
 Crash Reporting and the API to send handled exceptions have been removed from the SDK. In addition, the Application Insights for iOS SDK is now deprecated.
 
@@ -189,7 +189,7 @@ As soon as Application Insights 1.0 is available, the version doesn't have to be
 
 ```ruby
 platform :ios, '8.0'
-pod "ApplicationInsights", '1.0-beta.7'
+pod "ApplicationInsights", '1.0-beta.8'
 ```
 
 ### 4.4 iOS 8 Extensions
@@ -446,7 +446,7 @@ You can also configure a different server endpoint for the SDK if needed using a
 <a id="documentation"></a>
 ## 10. Documentation
 
-Our documentation can be found on [CocoaDocs](http://cocoadocs.org/docsets/ApplicationInsights/1.0-beta.7/).
+Our documentation can be found on [CocoaDocs](http://cocoadocs.org/docsets/ApplicationInsights/1.0-beta.8/).
 
 
 <a id="contributing"></a>
