@@ -320,9 +320,9 @@ For an overview of how to use the API and view the results in the Application In
 // Send a message
 [MSAITelemetryManager trackTraceWithMessage:@"Test message"];
 
-// Manually send pageviews with a duration of 200 ms (note: this will also be done automatically)  (duration 200 ms)
+// Manually send pageviews with a duration of 200 ms (note: this will also be done automatically)
 [MSAITelemetryManager trackPageView:@"MyViewController"
-                           duration:300
+                           duration:200
                          properties:@{@"Test measurement 1":@(4.8)}];
 
 // Send custom metrics
