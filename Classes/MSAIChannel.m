@@ -148,7 +148,7 @@ void msai_appendStringToSafeJsonStream(NSString *string, char **jsonString) {
   
   char *new_string = NULL;
   // Concatenate old string with new JSON string and add a comma.
-  asprintf(&new_string, "%s%.*s\n", *jsonString, (int)MIN(string.length, (NSUInteger)INT_MAX), string.UTF8String);
+  asprintf(&new_string, "%s%.*s\n", *jsonString, (int)MIN([string lengthOfBytesUsingEncoding:NSUTF8StringEncoding], (NSUInteger)INT_MAX), string.UTF8String);
   free(*jsonString);
   *jsonString = new_string;
 }
