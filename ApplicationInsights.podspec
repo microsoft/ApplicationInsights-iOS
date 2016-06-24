@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
   s.name             = "ApplicationInsights"
   s.deprecated       = true
-  s.version          = "1.0-beta.7"
+  s.version          = "1.0-beta.8"
   s.summary          = "Microsoft Application Insights SDK for iOS"
   s.description      = <<-DESC
                        Application Insights is a service that allows developers to keep their applications available, performant, and successful. 

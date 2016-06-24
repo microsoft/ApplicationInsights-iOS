@@ -1,3 +1,7 @@
+## 1.0-beta.8 (24/6/2016)
+
+* Fix a bug where Unicode characters where not properly handled in the telemetry channel
+
 ## 1.0-beta.7 (3/2/2016)
 
 **Crash Reporting and the API to send handled exceptions have been removed from the SDK. In addition, the Application Insights for iOS SDK is now deprecated.**
