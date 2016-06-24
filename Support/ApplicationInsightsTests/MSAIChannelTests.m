@@ -138,6 +138,15 @@
   XCTAssertEqual(strcmp(MSAISafeJsonEventsString,"{\"Key1\":\"Value1\"}\n"), 0);
 }
 
+- (void)testAppendStringToSafeJsonStreamWithSpecialCharacters {
+  XCTAssertTrue(MSAISafeJsonEventsString == NULL);
+  
+  msai_appendStringToSafeJsonStream(@"Turín", &MSAISafeJsonEventsString);
+  
+  XCTAssertEqual(strlen(MSAISafeJsonEventsString), 7U);
+  XCTAssertEqual(strcmp(MSAISafeJsonEventsString, "Turín\n"), 0);
+}
+
 - (void)testResetSafeJsonStream {
   msai_resetSafeJsonStream(&MSAISafeJsonEventsString);
   XCTAssertEqual(strcmp(MSAISafeJsonEventsString,""), 0);
