@@ -144,7 +144,18 @@
   msai_appendStringToSafeJsonStream(@"Turín", &MSAISafeJsonEventsString);
   
   XCTAssertEqual(strlen(MSAISafeJsonEventsString), 7U);
+  XCTAssertEqual([[NSString alloc] initWithUTF8String:MSAISafeJsonEventsString].length, 6U);
   XCTAssertEqual(strcmp(MSAISafeJsonEventsString, "Turín\n"), 0);
+
+  
+  // Test emoji
+  MSAISafeJsonEventsString = NULL;
+  
+  msai_appendStringToSafeJsonStream(@"🙂", &MSAISafeJsonEventsString);
+  
+  XCTAssertEqual(strlen(MSAISafeJsonEventsString), 5U);
+  XCTAssertEqual([[NSString alloc] initWithUTF8String:MSAISafeJsonEventsString].length, 3U);
+  XCTAssertEqual(strcmp(MSAISafeJsonEventsString, "🙂\n"), 0);
 }
 
 - (void)testResetSafeJsonStream {
