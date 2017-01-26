@@ -6,8 +6,7 @@ This SDK is officially deprecated. Please switch to [HockeyApp](https://hockeyap
 
 You can find more about the transition from Application Insights to HockeyApp [here](https://www.hockeyapp.net/blog/2016/03/11/welcome-application-insights-users.html) and about how Mobile Center will be the future of HockeyApp [here](https://www.hockeyapp.net/blog/2016/11/16/mobile-center-next-generation-hockeyapp.html).
 
-Please don't hesitate to get in touch via [support@hockeyapp.net](mailto:support@hockeyapp.net).
- if you have questions.
+Please don't hesitate to get in touch via [support@hockeyapp.net](mailto:support@hockeyapp.net) if you have questions.
 
 ### About
 =======
