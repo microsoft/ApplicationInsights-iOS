@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/Microsoft/ApplicationInsights-iOS.svg?branch=master)](https://travis-ci.org/Microsoft/ApplicationInsights-iOS)
 
-# Application Insights for iOS (1.0-beta.8)
+# Application Insights for iOS (1.0-beta.8) DEPRECATED
 
 This is the repository of the iOS SDK for Application Insights. [Application Insights](http://azure.microsoft.com/services/application-insights/) is a service that monitors the performance and usage of your published app. The SDK enables you to send telemetry of various kinds (events, traces, sessions etc.) to the Application Insights service where your data can be visualized in the Azure Portal.
 
