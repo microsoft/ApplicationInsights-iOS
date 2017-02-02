@@ -1,4 +1,5 @@
 #import "MSAISender.h"
+#import "MSAIHelper.h"
 #import "MSAIAppClient.h"
 #import "MSAISenderPrivate.h"
 #import "MSAIPersistencePrivate.h"
@@ -70,7 +71,9 @@ static NSUInteger const defaultRequestLimit = 10;
     typeof(self) strongSelf = weakSelf;
     NSString *path = [[MSAIPersistence sharedInstance] requestNextPath];
     NSData *data = [[MSAIPersistence sharedInstance] dataAtPath:path];
-    [strongSelf sendData:data withPath:path];
+    if (data && path) {
+      [strongSelf sendData:data withPath:path];
+    }
   });
 }
 
@@ -80,38 +83,69 @@ static NSUInteger const defaultRequestLimit = 10;
 
     NSData *gzippedData = [data gzippedData];
     NSURLRequest *request = [self requestForData:gzippedData withContentType:contentType];
-    [self sendRequest:request path:path];
     
+    id nsurlsessionClass = NSClassFromString(@"NSURLSessionUploadTask");
+    if (nsurlsessionClass && !msai_isRunningInAppExtension()) {
+      [self startUploadTaskWithRequest:request data:gzippedData path:path];
+    } else {
+      [self sendRequest:request path:path];
+    }
   } else {
     self.runningRequestsCount -= 1;
   }
 }
 
-- (void)sendRequest:(NSURLRequest * __nonnull)request path:(NSString * __nonnull)path {
+- (void)startUploadTaskWithRequest:(nonnull NSURLRequest *)request data:(nonnull NSData *)data path:(nonnull NSString *)path {
   
-  if(!path || !request) return;
+  if (!request || !data || !path) { return; }
+  
+  NSURLSessionConfiguration *sessionConfiguration = [NSURLSessionConfiguration defaultSessionConfiguration];
+  NSURLSession *session = [NSURLSession sessionWithConfiguration:sessionConfiguration];
+
+  __weak typeof (self) weakSelf = self;
+  // The body data of our request are ignored so it is passed separately
+  NSURLSessionUploadTask *uploadTask = [session uploadTaskWithRequest:request
+                                                             fromData:data
+                                                    completionHandler:^(NSData *responseData, NSURLResponse *response, NSError *error) {
+                                                      typeof (self) strongSelf = weakSelf;
+                                                      
+                                                      NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
+                                                      NSInteger statusCode = httpResponse.statusCode;
+                                                      [strongSelf handleUploadResultWithPath:path responseData:responseData error:error statusCode:statusCode];
+                                                    }];
+  
+  [uploadTask resume];
+}
+
+- (void)sendRequest:(nonnull NSURLRequest *)request path:(nonnull NSString *)path {
+  
+  if(!path || !request) { return; }
   
   __weak typeof(self) weakSelf = self;
-  MSAIHTTPOperation *operation = [self.appClient operationWithURLRequest:request queue:self.senderQueue completion:^(MSAIHTTPOperation *operation, NSData *responseData, NSError *error) {
+  MSAIHTTPOperation *operation = [self.appClient operationWithURLRequest:request queue:self.senderQueue completion:^(MSAIHTTPOperation *completedOperation, NSData *responseData, NSError *error) {
     typeof(self) strongSelf = weakSelf;
 
-    self.runningRequestsCount -= 1;
-    NSInteger statusCode = [operation.response statusCode];
+    NSInteger statusCode = [completedOperation.response statusCode];
+    [strongSelf handleUploadResultWithPath:path responseData:responseData error:error statusCode:statusCode];
+  }];
 
-    if(responseData && [self shouldDeleteDataWithStatusCode:statusCode]) {
+  [self.appClient enqueueHTTPOperation:operation];
+}
+
+- (void)handleUploadResultWithPath:(nonnull NSString *)path responseData:(nonnull NSData *)responseData error:(nonnull NSError *)error statusCode:(NSInteger)statusCode {
+  self.runningRequestsCount -= 1;
+
+  if(responseData && [self shouldDeleteDataWithStatusCode:statusCode]) {
       //we delete data that was either sent successfully or if we have a non-recoverable error
       MSAILog(@"Sent data with status code: %ld", (long) statusCode);
       MSAILog(@"Response data:\n%@", [NSJSONSerialization JSONObjectWithData:responseData options:0 error:nil]);
       [[MSAIPersistence sharedInstance] deleteFileAtPath:path];
-      [strongSelf sendSavedData];
+      [self sendSavedData];
     } else {
       MSAILog(@"Sending MSAIApplicationInsights data failed");
       MSAILog(@"Error description: %@", error.localizedDescription);
       [[MSAIPersistence sharedInstance] giveBackRequestedPath:path];
     }
-  }];
-
-  [self.appClient enqueueHTTPOperation:operation];
 }
 
 #pragma mark - Helper

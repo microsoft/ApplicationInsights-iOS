@@ -21,7 +21,6 @@ NSString *msai_deviceType(void);
 NSString *msai_screenSize(void);
 NSString *msai_sdkVersion(void);
 NSString *msai_sdkBuild(void);
-NSString *msai_dec(void);
 NSString *msai_mainBundleIdentifier(void);
 NSString *msai_encodeInstrumentationKey(NSString *inputString);
 NSString *msai_UUID(void);
